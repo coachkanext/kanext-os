@@ -6,7 +6,7 @@
 
 import React, { useState, useCallback, useMemo } from 'react';
 import {
-  View, Text, Pressable, ScrollView, Alert, StyleSheet,
+  View, Text, Pressable, ScrollView, Alert, StyleSheet, Animated,
 } from 'react-native';
 import * as Haptics from 'expo-haptics';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
@@ -19,6 +19,7 @@ import { openSidePanel } from '@/utils/global-side-panel';
 import { KMenuButton } from '@/components/ui/k-menu-button';
 import { RolePill } from '@/components/ui/role-pill';
 import { useDemoRole } from '@/utils/demo-role-store';
+import { useScrollHeader } from '@/hooks/use-scroll-header';
 
 // ── Static mock data ──────────────────────────────────────────────────────────
 
@@ -51,13 +52,11 @@ export default function GroupsScreen() {
   const [role, cycleRole, roleCycles] = useDemoRole('community:hub');
   const isPastor = role === roleCycles[0];
 
+  const { opacity, onScroll, scrollEventThrottle } = useScrollHeader();
   const [activePill, setActivePill] = useState('All');
   const [joinedIds, setJoinedIds]   = useState<Set<string>>(new Set(['g2', 'g3']));
 
   useFocusEffect(useCallback(() => { resetFooter(); }, []));
-
-  const topBarH        = insets.top + TOP_BAR_H;
-  const scrollPaddingTop = topBarH + 16;
 
   // ── Filtering ────────────────────────────────────────────────────────────────
 
@@ -77,8 +76,10 @@ export default function GroupsScreen() {
 
   const renderPastor = () => (
     <ScrollView
+      onScroll={onScroll}
+      scrollEventThrottle={scrollEventThrottle}
       showsVerticalScrollIndicator={false}
-      contentContainerStyle={{ paddingTop: scrollPaddingTop, paddingBottom: insets.bottom + 100 }}
+      contentContainerStyle={{ paddingTop: insets.top + TOP_BAR_H + 8, paddingBottom: insets.bottom + 100 }}
     >
       {/* Filter Pills */}
       <ScrollView
@@ -142,8 +143,10 @@ export default function GroupsScreen() {
 
   const renderMember = () => (
     <ScrollView
+      onScroll={onScroll}
+      scrollEventThrottle={scrollEventThrottle}
       showsVerticalScrollIndicator={false}
-      contentContainerStyle={{ paddingTop: scrollPaddingTop, paddingHorizontal: 16, paddingBottom: insets.bottom + 40 }}
+      contentContainerStyle={{ paddingTop: insets.top + TOP_BAR_H + 8, paddingHorizontal: 16, paddingBottom: insets.bottom + 40 }}
     >
       {/* My Groups */}
       <Text style={[s.secHeader, { color: C.label }]}>My Groups</Text>
@@ -223,10 +226,7 @@ export default function GroupsScreen() {
 
   return (
     <View style={[s.screen, { backgroundColor: C.bg }]}>
-      {isPastor ? renderPastor() : renderMember()}
-
-      {/* Top Bar */}
-      <View style={[s.topBarWrap, { paddingTop: insets.top, backgroundColor: C.bg }]}>
+      <Animated.View style={[s.topBarOuter, { paddingTop: insets.top, backgroundColor: C.bg, borderBottomColor: C.separator, borderBottomWidth: StyleSheet.hairlineWidth, opacity }]}>
         <View style={s.topBar}>
           <Pressable onPress={() => { Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light); openSidePanel(); }} hitSlop={12}>
             <KMenuButton />
@@ -234,7 +234,8 @@ export default function GroupsScreen() {
           <Text style={[s.topBarTitle, { color: C.label }]}>Groups</Text>
           <RolePill role={role} onPress={cycleRole} isPrimary={isPastor} />
         </View>
-      </View>
+      </Animated.View>
+      {isPastor ? renderPastor() : renderMember()}
 
       {/* FAB — Pastor only */}
       {isPastor && (
@@ -254,7 +255,7 @@ export default function GroupsScreen() {
 function makeStyles(C: ComponentColors) {
   return StyleSheet.create({
     screen:     { flex: 1 },
-    topBarWrap: { position: 'absolute', top: 0, left: 0, right: 0, zIndex: 100 },
+    topBarOuter:{ position: 'absolute', top: 0, left: 0, right: 0, zIndex: 10, borderBottomWidth: StyleSheet.hairlineWidth },
     topBar:     { height: TOP_BAR_H, flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', paddingHorizontal: 16 },
     topBarTitle:{ fontSize: 16, fontWeight: '700', flex: 1, textAlign: 'center' },
 

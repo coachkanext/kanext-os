@@ -5,7 +5,7 @@
 
 import React, { useCallback, useMemo } from 'react';
 import {
-  View, Text, StyleSheet, Pressable, ScrollView, Alert,
+  View, Text, StyleSheet, Pressable, ScrollView, Alert, Animated,
 } from 'react-native';
 import * as Haptics from 'expo-haptics';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
@@ -17,10 +17,10 @@ import { openSidePanel } from '@/utils/global-side-panel';
 import { resetFooter } from '@/utils/global-footer-hide';
 import { useDemoRole } from '@/utils/demo-role-store';
 import { KMenuButton } from '@/components/ui/k-menu-button';
+import { useScrollHeader } from '@/hooks/use-scroll-header';
 
 const GAIN = '#5A8A6E';
 
-const TOP_BAR_H = 52;
 
 interface StaffMember {
   name: string;
@@ -82,6 +82,9 @@ export default function PayrollScreen() {
   const [role, cycleRole, roleCycles] = useDemoRole('community:kaypay');
   const isPastor = role === roleCycles[0];
 
+  const TOP_BAR_H = insets.top + 54;
+  const { opacity, onScroll, scrollEventThrottle } = useScrollHeader(TOP_BAR_H);
+
   useFocusEffect(useCallback(() => {
     resetFooter();
   }, []));
@@ -101,24 +104,28 @@ export default function PayrollScreen() {
   return (
     <View style={[s.root, { backgroundColor: C.bg }]}>
       {/* Top Bar */}
-      <View style={[s.topBar, { paddingTop: insets.top, backgroundColor: C.bg, borderBottomColor: C.separator }]}>
-        <Pressable style={s.kBtn} onPress={() => openSidePanel()} hitSlop={8}>
-          <KMenuButton />
-        </Pressable>
-        <Text style={[s.topTitle, { color: C.label }]}>Payroll</Text>
-        <View style={s.rolePillWrap}>
-          <RolePill role={role} onPress={cycleRole} isPrimary={isPastor} />
+      <Animated.View style={[s.topBarOuter, { paddingTop: insets.top, backgroundColor: C.bg, borderBottomColor: C.separator, opacity }]}>
+        <View style={s.topBar}>
+          <Pressable style={s.kBtn} onPress={() => openSidePanel()} hitSlop={8}>
+            <KMenuButton />
+          </Pressable>
+          <Text style={[s.topTitle, { color: C.label }]}>Payroll</Text>
+          <View style={s.rolePillWrap}>
+            <RolePill role={role} onPress={cycleRole} isPrimary={isPastor} />
+          </View>
         </View>
-      </View>
+      </Animated.View>
 
       <ScrollView
         style={{ flex: 1 }}
         contentContainerStyle={{
-          paddingTop: insets.top + TOP_BAR_H + 12,
+          paddingTop: TOP_BAR_H + 12,
           paddingBottom: insets.bottom + 80,
           gap: 16,
           paddingHorizontal: 16,
         }}
+        onScroll={onScroll}
+        scrollEventThrottle={scrollEventThrottle}
         showsVerticalScrollIndicator={false}
       >
         {/* YTD Banner */}
@@ -205,11 +212,13 @@ function makeStyles(C: ComponentColors) {
   return StyleSheet.create({
     root: { flex: 1 },
 
+    topBarOuter: {
+      position: 'absolute', top: 0, left: 0, right: 0, zIndex: 10,
+      borderBottomWidth: StyleSheet.hairlineWidth,
+    },
     topBar: {
-      position: 'absolute', top: 0, left: 0, right: 0, zIndex: 100,
       flexDirection: 'row', alignItems: 'flex-end',
       paddingBottom: 10, paddingHorizontal: 16,
-      borderBottomWidth: StyleSheet.hairlineWidth,
     },
     kBtn:         { width: 44, height: 36, justifyContent: 'center' },
     topTitle:     { flex: 1, textAlign: 'center', fontSize: 16, fontWeight: '700', paddingBottom: 2 },

@@ -6,7 +6,7 @@
  */
 
 import React, { useState, useMemo, useCallback } from 'react';
-import { View, Text, Pressable, ScrollView, StyleSheet, TextInput } from 'react-native';
+import { View, Text, Pressable, ScrollView, StyleSheet, TextInput, Animated } from 'react-native';
 import * as Haptics from 'expo-haptics';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useFocusEffect } from 'expo-router';
@@ -16,6 +16,7 @@ import FontAwesome5 from '@expo/vector-icons/FontAwesome5';
 import { IconSymbol } from '@/components/ui/icon-symbol';
 import { GlassView } from '@/components/ui/glass-view';
 import { useColors, type ComponentColors } from '@/hooks/use-colors';
+import { useScrollHeader } from '@/hooks/use-scroll-header';
 import { openSidePanel } from '@/utils/global-side-panel';
 import { resetFooter } from '@/utils/global-footer-hide';
 import { KMenuButton } from '@/components/ui/k-menu-button';
@@ -234,6 +235,7 @@ export default function CreatorToolsScreen() {
 
   const topBarH           = insets.top + TOP_BAR_H;
   const contentPaddingTop = topBarH + 8;
+  const { opacity, onScroll, scrollEventThrottle } = useScrollHeader(insets.top + TOP_BAR_H + 8);
 
   const haptic = () => Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
 
@@ -790,27 +792,33 @@ export default function CreatorToolsScreen() {
 
   return (
     <View style={[s.root, { backgroundColor: C.bg }]}>
-      <View style={[s.topBar, { height: topBarH, paddingTop: insets.top, backgroundColor: C.bg, borderBottomColor: C.separator }]}>
-        {activeTool ? (
-          <Pressable onPress={() => { haptic(); setActiveTool(null); }} hitSlop={8} style={s.iconBtn}>
-            <IconSymbol name="chevron.left" size={20} color={C.label} />
-          </Pressable>
-        ) : (
-          <Pressable onPress={() => { haptic(); openSidePanel(); }} hitSlop={8} style={s.iconBtn}>
-            <KMenuButton />
-          </Pressable>
-        )}
-        <View style={[s.centerPill, { backgroundColor: C.surface, borderColor: C.separator }]}>
-          <Text style={[s.centerPillText, { color: C.label }]}>{pillTitle}</Text>
+      <Animated.View style={[s.topBarOuter, { paddingTop: insets.top, backgroundColor: C.bg, borderBottomColor: C.separator, opacity }]}>
+        <View style={s.topBar}>
+          {activeTool ? (
+            <Pressable onPress={() => { haptic(); setActiveTool(null); }} hitSlop={8} style={s.iconBtn}>
+              <IconSymbol name="chevron.left" size={20} color={C.label} />
+            </Pressable>
+          ) : (
+            <Pressable onPress={() => { haptic(); openSidePanel(); }} hitSlop={8} style={s.iconBtn}>
+              <KMenuButton />
+            </Pressable>
+          )}
+          <View style={{ flex: 1, alignItems: 'center' }}>
+            <View style={[s.centerPill, { backgroundColor: C.surface, borderColor: C.separator }]}>
+              <Text style={[s.centerPillText, { color: C.label }]}>{pillTitle}</Text>
+            </View>
+          </View>
+          <View style={s.iconBtn} />
         </View>
-        <View style={s.iconBtn} />
-      </View>
+      </Animated.View>
 
       <ScrollView
         style={{ flex: 1 }}
         contentContainerStyle={{ paddingTop: contentPaddingTop, paddingBottom: insets.bottom + 80 }}
         showsVerticalScrollIndicator={false}
         keyboardShouldPersistTaps="handled"
+        onScroll={onScroll}
+        scrollEventThrottle={scrollEventThrottle}
       >
         {renderToolContent()}
       </ScrollView>
@@ -823,15 +831,17 @@ export default function CreatorToolsScreen() {
 function makeStyles(C: ComponentColors) {
   return StyleSheet.create({
     root:    { flex: 1 },
-    topBar: {
+    topBarOuter: {
       position: 'absolute', top: 0, left: 0, right: 0, zIndex: 100,
-      flexDirection: 'row', alignItems: 'flex-end',
-      paddingHorizontal: 16, paddingBottom: 8,
       borderBottomWidth: StyleSheet.hairlineWidth,
     },
+    topBar: {
+      flexDirection: 'row', alignItems: 'flex-end',
+      paddingHorizontal: 16, paddingBottom: 8,
+    },
     iconBtn:        { width: 36, height: TOP_BAR_H, alignItems: 'center', justifyContent: 'center' },
-    centerPill:     { flex: 1, marginHorizontal: 10, height: 32, borderRadius: 16, borderWidth: 1, alignItems: 'center', justifyContent: 'center' },
-    centerPillText: { fontSize: 14, fontWeight: '700' },
+    centerPill:     { paddingHorizontal: 12, paddingVertical: 5, borderRadius: 14, borderWidth: 1 },
+    centerPillText: { fontSize: 12, fontWeight: '600', letterSpacing: 0.3 },
 
     hubCard:        { flexDirection: 'row', alignItems: 'center', gap: 14, padding: 16 },
     hubIconWrap:    { width: 46, height: 46, borderRadius: 12, alignItems: 'center', justifyContent: 'center' },

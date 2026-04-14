@@ -14,7 +14,9 @@ import {
   Modal,
   StyleSheet,
   Animated as RNAnimated,
+  Animated,
 } from 'react-native';
+import { useScrollHeader } from '@/hooks/use-scroll-header';
 import { Swipeable } from 'react-native-gesture-handler';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useLocalSearchParams } from 'expo-router';
@@ -188,6 +190,8 @@ function CallRow({
 
 // ── Screen ──
 
+const TOP_BAR_H = 56;
+
 export default function RecentCallsScreen() {
   const insets = useSafeAreaInsets();
   const accent = useAccentColor();
@@ -197,6 +201,7 @@ export default function RecentCallsScreen() {
   const rowStyles = useMemo(() => makeRowStyles(C), [C]);
   const popupStyles = useMemo(() => makePopupStyles(C), [C]);
   const directionIcons = useMemo(() => getDirectionIcons(C), [C]);
+  const { opacity, onScroll, scrollEventThrottle } = useScrollHeader();
 
   const [filter, setFilter] = useState<Filter>('all');
   const [deletedIds, setDeletedIds] = useState<Set<string>>(new Set());
@@ -220,27 +225,33 @@ export default function RecentCallsScreen() {
 
   return (
     <View
-      style={[styles.container, { paddingTop: insets.top }]}
+      style={styles.container}
     >
-      <View style={styles.header}>
-        <Text style={styles.title}>{title}</Text>
-      </View>
-
-      {/* Filter pills */}
-      <View style={styles.filterRow}>
-        {FILTERS.map((f) => (
-          <Pressable
-            key={f.key}
-            style={[styles.filterPill, filter === f.key && { backgroundColor: accent }]}
-            onPress={() => setFilter(f.key)}
-          >
-            <Text style={[styles.filterText, filter === f.key && { color: '#FFFFFF' }]}>{f.label}</Text>
-          </Pressable>
-        ))}
-      </View>
-
+      <Animated.View style={[styles.topBar, { paddingTop: insets.top, opacity }]}>
+        <View style={styles.header}>
+          <Text style={styles.title}>{title}</Text>
+        </View>
+      </Animated.View>
       {/* Calls list */}
-      <ScrollView style={styles.list} contentContainerStyle={styles.listContent} showsVerticalScrollIndicator={false}>
+      <ScrollView
+        onScroll={onScroll}
+        scrollEventThrottle={scrollEventThrottle}
+        style={styles.list}
+        contentContainerStyle={[styles.listContent, { paddingTop: insets.top + TOP_BAR_H }]}
+        showsVerticalScrollIndicator={false}
+      >
+        {/* Filter pills */}
+        <View style={styles.filterRow}>
+          {FILTERS.map((f) => (
+            <Pressable
+              key={f.key}
+              style={[styles.filterPill, filter === f.key && { backgroundColor: accent }]}
+              onPress={() => setFilter(f.key)}
+            >
+              <Text style={[styles.filterText, filter === f.key && { color: '#FFFFFF' }]}>{f.label}</Text>
+            </Pressable>
+          ))}
+        </View>
         {visibleCalls.map((call, idx) => (
           <React.Fragment key={call.id}>
             <CallRow
@@ -271,6 +282,7 @@ export default function RecentCallsScreen() {
 
 const makeStyles = (C: ComponentColors) => StyleSheet.create({
   container: { flex: 1, backgroundColor: C.bg },
+  topBar: { position: 'absolute', top: 0, left: 0, right: 0, zIndex: 10, backgroundColor: C.bg },
   header: { paddingHorizontal: 20, paddingTop: 8, paddingBottom: 8 },
   title: { fontSize: 28, fontWeight: '700', color: C.label },
   filterRow: { flexDirection: 'row', paddingHorizontal: 16, gap: 8, marginBottom: 8 },

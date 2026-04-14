@@ -3,13 +3,14 @@
  */
 
 import React, { useMemo, useCallback, useEffect } from 'react';
-import { View, Text, Pressable, ScrollView, Image, StyleSheet } from 'react-native';
+import { View, Text, Pressable, ScrollView, Image, StyleSheet, Animated } from 'react-native';
 import * as Haptics from 'expo-haptics';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useFocusEffect, useRouter } from 'expo-router';
 
 import { IconSymbol } from '@/components/ui/icon-symbol';
 import { useColors, type ComponentColors } from '@/hooks/use-colors';
+import { useScrollHeader } from '@/hooks/use-scroll-header';
 import { openSidePanel } from '@/utils/global-side-panel';
 import { resetFooter } from '@/utils/global-footer-hide';
 import { useDemoRole } from '@/utils/demo-role-store';
@@ -37,6 +38,7 @@ export default function QRCodeScreen() {
 
   const topBarH       = insets.top + TOP_H;
   const contentPadTop = topBarH + 8;
+  const { opacity, onScroll, scrollEventThrottle } = useScrollHeader(topBarH);
 
   useFocusEffect(useCallback(() => { resetFooter(); }, []));
   const haptic = () => Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
@@ -47,6 +49,8 @@ export default function QRCodeScreen() {
       <ScrollView
         showsVerticalScrollIndicator={false}
         contentContainerStyle={{ paddingTop: contentPadTop, paddingBottom: 60, alignItems: 'center' }}
+        onScroll={onScroll}
+        scrollEventThrottle={scrollEventThrottle}
       >
         {/* ── QR Card ── */}
         <View style={[s.qrCard, { backgroundColor: C.surface }]}>
@@ -93,17 +97,21 @@ export default function QRCodeScreen() {
       </ScrollView>
 
       {/* ── Fixed Top Bar ── */}
-      <View style={[s.topBarWrap, { paddingTop: insets.top, backgroundColor: C.bg }]}>
+      <Animated.View style={[s.topBarWrap, { paddingTop: insets.top, backgroundColor: C.bg, opacity }]}>
         <View style={s.topBar}>
           <Pressable onPress={() => { haptic(); openSidePanel(); }} hitSlop={12} style={s.topBarSide}>
             <KMenuButton />
           </Pressable>
-          <Text style={[s.topBarTitle, { color: C.label }]}>QR Code</Text>
+          <View style={{ flex: 1, alignItems: 'center' }}>
+            <View style={{ paddingHorizontal: 12, paddingVertical: 5, borderRadius: 14, borderWidth: 1, borderColor: C.separator, backgroundColor: C.surface }}>
+              <Text style={{ fontSize: 12, fontWeight: '600', letterSpacing: 0.3, color: C.label }}>QR Code</Text>
+            </View>
+          </View>
           <View style={[s.topBarSide, { alignItems: 'flex-end' }]}>
             <RolePill role={role} onPress={cycleRole} isPrimary={isOwner} />
           </View>
         </View>
-      </View>
+      </Animated.View>
 
     </View>
   );

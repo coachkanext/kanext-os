@@ -4,10 +4,11 @@
  */
 
 import React, { useState, useCallback, useMemo } from 'react';
-import { View, Text, StyleSheet, Pressable, ScrollView, Alert } from 'react-native';
+import { View, Text, StyleSheet, Pressable, ScrollView, Alert, Animated } from 'react-native';
 import * as Haptics from 'expo-haptics';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useFocusEffect, useRouter } from 'expo-router';
+import { useScrollHeader } from '@/hooks/use-scroll-header';
 import { IconSymbol } from '@/components/ui/icon-symbol';
 import { KMenuButton } from '@/components/ui/k-menu-button';
 import { RolePill } from '@/components/ui/role-pill';
@@ -87,6 +88,8 @@ export default function FollowUpScreen() {
   const [role, cycleRole, roleCycles] = useDemoRole('community:outreach');
   const isPastor = role === roleCycles[0];
 
+  const { opacity, onScroll, scrollEventThrottle } = useScrollHeader();
+
   const [expanded, setExpanded] = useState<Set<string>>(new Set(['sq1']));
 
   useFocusEffect(useCallback(() => {
@@ -95,8 +98,6 @@ export default function FollowUpScreen() {
       router.replace('/(tabs)/(main)/outreach' as any);
     }
   }, [isPastor, router]));
-
-  const topBarH = insets.top + TOP_BAR_H;
 
   if (!isPastor) return null;
 
@@ -114,11 +115,34 @@ export default function FollowUpScreen() {
 
   return (
     <View style={[s.screen, { backgroundColor: C.bg }]}>
+      <Animated.View style={[s.topBarWrap, { paddingTop: insets.top, backgroundColor: C.bg, borderBottomColor: C.separator, borderBottomWidth: StyleSheet.hairlineWidth, opacity }]}>
+        <View style={s.topBar}>
+          <View style={s.topBarSide}>
+            <Pressable
+              onPress={() => {
+                Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+                openSidePanel();
+              }}
+              hitSlop={12}
+            >
+              <KMenuButton />
+            </Pressable>
+          </View>
+          <View style={[s.titlePill, { backgroundColor: C.surface, borderColor: C.separator }]}>
+            <Text style={[s.titlePillText, { color: C.label }]}>Follow-Up Sequences</Text>
+          </View>
+          <View style={[s.topBarSide, { alignItems: 'flex-end' }]}>
+            <RolePill role={role} onPress={cycleRole} accentColor={C.label} isPrimary={isPastor} />
+          </View>
+        </View>
+      </Animated.View>
       <ScrollView
+        onScroll={onScroll}
+        scrollEventThrottle={scrollEventThrottle}
         style={{ flex: 1 }}
         contentContainerStyle={{
-          paddingTop: topBarH + 12,
           paddingHorizontal: 16,
+          paddingTop: insets.top + TOP_BAR_H + 8,
           paddingBottom: 120,
         }}
         showsVerticalScrollIndicator={false}
@@ -230,29 +254,6 @@ export default function FollowUpScreen() {
         <View style={{ height: 100 }} />
       </ScrollView>
 
-      {/* Top bar — position absolute */}
-      <View style={[s.topBarWrap, { paddingTop: insets.top, height: topBarH, backgroundColor: C.bg }]}>
-        <View style={s.topBar}>
-          <View style={s.topBarSide}>
-            <Pressable
-              onPress={() => {
-                Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
-                openSidePanel();
-              }}
-              hitSlop={12}
-            >
-              <KMenuButton />
-            </Pressable>
-          </View>
-          <View style={[s.titlePill, { backgroundColor: C.surface, borderColor: C.separator }]}>
-            <Text style={[s.titlePillText, { color: C.label }]}>Follow-Up Sequences</Text>
-          </View>
-          <View style={[s.topBarSide, { alignItems: 'flex-end' }]}>
-            <RolePill role={role} onPress={cycleRole} accentColor={C.label} isPrimary={isPastor} />
-          </View>
-        </View>
-      </View>
-
       {/* FAB — Create Sequence */}
       <Pressable
         style={[s.fab, { backgroundColor: C.label, bottom: insets.bottom + 70 }]}
@@ -274,8 +275,8 @@ export default function FollowUpScreen() {
 
 const makeStyles = (C: ComponentColors) => StyleSheet.create({
   screen:     { flex: 1 },
-  topBarWrap: { position: 'absolute', top: 0, left: 0, right: 0, zIndex: 10 },
-  topBar:     { flex: 1, flexDirection: 'row', alignItems: 'center', paddingHorizontal: 16 },
+  topBarWrap: { position: 'absolute', top: 0, left: 0, right: 0, zIndex: 10, borderBottomWidth: StyleSheet.hairlineWidth },
+  topBar:     { height: TOP_BAR_H, flexDirection: 'row', alignItems: 'center', paddingHorizontal: 16 },
   topBarSide: { width: 80, justifyContent: 'center' },
   titlePill: {
     flex: 1,

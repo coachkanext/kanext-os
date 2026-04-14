@@ -6,8 +6,9 @@
 
 import React, { useState, useMemo } from 'react';
 import {
-  View, Text, ScrollView, Pressable, StyleSheet,
+  View, Text, ScrollView, Pressable, StyleSheet, Animated,
 } from 'react-native';
+import { useScrollHeader } from '@/hooks/use-scroll-header';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import * as Haptics from 'expo-haptics';
@@ -206,6 +207,7 @@ export default function EmailThreadScreen() {
   const accent = useAccentColor();
   const insets = useSafeAreaInsets();
   const router = useRouter();
+  const { opacity, onScroll, scrollEventThrottle } = useScrollHeader();
 
   const { subject, from, preview } =
     useLocalSearchParams<{
@@ -242,7 +244,7 @@ export default function EmailThreadScreen() {
   return (
     <View style={[s.root, { backgroundColor: C.bg }]}>
       {/* ── Nav bar: back circle + spacer + three-dots circle ── */}
-      <View style={[s.nav, { paddingTop: insets.top }]}>
+      <Animated.View style={[s.nav, { paddingTop: insets.top, opacity }]}>
         <Pressable
           style={[s.navCircle, { backgroundColor: C.surfacePressed }]}
           onPress={() => router.back()}
@@ -258,10 +260,12 @@ export default function EmailThreadScreen() {
         >
           <IconSymbol name="ellipsis" size={17} color={C.label} />
         </Pressable>
-      </View>
+      </Animated.View>
 
       {/* ── Subject + count (below nav, inside scroll) ── */}
       <ScrollView
+        onScroll={onScroll}
+        scrollEventThrottle={scrollEventThrottle}
         style={s.scroll}
         contentContainerStyle={[s.scrollContent, { paddingBottom: insets.bottom + 49 + 72 }]}
         showsVerticalScrollIndicator={false}

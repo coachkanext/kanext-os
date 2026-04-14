@@ -5,10 +5,11 @@
  */
 
 import React, { useState, useCallback, useMemo } from 'react';
-import { View, Text, StyleSheet, Pressable, ScrollView, Alert } from 'react-native';
+import { View, Text, StyleSheet, Pressable, ScrollView, Alert, Animated } from 'react-native';
 import * as Haptics from 'expo-haptics';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useFocusEffect, useRouter } from 'expo-router';
+import { useScrollHeader } from '@/hooks/use-scroll-header';
 import { IconSymbol } from '@/components/ui/icon-symbol';
 import { KMenuButton } from '@/components/ui/k-menu-button';
 import { RolePill } from '@/components/ui/role-pill';
@@ -131,11 +132,11 @@ export default function OutreachIndexScreen() {
   const [role, cycleRole, roleCycles] = useDemoRole('community:outreach');
   const isPastor = role === roleCycles[0];
 
+  const { opacity, onScroll, scrollEventThrottle } = useScrollHeader();
+
   const [expanded, setExpanded] = useState<Set<string>>(new Set(['explorer', 'first_visit']));
 
   useFocusEffect(useCallback(() => { resetFooter(); }, []));
-
-  const topBarH = insets.top + TOP_BAR_H;
 
   const toggleStage = (id: string) => {
     Haptics.selectionAsync();
@@ -389,20 +390,7 @@ export default function OutreachIndexScreen() {
 
   return (
     <View style={[s.screen, { backgroundColor: C.bg }]}>
-      <ScrollView
-        style={{ flex: 1 }}
-        contentContainerStyle={{
-          paddingTop: topBarH + 12,
-          paddingHorizontal: 16,
-          paddingBottom: 120,
-        }}
-        showsVerticalScrollIndicator={false}
-      >
-        {isPastor ? renderPastorView() : renderMemberView()}
-      </ScrollView>
-
-      {/* Top bar — position absolute */}
-      <View style={[s.topBarWrap, { paddingTop: insets.top, height: topBarH, backgroundColor: C.bg }]}>
+      <Animated.View style={[s.topBarWrap, { paddingTop: insets.top, backgroundColor: C.bg, borderBottomColor: C.separator, borderBottomWidth: StyleSheet.hairlineWidth, opacity }]}>
         <View style={s.topBar}>
           <View style={s.topBarSide}>
             <Pressable
@@ -424,7 +412,20 @@ export default function OutreachIndexScreen() {
             <RolePill role={role} onPress={cycleRole} accentColor={C.label} isPrimary={isPastor} />
           </View>
         </View>
-      </View>
+      </Animated.View>
+      <ScrollView
+        onScroll={onScroll}
+        scrollEventThrottle={scrollEventThrottle}
+        style={{ flex: 1 }}
+        contentContainerStyle={{
+          paddingHorizontal: 16,
+          paddingTop: insets.top + TOP_BAR_H + 8,
+          paddingBottom: 120,
+        }}
+        showsVerticalScrollIndicator={false}
+      >
+        {isPastor ? renderPastorView() : renderMemberView()}
+      </ScrollView>
 
       {/* FAB — Pastor only */}
       {isPastor && (
@@ -449,8 +450,8 @@ export default function OutreachIndexScreen() {
 
 const makeStyles = (C: ComponentColors) => StyleSheet.create({
   screen:     { flex: 1 },
-  topBarWrap: { position: 'absolute', top: 0, left: 0, right: 0, zIndex: 10 },
-  topBar:     { flex: 1, flexDirection: 'row', alignItems: 'center', paddingHorizontal: 16 },
+  topBarWrap: { position: 'absolute', top: 0, left: 0, right: 0, zIndex: 10, borderBottomWidth: StyleSheet.hairlineWidth },
+  topBar:     { height: TOP_BAR_H, flexDirection: 'row', alignItems: 'center', paddingHorizontal: 16 },
   topBarSide: { width: 80, justifyContent: 'center' },
   titlePill: {
     flex: 1,

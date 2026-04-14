@@ -11,6 +11,7 @@ import {
   Pressable,
   ScrollView,
   StyleSheet,
+  Animated,
 } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useRouter } from 'expo-router';
@@ -19,6 +20,7 @@ import * as Haptics from 'expo-haptics';
 import { IconSymbol } from '@/components/ui/icon-symbol';
 import { useAccentColor } from '@/hooks/use-accent-color';
 import { useColors, type ComponentColors } from '@/hooks/use-colors';
+import { useScrollHeader } from '@/hooks/use-scroll-header';
 import { useMode } from '@/context/app-context';
 import { getRooms, getGlobalDMs } from '@/data/mock-messages-v3';
 
@@ -29,6 +31,9 @@ export default function MessagesSearchScreen() {
   const router = useRouter();
   const C = useColors();
   const styles = useMemo(() => makeStyles(C), [C]);
+
+  const TOP_BAR_H = insets.top + 54;
+  const { opacity, onScroll, scrollEventThrottle } = useScrollHeader(TOP_BAR_H);
   const [search, setSearch] = useState('');
 
   const channels = useMemo(() => getRooms(mode), [mode]);
@@ -44,11 +49,14 @@ export default function MessagesSearchScreen() {
   }, [search, channels, dms]);
 
   return (
-    <View style={[styles.container, { paddingTop: insets.top }]}>
-      <View style={styles.header}>
-        <Text style={styles.title}>Search</Text>
-      </View>
+    <View style={styles.container}>
+      <Animated.View style={[styles.topBar, { paddingTop: insets.top, opacity }]}>
+        <View style={styles.header}>
+          <Text style={styles.title}>Search</Text>
+        </View>
+      </Animated.View>
 
+      <View style={{ height: TOP_BAR_H }} />
       <View style={styles.searchWrap}>
         <IconSymbol name="magnifyingglass" size={16} color={C.secondary} />
         <TextInput
@@ -69,7 +77,10 @@ export default function MessagesSearchScreen() {
         )}
       </View>
 
-      <ScrollView style={styles.list} contentContainerStyle={{ paddingBottom: 100 }} showsVerticalScrollIndicator={false}>
+      <ScrollView style={styles.list} contentContainerStyle={{ paddingBottom: 100 }}
+        showsVerticalScrollIndicator={false}
+        onScroll={onScroll}
+        scrollEventThrottle={scrollEventThrottle}>
         {!results && (
           <View style={styles.hint}>
             <IconSymbol name="magnifyingglass" size={40} color={C.muted} />
@@ -137,6 +148,7 @@ export default function MessagesSearchScreen() {
 
 const makeStyles = (C: ComponentColors) => StyleSheet.create({
   container: { flex: 1, backgroundColor: C.bg },
+  topBar: { position: 'absolute', top: 0, left: 0, right: 0, zIndex: 10, backgroundColor: C.bg },
   header: { paddingHorizontal: 20, paddingTop: 8, paddingBottom: 8 },
   title: { fontSize: 28, fontWeight: '700', color: C.label },
   searchWrap: {

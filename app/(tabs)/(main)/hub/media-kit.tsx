@@ -6,19 +6,19 @@
 
 import React, { useMemo, useEffect } from 'react';
 import {
-  View, Text, Pressable, ScrollView, StyleSheet,
+  View, Text, Pressable, ScrollView, StyleSheet, Animated,
 } from 'react-native';
 import * as Haptics from 'expo-haptics';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { IconSymbol } from '@/components/ui/icon-symbol';
 import { useColors, type ComponentColors } from '@/hooks/use-colors';
+import { useScrollHeader } from '@/hooks/use-scroll-header';
 import { openSidePanel } from '@/utils/global-side-panel';
 import { useDemoRole } from '@/utils/demo-role-store';
 import { RolePill } from '@/components/ui/role-pill';
 import { resetFooter } from '@/utils/global-footer-hide';
 import { useFocusEffect, useRouter } from 'expo-router';
 import { useCallback } from 'react';
-import { KMenuButton } from '@/components/ui/k-menu-button';
 
 const GAIN    = '#5A8A6E';
 const TOP_H   = 44;
@@ -64,21 +64,6 @@ const RATES = [
   { service: 'Brand Ambassadorship', price: '$3,000/mo' },
 ];
 
-// ── Bar component ─────────────────────────────────────────────────────────────
-
-function AgeBar({ range, pct, C }: { range: string; pct: number; C: ComponentColors }) {
-  return (
-    <View style={{ marginBottom: 8 }}>
-      <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginBottom: 4 }}>
-        <Text style={{ fontSize: 12, color: C.secondary }}>{range}</Text>
-        <Text style={{ fontSize: 12, fontWeight: '600', color: C.label }}>{pct}%</Text>
-      </View>
-      <View style={{ height: 5, borderRadius: 3, backgroundColor: C.separator, overflow: 'hidden' }}>
-        <View style={{ width: `${pct}%` as any, height: 5, borderRadius: 3, backgroundColor: C.label }} />
-      </View>
-    </View>
-  );
-}
 
 // ── Component ─────────────────────────────────────────────────────────────────
 
@@ -98,6 +83,10 @@ export default function MediaKitScreen() {
   const topBarH        = insets.top + TOP_H;
   const contentPadTop  = topBarH + 8;
 
+  const { opacity, onScroll: handleScroll, scrollEventThrottle } = useScrollHeader(insets.top + TOP_H);
+
+
+
   useFocusEffect(useCallback(() => { resetFooter(); }, []));
 
   const haptic = () => Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
@@ -108,68 +97,59 @@ export default function MediaKitScreen() {
       {/* ── Content ── */}
       <ScrollView
         showsVerticalScrollIndicator={false}
-        contentContainerStyle={{ paddingTop: contentPadTop, paddingBottom: 40 }}
+        contentContainerStyle={{ paddingTop: contentPadTop, paddingBottom: insets.bottom + 65 }}
+        onScroll={handleScroll}
+        scrollEventThrottle={scrollEventThrottle}
       >
 
-        {/* ── Identity block ── */}
-        <View style={[s.card, { backgroundColor: C.surface, marginTop: 8 }]}>
-          <Text style={[s.creatorName, { color: C.label }]}>Sammy Kalejaiye</Text>
-          <Text style={[s.creatorHandle, { color: C.secondary }]}>@sammyk · Atlanta, GA</Text>
-          <Text style={[s.creatorBio, { color: C.secondary }]} numberOfLines={2}>
-            Building the operating system for institutions. Founder of KaNeXT. Sports · Education · Business · Community.
-          </Text>
+        {/* ── Compact profile header (no card) ── */}
+        <View style={{ flexDirection: 'row', alignItems: 'center', gap: 12, paddingHorizontal: 16, paddingTop: 12, paddingBottom: 14 }}>
+          <View style={{ width: 40, height: 40, borderRadius: 20, backgroundColor: C.separator, alignItems: 'center', justifyContent: 'center' }}>
+            <IconSymbol name="person.fill" size={20} color={C.secondary} />
+          </View>
+          <View style={{ flex: 1 }}>
+            <Text style={{ fontSize: 15, fontWeight: '700', color: C.label }}>Sammy Kalejaiye</Text>
+            <Text style={{ fontSize: 12, color: C.secondary, marginTop: 1 }}>@sammyk · Atlanta, GA</Text>
+          </View>
         </View>
 
-        {/* ── Stats ── */}
-        <View style={{ paddingHorizontal: 16, marginBottom: 12 }}>
-          <Text style={[s.sectionLabel, { color: C.secondary, marginBottom: 12 }]}>Audience Stats</Text>
-          <View style={s.statsGrid}>
-            {STATS.map(stat => (
-              <View key={stat.label} style={[s.statCard, { backgroundColor: C.surface }]}>
-                <Text style={[s.statValue, { color: C.label }]}>{stat.value}</Text>
-                <Text style={[s.statLabel, { color: C.secondary }]}>{stat.label}</Text>
+        {/* ── Stat strip ── */}
+        <View style={[s.card, { backgroundColor: C.surface, flexDirection: 'row', paddingVertical: 14 }]}>
+          {STATS.map((stat, idx) => (
+            <View key={stat.label} style={[s.statCell, idx > 0 && { borderLeftWidth: StyleSheet.hairlineWidth, borderLeftColor: C.separator }]}>
+              <Text style={[s.statValue, { color: C.label }]}>{stat.value}</Text>
+              <Text style={[s.statLabel, { color: C.secondary }]}>{stat.label}</Text>
+            </View>
+          ))}
+        </View>
+
+        {/* ── Audience snapshot ── */}
+        <View style={[s.card, { backgroundColor: C.surface }]}>
+          <Text style={[s.sectionLabel, { color: C.secondary }]}>Audience</Text>
+
+          {/* Top age brackets — compact tiles */}
+          <Text style={[s.fieldLabel, { color: C.muted, marginBottom: 8 }]}>Age</Text>
+          <View style={{ flexDirection: 'row', gap: 8, marginBottom: 16 }}>
+            {[...DEMOGRAPHICS.age].sort((a, b) => b.pct - a.pct).slice(0, 3).map(a => (
+              <View key={a.range} style={{ flex: 1, backgroundColor: C.bg, borderRadius: 10, paddingVertical: 10, alignItems: 'center' }}>
+                <Text style={{ fontSize: 16, fontWeight: '800', color: C.label }}>{a.pct}%</Text>
+                <Text style={{ fontSize: 11, color: C.secondary, marginTop: 2 }}>{a.range}</Text>
               </View>
             ))}
           </View>
-        </View>
 
-        {/* ── Demographics ── */}
-        <View style={[s.card, { backgroundColor: C.surface }]}>
-          <Text style={[s.sectionLabel, { color: C.secondary }]}>Demographics</Text>
+          {/* Gender — single line */}
+          <Text style={[s.fieldLabel, { color: C.muted, marginBottom: 6 }]}>Gender</Text>
+          <Text style={{ fontSize: 13, color: C.secondary, marginBottom: 16 }}>
+            {DEMOGRAPHICS.gender.male}% Male · {DEMOGRAPHICS.gender.female}% Female
+          </Text>
 
-          {/* Age */}
-          <Text style={[s.fieldLabel, { color: C.muted }]}>Age Breakdown</Text>
-          <View style={{ marginTop: 8, marginBottom: 14 }}>
-            {DEMOGRAPHICS.age.map(a => (
-              <AgeBar key={a.range} range={a.range} pct={a.pct} C={C} />
-            ))}
-          </View>
-
-          {/* Gender */}
-          <Text style={[s.fieldLabel, { color: C.muted }]}>Gender</Text>
-          <View style={{ height: 8, borderRadius: 4, flexDirection: 'row', overflow: 'hidden', marginTop: 6, marginBottom: 4 }}>
-            <View style={{ flex: DEMOGRAPHICS.gender.male, backgroundColor: C.label }} />
-            <View style={{ flex: DEMOGRAPHICS.gender.female, backgroundColor: C.separator }} />
-          </View>
-          <View style={{ flexDirection: 'row', gap: 16, marginBottom: 14 }}>
-            <View style={{ flexDirection: 'row', alignItems: 'center', gap: 5 }}>
-              <View style={{ width: 8, height: 8, borderRadius: 4, backgroundColor: C.label }} />
-              <Text style={{ fontSize: 12, color: C.secondary }}>Male {DEMOGRAPHICS.gender.male}%</Text>
-            </View>
-            <View style={{ flexDirection: 'row', alignItems: 'center', gap: 5 }}>
-              <View style={{ width: 8, height: 8, borderRadius: 4, backgroundColor: C.separator }} />
-              <Text style={{ fontSize: 12, color: C.secondary }}>Female {DEMOGRAPHICS.gender.female}%</Text>
-            </View>
-          </View>
-
-          {/* Locations */}
-          <Text style={[s.fieldLabel, { color: C.muted }]}>Top Locations</Text>
-          <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: 6, marginTop: 8 }}>
-            {DEMOGRAPHICS.locations.map((loc, i) => (
+          {/* Top locations */}
+          <Text style={[s.fieldLabel, { color: C.muted, marginBottom: 8 }]}>Top Locations</Text>
+          <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: 6 }}>
+            {DEMOGRAPHICS.locations.slice(0, 5).map((loc, i) => (
               <View key={loc} style={[s.locationPill, { backgroundColor: C.separator }]}>
-                <Text style={{ fontSize: 12, fontWeight: '600', color: C.label }}>
-                  {i + 1}. {loc}
-                </Text>
+                <Text style={{ fontSize: 12, fontWeight: '600', color: C.label }}>{i + 1}. {loc}</Text>
               </View>
             ))}
           </View>
@@ -179,9 +159,10 @@ export default function MediaKitScreen() {
         <View style={[s.card, { backgroundColor: C.surface }]}>
           <Text style={[s.sectionLabel, { color: C.secondary }]}>Top Content</Text>
           {TOP_CONTENT.map((item, idx) => (
-            <View
+            <Pressable
               key={item.title}
-              style={[s.contentRow, idx > 0 && { borderTopWidth: StyleSheet.hairlineWidth, borderTopColor: C.separator }]}
+              style={({ pressed }) => [s.contentRow, idx > 0 && { borderTopWidth: StyleSheet.hairlineWidth, borderTopColor: C.separator }, pressed && { opacity: 0.7 }]}
+              onPress={haptic}
             >
               <View style={[s.typeBadge, { backgroundColor: C.bg }]}>
                 <Text style={[s.typeText, { color: C.secondary }]}>{item.type}</Text>
@@ -190,7 +171,8 @@ export default function MediaKitScreen() {
                 <Text style={[s.contentTitle, { color: C.label }]} numberOfLines={1}>{item.title}</Text>
                 <Text style={[s.contentMeta, { color: C.secondary }]}>{item.metric} · {item.eng} eng</Text>
               </View>
-            </View>
+              <IconSymbol name="chevron.right" size={13} color={C.secondary} />
+            </Pressable>
           ))}
         </View>
 
@@ -198,9 +180,10 @@ export default function MediaKitScreen() {
         <View style={[s.card, { backgroundColor: C.surface }]}>
           <Text style={[s.sectionLabel, { color: C.secondary }]}>Past Partnerships</Text>
           {PARTNERSHIPS.map((p, idx) => (
-            <View
+            <Pressable
               key={p.brand}
-              style={[s.partnerRow, idx > 0 && { borderTopWidth: StyleSheet.hairlineWidth, borderTopColor: C.separator }]}
+              style={({ pressed }) => [s.partnerRow, idx > 0 && { borderTopWidth: StyleSheet.hairlineWidth, borderTopColor: C.separator }, pressed && { opacity: 0.7 }]}
+              onPress={haptic}
             >
               <View style={[s.partnerDot, { backgroundColor: GAIN }]} />
               <View style={{ flex: 1 }}>
@@ -208,7 +191,8 @@ export default function MediaKitScreen() {
                 <Text style={[s.partnerType, { color: C.secondary }]}>{p.type}</Text>
               </View>
               <Text style={[s.partnerYear, { color: C.muted }]}>{p.year}</Text>
-            </View>
+              <IconSymbol name="chevron.right" size={13} color={C.secondary} />
+            </Pressable>
           ))}
         </View>
 
@@ -229,8 +213,6 @@ export default function MediaKitScreen() {
 
         {/* ── Actions ── */}
         <View style={{ paddingHorizontal: 16, gap: 10, marginBottom: 16 }}>
-
-          {/* Primary row */}
           <View style={{ flexDirection: 'row', gap: 10 }}>
             <Pressable
               style={({ pressed }) => [s.actionBtn, { backgroundColor: C.label, flex: 1 }, pressed && { opacity: 0.8 }]}
@@ -255,7 +237,6 @@ export default function MediaKitScreen() {
             </Pressable>
           </View>
 
-          {/* Dipson bar */}
           <Pressable
             style={({ pressed }) => [s.dipsonBar, { backgroundColor: C.surface, borderColor: C.separator }, pressed && { opacity: 0.7 }]}
             onPress={haptic}
@@ -265,31 +246,27 @@ export default function MediaKitScreen() {
               Customize this kit for a specific brand with Dipson…
             </Text>
           </Pressable>
-
-          {/* Generate Video Kit */}
-          <Pressable
-            style={({ pressed }) => [s.videoBtn, { backgroundColor: C.surface, borderColor: C.separator }, pressed && { opacity: 0.7 }]}
-            onPress={haptic}
-          >
-            <IconSymbol name="video.fill" size={15} color={C.secondary} />
-            <Text style={[s.videoBtnText, { color: C.label }]}>Generate Video Kit</Text>
-          </Pressable>
-
         </View>
       </ScrollView>
 
       {/* ── Fixed Top Bar ── */}
-      <View style={[s.topBarWrap, { paddingTop: insets.top, backgroundColor: C.bg }]}>
-        <View style={s.topBar}>
-          <Pressable onPress={() => { haptic(); openSidePanel(); }} hitSlop={12} style={s.topBarSide}>
-            <KMenuButton />
-          </Pressable>
-          <Text style={[s.topBarTitle, { color: C.label }]}>Media Kit</Text>
-          <View style={[s.topBarSide, { alignItems: 'flex-end' }]}>
+      <Animated.View style={[s.topBarWrap, { paddingTop: insets.top, opacity }]} pointerEvents="box-none">
+        <View style={s.topBar} pointerEvents="box-none">
+          <View style={s.topBarSide} pointerEvents="auto">
+            <Pressable onPress={() => { haptic(); openSidePanel(); }} hitSlop={12}>
+              <Text style={{ fontSize: 20, fontWeight: '800', letterSpacing: -0.5, color: C.label }}>K</Text>
+            </Pressable>
+          </View>
+          <View style={{ flex: 1, alignItems: 'center' }} pointerEvents="none">
+            <View style={{ paddingHorizontal: 12, paddingVertical: 5, borderRadius: 14, borderWidth: 1, borderColor: C.separator, backgroundColor: C.surface }}>
+              <Text style={{ fontSize: 12, fontWeight: '600', letterSpacing: 0.3, color: C.label }}>Media Kit</Text>
+            </View>
+          </View>
+          <View style={[s.topBarSide, { alignItems: 'flex-end' }]} pointerEvents="auto">
             <RolePill role={role} onPress={cycleRole} isPrimary={isOwner} />
           </View>
         </View>
-      </View>
+      </Animated.View>
 
     </View>
   );
@@ -302,7 +279,7 @@ const makeStyles = (C: ComponentColors) => StyleSheet.create({
 
   topBarWrap:  { position: 'absolute', top: 0, left: 0, right: 0, zIndex: 100 },
   topBar:      { height: TOP_H, flexDirection: 'row', alignItems: 'center', paddingHorizontal: 16 },
-  topBarSide:  { minWidth: 44 },
+  topBarSide:  { width: 80, justifyContent: 'center' },
   topBarTitle: { flex: 1, textAlign: 'center', fontSize: 16, fontWeight: '700' },
 
   card: {
@@ -316,18 +293,10 @@ const makeStyles = (C: ComponentColors) => StyleSheet.create({
   },
   fieldLabel: { fontSize: 11, fontWeight: '600', letterSpacing: 0.4 },
 
-  creatorName:   { fontSize: 20, fontWeight: '800', marginBottom: 2 },
-  creatorHandle: { fontSize: 13, marginBottom: 8 },
-  creatorBio:    { fontSize: 13, lineHeight: 18 },
+  statCell: { flex: 1, alignItems: 'center', paddingHorizontal: 4 },
+  statValue: { fontSize: 17, fontWeight: '800', letterSpacing: -0.5 },
+  statLabel: { fontSize: 11, marginTop: 2, textAlign: 'center' },
 
-  statsGrid: { flexDirection: 'row', flexWrap: 'wrap', gap: 10 },
-  statCard: {
-    width: '47.5%', borderRadius: 14,
-    paddingVertical: 18, paddingHorizontal: 16,
-    alignItems: 'flex-start',
-  },
-  statValue: { fontSize: 28, fontWeight: '800', letterSpacing: -1 },
-  statLabel: { fontSize: 12, marginTop: 4 },
 
   locationPill: { paddingHorizontal: 10, paddingVertical: 5, borderRadius: 20 },
 
@@ -357,6 +326,4 @@ const makeStyles = (C: ComponentColors) => StyleSheet.create({
   },
   dipsonText: { flex: 1, fontSize: 13 },
 
-  videoBtn:     { flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 8, padding: 14, borderRadius: 12, borderWidth: StyleSheet.hairlineWidth },
-  videoBtnText: { fontSize: 14, fontWeight: '600' },
 });

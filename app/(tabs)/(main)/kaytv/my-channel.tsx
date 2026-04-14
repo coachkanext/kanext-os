@@ -5,7 +5,7 @@
  */
 
 import React, { useState, useMemo, useCallback } from 'react';
-import { View, Text, ScrollView, Pressable, StyleSheet, ActionSheetIOS, Platform, Alert } from 'react-native';
+import { View, Text, ScrollView, Pressable, StyleSheet, ActionSheetIOS, Platform, Alert, Animated } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useFocusEffect, useRouter } from 'expo-router';
 import * as Haptics from 'expo-haptics';
@@ -15,9 +15,12 @@ import { BottomSheet } from '@/components/ui/bottom-sheet';
 import { KMenuButton } from '@/components/ui/k-menu-button';
 import { RolePill } from '@/components/ui/role-pill';
 import { useColors, type ComponentColors } from '@/hooks/use-colors';
+import { useScrollHeader } from '@/hooks/use-scroll-header';
 import { openSidePanel } from '@/utils/global-side-panel';
 import { resetFooter } from '@/utils/global-footer-hide';
 import { useDemoRole } from '@/utils/demo-role-store';
+
+const TOP_BAR_H = 52;
 
 // ── Mock data ──────────────────────────────────────────────────────────────────
 
@@ -76,8 +79,9 @@ export default function MyChannelPage() {
   const [subscribed, setSubscribed] = useState(false);
   const [editAbout,  setEditAbout]  = useState(false);
 
+  const { opacity, onScroll, scrollEventThrottle } = useScrollHeader();
   const styles   = useMemo(() => makeStyles(C), [C]);
-  const topBarH  = insets.top + 52;
+  const topBarH  = insets.top + TOP_BAR_H;
 
   function handleVideoMore(video: typeof VIDEOS[0]) {
     if (Platform.OS === 'ios') {
@@ -294,8 +298,8 @@ export default function MyChannelPage() {
     <View style={{ flex: 1, backgroundColor: C.bg }}>
 
       {/* ── Top Bar ──────────────────────────────────────────────────────────── */}
-      <View style={{ paddingTop: insets.top, backgroundColor: C.bg }}>
-        <View style={{ flexDirection: 'row', alignItems: 'center', height: 52, paddingHorizontal: 4 }}>
+      <Animated.View style={{ position: 'absolute', top: 0, left: 0, right: 0, zIndex: 10, paddingTop: insets.top, backgroundColor: C.bg, borderBottomWidth: StyleSheet.hairlineWidth, borderBottomColor: C.separator, opacity }}>
+        <View style={{ height: TOP_BAR_H, flexDirection: 'row', alignItems: 'center', paddingHorizontal: 4 }}>
           <Pressable
             onPress={() => {
               Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
@@ -314,11 +318,13 @@ export default function MyChannelPage() {
             <RolePill role={role} onPress={cycleRole} accentColor={C.label} isPrimary={isOwner} />
           </View>
         </View>
-      </View>
+      </Animated.View>
 
       {/* ── Scroll Content ───────────────────────────────────────────────────── */}
       <ScrollView
-        contentContainerStyle={{ paddingBottom: 120 }}
+        onScroll={onScroll}
+        scrollEventThrottle={scrollEventThrottle}
+        contentContainerStyle={{ paddingTop: topBarH + 8, paddingBottom: 120 }}
         showsVerticalScrollIndicator={false}
       >
         {/* Channel cover */}

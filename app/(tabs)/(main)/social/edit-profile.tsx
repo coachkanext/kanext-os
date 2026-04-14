@@ -7,7 +7,7 @@
 import React, { useState, useCallback } from 'react';
 import {
   View, Text, TextInput, Pressable, ScrollView,
-  StyleSheet, Alert,
+  StyleSheet, Alert, Animated,
 } from 'react-native';
 import * as Haptics from 'expo-haptics';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
@@ -16,6 +16,7 @@ import { useRouter } from 'expo-router';
 import { IconSymbol } from '@/components/ui/icon-symbol';
 import { useColors } from '@/hooks/use-colors';
 import { useAppContext } from '@/context/app-context';
+import { useScrollHeader } from '@/hooks/use-scroll-header';
 
 const BIO_LIMIT = 160;
 const INITIAL_BIO = "Building the operating system for communities. Let's get to work.";
@@ -27,6 +28,7 @@ export default function EditProfileScreen() {
   const { state } = useAppContext();
   const mode = state.activeContext.mode;
 
+  const { opacity, onScroll, scrollEventThrottle } = useScrollHeader();
   const [bio, setBio] = useState(INITIAL_BIO);
   const [link, setLink] = useState('');
 
@@ -57,22 +59,25 @@ export default function EditProfileScreen() {
   return (
     <View style={[styles.screen, { backgroundColor: C.bg }]}>
 
-      {/* Nav bar */}
-      <View style={[styles.navBar, { paddingTop: insets.top + 6, borderBottomColor: C.separator }]}>
-        <Pressable style={styles.navSide} onPress={handleCancel} hitSlop={8}>
-          <Text style={[styles.navCancel, { color: C.label }]}>Cancel</Text>
-        </Pressable>
-        <Text style={[styles.navTitle, { color: C.label }]}>Edit Profile</Text>
-        <Pressable style={[styles.navSide, { alignItems: 'flex-end' }]} onPress={handleSave} hitSlop={8}>
-          <Text style={[styles.navSave, { color: C.accent }]}>Save</Text>
-        </Pressable>
-      </View>
-
+      <Animated.View style={[styles.topBarOuter, { paddingTop: insets.top + 6, backgroundColor: C.bg, borderBottomColor: C.separator, borderBottomWidth: StyleSheet.hairlineWidth, opacity }]}>
+        <View style={styles.navBarInner}>
+          <Pressable style={styles.navSide} onPress={handleCancel} hitSlop={8}>
+            <Text style={[styles.navCancel, { color: C.label }]}>Cancel</Text>
+          </Pressable>
+          <Text style={[styles.navTitle, { color: C.label }]}>Edit Profile</Text>
+          <Pressable style={[styles.navSide, { alignItems: 'flex-end' }]} onPress={handleSave} hitSlop={8}>
+            <Text style={[styles.navSave, { color: C.accent }]}>Save</Text>
+          </Pressable>
+        </View>
+      </Animated.View>
       <ScrollView
         showsVerticalScrollIndicator={false}
         keyboardShouldPersistTaps="handled"
-        contentContainerStyle={[styles.body, { paddingBottom: insets.bottom + 48 }]}
+        contentContainerStyle={[styles.body, { paddingTop: insets.top + 6 + 56 + 8, paddingBottom: insets.bottom + 48 }]}
+        onScroll={onScroll}
+        scrollEventThrottle={scrollEventThrottle}
       >
+
         {/* ── Avatar ── */}
         <View style={styles.avatarSection}>
           <Pressable
@@ -183,12 +188,12 @@ const styles = StyleSheet.create({
   screen: { flex: 1 },
 
   // Nav
-  navBar: {
+  topBarOuter: { position: 'absolute', top: 0, left: 0, right: 0, zIndex: 10 },
+  navBarInner: {
+    height: 56,
     flexDirection: 'row',
-    alignItems: 'flex-end',
+    alignItems: 'center',
     paddingHorizontal: 8,
-    paddingBottom: 12,
-    borderBottomWidth: StyleSheet.hairlineWidth,
   },
   navSide: { width: 80, paddingHorizontal: 8 },
   navCancel: { fontSize: 16 },
@@ -196,7 +201,7 @@ const styles = StyleSheet.create({
   navSave: { fontSize: 16, fontWeight: '600' },
 
   // Body
-  body: { paddingTop: 32, gap: 28 },
+  body: { gap: 28 },
 
   // Avatar
   avatarSection: { alignItems: 'center', gap: 10 },

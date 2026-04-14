@@ -5,7 +5,7 @@
 
 import React, { useState, useMemo } from 'react';
 import {
-  View, Text, Pressable, ScrollView, StyleSheet, Image, useWindowDimensions,
+  View, Text, Pressable, ScrollView, StyleSheet, Image, useWindowDimensions, Animated,
 } from 'react-native';
 import * as Haptics from 'expo-haptics';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
@@ -13,6 +13,7 @@ import { useRouter } from 'expo-router';
 
 import { IconSymbol } from '@/components/ui/icon-symbol';
 import { useColors, type ComponentColors } from '@/hooks/use-colors';
+import { useScrollHeader } from '@/hooks/use-scroll-header';
 
 // ── Data ──────────────────────────────────────────────────────────────────────
 
@@ -210,11 +211,9 @@ export default function SocialAnalyticsScreen() {
   const C = useColors();
   const insets = useSafeAreaInsets();
   const router = useRouter();
+  const { opacity, onScroll, scrollEventThrottle } = useScrollHeader();
   const [period, setPeriod] = useState<Period>('30d');
   const [contentSort, setContentSort] = useState<'reach' | 'engagement'>('reach');
-
-  const TOP_BAR_H = 52;
-  const topBarH = insets.top + TOP_BAR_H;
 
   const overview  = OVERVIEW[period];
   const followers = FOLLOWERS[period];
@@ -234,21 +233,20 @@ export default function SocialAnalyticsScreen() {
 
   return (
     <View style={{ flex: 1, backgroundColor: C.bg }}>
-      {/* Top bar */}
-      <View style={{ height: topBarH, paddingTop: insets.top, flexDirection: 'row', alignItems: 'flex-end', paddingHorizontal: 16, paddingBottom: 8, backgroundColor: C.bg, borderBottomWidth: StyleSheet.hairlineWidth, borderBottomColor: C.separator }}>
-        <Pressable onPress={() => { Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light); router.back(); }} style={{ width: 40, height: 36, alignItems: 'center', justifyContent: 'center' }}>
-          <IconSymbol name="chevron.left" size={22} color={C.label} />
-        </Pressable>
-        <View style={{ flex: 1, alignItems: 'center' }}>
-          <View style={{ backgroundColor: C.label, borderRadius: 18, paddingHorizontal: 14, paddingVertical: 5 }}>
-            <Text style={{ fontSize: 14, fontWeight: '700', color: C.bg }}>Analytics</Text>
+      <Animated.View style={{ position: 'absolute', top: 0, left: 0, right: 0, zIndex: 10, paddingTop: insets.top, backgroundColor: C.bg, borderBottomWidth: StyleSheet.hairlineWidth, borderBottomColor: C.separator, opacity }}>
+        <View style={{ height: 52, flexDirection: 'row', alignItems: 'center', paddingHorizontal: 16 }}>
+          <Pressable onPress={() => { Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light); router.back(); }} style={{ width: 40, height: 36, alignItems: 'center', justifyContent: 'center' }}>
+            <IconSymbol name="chevron.left" size={22} color={C.label} />
+          </Pressable>
+          <View style={{ flex: 1, alignItems: 'center' }}>
+            <View style={{ backgroundColor: C.surface, borderRadius: 18, paddingHorizontal: 14, paddingVertical: 5, borderWidth: StyleSheet.hairlineWidth, borderColor: C.separator }}>
+              <Text style={{ fontSize: 14, fontWeight: '700', color: C.label }}>Analytics</Text>
+            </View>
           </View>
+          <View style={{ width: 40 }} />
         </View>
-        <View style={{ width: 40 }} />
-      </View>
-
-      <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={{ paddingBottom: 120 }}>
-
+      </Animated.View>
+      <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={{ paddingTop: insets.top + 52 + 8, paddingBottom: 120 }} onScroll={onScroll} scrollEventThrottle={scrollEventThrottle}>
         {/* Period pills — global toggle */}
         <PeriodPills period={period} onChange={setPeriod} C={C} />
 

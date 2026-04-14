@@ -5,7 +5,7 @@
  * Gesture system (only Home and Nexus have multi-gesture):
  *   Home (1)    — tap → Home screen · hold → Brand Drawer
  *   Phone (2)   — tap → Phone page
- *   Nexus (3)   — tap → full Nexus chat · double-tap → half-screen overlay · hold → voice mode
+ *   Nexus (3)   — tap → full Nexus chat · double-tap → Dipson half-sheet · hold → voice mode
  *   Messages (4)— tap → Messages page
  *   Pulse (5)   — tap → Pulse page · badge = unread count
  */
@@ -18,7 +18,8 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useRouter, usePathname } from 'expo-router';
 import * as Haptics from 'expo-haptics';
 
-import { openSplitNexus, closeSplitNexus, isSplitNexusOpen } from '@/utils/global-split-nexus';
+import { closeSplitNexus, isSplitNexusOpen } from '@/utils/global-split-nexus';
+import { openDipsonSheet } from '@/utils/global-dipson-sheet';
 import { startGlobalVoice } from '@/utils/global-voice';
 import { openOrgDrawer } from '@/utils/global-org-drawer';
 import { openModeSwitcher } from '@/utils/global-mode-switcher';
@@ -75,14 +76,11 @@ export function UniversalFooter() {
     const now = Date.now();
 
     if (now - lastTapRef.current < 300) {
-      // Double tap → Split Nexus overlay
+      // Double tap → Dipson half-sheet
       lastTapRef.current = 0;
       Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
-      if (isSplitNexusOpen()) {
-        closeSplitNexus();
-      } else {
-        openSplitNexus();
-      }
+      if (isSplitNexusOpen()) closeSplitNexus();
+      openDipsonSheet();
       return;
     }
     lastTapRef.current = now;

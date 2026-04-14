@@ -7,7 +7,7 @@
 import React, { useState, useMemo } from 'react';
 import {
   View, Text, Pressable, ScrollView, StyleSheet,
-  useWindowDimensions,
+  useWindowDimensions, Animated,
 } from 'react-native';
 import * as Haptics from 'expo-haptics';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
@@ -15,6 +15,7 @@ import { useRouter, useLocalSearchParams } from 'expo-router';
 
 import { IconSymbol } from '@/components/ui/icon-symbol';
 import { useColors } from '@/hooks/use-colors';
+import { useScrollHeader } from '@/hooks/use-scroll-header';
 import { getFeedPosts, type FeedPost } from '@/data/mock-social';
 import type { Mode } from '@/types';
 
@@ -100,6 +101,7 @@ export default function BrandProfileScreen() {
   const insets = useSafeAreaInsets();
   const C      = useColors();
   const { width } = useWindowDimensions();
+  const { opacity, onScroll, scrollEventThrottle } = useScrollHeader();
 
   const [activeTab, setActiveTab] = useState<BrandTab>('posts');
   const [following, setFollowing] = useState(false);
@@ -130,24 +132,26 @@ export default function BrandProfileScreen() {
 
   return (
     <View style={[styles.root, { backgroundColor: C.bg }]}>
-      {/* Header */}
-      <View style={[styles.header, { paddingTop: insets.top + 6, borderBottomColor: C.separator }]}>
-        <Pressable
-          style={styles.backBtn}
-          onPress={() => {
-            Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
-            router.back();
-          }}
-        >
-          <IconSymbol name="chevron.left" size={20} color={C.label} />
-        </Pressable>
-        <Text style={[styles.headerTitle, { color: C.label }]}>{brand}</Text>
-        <View style={styles.backBtn} />
-      </View>
-
+      <Animated.View style={[styles.topBarOuter, { paddingTop: insets.top + 6, backgroundColor: C.bg, borderBottomColor: C.separator, borderBottomWidth: StyleSheet.hairlineWidth, opacity }]}>
+        <View style={styles.headerInner}>
+          <Pressable
+            style={styles.backBtn}
+            onPress={() => {
+              Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+              router.back();
+            }}
+          >
+            <IconSymbol name="chevron.left" size={20} color={C.label} />
+          </Pressable>
+          <Text style={[styles.headerTitle, { color: C.label }]}>{brand}</Text>
+          <View style={styles.backBtn} />
+        </View>
+      </Animated.View>
       <ScrollView
         showsVerticalScrollIndicator={false}
-        contentContainerStyle={{ paddingBottom: 60 }}
+        contentContainerStyle={{ paddingTop: insets.top + 6 + 56 + 8, paddingBottom: 60 }}
+        onScroll={onScroll}
+        scrollEventThrottle={scrollEventThrottle}
       >
         {/* Brand avatar + stats */}
         <View style={styles.topRow}>
@@ -313,12 +317,12 @@ export default function BrandProfileScreen() {
 
 const styles = StyleSheet.create({
   root:    { flex: 1 },
-  header: {
+  topBarOuter: { position: 'absolute', top: 0, left: 0, right: 0, zIndex: 10 },
+  headerInner: {
+    height: 56,
     flexDirection: 'row',
     alignItems: 'center',
     paddingHorizontal: 8,
-    paddingBottom: 12,
-    borderBottomWidth: StyleSheet.hairlineWidth,
   },
   backBtn:     { width: 44, height: 44, alignItems: 'center', justifyContent: 'center' },
   headerTitle: { flex: 1, fontSize: 17, fontWeight: '600', textAlign: 'center' },

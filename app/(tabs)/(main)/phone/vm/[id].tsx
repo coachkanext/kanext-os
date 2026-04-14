@@ -16,8 +16,11 @@ import * as Haptics from 'expo-haptics';
 import { IconSymbol } from '@/components/ui/icon-symbol';
 import { BottomSheet } from '@/components/ui/bottom-sheet';
 import { useColors, type ComponentColors } from '@/hooks/use-colors';
+import { useScrollHeader } from '@/hooks/use-scroll-header';
 import { useMode } from '@/context/app-context';
 import { VOICEMAILS, PHONE_CONTACTS, type PhoneContact } from '@/data/mock-phone';
+
+const TOP_BAR_H = 52;
 
 // ── Mock audio player ─────────────────────────────────────────────────────────
 
@@ -153,6 +156,7 @@ export default function VoicemailDetailScreen() {
   const insets = useSafeAreaInsets();
   const C = useColors();
   const styles = useMemo(() => makeStyles(C), [C]);
+  const { opacity, onScroll, scrollEventThrottle } = useScrollHeader();
   const mode = useMode();
 
   const [profileSheetVisible, setProfileSheetVisible] = useState(false);
@@ -176,28 +180,30 @@ export default function VoicemailDetailScreen() {
 
   return (
     <View style={[styles.root, { backgroundColor: C.bg }]}>
+      {/* Top bar: back ← ···title··· callback → */}
+      <Animated.View style={[styles.topBar, { paddingTop: insets.top + 8, backgroundColor: C.bg, opacity }]}>
+        <Pressable
+          style={[styles.backBtn, { backgroundColor: C.surfacePressed }]}
+          onPress={() => router.back()}
+          hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
+        >
+          <IconSymbol name="chevron.left" size={20} color={C.label} />
+        </Pressable>
+
+        <Pressable
+          style={[styles.callbackBtn, { backgroundColor: C.green }]}
+          onPress={() => Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium)}
+        >
+          <IconSymbol name="phone.fill" size={18} color="#FFFFFF" />
+        </Pressable>
+      </Animated.View>
+
       <ScrollView
         showsVerticalScrollIndicator={false}
-        contentContainerStyle={{ paddingBottom: insets.bottom + 40 }}
+        onScroll={onScroll}
+        scrollEventThrottle={scrollEventThrottle}
+        contentContainerStyle={{ paddingTop: insets.top + TOP_BAR_H, paddingBottom: insets.bottom + 40 }}
       >
-        {/* Top bar: back ← ···title··· callback → */}
-        <View style={[styles.topBar, { paddingTop: insets.top + 8 }]}>
-          <Pressable
-            style={[styles.backBtn, { backgroundColor: C.surfacePressed }]}
-            onPress={() => router.back()}
-            hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
-          >
-            <IconSymbol name="chevron.left" size={20} color={C.label} />
-          </Pressable>
-
-          <Pressable
-            style={[styles.callbackBtn, { backgroundColor: C.green }]}
-            onPress={() => Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium)}
-          >
-            <IconSymbol name="phone.fill" size={18} color="#FFFFFF" />
-          </Pressable>
-        </View>
-
         {/* Hero */}
         <View style={styles.hero}>
           {isKnown && (
@@ -273,6 +279,7 @@ const makeStyles = (C: ComponentColors) => StyleSheet.create({
 
   // Top bar
   topBar: {
+    position: 'absolute', top: 0, left: 0, right: 0, zIndex: 10,
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',

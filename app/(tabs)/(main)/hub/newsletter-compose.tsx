@@ -4,7 +4,7 @@
 
 import React, { useState, useCallback } from 'react';
 import {
-  View, Text, TextInput, Pressable, ScrollView, StyleSheet,
+  View, Text, TextInput, Pressable, ScrollView, StyleSheet, Animated,
 } from 'react-native';
 import * as Haptics from 'expo-haptics';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
@@ -13,6 +13,9 @@ import { useRouter } from 'expo-router';
 import { IconSymbol } from '@/components/ui/icon-symbol';
 import { useColors } from '@/hooks/use-colors';
 import { HUB_TIERS } from '@/data/mock-hub';
+import { useScrollHeader } from '@/hooks/use-scroll-header';
+
+const TOP_BAR_H = 44;
 
 type ToOption = 'All Subscribers' | 'Free' | 'Supporter' | 'Inner Circle';
 
@@ -22,7 +25,7 @@ export default function NewsletterComposeScreen() {
   const C = useColors();
   const insets = useSafeAreaInsets();
   const router = useRouter();
-
+  const { opacity, onScroll, scrollEventThrottle } = useScrollHeader();
   const [toTier, setToTier] = useState<ToOption>('All Subscribers');
   const [toDropdownOpen, setToDropdownOpen] = useState(false);
   const [subject, setSubject] = useState('');
@@ -43,9 +46,8 @@ export default function NewsletterComposeScreen() {
 
   return (
     <View style={[styles.screen, { backgroundColor: C.bg }]}>
-      {/* Top Bar */}
-      <View style={[styles.topBar, { paddingTop: insets.top, borderBottomColor: C.separator, backgroundColor: C.bg }]}>
-        <View style={styles.topBarInner}>
+      <Animated.View style={[styles.topBarOuter, { paddingTop: insets.top, backgroundColor: C.bg, borderBottomColor: C.separator, borderBottomWidth: StyleSheet.hairlineWidth, opacity }]}>
+        <View style={styles.topBar}>
           <Pressable
             onPress={() => { Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light); router.back(); }}
             style={styles.backBtn}
@@ -62,11 +64,12 @@ export default function NewsletterComposeScreen() {
             <Text style={styles.sendBtnText}>{scheduled ? 'Schedule' : 'Send'}</Text>
           </Pressable>
         </View>
-      </View>
-
+      </Animated.View>
       <ScrollView
+        onScroll={onScroll}
+        scrollEventThrottle={scrollEventThrottle}
         style={styles.scroll}
-        contentContainerStyle={[styles.scrollContent, { paddingBottom: insets.bottom + 40 }]}
+        contentContainerStyle={[styles.scrollContent, { paddingTop: insets.top + TOP_BAR_H + 8, paddingBottom: insets.bottom + 40 }]}
         keyboardShouldPersistTaps="handled"
       >
         {/* To field */}
@@ -191,10 +194,8 @@ export default function NewsletterComposeScreen() {
 const styles = StyleSheet.create({
   screen: { flex: 1 },
 
-  topBar: { borderBottomWidth: StyleSheet.hairlineWidth },
-  topBarInner: {
-    height: 52, flexDirection: 'row', alignItems: 'center', paddingHorizontal: 16,
-  },
+  topBarOuter: { position: 'absolute', top: 0, left: 0, right: 0, zIndex: 10, borderBottomWidth: StyleSheet.hairlineWidth },
+  topBar: { height: TOP_BAR_H, flexDirection: 'row', alignItems: 'center', paddingHorizontal: 16 },
   backBtn: { flexDirection: 'row', alignItems: 'center', gap: 4, minWidth: 60 },
   backText: { fontSize: 16 },
   topBarTitle: { flex: 1, fontSize: 16, fontWeight: '700', textAlign: 'center' },
@@ -205,7 +206,7 @@ const styles = StyleSheet.create({
   sendBtnText: { color: '#fff', fontWeight: '700', fontSize: 14 },
 
   scroll: { flex: 1 },
-  scrollContent: { paddingTop: 8 },
+  scrollContent: {},
 
   fieldRow: {
     flexDirection: 'row', alignItems: 'center',

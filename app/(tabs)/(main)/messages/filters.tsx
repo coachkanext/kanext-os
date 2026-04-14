@@ -10,11 +10,13 @@ import {
   Switch,
   ScrollView,
   StyleSheet,
+  Animated,
 } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { useAccentColor } from '@/hooks/use-accent-color';
 import { useColors, type ComponentColors } from '@/hooks/use-colors';
+import { useScrollHeader } from '@/hooks/use-scroll-header';
 import {
   setMessageFilter,
   getMessageFilters,
@@ -34,6 +36,9 @@ export default function FiltersScreen() {
   const accent = useAccentColor();
   const C = useColors();
   const styles = useMemo(() => makeStyles(C), [C]);
+
+  const TOP_BAR_H = insets.top + 54;
+  const { opacity, onScroll, scrollEventThrottle } = useScrollHeader(TOP_BAR_H);
   const [filters, setFilters] = useState(getMessageFilters);
 
   const toggleFilter = useCallback((key: MessageFilterKey) => {
@@ -56,17 +61,22 @@ export default function FiltersScreen() {
   const activeCount = Object.values(filters).filter(Boolean).length;
 
   return (
-    <View style={[styles.container, { paddingTop: insets.top }]}>
-      <View style={styles.header}>
-        <Text style={styles.title}>Filters</Text>
-        {activeCount > 0 && (
-          <View style={[styles.countBadge, { backgroundColor: accent }]}>
-            <Text style={styles.countText}>{activeCount}</Text>
-          </View>
-        )}
-      </View>
+    <View style={styles.container}>
+      <Animated.View style={[styles.topBar, { paddingTop: insets.top, opacity }]}>
+        <View style={styles.header}>
+          <Text style={styles.title}>Filters</Text>
+          {activeCount > 0 && (
+            <View style={[styles.countBadge, { backgroundColor: accent }]}>
+              <Text style={styles.countText}>{activeCount}</Text>
+            </View>
+          )}
+        </View>
+      </Animated.View>
 
-      <ScrollView style={styles.list} contentContainerStyle={{ paddingBottom: 100 }} showsVerticalScrollIndicator={false}>
+      <ScrollView style={styles.list} contentContainerStyle={{ paddingTop: TOP_BAR_H, paddingBottom: 100 }}
+        showsVerticalScrollIndicator={false}
+        onScroll={onScroll}
+        scrollEventThrottle={scrollEventThrottle}>
         {FILTER_OPTIONS.map((opt) => (
           <View key={opt.key} style={styles.filterRow}>
             <View style={styles.filterInfo}>
@@ -94,6 +104,7 @@ export default function FiltersScreen() {
 
 const makeStyles = (C: ComponentColors) => StyleSheet.create({
   container: { flex: 1, backgroundColor: C.bg },
+  topBar: { position: 'absolute', top: 0, left: 0, right: 0, zIndex: 10, backgroundColor: C.bg },
   header: { flexDirection: 'row', alignItems: 'center', paddingHorizontal: 20, paddingTop: 8, paddingBottom: 12, gap: 10 },
   title: { fontSize: 28, fontWeight: '700', color: C.label },
   countBadge: { width: 24, height: 24, borderRadius: 12, alignItems: 'center', justifyContent: 'center' },

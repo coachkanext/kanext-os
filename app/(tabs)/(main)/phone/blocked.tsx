@@ -9,7 +9,9 @@ import {
   Pressable,
   ScrollView,
   StyleSheet,
+  Animated,
 } from 'react-native';
+import { useScrollHeader } from '@/hooks/use-scroll-header';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import * as Haptics from 'expo-haptics';
 
@@ -23,11 +25,14 @@ const BLOCKED = [
   { id: 'b2', name: 'Spam Likely', number: '+1 (555) 999-0000', initials: 'S' },
 ];
 
+const TOP_BAR_H = 56;
+
 export default function BlockedScreen() {
   const insets = useSafeAreaInsets();
   const accent = useAccentColor();
   const C = useColors();
   const styles = useMemo(() => makeStyles(C), [C]);
+  const { opacity, onScroll, scrollEventThrottle } = useScrollHeader();
   const [blocked, setBlocked] = useState(BLOCKED);
 
   const unblock = (id: string) => {
@@ -36,12 +41,19 @@ export default function BlockedScreen() {
   };
 
   return (
-    <View style={[styles.container, { paddingTop: insets.top }]}>
-      <View style={styles.header}>
-        <Text style={styles.title}>Blocked</Text>
-      </View>
-
-      <ScrollView style={styles.list} contentContainerStyle={{ paddingBottom: 100 }} showsVerticalScrollIndicator={false}>
+    <View style={[styles.container]}>
+      <Animated.View style={[styles.topBar, { paddingTop: insets.top, opacity }]}>
+        <View style={styles.header}>
+          <Text style={styles.title}>Blocked</Text>
+        </View>
+      </Animated.View>
+      <ScrollView
+        onScroll={onScroll}
+        scrollEventThrottle={scrollEventThrottle}
+        style={styles.list}
+        contentContainerStyle={{ paddingTop: insets.top + TOP_BAR_H, paddingBottom: 100 }}
+        showsVerticalScrollIndicator={false}
+      >
         {/* Add button */}
         <Pressable style={styles.addRow} onPress={() => Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light)}>
           <IconSymbol name="plus.circle.fill" size={20} color={accent} />
@@ -79,7 +91,8 @@ export default function BlockedScreen() {
 
 const makeStyles = (C: ComponentColors) => StyleSheet.create({
   container: { flex: 1, backgroundColor: C.bg },
-  header: { paddingHorizontal: 20, paddingTop: 8, paddingBottom: 12 },
+  topBar: { position: 'absolute', top: 0, left: 0, right: 0, zIndex: 10, backgroundColor: C.bg },
+  header: { paddingHorizontal: 20, paddingBottom: 12, paddingTop: 8 },
   title: { fontSize: 28, fontWeight: '700', color: C.label },
   list: { flex: 1 },
   addRow: { flexDirection: 'row', alignItems: 'center', gap: 10, paddingHorizontal: 20, paddingVertical: 14 },

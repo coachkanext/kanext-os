@@ -15,6 +15,7 @@ import {
   Image,
   StyleSheet,
   useWindowDimensions,
+  Animated,
 } from 'react-native';
 import * as Haptics from 'expo-haptics';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
@@ -23,6 +24,7 @@ import { IconSymbol } from '@/components/ui/icon-symbol';
 import { KMenuButton } from '@/components/ui/k-menu-button';
 import { openSidePanel } from '@/utils/global-side-panel';
 import { useColors, type ComponentColors } from '@/hooks/use-colors';
+import { useScrollHeader } from '@/hooks/use-scroll-header';
 
 // ---------------------------------------------------------------------------
 // Mock data
@@ -541,9 +543,8 @@ export default function SocialExplorePage() {
   const { width: SCREEN_W } = useWindowDimensions();
   const [query, setQuery] = useState('');
   const inputRef = useRef<TextInput>(null);
+  const { opacity, onScroll, scrollEventThrottle } = useScrollHeader();
 
-  const TOP_BAR_H = 52;
-  const topBarH = insets.top + TOP_BAR_H;
   // 3 columns with 1px gaps between them (2 gaps total)
   const CELL = Math.floor((SCREEN_W - 2) / 3);
 
@@ -551,95 +552,75 @@ export default function SocialExplorePage() {
 
   return (
     <View style={{ flex: 1, backgroundColor: C.bg }}>
-      {/* Top bar */}
-      <View
+      {/* Shared animated top bar */}
+      <Animated.View
         style={{
-          height: topBarH,
+          position: 'absolute', top: 0, left: 0, right: 0, zIndex: 10,
           paddingTop: insets.top,
-          flexDirection: 'row',
-          alignItems: 'flex-end',
-          paddingHorizontal: 16,
-          paddingBottom: 8,
           backgroundColor: C.bg,
           borderBottomWidth: StyleSheet.hairlineWidth,
           borderBottomColor: C.separator,
+          opacity,
         }}
       >
-        <Pressable
-          onPress={() => {
-            Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
-            openSidePanel();
-          }}
-          style={{ width: 40, height: 36, alignItems: 'center', justifyContent: 'center' }}
-        >
-          <KMenuButton />
-        </Pressable>
-        <View style={{ flex: 1, alignItems: 'center' }}>
-          <View
-            style={{
-              backgroundColor: C.label,
-              borderRadius: 18,
-              paddingHorizontal: 14,
-              paddingVertical: 5,
+        <View style={{ height: 52, flexDirection: 'row', alignItems: 'center', paddingHorizontal: 16 }}>
+          <Pressable
+            onPress={() => {
+              Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+              openSidePanel();
             }}
+            style={{ width: 40, height: 36, alignItems: 'center', justifyContent: 'center' }}
           >
-            <Text style={{ fontSize: 14, fontWeight: '700', color: C.bg }}>Explore</Text>
+            <KMenuButton />
+          </Pressable>
+          <View style={{ flex: 1, alignItems: 'center' }}>
+            <View style={{ backgroundColor: C.label, borderRadius: 18, paddingHorizontal: 14, paddingVertical: 5 }}>
+              <Text style={{ fontSize: 14, fontWeight: '700', color: C.bg }}>Explore</Text>
+            </View>
           </View>
+          <View style={{ width: 40 }} />
         </View>
-        {/* Spacer to balance the back button */}
-        <View style={{ width: 40 }} />
-      </View>
-
-      {/* Search bar */}
-      <View
-        style={{
-          paddingHorizontal: 16,
-          paddingVertical: 10,
-          borderBottomWidth: StyleSheet.hairlineWidth,
-          borderBottomColor: C.separator,
-        }}
-      >
-        <View
-          style={{
-            flexDirection: 'row',
-            alignItems: 'center',
-            backgroundColor: C.surface,
-            borderRadius: 10,
-            borderWidth: StyleSheet.hairlineWidth,
-            borderColor: C.separator,
-            paddingHorizontal: 12,
-            height: 38,
-            gap: 8,
-          }}
-        >
-          <IconSymbol name="magnifyingglass" size={14} color={C.secondary} />
-          <TextInput
-            ref={inputRef}
-            value={query}
-            onChangeText={setQuery}
-            placeholder="Search creators, brands, content, #tags"
-            placeholderTextColor={C.muted}
-            style={{ flex: 1, fontSize: 14, color: C.label }}
-            returnKeyType="search"
-            autoCapitalize="none"
-            autoCorrect={false}
-          />
-          {query.length > 0 && (
-            <Pressable onPress={() => setQuery('')}>
-              <IconSymbol name="xmark.circle.fill" size={16} color={C.secondary} />
-            </Pressable>
-          )}
-        </View>
-      </View>
+      </Animated.View>
 
       {/* Content — search results or default discovery view */}
       {isSearching ? (
-        <SearchResults query={query} C={C} />
+        <>
+          {/* Spacer to clear the top bar */}
+          <View style={{ height: insets.top + 52 }} />
+          {/* Search bar */}
+          <View style={{ paddingHorizontal: 16, paddingVertical: 10, borderBottomWidth: StyleSheet.hairlineWidth, borderBottomColor: C.separator, backgroundColor: C.bg }}>
+            <View style={{ flexDirection: 'row', alignItems: 'center', backgroundColor: C.surface, borderRadius: 10, borderWidth: StyleSheet.hairlineWidth, borderColor: C.separator, paddingHorizontal: 12, height: 38, gap: 8 }}>
+              <IconSymbol name="magnifyingglass" size={14} color={C.secondary} />
+              <TextInput ref={inputRef} value={query} onChangeText={setQuery} placeholder="Search creators, brands, content, #tags" placeholderTextColor={C.muted} style={{ flex: 1, fontSize: 14, color: C.label }} returnKeyType="search" autoCapitalize="none" autoCorrect={false} />
+              {query.length > 0 && (
+                <Pressable onPress={() => setQuery('')}>
+                  <IconSymbol name="xmark.circle.fill" size={16} color={C.secondary} />
+                </Pressable>
+              )}
+            </View>
+          </View>
+          <SearchResults query={query} C={C} />
+        </>
       ) : (
         <ScrollView
           showsVerticalScrollIndicator={false}
-          contentContainerStyle={{ paddingBottom: 120 }}
+          contentContainerStyle={{ paddingTop: insets.top + 52 + 8, paddingBottom: 120 }}
+          onScroll={onScroll}
+          scrollEventThrottle={scrollEventThrottle}
         >
+          {/* Search bar */}
+          <View style={{ paddingHorizontal: 16, paddingVertical: 10, borderBottomWidth: StyleSheet.hairlineWidth, borderBottomColor: C.separator }}>
+            <View style={{ flexDirection: 'row', alignItems: 'center', backgroundColor: C.surface, borderRadius: 10, borderWidth: StyleSheet.hairlineWidth, borderColor: C.separator, paddingHorizontal: 12, height: 38, gap: 8 }}>
+              <IconSymbol name="magnifyingglass" size={14} color={C.secondary} />
+              <TextInput ref={inputRef} value={query} onChangeText={setQuery} placeholder="Search creators, brands, content, #tags" placeholderTextColor={C.muted} style={{ flex: 1, fontSize: 14, color: C.label }} returnKeyType="search" autoCapitalize="none" autoCorrect={false} />
+              {query.length > 0 && (
+                <Pressable onPress={() => setQuery('')}>
+                  <IconSymbol name="xmark.circle.fill" size={16} color={C.secondary} />
+                </Pressable>
+              )}
+            </View>
+          </View>
+
           <GridSection tiles={GRID_TILES} CELL={CELL} C={C} />
           <View style={{ height: StyleSheet.hairlineWidth, backgroundColor: C.separator }} />
           <SuggestedCreatorsRow C={C} />

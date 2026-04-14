@@ -10,7 +10,7 @@
 import React, { useState, useCallback, useMemo, useRef, useEffect } from 'react';
 import {
   View, Text, Pressable, FlatList, ScrollView, TextInput,
-  StyleSheet, useWindowDimensions, Animated,
+  StyleSheet, useWindowDimensions, Animated, Image,
 } from 'react-native';
 import * as Haptics from 'expo-haptics';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
@@ -25,12 +25,14 @@ import { openSidePanel } from '@/utils/global-side-panel';
 import { useDemoRole, MODE_ACCENTS } from '@/utils/demo-role-store';
 import { useDataMode } from '@/utils/global-demo-mode';
 import { KMenuButton } from '@/components/ui/k-menu-button';
+import { useScrollHeader } from '@/hooks/use-scroll-header';
 import {
   getKayTVFeed, getExploreRows, getWatchHistoryFeed, getWatchLaterFeed,
   getLikedVideosFeed, getPlaylists, KAYTV_CATEGORIES,
   formatViewCount, formatVideoTimestamp,
   type KayTVFeedItem, type PlaylistItem,
 } from '@/data/mock-kaytv';
+import { BottomSheet } from '@/components/ui/bottom-sheet';
 
 type KayTab = 'Home' | 'Explore' | 'Library';
 
@@ -68,7 +70,11 @@ function VideoCard({
       {/* 16:9 Thumbnail */}
       <View style={styles.thumbWrap}>
         <View style={[styles.thumb, { height: thumbH, backgroundColor: `hsl(${video.thumbHue},38%,32%)` }]}>
-          <Text style={styles.thumbEmoji}>{video.thumbEmoji}</Text>
+          {video.thumbUri ? (
+            <Image source={{ uri: video.thumbUri }} style={StyleSheet.absoluteFill} resizeMode="cover" />
+          ) : (
+            <Text style={styles.thumbEmoji}>{video.thumbEmoji}</Text>
+          )}
           <View style={styles.durationBadge}>
             <Text style={styles.durationText}>{video.duration}</Text>
           </View>
@@ -111,7 +117,11 @@ function ExploreCard({
   return (
     <Pressable onPress={onPress} style={({ pressed }) => [styles.exploreCard, { opacity: pressed ? 0.9 : 1 }]}>
       <View style={[styles.exploreThumb, { backgroundColor: `hsl(${video.thumbHue},38%,32%)` }]}>
-        <Text style={styles.exploreEmoji}>{video.thumbEmoji}</Text>
+        {video.thumbUri ? (
+          <Image source={{ uri: video.thumbUri }} style={StyleSheet.absoluteFill} resizeMode="cover" />
+        ) : (
+          <Text style={styles.exploreEmoji}>{video.thumbEmoji}</Text>
+        )}
         <View style={styles.exploreDurationBadge}>
           <Text style={styles.exploreDurationText}>{video.duration}</Text>
         </View>
@@ -203,39 +213,39 @@ function CommunityMemberWatchView({
   const [watchCat, setWatchCat] = React.useState<WatchCat>('Sermons');
   const [bookmarked, setBookmarked] = React.useState<Set<string>>(new Set());
   const topBarH = insets.top + TOP_BAR_H;
+  const COMM_PILL_H = 50;
   const vids = COMMUNITY_WATCH_VIDEOS[watchCat];
 
   return (
     <View style={{ flex: 1, backgroundColor: C.bg }}>
-      {/* Top bar */}
-      <View style={{ paddingTop: insets.top, borderBottomWidth: StyleSheet.hairlineWidth, borderBottomColor: C.separator, zIndex: 10, backgroundColor: C.bg }}>
-        <View style={{ height: TOP_BAR_H, flexDirection: 'row', alignItems: 'center', paddingHorizontal: 16 }}>
-          <Pressable style={{ width: 44, height: 44, alignItems: 'center', justifyContent: 'center' }} onPress={() => { Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light); }}>
-            <KMenuButton />
-          </Pressable>
-          <View style={{ flex: 1, alignItems: 'center' }}>
-            <Text style={{ fontSize: 17, fontWeight: '700', color: C.label }}>Watch</Text>
-          </View>
-          <RolePill role={role} onPress={cycleRole} accentColor={accent} isPrimary={false} />
-        </View>
-        {/* Category pills */}
-        <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={{ paddingHorizontal: 12, paddingBottom: 10, gap: 8, flexDirection: 'row' }}>
-          {WATCH_CATS.map(cat => (
-            <Pressable
-              key={cat}
-              onPress={() => { Haptics.selectionAsync(); setWatchCat(cat); }}
-              style={{ paddingHorizontal: 14, paddingVertical: 7, borderRadius: 20, backgroundColor: watchCat === cat ? C.label : C.surface, borderWidth: StyleSheet.hairlineWidth, borderColor: watchCat === cat ? C.label : C.separator }}
-            >
-              <Text style={{ fontSize: 13, fontWeight: '600', color: watchCat === cat ? C.bg : C.secondary }}>{cat}</Text>
-            </Pressable>
-          ))}
-        </ScrollView>
-      </View>
-
       <ScrollView
-        contentContainerStyle={{ paddingTop: 8, paddingBottom: 120 }}
+        contentContainerStyle={{ paddingBottom: 120 }}
         showsVerticalScrollIndicator={false}
       >
+        {/* Top bar */}
+        <View style={{ paddingTop: insets.top, borderBottomWidth: StyleSheet.hairlineWidth, borderBottomColor: C.separator, backgroundColor: C.bg }}>
+          <View style={{ height: TOP_BAR_H, flexDirection: 'row', alignItems: 'center', paddingHorizontal: 16 }}>
+            <Pressable style={{ width: 44, height: 44, alignItems: 'center', justifyContent: 'center' }} onPress={() => { Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light); }}>
+              <KMenuButton />
+            </Pressable>
+            <View style={{ flex: 1, alignItems: 'center' }}>
+              <Text style={{ fontSize: 17, fontWeight: '700', color: C.label }}>Watch</Text>
+            </View>
+            <RolePill role={role} onPress={cycleRole} accentColor={accent} isPrimary={false} />
+          </View>
+          {/* Category pills */}
+          <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={{ paddingHorizontal: 12, paddingBottom: 10, gap: 8, flexDirection: 'row' }}>
+            {WATCH_CATS.map(cat => (
+              <Pressable
+                key={cat}
+                onPress={() => { Haptics.selectionAsync(); setWatchCat(cat); }}
+                style={{ paddingHorizontal: 14, paddingVertical: 7, borderRadius: 20, backgroundColor: watchCat === cat ? C.label : C.surface, borderWidth: StyleSheet.hairlineWidth, borderColor: watchCat === cat ? C.label : C.separator }}
+              >
+                <Text style={{ fontSize: 13, fontWeight: '600', color: watchCat === cat ? C.bg : C.secondary }}>{cat}</Text>
+              </Pressable>
+            ))}
+          </ScrollView>
+        </View>
         {vids.map(vid => (
           <Pressable
             key={vid.id}
@@ -367,21 +377,24 @@ function EducationPresidentMediaView({
   const [uploadVis, setUploadVis] = useState('Public');
   const topBarH = insets.top + 52;
 
+  const { opacity: eduPresTY, onScroll: eduPresOS, scrollEventThrottle: eduPresET } = useScrollHeader(topBarH);
   const visibleVideos = libCat === 'All' ? EDU_MEDIA_LIBRARY : EDU_MEDIA_LIBRARY.filter(v => v.category === libCat);
 
   return (
     <View style={{ flex: 1, backgroundColor: C.bg }}>
       {/* Top Bar */}
-      <View style={{ position: 'absolute', top: 0, left: 0, right: 0, zIndex: 20, height: topBarH, paddingTop: insets.top, flexDirection: 'row', alignItems: 'flex-end', paddingHorizontal: 16, paddingBottom: 8, backgroundColor: C.bg, borderBottomWidth: StyleSheet.hairlineWidth, borderBottomColor: C.separator }}>
-        <Pressable onPress={() => { Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light); openSidePanel(); }} style={{ width: 40, height: 36, alignItems: 'center', justifyContent: 'center' }}>
-          <KMenuButton />
-        </Pressable>
-        <Pressable onPress={() => { Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light); setMediaDrop(v => !v); }} style={{ flex: 1, flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 5 }}>
-          <Text style={{ fontSize: 16, fontWeight: '700', color: C.label }}>{mediaTab}</Text>
-          <IconSymbol name={mediaDrop ? 'chevron.up' : 'chevron.down'} size={12} color={C.secondary} />
-        </Pressable>
-        <RolePill role={role} onPress={cycleRole} accentColor={accent} isPrimary />
-      </View>
+      <Animated.View style={{ position: 'absolute', top: 0, left: 0, right: 0, zIndex: 20, height: topBarH, paddingTop: insets.top, backgroundColor: C.bg, borderBottomWidth: StyleSheet.hairlineWidth, borderBottomColor: C.separator, opacity: eduPresTY }}>
+        <View style={{ flexDirection: 'row', alignItems: 'flex-end', paddingHorizontal: 16, paddingBottom: 8, flex: 1 }}>
+          <Pressable onPress={() => { Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light); openSidePanel(); }} style={{ width: 40, height: 36, alignItems: 'center', justifyContent: 'center' }}>
+            <KMenuButton />
+          </Pressable>
+          <Pressable onPress={() => { Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light); setMediaDrop(v => !v); }} style={{ flex: 1, flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 5 }}>
+            <Text style={{ fontSize: 16, fontWeight: '700', color: C.label }}>{mediaTab}</Text>
+            <IconSymbol name={mediaDrop ? 'chevron.up' : 'chevron.down'} size={12} color={C.secondary} />
+          </Pressable>
+          <RolePill role={role} onPress={cycleRole} accentColor={accent} isPrimary />
+        </View>
+      </Animated.View>
 
       {/* Dropdown */}
       {mediaDrop && (
@@ -394,7 +407,7 @@ function EducationPresidentMediaView({
         </View>
       )}
 
-      <ScrollView style={{ flex: 1, marginTop: topBarH }} showsVerticalScrollIndicator={false} contentContainerStyle={{ paddingTop: 16, paddingBottom: 120 }}>
+      <ScrollView showsVerticalScrollIndicator={false} onScroll={eduPresOS} scrollEventThrottle={eduPresET} contentContainerStyle={{ paddingTop: topBarH + 16, paddingBottom: 120 }}>
 
         {/* LIBRARY */}
         {mediaTab === 'Library' && (
@@ -617,6 +630,7 @@ function EducationStudentWatchView({
   const [bookmarked, setBookmarked] = useState<Set<string>>(new Set());
   const topBarH = insets.top + 52;
 
+  const { opacity: eduStudTY, onScroll: eduStudOS, scrollEventThrottle: eduStudET } = useScrollHeader(topBarH);
   const toggleBookmark = (id: string) => {
     Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
     setBookmarked(s => { const n = new Set(s); if (n.has(id)) n.delete(id); else n.add(id); return n; });
@@ -625,17 +639,18 @@ function EducationStudentWatchView({
   return (
     <View style={{ flex: 1, backgroundColor: C.bg }}>
       {/* Top Bar */}
-      <View style={{ position: 'absolute', top: 0, left: 0, right: 0, zIndex: 20, height: topBarH, paddingTop: insets.top, flexDirection: 'row', alignItems: 'flex-end', paddingHorizontal: 16, paddingBottom: 8, backgroundColor: C.bg, borderBottomWidth: StyleSheet.hairlineWidth, borderBottomColor: C.separator }}>
-        <Pressable onPress={() => { Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light); }} style={{ width: 40, height: 36, alignItems: 'center', justifyContent: 'center' }}>
-          <KMenuButton />
-        </Pressable>
-        <Pressable onPress={() => { Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light); setWatchDrop(v => !v); }} style={{ flex: 1, flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 5 }}>
-          <Text style={{ fontSize: 16, fontWeight: '700', color: C.label }}>{watchTab}</Text>
-          <IconSymbol name={watchDrop ? 'chevron.up' : 'chevron.down'} size={12} color={C.secondary} />
-        </Pressable>
-        <RolePill role={role} onPress={cycleRole} isPrimary={false} />
-      </View>
-
+      <Animated.View style={{ position: 'absolute', top: 0, left: 0, right: 0, zIndex: 20, height: topBarH, paddingTop: insets.top, backgroundColor: C.bg, borderBottomWidth: StyleSheet.hairlineWidth, borderBottomColor: C.separator, opacity: eduStudTY }}>
+        <View style={{ flexDirection: 'row', alignItems: 'flex-end', paddingHorizontal: 16, paddingBottom: 8, flex: 1 }}>
+          <Pressable onPress={() => { Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light); }} style={{ width: 40, height: 36, alignItems: 'center', justifyContent: 'center' }}>
+            <KMenuButton />
+          </Pressable>
+          <Pressable onPress={() => { Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light); setWatchDrop(v => !v); }} style={{ flex: 1, flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 5 }}>
+            <Text style={{ fontSize: 16, fontWeight: '700', color: C.label }}>{watchTab}</Text>
+            <IconSymbol name={watchDrop ? 'chevron.up' : 'chevron.down'} size={12} color={C.secondary} />
+          </Pressable>
+          <RolePill role={role} onPress={cycleRole} isPrimary={false} />
+        </View>
+      </Animated.View>
       {/* Dropdown */}
       {watchDrop && (
         <View style={{ position: 'absolute', top: topBarH + 4, left: '14%', right: '14%', backgroundColor: C.surface, borderRadius: 14, zIndex: 100, shadowColor: '#000', shadowOpacity: 0.1, shadowRadius: 12, shadowOffset: { width: 0, height: 4 }, elevation: 8, overflow: 'hidden' }}>
@@ -647,8 +662,7 @@ function EducationStudentWatchView({
         </View>
       )}
 
-      <ScrollView style={{ flex: 1, marginTop: topBarH }} showsVerticalScrollIndicator={false} contentContainerStyle={{ paddingTop: 16, paddingBottom: 120 }}>
-
+      <ScrollView showsVerticalScrollIndicator={false} onScroll={eduStudOS} scrollEventThrottle={eduStudET} contentContainerStyle={{ paddingTop: topBarH + 16, paddingBottom: 120 }}>
         {/* LECTURES */}
         {watchTab === 'Lectures' && (
           <>
@@ -817,22 +831,24 @@ function BusinessCEOMediaView({
   const [uploadVis, setUploadVis] = React.useState('Public');
   const topBarH = insets.top + 52;
 
+  const { opacity: bizCeoTY, onScroll: bizCeoOS, scrollEventThrottle: bizCeoET } = useScrollHeader(topBarH);
   const visibleVideos = libCat === 'All' ? BIZ_MEDIA_LIBRARY : BIZ_MEDIA_LIBRARY.filter(v => v.category === libCat);
 
   return (
     <View style={{ flex: 1, backgroundColor: C.bg }}>
       {/* Top Bar */}
-      <View style={{ position: 'absolute', top: 0, left: 0, right: 0, zIndex: 20, height: topBarH, paddingTop: insets.top, flexDirection: 'row', alignItems: 'flex-end', paddingHorizontal: 16, paddingBottom: 8, backgroundColor: C.bg, borderBottomWidth: StyleSheet.hairlineWidth, borderBottomColor: C.separator }}>
-        <Pressable onPress={() => { Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light); openSidePanel(); }} style={{ width: 40, height: 36, alignItems: 'center', justifyContent: 'center' }}>
-          <KMenuButton />
-        </Pressable>
-        <Pressable onPress={() => { Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light); setMediaDrop(v => !v); }} style={{ flex: 1, flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 5 }}>
-          <Text style={{ fontSize: 16, fontWeight: '700', color: C.label }}>{mediaTab}</Text>
-          <IconSymbol name={mediaDrop ? 'chevron.up' : 'chevron.down'} size={12} color={C.secondary} />
-        </Pressable>
-        <RolePill role={role} onPress={cycleRole} isPrimary />
-      </View>
-
+      <Animated.View style={{ position: 'absolute', top: 0, left: 0, right: 0, zIndex: 20, height: topBarH, paddingTop: insets.top, backgroundColor: C.bg, borderBottomWidth: StyleSheet.hairlineWidth, borderBottomColor: C.separator, opacity: bizCeoTY }}>
+        <View style={{ flexDirection: 'row', alignItems: 'flex-end', paddingHorizontal: 16, paddingBottom: 8, flex: 1 }}>
+          <Pressable onPress={() => { Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light); openSidePanel(); }} style={{ width: 40, height: 36, alignItems: 'center', justifyContent: 'center' }}>
+            <KMenuButton />
+          </Pressable>
+          <Pressable onPress={() => { Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light); setMediaDrop(v => !v); }} style={{ flex: 1, flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 5 }}>
+            <Text style={{ fontSize: 16, fontWeight: '700', color: C.label }}>{mediaTab}</Text>
+            <IconSymbol name={mediaDrop ? 'chevron.up' : 'chevron.down'} size={12} color={C.secondary} />
+          </Pressable>
+          <RolePill role={role} onPress={cycleRole} isPrimary />
+        </View>
+      </Animated.View>
       {/* Dropdown */}
       {mediaDrop && (
         <View style={{ position: 'absolute', top: topBarH + 4, left: '14%', right: '14%', backgroundColor: C.surface, borderRadius: 14, zIndex: 100, shadowColor: '#000', shadowOpacity: 0.1, shadowRadius: 12, shadowOffset: { width: 0, height: 4 }, elevation: 8, overflow: 'hidden' }}>
@@ -844,8 +860,7 @@ function BusinessCEOMediaView({
         </View>
       )}
 
-      <ScrollView style={{ flex: 1, marginTop: topBarH }} showsVerticalScrollIndicator={false} contentContainerStyle={{ paddingTop: 16, paddingBottom: 120 }}>
-
+      <ScrollView showsVerticalScrollIndicator={false} onScroll={bizCeoOS} scrollEventThrottle={bizCeoET} contentContainerStyle={{ paddingTop: topBarH + 16, paddingBottom: 120 }}>
         {/* LIBRARY */}
         {mediaTab === 'Library' && (
           <>
@@ -1069,21 +1084,23 @@ function BusinessCustomerResourcesView({
   const [activeTab, setActiveTab] = React.useState<BizCustomerTab>('All');
   const topBarH = insets.top + 52;
 
+  const { opacity: bizCustTY, onScroll: bizCustOS, scrollEventThrottle: bizCustET } = useScrollHeader(topBarH);
   const visibleVideos = activeTab === 'All' ? BIZ_CUSTOMER_VIDEOS : BIZ_CUSTOMER_VIDEOS.filter(v => v.category === activeTab);
 
   return (
     <View style={{ flex: 1, backgroundColor: C.bg }}>
       {/* Top Bar */}
-      <View style={{ position: 'absolute', top: 0, left: 0, right: 0, zIndex: 20, height: topBarH, paddingTop: insets.top, flexDirection: 'row', alignItems: 'flex-end', paddingHorizontal: 16, paddingBottom: 8, backgroundColor: C.bg, borderBottomWidth: StyleSheet.hairlineWidth, borderBottomColor: C.separator }}>
-        <Pressable onPress={() => { Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light); }} style={{ width: 40, height: 36, alignItems: 'center', justifyContent: 'center' }}>
-          <KMenuButton />
-        </Pressable>
-        <View style={{ flex: 1, alignItems: 'center' }}>
-          <Text style={{ fontSize: 16, fontWeight: '700', color: C.label }}>Resources</Text>
+      <Animated.View style={{ position: 'absolute', top: 0, left: 0, right: 0, zIndex: 20, height: topBarH, paddingTop: insets.top, backgroundColor: C.bg, borderBottomWidth: StyleSheet.hairlineWidth, borderBottomColor: C.separator, opacity: bizCustTY }}>
+        <View style={{ flexDirection: 'row', alignItems: 'flex-end', paddingHorizontal: 16, paddingBottom: 8, flex: 1 }}>
+          <Pressable onPress={() => { Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light); }} style={{ width: 40, height: 36, alignItems: 'center', justifyContent: 'center' }}>
+            <KMenuButton />
+          </Pressable>
+          <View style={{ flex: 1, alignItems: 'center' }}>
+            <Text style={{ fontSize: 16, fontWeight: '700', color: C.label }}>Resources</Text>
+          </View>
+          <RolePill role={role} onPress={cycleRole} isPrimary={false} />
         </View>
-        <RolePill role={role} onPress={cycleRole} isPrimary={false} />
-      </View>
-
+      </Animated.View>
       {/* Category tabs */}
       <View style={{ position: 'absolute', top: topBarH, left: 0, right: 0, zIndex: 15, backgroundColor: C.bg, borderBottomWidth: StyleSheet.hairlineWidth, borderBottomColor: C.separator }}>
         <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={{ paddingHorizontal: 12, paddingVertical: 10, gap: 8, flexDirection: 'row' }}>
@@ -1095,7 +1112,7 @@ function BusinessCustomerResourcesView({
         </ScrollView>
       </View>
 
-      <ScrollView style={{ flex: 1, marginTop: topBarH + 50 }} showsVerticalScrollIndicator={false} contentContainerStyle={{ paddingTop: 12, paddingHorizontal: 16, paddingBottom: 120 }}>
+      <ScrollView showsVerticalScrollIndicator={false} onScroll={bizCustOS} scrollEventThrottle={bizCustET} contentContainerStyle={{ paddingTop: topBarH + 50 + 12, paddingHorizontal: 16, paddingBottom: 120 }}>
         <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: 12 }}>
           {visibleVideos.map(video => (
             <View key={video.id} style={{ width: '47%', backgroundColor: C.surface, borderRadius: 14, overflow: 'hidden' }}>
@@ -1149,20 +1166,22 @@ function CommunityPastorMediaView({
   const [mediaDrop, setMediaDrop] = useState(false);
   const topBarH = insets.top + 52;
 
+  const { opacity: comPastTY, onScroll: comPastOS, scrollEventThrottle: comPastET } = useScrollHeader(topBarH);
   return (
     <View style={{ flex: 1, backgroundColor: C.bg }}>
       {/* Top Bar */}
-      <View style={{ position: 'absolute', top: 0, left: 0, right: 0, zIndex: 20, height: topBarH, paddingTop: insets.top, flexDirection: 'row', alignItems: 'flex-end', paddingHorizontal: 16, paddingBottom: 8, backgroundColor: C.bg, borderBottomWidth: StyleSheet.hairlineWidth, borderBottomColor: C.separator }}>
-        <Pressable onPress={() => { Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light); openSidePanel(); }} style={{ width: 40, height: 36, alignItems: 'center', justifyContent: 'center' }}>
-          <KMenuButton />
-        </Pressable>
-        <Pressable onPress={() => { Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light); setMediaDrop(v => !v); }} style={{ flex: 1, flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 5 }}>
-          <Text style={{ fontSize: 16, fontWeight: '700', color: C.label }}>{mediaTab}</Text>
-          <IconSymbol name={mediaDrop ? 'chevron.up' : 'chevron.down'} size={12} color={C.secondary} />
-        </Pressable>
-        <RolePill role={role} onPress={cycleRole} isPrimary />
-      </View>
-
+      <Animated.View style={{ position: 'absolute', top: 0, left: 0, right: 0, zIndex: 20, height: topBarH, paddingTop: insets.top, backgroundColor: C.bg, borderBottomWidth: StyleSheet.hairlineWidth, borderBottomColor: C.separator, opacity: comPastTY }}>
+        <View style={{ flexDirection: 'row', alignItems: 'flex-end', paddingHorizontal: 16, paddingBottom: 8, flex: 1 }}>
+          <Pressable onPress={() => { Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light); openSidePanel(); }} style={{ width: 40, height: 36, alignItems: 'center', justifyContent: 'center' }}>
+            <KMenuButton />
+          </Pressable>
+          <Pressable onPress={() => { Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light); setMediaDrop(v => !v); }} style={{ flex: 1, flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 5 }}>
+            <Text style={{ fontSize: 16, fontWeight: '700', color: C.label }}>{mediaTab}</Text>
+            <IconSymbol name={mediaDrop ? 'chevron.up' : 'chevron.down'} size={12} color={C.secondary} />
+          </Pressable>
+          <RolePill role={role} onPress={cycleRole} isPrimary />
+        </View>
+      </Animated.View>
       {/* Dropdown */}
       {mediaDrop && (
         <View style={{ position: 'absolute', top: topBarH + 4, left: '14%', right: '14%', backgroundColor: C.surface, borderRadius: 14, zIndex: 100, shadowColor: '#000', shadowOpacity: 0.1, shadowRadius: 12, shadowOffset: { width: 0, height: 4 }, elevation: 8, overflow: 'hidden' }}>
@@ -1174,8 +1193,7 @@ function CommunityPastorMediaView({
         </View>
       )}
 
-      <ScrollView style={{ flex: 1, marginTop: topBarH }} showsVerticalScrollIndicator={false} contentContainerStyle={{ paddingTop: 16, paddingBottom: 120 }}>
-
+      <ScrollView showsVerticalScrollIndicator={false} onScroll={comPastOS} scrollEventThrottle={comPastET} contentContainerStyle={{ paddingTop: topBarH + 16, paddingBottom: 120 }}>
         {/* LIBRARY */}
         {mediaTab === 'Library' && (
           <>
@@ -1410,844 +1428,524 @@ function LiveKtvView({ mode, C, insets }: { mode: string; C: any; insets: any })
   );
 }
 
-// ── Personal Mode Owner KTV data ─────────────────────────────────────────────
+// ── Personal Mode KTV data ───────────────────────────────────────────────────
 
 type PersonalVideo = {
-  id: string; title: string; series: string | null; duration: string;
-  views: string; timeAgo: string; emoji: string; hue: number;
-  category: string; featured?: boolean;
+  id: string; title: string; duration: string;
+  views: string; timeAgo: string; hue: number; description: string;
 };
 
-const PERSONAL_VIDEOS: PersonalVideo[] = [
-  // Series 1 - Building KaNeXT
-  { id: 'pk1',  title: 'Why I Built an OS',                  series: 'Building KaNeXT',    duration: '12:34', views: '5.1K', timeAgo: '3 weeks ago', emoji: '🏗️',  hue: 200, category: 'Business' },
-  { id: 'pk2',  title: 'KaNeXT Product Demo',                series: 'Building KaNeXT',    duration: '8:22',  views: '2.4K', timeAgo: '2 weeks ago', emoji: '📱',  hue: 220, category: 'Business' },
-  { id: 'pk3',  title: 'The 4,000 Page Architecture',        series: 'Building KaNeXT',    duration: '15:47', views: '1.8K', timeAgo: '1 week ago',  emoji: '🗺️',  hue: 240, category: 'Business' },
-  { id: 'pk4',  title: 'From Coach to CEO',                  series: 'Building KaNeXT',    duration: '10:15', views: '3.2K', timeAgo: '5 days ago',  emoji: '🎯',  hue: 30,  category: 'Business' },
-  // Series 2 - Coaching Philosophy
-  { id: 'pk5',  title: 'Why System Fit Matters More Than Talent', series: 'Coaching Philosophy', duration: '9:45',  views: '4.2K', timeAgo: '1 month ago', emoji: '🧩', hue: 150, category: 'Coaching' },
-  { id: 'pk6',  title: 'Building Culture at Lincoln',        series: 'Coaching Philosophy', duration: '11:20', views: '2.8K', timeAgo: '3 weeks ago', emoji: '🏛️', hue: 165, category: 'Coaching' },
-  { id: 'pk7',  title: 'Player Development Framework',       series: 'Coaching Philosophy', duration: '13:08', views: '1.9K', timeAgo: '2 weeks ago', emoji: '📊', hue: 180, category: 'Coaching' },
-  // Series 3 - Creator Toolkit
-  { id: 'pk8',  title: 'How I Use AI to Build Faster',       series: 'Creator Toolkit',     duration: '7:30',  views: '6.8K', timeAgo: '4 days ago',  emoji: '⚡', hue: 280, category: 'Creator' },
-  { id: 'pk9',  title: 'My Content Creation Workflow',       series: 'Creator Toolkit',     duration: '8:55',  views: '3.4K', timeAgo: '1 week ago',  emoji: '🎬', hue: 300, category: 'Creator' },
-  { id: 'pk10', title: 'Brand Deal Negotiation Tips',        series: 'Creator Toolkit',     duration: '11:42', views: '4.1K', timeAgo: '2 weeks ago', emoji: '🤝', hue: 320, category: 'Creator' },
-  // Standalones
-  { id: 'pk11', title: 'Day in My Life - Coach & CEO',       series: null,                  duration: '16:22', views: '8.9K', timeAgo: '2 days ago',  emoji: '🌟', hue: 45,  category: 'Behind the Scenes', featured: true },
-  { id: 'pk12', title: 'Q&A: Ask Me Anything March 2026',   series: null,                  duration: '22:15', views: '2.1K', timeAgo: '1 week ago',  emoji: '🎙️', hue: 190, category: 'Q&A' },
+const PVIDEOS: PersonalVideo[] = [
+  { id: 'pv1',  title: 'Day in My Life — Coach & CEO',           duration: '16:22', views: '8.9K', timeAgo: '2 days ago',   hue: 45,  description: 'A full day as a coach and startup founder — morning workouts, film review, investor calls, and late-night code sessions.' },
+  { id: 'pv2',  title: 'Why I Built an OS',                      duration: '12:34', views: '5.1K', timeAgo: '3 weeks ago',  hue: 200, description: 'The story behind KaNeXT OS — why I quit a $180K job to build a platform for every creator, coach, and community leader.' },
+  { id: 'pv3',  title: 'How I Use AI to Build Faster',           duration: '7:30',  views: '6.8K', timeAgo: '4 days ago',   hue: 280, description: 'My exact Claude Code workflow for shipping features 10x faster. Live demo included.' },
+  { id: 'pv4',  title: 'Brand Deal Negotiation Tips',            duration: '11:42', views: '4.1K', timeAgo: '2 weeks ago',  hue: 320, description: 'How to negotiate brand deals without an agent — rate cards, usage rights, and the one clause to always push back on.' },
+  { id: 'pv5',  title: 'From Coach to CEO',                      duration: '10:15', views: '3.2K', timeAgo: '5 days ago',   hue: 30,  description: 'The mindset shift from athlete-developer to company builder. What coaching taught me about product development.' },
+  { id: 'pv6',  title: 'KaNeXT Product Demo',                    duration: '8:22',  views: '2.4K', timeAgo: '2 weeks ago',  hue: 220, description: 'Full walkthrough of KaNeXT OS — Personal, Sports, Business, Education, and Community modes in one platform.' },
+  { id: 'pv7',  title: 'My Content Creation Workflow',           duration: '8:55',  views: '3.4K', timeAgo: '1 week ago',   hue: 300, description: 'From idea capture to publish — the system I use to create content across 5 platforms in under 3 hours a week.' },
+  { id: 'pv8',  title: 'Player Development Framework',           duration: '13:08', views: '1.9K', timeAgo: '2 weeks ago',  hue: 180, description: 'The 4-pillar framework I use with every player: Physical, Technical, Mental, and Social development.' },
+  { id: 'pv9',  title: 'Q&A: Ask Me Anything March 2026',        duration: '22:15', views: '2.1K', timeAgo: '1 week ago',   hue: 190, description: 'I answered every community question — startup funding, coaching philosophy, and morning routines.' },
+  { id: 'pv10', title: 'The 4,000 Page Architecture',            duration: '15:47', views: '1.8K', timeAgo: '1 week ago',   hue: 240, description: 'How I wrote 4,000 pages of product specification and why it produces better software.' },
+  { id: 'pv11', title: 'Building Culture at Lincoln',            duration: '11:20', views: '2.8K', timeAgo: '3 weeks ago',  hue: 165, description: 'How I transformed a losing program into a conference contender. Culture, accountability, and what team first actually means.' },
+  { id: 'pv12', title: 'Why System Fit Beats Talent',            duration: '9:45',  views: '4.2K', timeAgo: '1 month ago',  hue: 150, description: 'The most undervalued concept in recruiting. I have passed on 5-stars and turned walk-ons into starters.' },
 ];
 
-const PERSONAL_SERIES = [
-  { key: 'Building KaNeXT',    count: 4 },
-  { key: 'Coaching Philosophy', count: 3 },
-  { key: 'Creator Toolkit',    count: 3 },
+type PShort   = { id: string; title: string; views: string; hue: number; };
+type PLive    = { id: string; title: string; status: 'live' | 'upcoming' | 'past'; viewerCount?: number; scheduledAt?: string; date?: string; duration?: string; hue: number; };
+type PPlaylist = { id: string; title: string; videoCount: number; hues: [number, number, number, number]; };
+type PComment = { id: string; author: string; initials: string; text: string; timeAgo: string; likes: number; };
+
+const PSHORTS: PShort[] = [
+  { id: 'ps1', title: '60-second pitch',          views: '12K',  hue: 45  },
+  { id: 'ps2', title: 'Morning routine',          views: '8.4K', hue: 200 },
+  { id: 'ps3', title: 'AI trick saves 2hr/day',   views: '22K',  hue: 280 },
+  { id: 'ps4', title: 'Metric coaches miss',      views: '6.1K', hue: 150 },
+  { id: 'ps5', title: 'My desk setup',            views: '5.3K', hue: 300 },
+  { id: 'ps6', title: 'Grow on social fast',      views: '18K',  hue: 320 },
 ];
 
-const PERSONAL_CATEGORIES = ['All', 'Coaching', 'Business', 'Creator', 'Behind the Scenes', 'Q&A', 'Live'];
-
-const EXPLORE_TRENDING = [
-  { id: 'et1', title: 'How I Closed My First $100K Deal',    creator: 'Marcus Rivera',      handle: '@marcusrivera', initials: 'MR', views: '45K', duration: '12:45', emoji: '💰', hue: 25,  category: 'Business' },
-  { id: 'et2', title: 'Sunday Service Highlights - Easter 2026', creator: 'Grace Church',  handle: '@gracechurch',  initials: 'GC', views: '28K', duration: '18:42', emoji: '✝️', hue: 195, category: 'Faith' },
-  { id: 'et3', title: 'Full Game: Atlanta vs Chicago - Week 12', creator: 'HoopsNetwork',  handle: '@hoopsnet',     initials: 'HN', views: '62K', duration: '1:48:22', emoji: '🏀', hue: 210, category: 'Sports' },
-  { id: 'et4', title: '5 AI Tools Every Creator Needs in 2026', creator: 'TechWithTanya', handle: '@techtanya',    initials: 'TT', views: '38K', duration: '9:30',  emoji: '🤖', hue: 270, category: 'Tech' },
-  { id: 'et5', title: 'Morning Routine That Changed My Life',   creator: 'Nia Johnson',    handle: '@niawellness',  initials: 'NJ', views: '51K', duration: '14:22', emoji: '☀️', hue: 50,  category: 'Lifestyle' },
+const PLIVE: PLive[] = [
+  { id: 'pl1', title: 'Creator Q&A — Live Right Now',  status: 'live',     viewerCount: 342,                         hue: 45  },
+  { id: 'pl2', title: 'KaNeXT Launch Event',           status: 'upcoming', scheduledAt: 'Apr 18 · 7:00 PM EST',      hue: 220 },
+  { id: 'pl3', title: 'Creator Summit Pre-Show',       status: 'past',     date: 'Apr 5, 2026', duration: '1:02:14', hue: 350 },
 ];
 
-const EXPLORE_CREATORS = [
-  { id: 'ec1', name: 'Marcus Rivera',    handle: '@marcusrivera', initials: 'MR', subscribers: '12K', category: 'Business',         latestVideo: 'Pitch Deck Breakdown',         hue: 25  },
-  { id: 'ec2', name: 'TechWithTanya',    handle: '@techtanya',    initials: 'TT', subscribers: '8.4K', category: 'Tech',            latestVideo: 'Claude Code Deep Dive',        hue: 270 },
-  { id: 'ec3', name: 'Coach DeMarcus',   handle: '@coachdm',      initials: 'CD', subscribers: '5.2K', category: 'Coaching/Sports', latestVideo: 'Defensive Schemes 101',        hue: 150 },
-  { id: 'ec4', name: 'Grace Church Media', handle: '@gracechurch', initials: 'GC', subscribers: '3.8K', category: 'Faith',          latestVideo: "Pastor's Corner Ep. 24",      hue: 195 },
-  { id: 'ec5', name: 'The Creator Lab',  handle: '@creatorlab',   initials: 'CL', subscribers: '15K', category: 'Business',         latestVideo: 'Monetize Your Audience',       hue: 40  },
-  { id: 'ec6', name: 'Nia Johnson',      handle: '@niawellness',  initials: 'NJ', subscribers: '9.1K', category: 'Lifestyle',       latestVideo: 'Reset Your Week',              hue: 50  },
+const PPLAYLISTS: PPlaylist[] = [
+  { id: 'pp1', title: 'Building KaNeXT',     videoCount: 4, hues: [200, 220, 240, 30]  },
+  { id: 'pp2', title: 'Coaching Philosophy', videoCount: 3, hues: [150, 165, 180, 190] },
+  { id: 'pp3', title: 'Creator Toolkit',     videoCount: 3, hues: [280, 300, 320, 45]  },
 ];
 
-const EXPLORE_NEW_THIS_WEEK = [
-  { id: 'en1', title: 'Building in Public - Week 14', creator: 'StartupSam', initials: 'SS', timeAgo: '2 days ago', views: '1.2K', duration: '18:30', emoji: '🚀', hue: 220 },
-  { id: 'en2', title: 'How to Read a Balance Sheet',  creator: 'BizAcademy', initials: 'BA', timeAgo: '3 days ago', views: '890',  duration: '14:15', emoji: '📊', hue: 160 },
-  { id: 'en3', title: 'Worship Set - Acoustic Session', creator: 'Vineyard Voices', initials: 'VV', timeAgo: '1 day ago', views: '2.1K', duration: '22:10', emoji: '🎸', hue: 200 },
-  { id: 'en4', title: 'Film Breakdown: Zone Defense', creator: 'CoachDM',   initials: 'CD', timeAgo: '4 days ago', views: '3.4K', duration: '11:45', emoji: '📋', hue: 150 },
-  { id: 'en5', title: 'My Studio Setup Tour 2026',    creator: 'CreatorKit', initials: 'CK', timeAgo: '2 days ago', views: '1.8K', duration: '9:22',  emoji: '🎙️', hue: 290 },
-  { id: 'en6', title: 'Meal Prep Sunday',             creator: 'FitChef Marcus', initials: 'FM', timeAgo: '1 day ago', views: '4.2K', duration: '16:08', emoji: '🥗', hue: 120 },
+const PCOMMENTS: PComment[] = [
+  { id: 'pc1', author: 'Marcus J.',  initials: 'MJ', text: 'This is exactly what I needed. The system fit concept changed how I think about my whole team.', timeAgo: '2 days ago', likes: 87  },
+  { id: 'pc2', author: 'Aisha M.',   initials: 'AM', text: 'Already saved 90 minutes on my first day trying the AI workflow.',                               timeAgo: '3 days ago', likes: 64  },
+  { id: 'pc3', author: 'Jordan W.',  initials: 'JW', text: 'One of the only creators who gives real actionable stuff. Not just motivation.',                   timeAgo: '4 days ago', likes: 43  },
+  { id: 'pc4', author: 'Sofia R.',   initials: 'SR', text: 'This plus the masterclass is genuinely the best creator education I have found.',                  timeAgo: '1 week ago', likes: 31  },
 ];
 
-const LIBRARY_HISTORY = [
-  { id: 'lh1', title: 'Day in My Life - Coach & CEO',               creator: 'Sammy Kalejaiye',  duration: '16:22', timeAgo: 'Today',      emoji: '🌟', hue: 45  },
-  { id: 'lh2', title: 'Lincoln @ LMU — Laolu 2 Three-Pointers',     creator: 'Lincoln Basketball', duration: '2:34', timeAgo: 'Today',      emoji: '🏀', hue: 0   },
-  { id: 'lh3', title: 'Lincoln @ Simpson — Laolu 8 Three-Pointers', creator: 'Lincoln Basketball', duration: '4:05', timeAgo: 'Yesterday',  emoji: '🏀', hue: 10  },
-  { id: 'lh4', title: 'How I Closed My First $100K Deal',           creator: 'Marcus Rivera',    duration: '12:45', timeAgo: 'Yesterday',  emoji: '💰', hue: 25  },
-  { id: 'lh5', title: 'Lincoln @ Pepperdine — Laolu 12 Three-Pointers', creator: 'Lincoln Basketball', duration: '4:12', timeAgo: '2 days ago', emoji: '🏀', hue: 215 },
-  { id: 'lh6', title: 'KaNeXT Product Demo',                        creator: 'Sammy Kalejaiye',  duration: '8:22',  timeAgo: '3 days ago', emoji: '📱', hue: 220 },
-  { id: 'lh7', title: '5 AI Tools Every Creator Needs',             creator: 'TechWithTanya',    duration: '9:30',  timeAgo: '3 days ago', emoji: '🤖', hue: 270 },
-];
+// ── Personal Mode KTV View ────────────────────────────────────────────────────
 
-const LIBRARY_WATCH_LATER = [
-  { id: 'll1', title: 'My First KayTV Upload - Testing 1 2 3', creator: 'Sammy Kalejaiye', duration: '0:47',  emoji: '📹', hue: 190 },
-  { id: 'll2', title: 'Q4 Product Roadmap Presentation',       creator: 'Alex Rivera CPO', duration: '31:48', emoji: '🗺️', hue: 240 },
-  { id: 'll3', title: 'Top 10 Plays - Week 7 Highlights Reel', creator: 'Coach Rodriguez', duration: '4:15',  emoji: '🔥', hue: 12  },
-  { id: 'll4', title: 'Lincoln @ Cal Maritime — Laolu 6 Three-Pointers', creator: 'Lincoln Basketball', duration: '3:15', emoji: '🏀', hue: 205 },
-  { id: 'll5', title: 'Defensive Schemes 101',                  creator: 'CoachDM',         duration: '14:22', emoji: '📋', hue: 150 },
-];
+type PTab = 'Videos' | 'Shorts' | 'Live' | 'Playlists';
+const PTABS: PTab[] = ['Videos', 'Shorts', 'Live', 'Playlists'];
 
-const LIBRARY_LIKED = [
-  { id: 'lk1', title: 'Lincoln @ Pepperdine — Laolu 12 Three-Pointers', creator: 'Lincoln Basketball', duration: '4:12', emoji: '🏀', hue: 215 },
-  { id: 'lk2', title: 'Lincoln @ Long Beach State — Laolu 6 Three-Pointers', creator: 'Lincoln Basketball', duration: '3:48', emoji: '🏀', hue: 45 },
-  { id: 'lk3', title: 'Why I Built an OS',                      creator: 'Sammy Kalejaiye', duration: '12:34', emoji: '🏗️', hue: 200 },
-  { id: 'lk4', title: 'How I Use AI to Build Faster',           creator: 'Sammy Kalejaiye', duration: '7:30',  emoji: '⚡', hue: 280 },
-  { id: 'lk5', title: 'Sunday Service Highlights - Easter 2026', creator: 'Grace Church', duration: '18:42',  emoji: '✝️', hue: 195 },
-];
-
-const LIBRARY_PLAYLISTS = [
-  { id: 'lp1', name: "Laolu's Best Games", count: 8, emojis: ['🏀','🏀','🏀','🏀'], hue: 215 },
-  { id: 'lp2', name: 'Film Study',         count: 8, emojis: ['📋','🏀','🎬','📊'], hue: 150 },
-  { id: 'lp3', name: 'Building KaNeXT',   count: 4, emojis: ['🏗️','📱','🗺️','🎯'], hue: 200 },
-  { id: 'lp4', name: 'Inspiration',        count: 5, emojis: ['💰','✝️','🤖','☀️'], hue: 40  },
-];
-
-// ── Personal Mode Owner KTV View ─────────────────────────────────────────────
-
-type LibTab = 'All' | 'Uploads' | 'Saved' | 'Watch Later';
-const LIB_PILLS: LibTab[] = ['All', 'Uploads', 'Saved', 'Watch Later'];
-type HomeSort = 'Recent' | 'Popular';
-
-function PersonalOwnerKayTVView({
-  C, insets, role, cycleRole, accent, tabParam, router,
+function PersonalKayTVView({
+  C, insets, role, cycleRole, isOwner,
 }: {
   C: ComponentColors;
   insets: { top: number; bottom: number };
   role: string;
   cycleRole: () => void;
-  accent: string;
-  tabParam: string | string[] | undefined;
-  router: any;
+  isOwner: boolean;
 }) {
+  const { width, height: windowHeight } = useWindowDimensions();
   const topBarH = insets.top + TOP_BAR_H;
+  const { opacity, onScroll, scrollEventThrottle } = useScrollHeader(topBarH);
 
-  const [activeTab, setActiveTab] = React.useState<KayTab>(() =>
-    (tabParam === 'Explore' || tabParam === 'Library') ? tabParam as KayTab : 'Home'
-  );
-  React.useEffect(() => {
-    if (tabParam === 'Explore' || tabParam === 'Library' || tabParam === 'Home') {
-      setActiveTab(tabParam as KayTab);
-    }
-  }, [tabParam]);
+  const [activeTab, setActiveTab]         = React.useState<PTab>('Videos');
+  const [selectedVideo, setSelectedVideo] = React.useState<PersonalVideo | null>(null);
+  const [shortsOpen, setShortsOpen]       = React.useState(false);
+  const [shortsIndex, setShortsIndex]     = React.useState(0);
+  const [uploadVisible, setUploadVisible] = React.useState(false);
+  const [descExpanded, setDescExpanded]   = React.useState(false);
+  const [liked, setLiked]                 = React.useState(false);
+  const [disliked, setDisliked]           = React.useState(false);
+  const [saved, setSaved]                 = React.useState(false);
+  const [subscribed, setSubscribed]       = React.useState(false);
+  const [uploadTitle, setUploadTitle]     = React.useState('');
+  const [uploadDesc, setUploadDesc]       = React.useState('');
+  const [visibility, setVisibility]       = React.useState('Public');
+  const shortsRef = useRef<FlatList>(null);
 
-  const [homeCat, setHomeCat] = React.useState('All');
-  const [homeSort, setHomeSort] = React.useState<HomeSort>('Recent');
-  const [libPill, setLibPill] = React.useState<LibTab>('All');
-  const [searchText, setSearchText] = React.useState('');
-  const [subscribedIds, setSubscribedIds] = React.useState<string[]>([]);
-
-  const featuredVideo = PERSONAL_VIDEOS.find(v => v.featured);
-
-  const homeVideos = React.useMemo(() => {
-    let list = homeCat === 'All' ? PERSONAL_VIDEOS : PERSONAL_VIDEOS.filter(v => v.category === homeCat);
-    if (homeSort === 'Popular') {
-      list = [...list].sort((a, b) => parseFloat(b.views) - parseFloat(a.views));
-    }
-    return list;
-  }, [homeCat, homeSort]);
-
-  const filteredTrending = React.useMemo(() => {
-    if (!searchText.trim()) return EXPLORE_TRENDING;
-    const q = searchText.toLowerCase();
-    return EXPLORE_TRENDING.filter(v => v.title.toLowerCase().includes(q) || v.creator.toLowerCase().includes(q));
-  }, [searchText]);
-
-  const filteredNew = React.useMemo(() => {
-    if (!searchText.trim()) return EXPLORE_NEW_THIS_WEEK;
-    const q = searchText.toLowerCase();
-    return EXPLORE_NEW_THIS_WEEK.filter(v => v.title.toLowerCase().includes(q));
-  }, [searchText]);
-
-  // ── Render helpers ──────────────────────────────────────────────────────────
-
-  // Compact horizontal thumb card
-  const ThumbCard = ({ item }: { item: { emoji: string; hue: number; title: string; duration: string; views?: string; timeAgo?: string } }) => (
-    <Pressable
-      onPress={() => Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light)}
-      style={{ width: 160, marginRight: 10 }}
-    >
-      <View style={{ width: 160, height: 94, borderRadius: 10, backgroundColor: `hsl(${item.hue},38%,28%)`, alignItems: 'center', justifyContent: 'center', marginBottom: 6 }}>
-        <Text style={{ fontSize: 36 }}>{item.emoji}</Text>
-        <View style={{ position: 'absolute', bottom: 6, right: 6, backgroundColor: 'rgba(0,0,0,0.7)', borderRadius: 4, paddingHorizontal: 5, paddingVertical: 2 }}>
-          <Text style={{ fontSize: 10, color: '#fff', fontWeight: '700' }}>{item.duration}</Text>
-        </View>
-      </View>
-      <Text style={{ fontSize: 12, fontWeight: '600', color: C.label, marginBottom: 2 }} numberOfLines={1}>{item.title}</Text>
-      {item.views !== undefined && (
-        <Text style={{ fontSize: 11, color: C.secondary }}>{item.views} views</Text>
-      )}
-    </Pressable>
-  );
-
-  // Full-width video row
-  const VideoRow = ({ v }: { v: PersonalVideo }) => (
-    <Pressable
-      key={v.id}
-      onPress={() => Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light)}
-      style={({ pressed }) => ({ opacity: pressed ? 0.85 : 1, marginBottom: 16 })}
-    >
-      {/* Thumbnail */}
-      <View style={{ height: 196, borderRadius: 12, backgroundColor: `hsl(${v.hue},38%,28%)`, alignItems: 'center', justifyContent: 'center', marginBottom: 10 }}>
-        <Text style={{ fontSize: 60 }}>{v.emoji}</Text>
-        <View style={{ position: 'absolute', bottom: 8, right: 10, backgroundColor: 'rgba(0,0,0,0.72)', borderRadius: 5, paddingHorizontal: 6, paddingVertical: 3 }}>
-          <Text style={{ fontSize: 12, color: '#fff', fontWeight: '700' }}>{v.duration}</Text>
-        </View>
-      </View>
-      {/* Info */}
-      <View style={{ flexDirection: 'row', gap: 10 }}>
-        <View style={{ width: 34, height: 34, borderRadius: 17, backgroundColor: C.surface, alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
-          <Text style={{ fontSize: 12, fontWeight: '700', color: C.label }}>SK</Text>
-        </View>
-        <View style={{ flex: 1 }}>
-          <Text style={{ fontSize: 14, fontWeight: '700', color: C.label, marginBottom: 3 }} numberOfLines={2}>{v.title}</Text>
-          <Text style={{ fontSize: 12, color: C.secondary }}>Sammy Kalejaiye · @sammyk</Text>
-          <Text style={{ fontSize: 11, color: C.secondary, marginTop: 1 }}>{v.views} views · {v.timeAgo}</Text>
-        </View>
-        <Pressable hitSlop={10} onPress={() => Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light)}>
-          <IconSymbol name="ellipsis" size={14} color={C.secondary} />
-        </Pressable>
-      </View>
-    </Pressable>
-  );
-
-  // Section header with optional "See all"
-  const SectionHeader = ({ title, count, onSeeAll }: { title: string; count?: number; onSeeAll?: () => void }) => (
-    <View style={{ flexDirection: 'row', alignItems: 'center', paddingHorizontal: 16, marginBottom: 12, marginTop: 4 }}>
-      <Text style={{ fontSize: 16, fontWeight: '700', color: C.label, flex: 1 }}>{title}</Text>
-      {count !== undefined && <Text style={{ fontSize: 13, color: C.secondary, marginRight: 8 }}>{count}</Text>}
-      {onSeeAll && (
-        <Pressable onPress={onSeeAll} hitSlop={8}>
-          <Text style={{ fontSize: 13, color: C.secondary, fontWeight: '600' }}>See all</Text>
-        </Pressable>
-      )}
-    </View>
-  );
-
-  // ── Top bar ─────────────────────────────────────────────────────────────────
-
-  const TopBar = () => (
-    <View style={{ position: 'absolute', top: 0, left: 0, right: 0, zIndex: 20, height: topBarH, paddingTop: insets.top, backgroundColor: C.bg, flexDirection: 'row', alignItems: 'flex-end', paddingHorizontal: 16, paddingBottom: 8 }}>
-      <Pressable onPress={() => { Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light); openSidePanel(); }} style={{ width: 40, height: 36, alignItems: 'center', justifyContent: 'center' }}>
-        <KMenuButton />
-      </Pressable>
-      <View style={{ flex: 1, alignItems: 'center' }}>
-        <Text style={{ fontSize: 15, fontWeight: '700', color: C.label }}>{activeTab === 'Home' ? 'KayTV' : activeTab}</Text>
-      </View>
-      <RolePill role={role} onPress={cycleRole} isPrimary={true} />
-    </View>
-  );
-
-  // ── HOME TAB ───────────────────────────────────────────────────────────────
-
-  const HomeView = () => (
-    <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={{ paddingTop: topBarH + 12, paddingBottom: 120 }}>
-
-      {/* 1. Featured Video */}
-      {featuredVideo && (
-        <Pressable
-          onPress={() => Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium)}
-          style={{ marginHorizontal: 16, marginBottom: 24 }}
-        >
-          <View style={{ height: 220, borderRadius: 16, backgroundColor: `hsl(${featuredVideo.hue},45%,25%)`, alignItems: 'center', justifyContent: 'center', overflow: 'hidden' }}>
-            <Text style={{ fontSize: 72 }}>{featuredVideo.emoji}</Text>
-            {/* Gradient overlay at bottom */}
-            <View style={{ position: 'absolute', bottom: 0, left: 0, right: 0, height: 90, backgroundColor: 'rgba(0,0,0,0.55)', justifyContent: 'flex-end', padding: 14 }}>
-              <Text style={{ fontSize: 16, fontWeight: '800', color: '#fff', marginBottom: 4 }} numberOfLines={1}>{featuredVideo.title}</Text>
-              <Text style={{ fontSize: 12, color: 'rgba(255,255,255,0.75)' }}>{featuredVideo.views} views · {featuredVideo.timeAgo}</Text>
-            </View>
-            {/* Duration badge */}
-            <View style={{ position: 'absolute', top: 10, right: 10, backgroundColor: 'rgba(0,0,0,0.72)', borderRadius: 5, paddingHorizontal: 7, paddingVertical: 3 }}>
-              <Text style={{ fontSize: 12, color: '#fff', fontWeight: '700' }}>{featuredVideo.duration}</Text>
-            </View>
-            {/* Featured badge */}
-            <View style={{ position: 'absolute', top: 10, left: 10, backgroundColor: '#8B2500', borderRadius: 5, paddingHorizontal: 7, paddingVertical: 3 }}>
-              <Text style={{ fontSize: 10, color: '#fff', fontWeight: '700' }}>FEATURED</Text>
-            </View>
+  // ── Video Player view ──────────────────────────────────────────────────────
+  if (selectedVideo) {
+    const upNext = PVIDEOS.filter(v => v.id !== selectedVideo.id).slice(0, 3);
+    return (
+      <View style={{ flex: 1, backgroundColor: C.bg }}>
+        {/* Player thumbnail */}
+        <View style={{ width: '100%', aspectRatio: 16 / 9, backgroundColor: `hsl(${selectedVideo.hue},38%,28%)`, alignItems: 'center', justifyContent: 'center', marginTop: insets.top }}>
+          <Text style={{ fontSize: 64, color: 'rgba(255,255,255,0.9)' }}>▶</Text>
+          <Pressable
+            onPress={() => { setSelectedVideo(null); setDescExpanded(false); setLiked(false); setDisliked(false); setSaved(false); }}
+            style={{ position: 'absolute', top: 10, left: 10, width: 36, height: 36, borderRadius: 18, backgroundColor: 'rgba(0,0,0,0.55)', alignItems: 'center', justifyContent: 'center' }}
+          >
+            <IconSymbol name="chevron.left" size={16} color="#fff" />
+          </Pressable>
+          <View style={{ position: 'absolute', bottom: 8, right: 10, backgroundColor: 'rgba(0,0,0,0.72)', borderRadius: 5, paddingHorizontal: 6, paddingVertical: 3 }}>
+            <Text style={{ fontSize: 12, color: '#fff', fontWeight: '700' }}>{selectedVideo.duration}</Text>
           </View>
-        </Pressable>
-      )}
+        </View>
 
-      {/* 2. Series Rows */}
-      {PERSONAL_SERIES.map(series => {
-        const seriesVideos = PERSONAL_VIDEOS.filter(v => v.series === series.key);
-        return (
-          <View key={series.key} style={{ marginBottom: 24 }}>
-            <SectionHeader title={series.key} count={series.count} onSeeAll={() => Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light)} />
-            <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={{ paddingHorizontal: 16, gap: 10 }}>
-              {seriesVideos.map(v => <ThumbCard key={v.id} item={v} />)}
-            </ScrollView>
+        <ScrollView style={{ flex: 1 }} contentContainerStyle={{ paddingBottom: insets.bottom + 80 }} showsVerticalScrollIndicator={false}>
+          {/* Title + meta */}
+          <View style={{ paddingHorizontal: 16, paddingTop: 12, paddingBottom: 8 }}>
+            <Text style={{ fontSize: 17, fontWeight: '700', color: C.label, marginBottom: 4 }}>{selectedVideo.title}</Text>
+            <Text style={{ fontSize: 13, color: C.secondary }}>{selectedVideo.views} views · {selectedVideo.timeAgo}</Text>
           </View>
-        );
-      })}
 
-      {/* 3. Categories section */}
-      <View style={{ marginBottom: 20 }}>
-        <SectionHeader title="Browse" />
-        <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={{ paddingHorizontal: 16, gap: 8 }}>
-          {PERSONAL_CATEGORIES.map(cat => (
-            <Pressable
-              key={cat}
-              onPress={() => { Haptics.selectionAsync(); setHomeCat(cat); }}
-              style={{ paddingHorizontal: 14, paddingVertical: 8, borderRadius: 20, backgroundColor: homeCat === cat ? C.label : C.surface, borderWidth: StyleSheet.hairlineWidth, borderColor: homeCat === cat ? C.label : C.separator }}
-            >
-              <Text style={{ fontSize: 13, fontWeight: '600', color: homeCat === cat ? C.bg : C.secondary }}>{cat}</Text>
-            </Pressable>
-          ))}
-        </ScrollView>
-      </View>
-
-      {/* 4. All Videos */}
-      <View style={{ flexDirection: 'row', alignItems: 'center', paddingHorizontal: 16, marginBottom: 14 }}>
-        <Text style={{ fontSize: 16, fontWeight: '700', color: C.label, flex: 1 }}>All Videos</Text>
-        {/* Sort toggle */}
-        <View style={{ flexDirection: 'row', backgroundColor: C.surface, borderRadius: 12, overflow: 'hidden', borderWidth: StyleSheet.hairlineWidth, borderColor: C.separator }}>
-          {(['Recent', 'Popular'] as HomeSort[]).map(s => (
-            <Pressable key={s} onPress={() => { Haptics.selectionAsync(); setHomeSort(s); }} style={{ paddingHorizontal: 12, paddingVertical: 6, backgroundColor: homeSort === s ? C.label : 'transparent' }}>
-              <Text style={{ fontSize: 12, fontWeight: '600', color: homeSort === s ? C.bg : C.secondary }}>{s}</Text>
-            </Pressable>
-          ))}
-        </View>
-      </View>
-
-      <View style={{ paddingHorizontal: 16 }}>
-        {homeVideos.map(v => <VideoRow key={v.id} v={v} />)}
-      </View>
-
-    </ScrollView>
-  );
-
-  // ── EXPLORE TAB ────────────────────────────────────────────────────────────
-
-  const ExploreView = () => (
-    <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={{ paddingTop: topBarH + 12, paddingBottom: 120 }}>
-
-      {/* Search bar */}
-      <View style={{ marginHorizontal: 16, marginBottom: 16, flexDirection: 'row', alignItems: 'center', backgroundColor: C.surface, borderRadius: 12, paddingHorizontal: 12, paddingVertical: 10, gap: 8 }}>
-        <IconSymbol name="magnifyingglass" size={16} color={C.secondary} />
-        <Text style={{ flex: 1, fontSize: 14, color: C.secondary }}>Search KTV...</Text>
-      </View>
-
-      {/* Trending Now */}
-      <View style={{ marginBottom: 24 }}>
-        <SectionHeader title="Trending Now" onSeeAll={() => Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light)} />
-        <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={{ paddingHorizontal: 16, gap: 12 }}>
-          {filteredTrending.map(v => (
-            <Pressable key={v.id} onPress={() => Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light)} style={{ width: 200 }}>
-              <View style={{ height: 120, borderRadius: 12, backgroundColor: `hsl(${v.hue},40%,28%)`, alignItems: 'center', justifyContent: 'center', marginBottom: 8 }}>
-                <Text style={{ fontSize: 44 }}>{v.emoji}</Text>
-                <View style={{ position: 'absolute', bottom: 6, right: 7, backgroundColor: 'rgba(0,0,0,0.7)', borderRadius: 4, paddingHorizontal: 5, paddingVertical: 2 }}>
-                  <Text style={{ fontSize: 10, color: '#fff', fontWeight: '700' }}>{v.duration}</Text>
-                </View>
-              </View>
-              <Text style={{ fontSize: 13, fontWeight: '700', color: C.label, marginBottom: 3 }} numberOfLines={2}>{v.title}</Text>
-              <Text style={{ fontSize: 11, color: C.secondary }}>{v.creator} · {v.views} views</Text>
-            </Pressable>
-          ))}
-        </ScrollView>
-      </View>
-
-      {/* Browse by Category */}
-      <View style={{ marginBottom: 24 }}>
-        <SectionHeader title="Browse by Category" />
-        <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={{ paddingHorizontal: 16, gap: 10 }}>
-          {[
-            { name: 'Sports', emoji: '🏆', hue: 210 },
-            { name: 'Business', emoji: '💼', hue: 30 },
-            { name: 'Education', emoji: '🎓', hue: 160 },
-            { name: 'Faith', emoji: '✝️', hue: 195 },
-            { name: 'Lifestyle', emoji: '☀️', hue: 50 },
-            { name: 'Music', emoji: '🎵', hue: 290 },
-            { name: 'Tech', emoji: '💻', hue: 230 },
-            { name: 'Coaching', emoji: '📊', hue: 150 },
-            { name: 'Podcasts', emoji: '🎙️', hue: 320 },
-          ].map(cat => (
-            <Pressable key={cat.name} onPress={() => Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light)}
-              style={{ width: 90, height: 70, borderRadius: 12, backgroundColor: `hsl(${cat.hue},30%,20%)`, alignItems: 'center', justifyContent: 'center', gap: 4 }}>
-              <Text style={{ fontSize: 24 }}>{cat.emoji}</Text>
-              <Text style={{ fontSize: 11, fontWeight: '600', color: '#fff' }}>{cat.name}</Text>
-            </Pressable>
-          ))}
-        </ScrollView>
-      </View>
-
-      {/* Creators You Might Like */}
-      <View style={{ marginBottom: 24 }}>
-        <SectionHeader title="Creators You Might Like" />
-        <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={{ paddingHorizontal: 16, gap: 12 }}>
-          {EXPLORE_CREATORS.map(creator => (
-            <View key={creator.id} style={{ width: 140, backgroundColor: C.surface, borderRadius: 14, padding: 12, alignItems: 'center' }}>
-              <View style={{ width: 56, height: 56, borderRadius: 28, backgroundColor: `hsl(${creator.hue},38%,32%)`, alignItems: 'center', justifyContent: 'center', marginBottom: 8 }}>
-                <Text style={{ fontSize: 16, fontWeight: '700', color: '#fff' }}>{creator.initials}</Text>
-              </View>
-              <Text style={{ fontSize: 13, fontWeight: '700', color: C.label, textAlign: 'center', marginBottom: 2 }} numberOfLines={1}>{creator.name}</Text>
-              <Text style={{ fontSize: 11, color: C.secondary, marginBottom: 4 }}>{creator.subscribers} subscribers</Text>
-              <Text style={{ fontSize: 10, color: C.secondary, marginBottom: 10, textAlign: 'center' }} numberOfLines={1}>{creator.latestVideo}</Text>
-              <Pressable
-                onPress={() => { Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light); setSubscribedIds(prev => prev.includes(creator.id) ? prev.filter(id => id !== creator.id) : [...prev, creator.id]); }}
-                style={{ paddingHorizontal: 14, paddingVertical: 6, borderRadius: 12, backgroundColor: subscribedIds.includes(creator.id) ? C.label : 'transparent', borderWidth: 1.5, borderColor: subscribedIds.includes(creator.id) ? C.label : C.separator }}
-              >
-                <Text style={{ fontSize: 12, fontWeight: '700', color: subscribedIds.includes(creator.id) ? C.bg : C.label }}>
-                  {subscribedIds.includes(creator.id) ? 'Subscribed' : 'Subscribe'}
-                </Text>
-              </Pressable>
-            </View>
-          ))}
-        </ScrollView>
-      </View>
-
-      {/* New This Week - 2 col grid */}
-      <View style={{ marginBottom: 24 }}>
-        <SectionHeader title="New This Week" />
-        <View style={{ paddingHorizontal: 16, flexDirection: 'row', flexWrap: 'wrap', gap: 12 }}>
-          {filteredNew.map(v => (
-            <Pressable key={v.id} onPress={() => Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light)}
-              style={{ width: '47%' }}>
-              <View style={{ height: 90, borderRadius: 10, backgroundColor: `hsl(${v.hue},38%,28%)`, alignItems: 'center', justifyContent: 'center', marginBottom: 6 }}>
-                <Text style={{ fontSize: 32 }}>{v.emoji}</Text>
-                <View style={{ position: 'absolute', bottom: 5, right: 6, backgroundColor: 'rgba(0,0,0,0.7)', borderRadius: 3, paddingHorizontal: 4, paddingVertical: 1 }}>
-                  <Text style={{ fontSize: 9, color: '#fff', fontWeight: '700' }}>{v.duration}</Text>
-                </View>
-              </View>
-              <Text style={{ fontSize: 12, fontWeight: '600', color: C.label, marginBottom: 2 }} numberOfLines={2}>{v.title}</Text>
-              <Text style={{ fontSize: 11, color: C.secondary }}>{v.creator} · {v.views} views</Text>
-            </Pressable>
-          ))}
-        </View>
-      </View>
-
-      {/* For You */}
-      <View style={{ marginBottom: 24 }}>
-        <SectionHeader title="For You" />
-        <View style={{ paddingHorizontal: 16, flexDirection: 'row', flexWrap: 'wrap', gap: 12 }}>
-          {[...PERSONAL_VIDEOS].sort(() => Math.random() - 0.5).slice(0, 6).map(v => (
-            <Pressable key={v.id} onPress={() => Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light)} style={{ width: '47%' }}>
-              <View style={{ height: 90, borderRadius: 10, backgroundColor: `hsl(${v.hue},38%,28%)`, alignItems: 'center', justifyContent: 'center', marginBottom: 6 }}>
-                <Text style={{ fontSize: 32 }}>{v.emoji}</Text>
-              </View>
-              <Text style={{ fontSize: 12, fontWeight: '600', color: C.label, marginBottom: 1 }} numberOfLines={2}>{v.title}</Text>
-              <Text style={{ fontSize: 11, color: C.secondary }}>{v.views} views</Text>
-            </Pressable>
-          ))}
-        </View>
-      </View>
-
-    </ScrollView>
-  );
-
-  // ── LIBRARY TAB ────────────────────────────────────────────────────────────
-
-  const LibraryView = () => (
-    <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={{ paddingTop: topBarH + 56, paddingBottom: 120 }}>
-
-      {/* Library Row helper */}
-      {([
-        { label: 'Watch History', items: LIBRARY_HISTORY },
-        { label: 'Watch Later',   items: LIBRARY_WATCH_LATER },
-        { label: 'Liked Videos',  items: LIBRARY_LIKED },
-      ] as const).map(({ label, items }) => {
-        const show = libPill === 'All' || (libPill === 'Saved' && (label === 'Watch Later' || label === 'Liked Videos')) || (libPill === 'Watch Later' && label === 'Watch Later');
-        if (!show) return null;
-        return (
-          <View key={label} style={{ marginBottom: 24 }}>
-            <SectionHeader title={label} onSeeAll={() => Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light)} />
-            <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={{ paddingHorizontal: 16, gap: 10 }}>
-              {(items as any[]).map((v: any) => <ThumbCard key={v.id} item={v} />)}
-            </ScrollView>
-          </View>
-        );
-      })}
-
-      {/* Playlists */}
-      {(libPill === 'All' || libPill === 'Saved') && (
-        <View style={{ marginBottom: 24 }}>
-          <SectionHeader title="Playlists" onSeeAll={() => Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light)} />
-          <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={{ paddingHorizontal: 16, gap: 12 }}>
-            {LIBRARY_PLAYLISTS.map(pl => (
-              <Pressable key={pl.id} onPress={() => Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light)} style={{ width: 140 }}>
-                <View style={{ height: 90, borderRadius: 10, backgroundColor: `hsl(${pl.hue},38%,28%)`, alignItems: 'center', justifyContent: 'center', marginBottom: 6 }}>
-                  <Text style={{ fontSize: 28 }}>{pl.emojis[0]}</Text>
-                </View>
-                <Text style={{ fontSize: 13, fontWeight: '700', color: C.label, marginBottom: 2 }} numberOfLines={1}>{pl.name}</Text>
-                <Text style={{ fontSize: 11, color: C.secondary }}>{pl.count} videos</Text>
+          {/* Action row */}
+          <View style={{ flexDirection: 'row', paddingHorizontal: 4, paddingVertical: 4, borderTopWidth: StyleSheet.hairlineWidth, borderBottomWidth: StyleSheet.hairlineWidth, borderColor: C.separator }}>
+            {([
+              { icon: liked ? 'hand.thumbsup.fill' : 'hand.thumbsup', label: liked ? 'Liked' : 'Like', onPress: () => { setLiked(p => !p); if (disliked) setDisliked(false); } },
+              { icon: disliked ? 'hand.thumbsdown.fill' : 'hand.thumbsdown', label: 'Dislike', onPress: () => { setDisliked(p => !p); if (liked) setLiked(false); } },
+              { icon: 'arrowshape.turn.up.right', label: 'Share', onPress: () => Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light) },
+              { icon: saved ? 'bookmark.fill' : 'bookmark', label: saved ? 'Saved' : 'Save', onPress: () => setSaved(p => !p) },
+              { icon: 'arrow.down.circle', label: 'Download', onPress: () => Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light) },
+              ...(isOwner ? [{ icon: 'pencil', label: 'Edit', onPress: () => Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light) }] : []),
+            ] as { icon: string; label: string; onPress: () => void }[]).map(action => (
+              <Pressable key={action.label} onPress={action.onPress} style={{ flex: 1, alignItems: 'center', paddingVertical: 10, gap: 4 }}>
+                <IconSymbol name={action.icon as any} size={20} color={C.label} />
+                <Text style={{ fontSize: 10, color: C.secondary }}>{action.label}</Text>
               </Pressable>
             ))}
-            {/* + New Playlist */}
-            <Pressable onPress={() => Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light)} style={{ width: 140, height: 90, borderRadius: 10, borderWidth: 1.5, borderColor: C.separator, borderStyle: 'dashed', alignItems: 'center', justifyContent: 'center', alignSelf: 'flex-start' }}>
-              <IconSymbol name="plus" size={22} color={C.secondary} />
-              <Text style={{ fontSize: 11, color: C.secondary, marginTop: 4 }}>New Playlist</Text>
-            </Pressable>
-          </ScrollView>
-        </View>
-      )}
+          </View>
 
-      {/* Uploads (Owner only, visible when All or Uploads) */}
-      {(libPill === 'All' || libPill === 'Uploads') && (
-        <View style={{ marginBottom: 24 }}>
-          <SectionHeader title="Your Uploads" count={PERSONAL_VIDEOS.length} onSeeAll={() => router.push('/(tabs)/(main)/kaytv/my-channel' as any)} />
-          <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={{ paddingHorizontal: 16, gap: 10 }}>
-            {PERSONAL_VIDEOS.map(v => (
-              <Pressable key={v.id} onPress={() => Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light)} style={{ width: 160 }}>
-                <View style={{ width: 160, height: 94, borderRadius: 10, backgroundColor: `hsl(${v.hue},38%,28%)`, alignItems: 'center', justifyContent: 'center', marginBottom: 6 }}>
-                  <Text style={{ fontSize: 36 }}>{v.emoji}</Text>
-                  <View style={{ position: 'absolute', bottom: 6, right: 6, backgroundColor: 'rgba(0,0,0,0.7)', borderRadius: 4, paddingHorizontal: 5, paddingVertical: 2 }}>
+          {/* Creator row */}
+          <View style={{ flexDirection: 'row', alignItems: 'center', paddingHorizontal: 16, paddingVertical: 12, borderBottomWidth: StyleSheet.hairlineWidth, borderBottomColor: C.separator }}>
+            <View style={{ width: 40, height: 40, borderRadius: 20, backgroundColor: `hsl(45,38%,28%)`, alignItems: 'center', justifyContent: 'center', marginRight: 12 }}>
+              <Text style={{ fontSize: 14, fontWeight: '700', color: '#fff' }}>SK</Text>
+            </View>
+            <View style={{ flex: 1 }}>
+              <Text style={{ fontSize: 15, fontWeight: '700', color: C.label }}>Sammy Kalejaiye</Text>
+              <Text style={{ fontSize: 12, color: C.secondary }}>42.1K subscribers</Text>
+            </View>
+            <Pressable
+              onPress={() => { Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light); if (!isOwner) setSubscribed(p => !p); }}
+              style={{ backgroundColor: isOwner ? C.surface : subscribed ? C.surface : C.label, borderRadius: 20, paddingHorizontal: 16, paddingVertical: 7 }}
+            >
+              <Text style={{ fontSize: 13, fontWeight: '700', color: isOwner ? C.label : subscribed ? C.label : C.bg }}>
+                {isOwner ? 'Edit Video' : subscribed ? 'Subscribed' : 'Subscribe'}
+              </Text>
+            </Pressable>
+          </View>
+
+          {/* Description */}
+          <Pressable
+            onPress={() => setDescExpanded(p => !p)}
+            style={{ paddingHorizontal: 16, paddingVertical: 12, borderBottomWidth: StyleSheet.hairlineWidth, borderBottomColor: C.separator }}
+          >
+            <Text style={{ fontSize: 13, color: C.label, lineHeight: 19 }} numberOfLines={descExpanded ? undefined : 3}>
+              {selectedVideo.description}
+            </Text>
+            <Text style={{ fontSize: 12, color: C.secondary, marginTop: 4, fontWeight: '600' }}>
+              {descExpanded ? 'Show less' : 'Show more'}
+            </Text>
+          </Pressable>
+
+          {/* Comments */}
+          <View style={{ paddingHorizontal: 16, paddingTop: 16 }}>
+            <Text style={{ fontSize: 15, fontWeight: '700', color: C.label, marginBottom: 12 }}>Comments</Text>
+            {PCOMMENTS.map(c => (
+              <View key={c.id} style={{ flexDirection: 'row', marginBottom: 16 }}>
+                <View style={{ width: 32, height: 32, borderRadius: 16, backgroundColor: C.surface, alignItems: 'center', justifyContent: 'center', marginRight: 10, flexShrink: 0 }}>
+                  <Text style={{ fontSize: 11, fontWeight: '700', color: C.label }}>{c.initials}</Text>
+                </View>
+                <View style={{ flex: 1 }}>
+                  <Text style={{ fontSize: 12, color: C.secondary, marginBottom: 3 }}>{c.author} · {c.timeAgo}</Text>
+                  <Text style={{ fontSize: 13, color: C.label, lineHeight: 18 }}>{c.text}</Text>
+                  <View style={{ flexDirection: 'row', gap: 14, marginTop: 6 }}>
+                    <Pressable onPress={() => Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light)} style={{ flexDirection: 'row', gap: 4, alignItems: 'center' }}>
+                      <IconSymbol name="hand.thumbsup" size={13} color={C.secondary} />
+                      <Text style={{ fontSize: 11, color: C.secondary }}>{c.likes}</Text>
+                    </Pressable>
+                    <Pressable onPress={() => Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light)}>
+                      <Text style={{ fontSize: 11, color: C.secondary }}>Reply</Text>
+                    </Pressable>
+                  </View>
+                </View>
+              </View>
+            ))}
+          </View>
+
+          {/* Up Next */}
+          <View style={{ paddingHorizontal: 16, paddingTop: 8 }}>
+            <Text style={{ fontSize: 15, fontWeight: '700', color: C.label, marginBottom: 12 }}>Up Next</Text>
+            {upNext.map(v => (
+              <Pressable
+                key={v.id}
+                onPress={() => { Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light); setSelectedVideo(v); setDescExpanded(false); setLiked(false); setDisliked(false); setSaved(false); }}
+                style={({ pressed }) => ({ flexDirection: 'row', gap: 10, marginBottom: 14, opacity: pressed ? 0.8 : 1 })}
+              >
+                <View style={{ width: 120, height: 68, borderRadius: 8, backgroundColor: `hsl(${v.hue},38%,28%)`, alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+                  <Text style={{ fontSize: 20, color: 'rgba(255,255,255,0.9)' }}>▶</Text>
+                  <View style={{ position: 'absolute', bottom: 4, right: 4, backgroundColor: 'rgba(0,0,0,0.72)', borderRadius: 3, paddingHorizontal: 4, paddingVertical: 1 }}>
                     <Text style={{ fontSize: 10, color: '#fff', fontWeight: '700' }}>{v.duration}</Text>
                   </View>
-                  <View style={{ position: 'absolute', top: 6, left: 6, backgroundColor: '#5A8A6E', borderRadius: 4, paddingHorizontal: 5, paddingVertical: 2 }}>
-                    <Text style={{ fontSize: 9, color: '#fff', fontWeight: '700' }}>Published</Text>
-                  </View>
                 </View>
-                <Text style={{ fontSize: 12, fontWeight: '600', color: C.label, marginBottom: 2 }} numberOfLines={1}>{v.title}</Text>
-                <Text style={{ fontSize: 11, color: C.secondary }}>{v.views} views</Text>
+                <View style={{ flex: 1 }}>
+                  <Text style={{ fontSize: 13, fontWeight: '600', color: C.label, marginBottom: 3 }} numberOfLines={2}>{v.title}</Text>
+                  <Text style={{ fontSize: 11, color: C.secondary }}>{v.views} views · {v.timeAgo}</Text>
+                </View>
               </Pressable>
             ))}
-          </ScrollView>
-        </View>
-      )}
+          </View>
+        </ScrollView>
+      </View>
+    );
+  }
 
-    </ScrollView>
+  // ── Tab content ────────────────────────────────────────────────────────────
+
+  const VideosTab = () => (
+    <View style={{ paddingHorizontal: 16, paddingTop: 16 }}>
+      {PVIDEOS.map(v => (
+        <Pressable
+          key={v.id}
+          onPress={() => { Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light); setSelectedVideo(v); }}
+          style={({ pressed }) => ({ opacity: pressed ? 0.85 : 1, marginBottom: 18 })}
+        >
+          <View style={{ aspectRatio: 16 / 9, borderRadius: 10, backgroundColor: `hsl(${v.hue},38%,28%)`, alignItems: 'center', justifyContent: 'center', marginBottom: 10, overflow: 'hidden' }}>
+            <Text style={{ fontSize: 42, color: 'rgba(255,255,255,0.9)' }}>▶</Text>
+            <View style={{ position: 'absolute', bottom: 8, right: 10, backgroundColor: 'rgba(0,0,0,0.72)', borderRadius: 5, paddingHorizontal: 6, paddingVertical: 3 }}>
+              <Text style={{ fontSize: 12, color: '#fff', fontWeight: '700' }}>{v.duration}</Text>
+            </View>
+          </View>
+          <View style={{ flexDirection: 'row', gap: 10 }}>
+            <View style={{ width: 34, height: 34, borderRadius: 17, backgroundColor: `hsl(45,38%,28%)`, alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+              <Text style={{ fontSize: 11, fontWeight: '700', color: '#fff' }}>SK</Text>
+            </View>
+            <View style={{ flex: 1 }}>
+              <Text style={{ fontSize: 14, fontWeight: '700', color: C.label, marginBottom: 3 }} numberOfLines={2}>{v.title}</Text>
+              <Text style={{ fontSize: 12, color: C.secondary }}>Sammy Kalejaiye · {v.views} views · {v.timeAgo}</Text>
+            </View>
+            {isOwner && (
+              <Pressable hitSlop={10} onPress={() => Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light)}>
+                <IconSymbol name="ellipsis" size={14} color={C.secondary} />
+              </Pressable>
+            )}
+          </View>
+        </Pressable>
+      ))}
+    </View>
   );
 
-  // ── Library filter pills (only on Library tab) ─────────────────────────────
+  const ShortsTab = () => {
+    const colWidth = (width - 4) / 3;
+    return (
+      <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: 2, paddingTop: 2 }}>
+        {PSHORTS.map((s, i) => (
+          <Pressable
+            key={s.id}
+            onPress={() => { Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light); setShortsIndex(i); setShortsOpen(true); }}
+            style={{ width: colWidth, aspectRatio: 9 / 16, backgroundColor: `hsl(${s.hue},38%,28%)`, alignItems: 'center', justifyContent: 'center', overflow: 'hidden' }}
+          >
+            <Text style={{ fontSize: 28, color: 'rgba(255,255,255,0.9)' }}>▶</Text>
+            <View style={{ position: 'absolute', bottom: 0, left: 0, right: 0, backgroundColor: 'rgba(0,0,0,0.45)', paddingHorizontal: 6, paddingVertical: 5 }}>
+              <Text style={{ fontSize: 11, color: '#fff', fontWeight: '600' }} numberOfLines={1}>{s.title}</Text>
+              <Text style={{ fontSize: 10, color: 'rgba(255,255,255,0.75)' }}>{s.views} views</Text>
+            </View>
+          </Pressable>
+        ))}
+      </View>
+    );
+  };
 
-  const LibraryPills = () => activeTab === 'Library' ? (
-    <View style={{ position: 'absolute', top: topBarH, left: 0, right: 0, zIndex: 15, backgroundColor: C.bg, paddingVertical: 8 }}>
-      <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={{ paddingHorizontal: 16, gap: 8 }}>
-        {LIB_PILLS.map(p => (
-          <Pressable key={p} onPress={() => { Haptics.selectionAsync(); setLibPill(p); }}
-            style={{ paddingHorizontal: 14, paddingVertical: 7, borderRadius: 20, backgroundColor: libPill === p ? C.label : C.surface, borderWidth: StyleSheet.hairlineWidth, borderColor: libPill === p ? C.label : C.separator }}>
-            <Text style={{ fontSize: 13, fontWeight: '600', color: libPill === p ? C.bg : C.secondary }}>{p}</Text>
+  const LiveTab = () => {
+    const liveNow  = PLIVE.filter(l => l.status === 'live');
+    const upcoming = PLIVE.filter(l => l.status === 'upcoming');
+    const past     = PLIVE.filter(l => l.status === 'past');
+    return (
+      <View style={{ paddingHorizontal: 16, paddingTop: 16 }}>
+        {liveNow.length > 0 && (
+          <>
+            <Text style={{ fontSize: 11, fontWeight: '700', color: C.secondary, textTransform: 'uppercase', letterSpacing: 0.8, marginBottom: 10 }}>Live Now</Text>
+            {liveNow.map(l => (
+              <Pressable key={l.id} onPress={() => Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light)} style={({ pressed }) => ({ opacity: pressed ? 0.85 : 1, flexDirection: 'row', gap: 12, marginBottom: 16 })}>
+                <View style={{ width: 120, height: 68, borderRadius: 8, backgroundColor: `hsl(${l.hue},38%,28%)`, alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+                  <View style={{ backgroundColor: '#C0392B', borderRadius: 4, paddingHorizontal: 6, paddingVertical: 2 }}>
+                    <Text style={{ fontSize: 10, color: '#fff', fontWeight: '800', letterSpacing: 0.5 }}>● LIVE</Text>
+                  </View>
+                </View>
+                <View style={{ flex: 1 }}>
+                  <Text style={{ fontSize: 14, fontWeight: '700', color: C.label, marginBottom: 4 }} numberOfLines={2}>{l.title}</Text>
+                  <Text style={{ fontSize: 12, color: C.secondary }}>{l.viewerCount?.toLocaleString()} watching</Text>
+                </View>
+              </Pressable>
+            ))}
+          </>
+        )}
+        {upcoming.length > 0 && (
+          <>
+            <Text style={{ fontSize: 11, fontWeight: '700', color: C.secondary, textTransform: 'uppercase', letterSpacing: 0.8, marginBottom: 10, marginTop: 4 }}>Upcoming</Text>
+            {upcoming.map(l => (
+              <View key={l.id} style={{ flexDirection: 'row', gap: 12, marginBottom: 16 }}>
+                <View style={{ width: 120, height: 68, borderRadius: 8, backgroundColor: `hsl(${l.hue},38%,28%)`, alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+                  <IconSymbol name="calendar" size={22} color="rgba(255,255,255,0.7)" />
+                </View>
+                <View style={{ flex: 1 }}>
+                  <Text style={{ fontSize: 14, fontWeight: '700', color: C.label, marginBottom: 4 }} numberOfLines={2}>{l.title}</Text>
+                  <Text style={{ fontSize: 12, color: C.secondary, marginBottom: 8 }}>{l.scheduledAt}</Text>
+                  <Pressable onPress={() => Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light)} style={{ alignSelf: 'flex-start', borderWidth: 1, borderColor: C.separator, borderRadius: 14, paddingHorizontal: 10, paddingVertical: 4 }}>
+                    <Text style={{ fontSize: 12, fontWeight: '600', color: C.label }}>Set Reminder</Text>
+                  </Pressable>
+                </View>
+              </View>
+            ))}
+          </>
+        )}
+        {past.length > 0 && (
+          <>
+            <Text style={{ fontSize: 11, fontWeight: '700', color: C.secondary, textTransform: 'uppercase', letterSpacing: 0.8, marginBottom: 10, marginTop: 4 }}>Past Streams</Text>
+            {past.map(l => (
+              <Pressable key={l.id} onPress={() => Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light)} style={({ pressed }) => ({ opacity: pressed ? 0.85 : 1, flexDirection: 'row', gap: 12, marginBottom: 16 })}>
+                <View style={{ width: 120, height: 68, borderRadius: 8, backgroundColor: `hsl(${l.hue},38%,28%)`, alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+                  <Text style={{ fontSize: 12, color: 'rgba(255,255,255,0.9)', fontWeight: '700' }}>{l.duration}</Text>
+                </View>
+                <View style={{ flex: 1 }}>
+                  <Text style={{ fontSize: 14, fontWeight: '700', color: C.label, marginBottom: 4 }} numberOfLines={2}>{l.title}</Text>
+                  <Text style={{ fontSize: 12, color: C.secondary }}>{l.date}</Text>
+                </View>
+              </Pressable>
+            ))}
+          </>
+        )}
+      </View>
+    );
+  };
+
+  const PlaylistsTab = () => (
+    <View style={{ paddingTop: 16 }}>
+      <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={{ paddingHorizontal: 16, gap: 12, paddingBottom: 8 }}>
+        {PPLAYLISTS.map(p => (
+          <Pressable key={p.id} onPress={() => Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light)} style={{ width: 160 }}>
+            <View style={{ width: 160, height: 100, marginBottom: 8 }}>
+              {p.hues.map((h, i) => (
+                <View
+                  key={i}
+                  style={{
+                    position: i === 0 ? 'relative' : 'absolute',
+                    left: i * 4, top: i * 4,
+                    width: 152 - i * 8, height: 92 - i * 8,
+                    borderRadius: 8,
+                    backgroundColor: `hsl(${h},38%,${28 + i * 5}%)`,
+                    zIndex: 4 - i,
+                  }}
+                />
+              ))}
+            </View>
+            <Text style={{ fontSize: 13, fontWeight: '700', color: C.label, marginBottom: 2 }} numberOfLines={1}>{p.title}</Text>
+            <Text style={{ fontSize: 12, color: C.secondary }}>{p.videoCount} videos</Text>
           </Pressable>
         ))}
       </ScrollView>
     </View>
-  ) : null;
+  );
+
+  // ── Main channel page ──────────────────────────────────────────────────────
 
   return (
     <View style={{ flex: 1, backgroundColor: C.bg }}>
-      <TopBar />
-      <LibraryPills />
-      {activeTab === 'Home'    && <HomeView />}
-      {activeTab === 'Explore' && <ExploreView />}
-      {activeTab === 'Library' && <LibraryView />}
-      {/* FAB — Upload (only on Home tab) */}
-      {activeTab === 'Home' && (
-        <Pressable
-          onPress={() => { Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium); router.push('/(tabs)/(main)/kaytv/upload' as any); }}
-          style={{ position: 'absolute', bottom: 80, right: 24, width: 52, height: 52, borderRadius: 26, backgroundColor: C.label, alignItems: 'center', justifyContent: 'center', zIndex: 50 }}
-        >
-          <IconSymbol name="plus" size={22} color={C.bg} />
-        </Pressable>
-      )}
-    </View>
-  );
-}
-
-// ── Personal Mode Subscriber KTV data ─────────────────────────────────────────
-
-const SUB_VIDEOS = [
-  { id: 'sv1',  title: 'Day in My Life - Coach & CEO',             emoji: '🌟', hue: 45,  duration: '16:22', views: '8.9K', timeAgo: '2 days ago',  locked: false },
-  { id: 'sv2',  title: 'How I Use AI to Build Faster',             emoji: '⚡', hue: 280, duration: '7:30',  views: '6.8K', timeAgo: '4 days ago',  locked: false },
-  { id: 'sv3',  title: 'Why I Built an OS',                        emoji: '🏗️',  hue: 200, duration: '12:34', views: '5.1K', timeAgo: '2 weeks ago', locked: false },
-  { id: 'sv4',  title: 'Brand Deal Negotiation Tips',              emoji: '🤝', hue: 320, duration: '11:42', views: '4.1K', timeAgo: '3 weeks ago', locked: false },
-  { id: 'sv5',  title: 'Why System Fit Matters More Than Talent',  emoji: '🧩', hue: 150, duration: '9:45',  views: '4.2K', timeAgo: '3 weeks ago', locked: false },
-  { id: 'sv6',  title: 'My Content Creation Workflow',             emoji: '🎬', hue: 300, duration: '8:55',  views: '3.4K', timeAgo: '3 weeks ago', locked: false },
-  { id: 'sv7',  title: 'From Coach to CEO',                        emoji: '🎯', hue: 30,  duration: '10:15', views: '3.2K', timeAgo: '1 month ago', locked: false },
-  { id: 'sv8',  title: 'Building Culture at Lincoln',              emoji: '🏛️', hue: 165, duration: '11:20', views: '2.8K', timeAgo: '1 month ago', locked: false },
-  { id: 'sv9',  title: 'Inner Circle: Full Business Breakdown',    emoji: '🔒', hue: 100, duration: '28:30', views: '',     timeAgo: '',            locked: true  },
-  { id: 'sv10', title: 'Inner Circle: Fundraising Strategy',       emoji: '🔒', hue: 130, duration: '19:15', views: '',     timeAgo: '',            locked: true  },
-];
-
-const SUB_MORE_FOR_YOU = [
-  { id: 'my1', title: 'Ep 12: Building in Public', creator: 'Chris Walker', emoji: '🛠️', hue: 200, duration: '22:10', views: '12K' },
-  { id: 'my2', title: 'Morning Habits That Scale', creator: 'Aaliya Rhodes', emoji: '🌅', hue: 50,  duration: '9:45',  views: '8.4K' },
-  { id: 'my3', title: 'Pitch Perfect Framework',   creator: 'Jordan Hayes', emoji: '🎯', hue: 340, duration: '14:22', views: '6.2K' },
-  { id: 'my4', title: 'Deep Work Protocol 2026',   creator: 'Priya Nair',   emoji: '🧠', hue: 270, duration: '18:00', views: '15K'  },
-];
-
-const SUB_EXPLORE_TRENDING = [
-  { id: 'et1', title: 'The Creator Economy Is Dead (Long Live It)', creator: 'Marcus Bell',   emoji: '📈', hue: 30,  views: '142K', duration: '24:18' },
-  { id: 'et2', title: 'How I Made $0 to $10K in 90 Days',         creator: 'Lena Park',      emoji: '💰', hue: 80,  views: '98K',  duration: '18:44' },
-  { id: 'et3', title: 'AI Tools for Athletes & Coaches',           creator: 'Devon Walsh',   emoji: '🤖', hue: 200, views: '67K',  duration: '12:30' },
-  { id: 'et4', title: 'Building a Brand With Zero Budget',         creator: 'Talia James',   emoji: '🎨', hue: 300, views: '54K',  duration: '15:22' },
-  { id: 'et5', title: 'Fitness Meets Entrepreneurship',            creator: 'Rafael Torres', emoji: '💪', hue: 150, views: '41K',  duration: '20:08' },
-];
-
-const SUB_LIB_HISTORY = [
-  { id: 'lh1', title: 'Day in My Life - Coach & CEO', creator: 'Sammy Kalejaiye', emoji: '🌟', hue: 45,  duration: '16:22', progress: 0.72 },
-  { id: 'lh2', title: 'How I Use AI to Build Faster', creator: 'Sammy Kalejaiye', emoji: '⚡', hue: 280, duration: '7:30',  progress: 1.00 },
-  { id: 'lh3', title: 'The Creator Economy Is Dead',  creator: 'Marcus Bell',      emoji: '📈', hue: 30,  duration: '24:18', progress: 0.35 },
-];
-
-const SUB_WATCH_LATER = [
-  { id: 'wl1', title: 'Building a Brand With Zero Budget', creator: 'Talia James',   emoji: '🎨', hue: 300, duration: '15:22' },
-  { id: 'wl2', title: 'Fitness Meets Entrepreneurship',    creator: 'Rafael Torres', emoji: '💪', hue: 150, duration: '20:08' },
-  { id: 'wl3', title: 'Pitch Perfect Framework',           creator: 'Jordan Hayes',  emoji: '🎯', hue: 340, duration: '14:22' },
-];
-
-function PersonalSubscriberKayTVView({
-  C, insets, role, cycleRole, accent, tabParam,
-}: {
-  C: ComponentColors;
-  insets: { top: number; bottom: number };
-  role: string;
-  cycleRole: () => void;
-  accent: string;
-  tabParam?: string;
-}) {
-  type SubTab = 'Home' | 'Explore' | 'Library';
-  const [activeTab, setActiveTab] = React.useState<SubTab>(() =>
-    (tabParam === 'Explore' || tabParam === 'Library') ? tabParam : 'Home'
-  );
-  const [subFilter, setSubFilter] = React.useState<'All' | 'Public' | 'Subscribers Only'>('All');
-  const [subscribed, setSubscribed] = React.useState(true);
-  const topBarH = insets.top + 52;
-
-  React.useEffect(() => {
-    if (tabParam === 'Home' || tabParam === 'Explore' || tabParam === 'Library') {
-      setActiveTab(tabParam);
-    }
-  }, [tabParam]);
-
-
-  // ── Home: creator's channel view ────────────────────────────────────────────
-  const HomeView = () => {
-    const filteredVideos = subFilter === 'Public'
-      ? SUB_VIDEOS.filter(v => !v.locked)
-      : subFilter === 'Subscribers Only'
-      ? SUB_VIDEOS.filter(v => v.locked)
-      : SUB_VIDEOS;
-
-    return (
-      <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={{ paddingBottom: 120 }}>
-        {/* Channel header */}
-        <View style={{ backgroundColor: '#1A2535', height: 140, alignItems: 'center', justifyContent: 'center' }}>
-          <View style={{ flexDirection: 'row', gap: 24, opacity: 0.3 }}>
-            <Text style={{ fontSize: 40 }}>🏀</Text>
-            <Text style={{ fontSize: 40 }}>💻</Text>
-            <Text style={{ fontSize: 40 }}>🎬</Text>
+      {/* Animated top bar */}
+      <Animated.View style={{ position: 'absolute', top: 0, left: 0, right: 0, zIndex: 20, height: topBarH, paddingTop: insets.top, backgroundColor: C.bg, opacity }}>
+        <View style={{ flexDirection: 'row', alignItems: 'flex-end', paddingHorizontal: 16, paddingBottom: 8, flex: 1 }}>
+          {isOwner ? (
+            <Pressable onPress={() => { Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light); openSidePanel(); }} style={{ width: 40, height: 36, alignItems: 'center', justifyContent: 'center' }}>
+              <KMenuButton />
+            </Pressable>
+          ) : (
+            <View style={{ width: 40 }} />
+          )}
+          <View style={{ flex: 1, alignItems: 'center' }}>
+            <Text style={{ fontSize: 15, fontWeight: '700', color: C.label }}>KTV</Text>
+          </View>
+          <View style={{ width: 40, alignItems: 'flex-end' }}>
+            <RolePill role={role} onPress={cycleRole} isPrimary={isOwner} />
           </View>
         </View>
+      </Animated.View>
 
-        {/* Avatar + info */}
-        <View style={{ alignItems: 'center', marginTop: -36, paddingBottom: 16 }}>
-          <View style={{ width: 72, height: 72, borderRadius: 36, backgroundColor: '#2A3550', borderWidth: 3, borderColor: C.bg, alignItems: 'center', justifyContent: 'center', marginBottom: 10 }}>
-            <Text style={{ fontSize: 24, fontWeight: '700', color: '#fff' }}>SK</Text>
+      {/* Scrollable content — stickyHeaderIndices=[1] pins the tab bar */}
+      <ScrollView
+        onScroll={onScroll}
+        scrollEventThrottle={scrollEventThrottle}
+        contentContainerStyle={{ paddingTop: topBarH, paddingBottom: insets.bottom + 80 }}
+        showsVerticalScrollIndicator={false}
+        stickyHeaderIndices={[1]}
+      >
+        {/* Channel header */}
+        <View style={{ paddingHorizontal: 20, paddingTop: 20, paddingBottom: 16 }}>
+          <View style={{ width: 72, height: 72, borderRadius: 36, backgroundColor: `hsl(45,38%,28%)`, alignItems: 'center', justifyContent: 'center', marginBottom: 12 }}>
+            <Text style={{ fontSize: 22, fontWeight: '800', color: '#fff' }}>SK</Text>
           </View>
-          <Text style={{ fontSize: 18, fontWeight: '700', color: C.label }}>Sammy Kalejaiye</Text>
-          <Text style={{ fontSize: 13, color: C.secondary, marginTop: 2 }}>@sammyk · 3.4K subscribers</Text>
-          <Text style={{ fontSize: 12, color: C.secondary, marginTop: 4 }}>12 videos · 142.8K views</Text>
-
-          {/* Subscribe button */}
+          <Text style={{ fontSize: 20, fontWeight: '800', color: C.label, marginBottom: 2 }}>Sammy Kalejaiye</Text>
+          <Text style={{ fontSize: 14, color: C.secondary, marginBottom: 3 }}>@sammyk</Text>
+          <Text style={{ fontSize: 13, color: C.secondary, marginBottom: 14 }}>42.1K subscribers · {PVIDEOS.length} videos</Text>
           <Pressable
-            onPress={() => { Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium); setSubscribed(!subscribed); }}
-            style={{ marginTop: 12, paddingHorizontal: 28, paddingVertical: 10, borderRadius: 22, backgroundColor: subscribed ? C.surface : C.label, borderWidth: subscribed ? 1 : 0, borderColor: C.separator }}
+            onPress={() => { Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light); if (!isOwner) setSubscribed(p => !p); }}
+            style={{ alignSelf: 'flex-start', backgroundColor: isOwner ? C.surface : subscribed ? C.surface : C.label, borderRadius: 20, paddingHorizontal: 20, paddingVertical: 9 }}
           >
-            <Text style={{ fontSize: 14, fontWeight: '700', color: subscribed ? C.secondary : C.bg }}>
-              {subscribed ? '✓ Subscribed' : 'Subscribe'}
+            <Text style={{ fontSize: 14, fontWeight: '700', color: isOwner ? C.label : subscribed ? C.label : C.bg }}>
+              {isOwner ? 'Manage Channel' : subscribed ? 'Subscribed' : 'Subscribe'}
             </Text>
           </Pressable>
         </View>
 
-        {/* Filter pills */}
-        <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={{ paddingHorizontal: 16, gap: 8, paddingBottom: 12 }}>
-          {(['All', 'Public', 'Subscribers Only'] as const).map(f => {
-            const active = subFilter === f;
-            return (
-              <Pressable key={f} onPress={() => { Haptics.selectionAsync(); setSubFilter(f); }}
-                style={{ paddingHorizontal: 14, paddingVertical: 7, borderRadius: 20, backgroundColor: active ? C.activePill : C.surface }}>
-                <Text style={{ fontSize: 13, fontWeight: '600', color: active ? C.activePillText : C.secondary }}>
-                  {f === 'Subscribers Only' ? '🔒 Subscribers Only' : f}
-                </Text>
+        {/* Sticky tab bar */}
+        <View style={{ backgroundColor: C.bg, borderBottomWidth: StyleSheet.hairlineWidth, borderBottomColor: C.separator }}>
+          <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={{ paddingHorizontal: 12 }}>
+            {PTABS.map(tab => (
+              <Pressable
+                key={tab}
+                onPress={() => { Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light); setActiveTab(tab); }}
+                style={{ paddingHorizontal: 14, paddingVertical: 10, borderBottomWidth: 2, borderBottomColor: activeTab === tab ? C.label : 'transparent' }}
+              >
+                <Text style={{ fontSize: 14, fontWeight: '600', color: activeTab === tab ? C.label : C.secondary }}>{tab}</Text>
               </Pressable>
-            );
-          })}
-        </ScrollView>
-
-        {/* Video grid 2-column */}
-        <View style={{ paddingHorizontal: 12 }}>
-          {Array.from({ length: Math.ceil(filteredVideos.length / 2) }).map((_, rowIdx) => {
-            const pair = filteredVideos.slice(rowIdx * 2, rowIdx * 2 + 2);
-            return (
-              <View key={rowIdx} style={{ flexDirection: 'row', gap: 10, marginBottom: 10 }}>
-                {pair.map(video => (
-                  <Pressable
-                    key={video.id}
-                    onPress={() => Haptics.selectionAsync()}
-                    style={({ pressed }) => [{ flex: 1, borderRadius: 10, overflow: 'hidden', backgroundColor: C.surface, opacity: pressed ? 0.85 : 1 }]}
-                  >
-                    <View style={{ height: 90, backgroundColor: video.locked ? C.separator : `hsl(${video.hue},35%,${video.locked ? '20' : '28'}%)`, alignItems: 'center', justifyContent: 'center' }}>
-                      <Text style={{ fontSize: 28, opacity: video.locked ? 0.4 : 1 }}>{video.emoji}</Text>
-                      {video.locked && (
-                        <View style={{ position: 'absolute', inset: 0, alignItems: 'center', justifyContent: 'center', backgroundColor: 'rgba(0,0,0,0.5)' }}>
-                          <Text style={{ fontSize: 20 }}>🔒</Text>
-                        </View>
-                      )}
-                      {!video.locked && (
-                        <View style={{ position: 'absolute', bottom: 4, right: 4, backgroundColor: 'rgba(0,0,0,0.7)', borderRadius: 4, paddingHorizontal: 4, paddingVertical: 1 }}>
-                          <Text style={{ fontSize: 8, color: '#fff', fontWeight: '700' }}>{video.duration}</Text>
-                        </View>
-                      )}
-                    </View>
-                    <View style={{ padding: 8 }}>
-                      <Text style={{ fontSize: 12, fontWeight: '700', color: video.locked ? C.secondary : C.label, lineHeight: 16 }} numberOfLines={2}>{video.title}</Text>
-                      {video.locked
-                        ? <Text style={{ fontSize: 10, color: CAUTION, marginTop: 3 }}>Upgrade to watch</Text>
-                        : <Text style={{ fontSize: 10, color: C.secondary, marginTop: 3 }}>{video.views} views · {video.timeAgo}</Text>
-                      }
-                    </View>
-                  </Pressable>
-                ))}
-                {pair.length === 1 && <View style={{ flex: 1 }} />}
-              </View>
-            );
-          })}
+            ))}
+          </ScrollView>
         </View>
 
-        {/* More For You */}
-        <Text style={{ fontSize: 14, fontWeight: '700', color: C.label, paddingHorizontal: 16, marginTop: 8, marginBottom: 10 }}>More For You</Text>
-        <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={{ paddingHorizontal: 16, gap: 12 }}>
-          {SUB_MORE_FOR_YOU.map(v => (
-            <Pressable key={v.id} onPress={() => Haptics.selectionAsync()} style={{ width: 160 }}>
-              <View style={{ height: 90, borderRadius: 10, backgroundColor: `hsl(${v.hue},35%,28%)`, alignItems: 'center', justifyContent: 'center', marginBottom: 6 }}>
-                <Text style={{ fontSize: 28 }}>{v.emoji}</Text>
-                <View style={{ position: 'absolute', bottom: 4, right: 4, backgroundColor: 'rgba(0,0,0,0.7)', borderRadius: 4, paddingHorizontal: 4, paddingVertical: 1 }}>
-                  <Text style={{ fontSize: 8, color: '#fff', fontWeight: '700' }}>{v.duration}</Text>
-                </View>
-              </View>
-              <Text style={{ fontSize: 12, fontWeight: '700', color: C.label }} numberOfLines={2}>{v.title}</Text>
-              <Text style={{ fontSize: 10, color: C.secondary }}>{v.creator}</Text>
-            </Pressable>
-          ))}
-        </ScrollView>
+        {/* Tab content */}
+        {activeTab === 'Videos'    && <VideosTab />}
+        {activeTab === 'Shorts'    && <ShortsTab />}
+        {activeTab === 'Live'      && <LiveTab />}
+        {activeTab === 'Playlists' && <PlaylistsTab />}
       </ScrollView>
-    );
-  };
 
-  // ── Explore: same discovery content as Owner ────────────────────────────────
-  const ExploreView = () => {
-    const [searchText, setSearchText] = React.useState('');
-    return (
-      <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={{ paddingTop: 16, paddingBottom: 120 }}>
-        {/* Search bar */}
-        <View style={{ marginHorizontal: 16, marginBottom: 16, flexDirection: 'row', alignItems: 'center', backgroundColor: C.surface, borderRadius: 12, paddingHorizontal: 12, gap: 8 }}>
-          <IconSymbol name="magnifyingglass" size={16} color={C.secondary} />
-          <TextInput style={{ flex: 1, fontSize: 15, color: C.label, paddingVertical: 12 }} placeholder="Search KTV..." placeholderTextColor={C.secondary} value={searchText} onChangeText={setSearchText} />
-        </View>
-
-        {/* Trending */}
-        <Text style={{ fontSize: 14, fontWeight: '700', color: C.label, paddingHorizontal: 16, marginBottom: 10 }}>🔥 Trending Now</Text>
-        <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={{ paddingHorizontal: 16, gap: 12, paddingBottom: 16 }}>
-          {SUB_EXPLORE_TRENDING.map(v => (
-            <Pressable key={v.id} onPress={() => Haptics.selectionAsync()} style={{ width: 200 }}>
-              <View style={{ height: 112, borderRadius: 10, backgroundColor: `hsl(${v.hue},35%,28%)`, alignItems: 'center', justifyContent: 'center', marginBottom: 6 }}>
-                <Text style={{ fontSize: 36 }}>{v.emoji}</Text>
-                <View style={{ position: 'absolute', bottom: 6, right: 6, backgroundColor: 'rgba(0,0,0,0.7)', borderRadius: 4, paddingHorizontal: 4, paddingVertical: 1 }}>
-                  <Text style={{ fontSize: 9, color: '#fff', fontWeight: '700' }}>{v.duration}</Text>
-                </View>
-                <View style={{ position: 'absolute', top: 6, left: 6, backgroundColor: 'rgba(0,0,0,0.5)', borderRadius: 4, paddingHorizontal: 6, paddingVertical: 2 }}>
-                  <Text style={{ fontSize: 9, color: '#fff' }}>{v.views} views</Text>
-                </View>
-              </View>
-              <Text style={{ fontSize: 12, fontWeight: '700', color: C.label, lineHeight: 16 }} numberOfLines={2}>{v.title}</Text>
-              <Text style={{ fontSize: 10, color: C.secondary }}>{v.creator}</Text>
-            </Pressable>
-          ))}
-        </ScrollView>
-      </ScrollView>
-    );
-  };
-
-  // ── Library: follower's own cross-brand library ─────────────────────────────
-  const LibraryView = () => {
-    type LibPill = 'All' | 'Saved' | 'Watch Later';
-    const [libPill, setLibPill] = React.useState<LibPill>('All');
-    return (
-      <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={{ paddingTop: 16, paddingBottom: 120 }}>
-        {/* Filter pills — no Uploads for follower */}
-        <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={{ paddingHorizontal: 16, gap: 8, paddingBottom: 14 }}>
-          {(['All', 'Saved', 'Watch Later'] as LibPill[]).map(p => {
-            const active = libPill === p;
-            return (
-              <Pressable key={p} onPress={() => { Haptics.selectionAsync(); setLibPill(p); }}
-                style={{ paddingHorizontal: 14, paddingVertical: 7, borderRadius: 20, backgroundColor: active ? C.activePill : C.surface }}>
-                <Text style={{ fontSize: 13, fontWeight: '600', color: active ? C.activePillText : C.secondary }}>{p}</Text>
-              </Pressable>
-            );
-          })}
-        </ScrollView>
-
-        {/* Watch History */}
-        {(libPill === 'All' || libPill === 'Saved') && (
-          <View style={{ marginBottom: 24 }}>
-            <Text style={{ fontSize: 14, fontWeight: '700', color: C.label, paddingHorizontal: 16, marginBottom: 10 }}>Continue Watching</Text>
-            <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={{ paddingHorizontal: 16, gap: 12 }}>
-              {SUB_LIB_HISTORY.map(v => (
-                <Pressable key={v.id} onPress={() => Haptics.selectionAsync()} style={{ width: 180 }}>
-                  <View style={{ height: 100, borderRadius: 10, backgroundColor: `hsl(${v.hue},35%,28%)`, alignItems: 'center', justifyContent: 'center', marginBottom: 6 }}>
-                    <Text style={{ fontSize: 32 }}>{v.emoji}</Text>
-                    {/* Progress bar */}
-                    <View style={{ position: 'absolute', bottom: 0, left: 0, right: 0, height: 3, backgroundColor: 'rgba(255,255,255,0.2)', borderBottomLeftRadius: 10, borderBottomRightRadius: 10 }}>
-                      <View style={{ width: `${v.progress * 100}%`, height: 3, backgroundColor: CAUTION, borderBottomLeftRadius: 10 }} />
-                    </View>
-                  </View>
-                  <Text style={{ fontSize: 12, fontWeight: '600', color: C.label }} numberOfLines={2}>{v.title}</Text>
-                  <Text style={{ fontSize: 10, color: C.secondary }}>{v.creator}</Text>
-                </Pressable>
-              ))}
-            </ScrollView>
-          </View>
-        )}
-
-        {/* Watch Later */}
-        {(libPill === 'All' || libPill === 'Watch Later') && (
-          <View style={{ marginBottom: 24 }}>
-            <Text style={{ fontSize: 14, fontWeight: '700', color: C.label, paddingHorizontal: 16, marginBottom: 10 }}>Watch Later</Text>
-            <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={{ paddingHorizontal: 16, gap: 12 }}>
-              {SUB_WATCH_LATER.map(v => (
-                <Pressable key={v.id} onPress={() => Haptics.selectionAsync()} style={{ width: 160 }}>
-                  <View style={{ height: 90, borderRadius: 10, backgroundColor: `hsl(${v.hue},35%,28%)`, alignItems: 'center', justifyContent: 'center', marginBottom: 6 }}>
-                    <Text style={{ fontSize: 28 }}>{v.emoji}</Text>
-                    <View style={{ position: 'absolute', bottom: 4, right: 4, backgroundColor: 'rgba(0,0,0,0.7)', borderRadius: 4, paddingHorizontal: 4, paddingVertical: 1 }}>
-                      <Text style={{ fontSize: 8, color: '#fff', fontWeight: '700' }}>{v.duration}</Text>
-                    </View>
-                  </View>
-                  <Text style={{ fontSize: 12, fontWeight: '600', color: C.label }} numberOfLines={2}>{v.title}</Text>
-                  <Text style={{ fontSize: 10, color: C.secondary }}>{v.creator}</Text>
-                </Pressable>
-              ))}
-            </ScrollView>
-          </View>
-        )}
-      </ScrollView>
-    );
-  };
-
-  return (
-    <View style={{ flex: 1, backgroundColor: C.bg }}>
-      {/* Top bar */}
-      <View style={{ position: 'absolute', top: 0, left: 0, right: 0, zIndex: 10, paddingTop: insets.top, height: topBarH, backgroundColor: C.bg, flexDirection: 'row', alignItems: 'center', paddingHorizontal: 16 }}>
-        <Pressable onPress={() => { Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light); openSidePanel(); }} style={{ width: 40, alignItems: 'center' }}>
-          <KMenuButton />
+      {/* Owner FAB — Upload */}
+      {isOwner && (
+        <Pressable
+          onPress={() => { Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium); setUploadVisible(true); }}
+          style={{ position: 'absolute', bottom: insets.bottom + 68, right: 20, width: 52, height: 52, borderRadius: 26, backgroundColor: C.label, alignItems: 'center', justifyContent: 'center', shadowColor: '#000', shadowOpacity: 0.18, shadowOffset: { width: 0, height: 3 }, shadowRadius: 8, elevation: 6 }}
+        >
+          <IconSymbol name="plus" size={22} color={C.bg} />
         </Pressable>
-        <View style={{ flex: 1, alignItems: 'center' }}>
-          <Text style={{ fontSize: 15, fontWeight: '700', color: C.label }}>{activeTab === 'Home' ? 'KayTV' : activeTab}</Text>
-        </View>
-        <View style={{ alignItems: 'flex-end' }}>
-          <RolePill role={role} onPress={cycleRole} isPrimary={false} />
-        </View>
-      </View>
+      )}
 
-      {/* Content */}
-      <View style={{ flex: 1, marginTop: topBarH }}>
-        {activeTab === 'Home'    && <HomeView />}
-        {activeTab === 'Explore' && <ExploreView />}
-        {activeTab === 'Library' && <LibraryView />}
-      </View>
+      {/* Shorts fullscreen swipe player */}
+      {shortsOpen && (
+        <View style={{ position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, backgroundColor: '#000', zIndex: 100 }}>
+          <FlatList
+            ref={shortsRef}
+            data={PSHORTS}
+            keyExtractor={s => s.id}
+            pagingEnabled
+            showsVerticalScrollIndicator={false}
+            initialScrollIndex={shortsIndex}
+            getItemLayout={(_, i) => ({ length: windowHeight, offset: windowHeight * i, index: i })}
+            renderItem={({ item }) => (
+              <View style={{ width, height: windowHeight, backgroundColor: `hsl(${item.hue},38%,28%)`, alignItems: 'center', justifyContent: 'center' }}>
+                <Text style={{ fontSize: 72, color: 'rgba(255,255,255,0.9)' }}>▶</Text>
+                <View style={{ position: 'absolute', bottom: insets.bottom + 90, left: 16, right: 72 }}>
+                  <Text style={{ fontSize: 16, fontWeight: '700', color: '#fff', marginBottom: 4 }}>{item.title}</Text>
+                  <Text style={{ fontSize: 13, color: 'rgba(255,255,255,0.75)' }}>{item.views} views</Text>
+                </View>
+              </View>
+            )}
+          />
+          <Pressable
+            onPress={() => setShortsOpen(false)}
+            style={{ position: 'absolute', top: insets.top + 12, left: 16, width: 36, height: 36, borderRadius: 18, backgroundColor: 'rgba(0,0,0,0.55)', alignItems: 'center', justifyContent: 'center' }}
+          >
+            <IconSymbol name="xmark" size={16} color="#fff" />
+          </Pressable>
+        </View>
+      )}
+
+      {/* Upload sheet (Owner only) */}
+      <BottomSheet visible={uploadVisible} onClose={() => setUploadVisible(false)} useModal>
+        <View style={{ padding: 20 }}>
+          <Text style={{ fontSize: 18, fontWeight: '700', color: C.label, marginBottom: 20 }}>Upload Video</Text>
+          <Text style={{ fontSize: 13, fontWeight: '600', color: C.secondary, marginBottom: 6 }}>Title</Text>
+          <TextInput
+            value={uploadTitle}
+            onChangeText={setUploadTitle}
+            placeholder="Add a title"
+            placeholderTextColor={C.secondary}
+            style={{ backgroundColor: C.surface, borderRadius: 10, paddingHorizontal: 14, paddingVertical: 10, fontSize: 15, color: C.label, marginBottom: 16 }}
+          />
+          <Text style={{ fontSize: 13, fontWeight: '600', color: C.secondary, marginBottom: 6 }}>Description</Text>
+          <TextInput
+            value={uploadDesc}
+            onChangeText={setUploadDesc}
+            placeholder="Tell viewers about your video (optional)"
+            placeholderTextColor={C.secondary}
+            multiline
+            style={{ backgroundColor: C.surface, borderRadius: 10, paddingHorizontal: 14, paddingVertical: 10, fontSize: 15, color: C.label, minHeight: 80, marginBottom: 16 }}
+          />
+          <Text style={{ fontSize: 13, fontWeight: '600', color: C.secondary, marginBottom: 8 }}>Visibility</Text>
+          <View style={{ flexDirection: 'row', gap: 8, marginBottom: 20 }}>
+            {['Public', 'Unlisted', 'Private'].map(v => (
+              <Pressable
+                key={v}
+                onPress={() => { Haptics.selectionAsync(); setVisibility(v); }}
+                style={{ backgroundColor: visibility === v ? C.label : C.surface, borderRadius: 14, paddingHorizontal: 14, paddingVertical: 7 }}
+              >
+                <Text style={{ fontSize: 13, fontWeight: '600', color: visibility === v ? C.bg : C.label }}>{v}</Text>
+              </Pressable>
+            ))}
+          </View>
+          <Pressable
+            onPress={() => { Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium); setUploadVisible(false); setUploadTitle(''); setUploadDesc(''); }}
+            style={{ backgroundColor: C.label, borderRadius: 12, paddingVertical: 14, alignItems: 'center' }}
+          >
+            <Text style={{ fontSize: 16, fontWeight: '700', color: C.bg }}>Upload</Text>
+          </Pressable>
+        </View>
+      </BottomSheet>
     </View>
   );
 }
+
 
 export default function KayTVScreen() {
   const C = useColors();
@@ -2350,36 +2048,15 @@ export default function KayTVScreen() {
 
   if (dataMode === 'live') return <LiveKtvView mode={mode} C={C} insets={insets} />;
 
-  // ── Personal mode: default to My Channel (redirect unless Explore/Library param) ──
-  if (mode === 'personal' && (!tabParam || tabParam === 'Home')) {
-    return <Redirect href="/(tabs)/(main)/kaytv/my-channel" />;
-  }
-
-  // ── Personal Subscriber: creator channel view with tabs ───────────────────
-  if (mode === 'personal' && !isOwner) {
+  // ── Personal mode: unified channel view ──────────────────────────────────
+  if (mode === 'personal') {
     return (
-      <PersonalSubscriberKayTVView
+      <PersonalKayTVView
         C={C}
         insets={insets}
         role={role}
         cycleRole={cycleRole}
-        accent={accent}
-        tabParam={tabParam}
-      />
-    );
-  }
-
-  // ── Personal Owner: structured creator KTV view ───────────────────────────
-  if (mode === 'personal' && isOwner) {
-    return (
-      <PersonalOwnerKayTVView
-        C={C}
-        insets={insets}
-        role={role}
-        cycleRole={cycleRole}
-        accent={accent}
-        tabParam={tabParam}
-        router={router}
+        isOwner={isOwner}
       />
     );
   }

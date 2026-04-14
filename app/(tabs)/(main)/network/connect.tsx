@@ -6,6 +6,7 @@ import {
   ScrollView,
   TextInput,
   StyleSheet,
+  Animated,
 } from 'react-native';
 import * as Haptics from 'expo-haptics';
 import { useRouter } from 'expo-router';
@@ -15,6 +16,7 @@ import { BottomSheet } from '@/components/ui/bottom-sheet';
 import { RolePill } from '@/components/ui/role-pill';
 import { KMenuButton } from '@/components/ui/k-menu-button';
 import { useColors } from '@/hooks/use-colors';
+import { useScrollHeader } from '@/hooks/use-scroll-header';
 import { useDemoRole } from '@/utils/demo-role-store';
 import { openSidePanel } from '@/utils/global-side-panel';
 
@@ -79,6 +81,8 @@ function SectionHeader({ label, C }: { label: string; C: ReturnType<typeof useCo
 // Main screen
 // ---------------------------------------------------------------------------
 
+const TOP_BAR_H = 52;
+
 export default function ConnectScreen() {
   const C = useColors();
   const router = useRouter();
@@ -86,7 +90,9 @@ export default function ConnectScreen() {
   const [role, cycleRole, roleCycles] = useDemoRole('personal:network');
   const isOwner = role === roleCycles[0];
 
-  const topBarH = insets.top + 52;
+  const topBarH = insets.top + TOP_BAR_H;
+
+  const { opacity, onScroll, scrollEventThrottle } = useScrollHeader();
 
   const [promptResponse, setPromptResponse] = useState('');
   const [promptPosted, setPromptPosted] = useState(false);
@@ -118,32 +124,37 @@ export default function ConnectScreen() {
     <View style={{ flex: 1, backgroundColor: C.bg }}>
 
       {/* Top bar */}
-      <View style={{
-        position: 'absolute', top: 0, left: 0, right: 0, zIndex: 100,
+      <Animated.View style={{
+        position: 'absolute', top: 0, left: 0, right: 0, zIndex: 10,
         height: topBarH, paddingTop: insets.top,
-        flexDirection: 'row', alignItems: 'flex-end',
-        paddingHorizontal: 16, paddingBottom: 10,
         borderBottomWidth: StyleSheet.hairlineWidth, borderBottomColor: C.separator,
-        backgroundColor: C.bg,
+        backgroundColor: C.bg, opacity,
       }}>
-        <Pressable onPress={() => { Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light); openSidePanel(); }} style={{ width: 36, height: 36, alignItems: 'center', justifyContent: 'center' }}>
-          <KMenuButton />
-        </Pressable>
-        <View style={[StyleSheet.absoluteFillObject, { alignItems: 'center', justifyContent: 'flex-end', paddingBottom: 10 }]} pointerEvents="none">
-          <View style={{ backgroundColor: C.label, borderRadius: 20, paddingHorizontal: 16, paddingVertical: 6 }}>
-            <Text style={{ fontSize: 14, fontWeight: '700', color: C.bg }}>Connect</Text>
+        <View style={{
+          flex: 1, flexDirection: 'row', alignItems: 'flex-end',
+          paddingHorizontal: 16, paddingBottom: 10,
+        }}>
+          <Pressable onPress={() => { Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light); openSidePanel(); }} style={{ width: 36, height: 36, alignItems: 'center', justifyContent: 'center' }}>
+            <KMenuButton />
+          </Pressable>
+          <View style={[StyleSheet.absoluteFillObject, { alignItems: 'center', justifyContent: 'flex-end', paddingBottom: 10 }]} pointerEvents="none">
+            <View style={{ backgroundColor: C.label, borderRadius: 20, paddingHorizontal: 16, paddingVertical: 6 }}>
+              <Text style={{ fontSize: 14, fontWeight: '700', color: C.bg }}>Connect</Text>
+            </View>
+          </View>
+          <View style={{ flex: 1, alignItems: 'flex-end' }}>
+            <RolePill role={role} onPress={cycleRole} accentColor={C.label} isPrimary={isOwner} />
           </View>
         </View>
-        <View style={{ flex: 1, alignItems: 'flex-end' }}>
-          <RolePill role={role} onPress={cycleRole} accentColor={C.label} isPrimary={isOwner} />
-        </View>
-      </View>
+      </Animated.View>
 
       <ScrollView
         style={{ flex: 1 }}
         contentContainerStyle={{ paddingTop: topBarH + 8, paddingBottom: insets.bottom + 80 }}
         keyboardShouldPersistTaps="handled"
         showsVerticalScrollIndicator={false}
+        onScroll={onScroll}
+        scrollEventThrottle={scrollEventThrottle}
       >
 
         {/* ── 1. Weekly Prompt ─────────────────────────────────────────── */}

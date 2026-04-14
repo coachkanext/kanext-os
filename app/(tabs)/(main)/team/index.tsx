@@ -13,6 +13,7 @@ import { useFocusEffect } from 'expo-router';
 import { GlassView } from '@/components/ui/glass-view';
 import { IconSymbol } from '@/components/ui/icon-symbol';
 import { useColors, type ComponentColors } from '@/hooks/use-colors';
+import { useScrollHeader } from '@/hooks/use-scroll-header';
 import { openSidePanel } from '@/utils/global-side-panel';
 import { resetFooter } from '@/utils/global-footer-hide';
 import { KMenuButton } from '@/components/ui/k-menu-button';
@@ -60,6 +61,8 @@ export default function TeamScreen() {
   const insets = useSafeAreaInsets();
   const s      = useMemo(() => makeStyles(C), [C]);
   const topBarH = insets.top + TOP_BAR_H;
+
+  const { opacity, onScroll, scrollEventThrottle } = useScrollHeader();
 
   const [activeTab,    setActiveTab]    = useState<TeamTab>('Directory');
   const [role,         setRole]         = useState<TeamRole>('CEO');
@@ -134,7 +137,7 @@ export default function TeamScreen() {
     ];
 
     return (
-      <View style={{ paddingTop: contentPaddingTop, paddingHorizontal: 16, paddingBottom: 32, gap: 16 }}>
+      <View style={{ paddingHorizontal: 16, paddingBottom: 32, gap: 16 }}>
         {/* My Profile Card */}
         <GlassView tier={1} style={[s.card, { flexDirection: 'row', gap: 14, alignItems: 'flex-start' }]}>
           <View style={[s.avatarLg, { backgroundColor: `hsl(${me.hue},45%,28%)` }]}>
@@ -305,7 +308,7 @@ export default function TeamScreen() {
     if (selectedEmployeeId) {
       const emp = getEmployeeById(selectedEmployeeId);
       if (emp) return (
-        <View style={{ paddingTop: contentPaddingTop }}>
+        <View style={{ paddingTop: 8 }}>
           {renderEmployeeProfile(emp)}
         </View>
       );
@@ -367,7 +370,7 @@ export default function TeamScreen() {
 
   function renderDepartments() {
     return (
-      <View style={{ paddingTop: contentPaddingTop, paddingHorizontal: 16, gap: 10, paddingBottom: 32 }}>
+      <View style={{ paddingTop: topBarH + 8, paddingHorizontal: 16, gap: 10, paddingBottom: 32 }}>
         {DEPARTMENTS.map(dept => {
           const members    = getDeptEmployees(dept.id);
           const head       = getEmployeeById(dept.headId);
@@ -511,7 +514,7 @@ export default function TeamScreen() {
     ];
 
     return (
-      <ScrollView style={{ flex: 1 }} contentContainerStyle={{ paddingTop: contentPaddingTop, paddingBottom: 40 }} showsVerticalScrollIndicator={false}>
+      <ScrollView style={{ flex: 1 }} contentContainerStyle={{ paddingTop: topBarH + 8, paddingBottom: 40 }} showsVerticalScrollIndicator={false} onScroll={onScroll} scrollEventThrottle={scrollEventThrottle}>
 
         {/* ── Tree ── */}
         <View style={{ alignItems: 'center', paddingHorizontal: 12 }}>
@@ -649,7 +652,7 @@ export default function TeamScreen() {
 
   return (
     <View style={[s.root, { backgroundColor: C.bg }]}>
-      <View style={[s.topBarOuter, { backgroundColor: C.bg, borderBottomColor: C.separator as string, paddingTop: insets.top }]}>
+      <Animated.View style={[s.topBarOuter, { backgroundColor: C.bg, borderBottomColor: C.separator as string, paddingTop: insets.top, position: 'absolute', top: 0, left: 0, right: 0, zIndex: 10, opacity }]}>
         <View style={s.topBar}>
           <Pressable onPress={() => { Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light); openSidePanel(); }} style={s.iconBtn} hitSlop={8}>
             <KMenuButton />
@@ -690,7 +693,7 @@ export default function TeamScreen() {
             </ScrollView>
           </Animated.View>
         )}
-      </View>
+      </Animated.View>
 
       {dropdownOpen && (
         <>
@@ -708,18 +711,18 @@ export default function TeamScreen() {
       )}
 
       {role === 'Employee' ? (
-        <ScrollView showsVerticalScrollIndicator={false} keyboardShouldPersistTaps="handled">
+        <ScrollView showsVerticalScrollIndicator={false} keyboardShouldPersistTaps="handled" contentContainerStyle={{ paddingTop: topBarH + 8 }} onScroll={onScroll} scrollEventThrottle={scrollEventThrottle}>
           {renderEmployeePortal()}
         </ScrollView>
       ) : (
         <>
           {activeTab === 'Directory' && (
-            <ScrollView showsVerticalScrollIndicator={false} keyboardShouldPersistTaps="handled">
+            <ScrollView showsVerticalScrollIndicator={false} keyboardShouldPersistTaps="handled" onScroll={onScroll} scrollEventThrottle={scrollEventThrottle}>
               {renderDirectory()}
             </ScrollView>
           )}
           {activeTab === 'Departments' && (
-            <ScrollView showsVerticalScrollIndicator={false}>
+            <ScrollView showsVerticalScrollIndicator={false} onScroll={onScroll} scrollEventThrottle={scrollEventThrottle}>
               {renderDepartments()}
             </ScrollView>
           )}
@@ -794,7 +797,7 @@ export default function TeamScreen() {
 
 const makeStyles = (C: ComponentColors) => StyleSheet.create({
   root: { flex: 1 },
-  topBarOuter: { position: 'absolute', top: 0, left: 0, right: 0, zIndex: 100, borderBottomWidth: StyleSheet.hairlineWidth },
+  topBarOuter: { borderBottomWidth: StyleSheet.hairlineWidth, zIndex: 10 },
   topBar: { height: TOP_BAR_H, flexDirection: 'row', alignItems: 'center', paddingHorizontal: 16 },
   iconBtn: { width: 36, height: 36, alignItems: 'center', justifyContent: 'center' },
   dropdownPill: { flex: 1, marginHorizontal: 10, height: 34, borderRadius: 17, borderWidth: 1, flexDirection: 'row', alignItems: 'center', justifyContent: 'center', paddingHorizontal: 14 },

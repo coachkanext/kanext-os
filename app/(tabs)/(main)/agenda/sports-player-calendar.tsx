@@ -760,7 +760,7 @@ export default function SportsPlayerCalendar() {
   return (
     <View style={[s.root, { paddingBottom: insets.bottom + 80 }]}>
       {/* ── Top Bar ──────────────────────────────────────────────────────────── */}
-      <View style={[s.topBar, { paddingTop: insets.top + 6 }]}>
+      <View style={[s.topBar, { paddingTop: insets.top + 6, backgroundColor: C.bg, borderBottomColor: C.separator, borderBottomWidth: StyleSheet.hairlineWidth }]}>
         <KMenuButton onPress={() => { Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light); openSidePanel(); }} />
 
         <View style={s.titlePill}>
@@ -940,9 +940,6 @@ function makeStyles(C: ComponentColors) {
       justifyContent: 'space-between',
       paddingHorizontal: 16,
       paddingBottom: 10,
-      backgroundColor: C.bg,
-      borderBottomWidth: StyleSheet.hairlineWidth,
-      borderBottomColor: C.separator,
     },
     titlePill: {
       borderRadius: 18,

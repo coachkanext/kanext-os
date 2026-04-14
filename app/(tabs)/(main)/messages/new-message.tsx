@@ -14,12 +14,14 @@ import {
   KeyboardAvoidingView,
   Platform,
   StyleSheet,
+  Animated,
 } from 'react-native';
 import { useRouter } from 'expo-router';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import * as Haptics from 'expo-haptics';
 
 import { useColors } from '@/hooks/use-colors';
+import { useScrollHeader } from '@/hooks/use-scroll-header';
 import { IconSymbol } from '@/components/ui/icon-symbol';
 import { ChatComposer } from '@/components/messages/chat-composer';
 import { useAccentColor } from '@/hooks/use-accent-color';
@@ -44,6 +46,7 @@ export default function NewMessageScreen() {
   const insets = useSafeAreaInsets();
   const router = useRouter();
   const accent = useAccentColor();
+  const { opacity, onScroll, scrollEventThrottle } = useScrollHeader();
 
   const [query,        setQuery]        = useState('');
   const [to,           setTo]           = useState<Contact | null>(null);
@@ -87,7 +90,7 @@ export default function NewMessageScreen() {
       behavior={Platform.OS === 'ios' ? 'padding' : undefined}
     >
       {/* ── Nav bar ── */}
-      <View style={[s.nav, { paddingTop: insets.top }]}>
+      <Animated.View style={[s.nav, { paddingTop: insets.top, opacity }]}>
         <Pressable onPress={() => router.back()} style={s.cancel}>
           <Text style={[s.cancelText, { color: accent }]}>Cancel</Text>
         </Pressable>
@@ -120,7 +123,7 @@ export default function NewMessageScreen() {
             {scheduledFor ? 'Schedule' : 'Send'}
           </Text>
         </Pressable>
-      </View>
+      </Animated.View>
 
       {/* ── To field ── */}
       <View style={[s.toRow, { borderBottomColor: C.separator }]}>
@@ -148,7 +151,7 @@ export default function NewMessageScreen() {
 
       {/* ── Contact list ── */}
       {!to && (
-        <ScrollView style={s.list} keyboardShouldPersistTaps="handled">
+        <ScrollView style={s.list} keyboardShouldPersistTaps="handled" onScroll={onScroll} scrollEventThrottle={scrollEventThrottle}>
           {filtered.map((c, i) => (
             <Pressable
               key={c.key}

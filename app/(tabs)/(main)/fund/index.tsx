@@ -17,6 +17,7 @@ import { useFocusEffect } from 'expo-router';
 import { IconSymbol } from '@/components/ui/icon-symbol';
 import { RolePill } from '@/components/ui/role-pill';
 import { useColors, type ComponentColors } from '@/hooks/use-colors';
+import { useScrollHeader } from '@/hooks/use-scroll-header';
 import { openSidePanel } from '@/utils/global-side-panel';
 import { resetFooter, hideFooter, showFooter } from '@/utils/global-footer-hide';
 import { useDemoRole } from '@/utils/demo-role-store';
@@ -118,6 +119,7 @@ export default function EducationFundScreen() {
   const dataMode = useDataMode();
 
   const topBarH   = insets.top + TOP_BAR_H;
+  const { opacity, onScroll: scrollHeaderOnScroll, scrollEventThrottle } = useScrollHeader(topBarH);
   const pillsAnim = useRef(new Animated.Value(0)).current;
 
   // ── RBAC role ───────────────────────────────────────────────────────────────
@@ -203,7 +205,8 @@ export default function EducationFundScreen() {
     if (y - lastScrollY.current > 10)      hideFooter();
     else if (lastScrollY.current - y > 10) showFooter();
     lastScrollY.current = y;
-  }, []);
+    scrollHeaderOnScroll(e);
+  }, [scrollHeaderOnScroll]);
 
   useFocusEffect(useCallback(() => { resetFooter(); }, []));
   useEffect(() => () => { resetFooter(); }, []);
@@ -1938,7 +1941,7 @@ export default function EducationFundScreen() {
       )}
 
       {/* Absolute top bar */}
-      <View style={[s.topBarWrap, { paddingTop: insets.top, backgroundColor: C.bg }]}>
+      <Animated.View style={[s.topBarWrap, { paddingTop: insets.top, backgroundColor: C.bg, opacity }]}>
         <View style={s.topBar}>
           <View style={s.topBarSide}>
             <Pressable
@@ -2017,7 +2020,7 @@ export default function EducationFundScreen() {
             })}
           </ScrollView>
         </Animated.View>
-      </View>
+      </Animated.View>
 
       {/* Success toast */}
       {showSuccess && (

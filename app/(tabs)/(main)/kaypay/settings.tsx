@@ -7,7 +7,7 @@
 
 import React, { useState, useCallback, useMemo } from 'react';
 import {
-  View, Text, StyleSheet, Pressable, ScrollView, Switch, Alert,
+  View, Text, StyleSheet, Pressable, ScrollView, Switch, Alert, Animated,
 } from 'react-native';
 import * as Haptics from 'expo-haptics';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
@@ -19,13 +19,13 @@ import { useColors, type ComponentColors } from '@/hooks/use-colors';
 import { openSidePanel } from '@/utils/global-side-panel';
 import { resetFooter } from '@/utils/global-footer-hide';
 import { useDemoRole } from '@/utils/demo-role-store';
+import { useScrollHeader } from '@/hooks/use-scroll-header';
 
 // ── Constants ─────────────────────────────────────────────────────────────────
 
+const TOP_BAR_H = 54;
 const GAIN      = '#5A8A6E';
 const CAUTION   = '#B8943E';
-const TOP_BAR_H = 52;
-
 // ── Helper ────────────────────────────────────────────────────────────────────
 
 const tap = () => Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
@@ -39,6 +39,8 @@ export default function KayPaySettingsScreen() {
 
   const [role, cycleRole, roleCycles] = useDemoRole('personal:kaypay');
   const isOwner = role === roleCycles[0];
+
+  const { opacity, onScroll, scrollEventThrottle } = useScrollHeader(insets.top + TOP_BAR_H);
 
   useFocusEffect(useCallback(() => { resetFooter(); }, []));
 
@@ -107,17 +109,21 @@ export default function KayPaySettingsScreen() {
   return (
     <View style={[s.root, { backgroundColor: C.bg }]}>
 
-      <View style={[s.topBarOuter, { backgroundColor: C.bg, borderBottomColor: C.separator, paddingTop: insets.top }]}>
+      <Animated.View style={[s.topBarOuter, { backgroundColor: C.bg, borderBottomColor: C.separator, paddingTop: insets.top, opacity }]}>
         <View style={s.topBar}>
-          <Pressable onPress={() => { tap(); openSidePanel(); }} style={{ width: 40, alignItems: 'center' }}>
+          <Pressable onPress={() => { tap(); openSidePanel(); }} hitSlop={8} style={s.kBtn}>
             <KMenuButton />
           </Pressable>
           <View style={{ flex: 1, alignItems: 'center' }}>
-            <Text style={[s.topBarTitle, { color: C.label }]}>KPay Settings</Text>
+            <View style={[s.titlePill, { backgroundColor: C.surface, borderColor: C.separator }]}>
+              <Text style={[s.titlePillText, { color: C.label }]}>KPay Settings</Text>
+            </View>
           </View>
-          <RolePill role={role} onPress={cycleRole} accentColor={C.label} isPrimary={isOwner} />
+          <View style={s.rolePillWrap}>
+            <RolePill role={role} onPress={cycleRole} accentColor={C.label} isPrimary={isOwner} />
+          </View>
         </View>
-      </View>
+      </Animated.View>
 
       <ScrollView
         contentContainerStyle={{
@@ -125,6 +131,8 @@ export default function KayPaySettingsScreen() {
           paddingBottom: insets.bottom + 40,
           gap: 20,
         }}
+        onScroll={onScroll}
+        scrollEventThrottle={scrollEventThrottle}
         showsVerticalScrollIndicator={false}
       >
 
@@ -313,13 +321,16 @@ function makeStyles(C: ComponentColors) {
   return StyleSheet.create({
     root: { flex: 1 },
     topBarOuter: {
-      position: 'absolute', top: 0, left: 0, right: 0, zIndex: 100,
+      position: 'absolute', top: 0, left: 0, right: 0, zIndex: 10,
       borderBottomWidth: StyleSheet.hairlineWidth,
     },
     topBar: {
-      height: TOP_BAR_H, flexDirection: 'row', alignItems: 'center', paddingHorizontal: 16,
+      height: TOP_BAR_H, flexDirection: 'row', alignItems: 'center', paddingHorizontal: 12,
     },
-    topBarTitle: { fontSize: 17, fontWeight: '700' },
+    kBtn: { width: 44, height: 44, alignItems: 'flex-start', justifyContent: 'center' },
+    titlePill: { paddingHorizontal: 12, paddingVertical: 5, borderRadius: 14, borderWidth: 1 },
+    titlePillText: { fontSize: 12, fontWeight: '600', letterSpacing: 0.3 },
+    rolePillWrap: { width: 80, alignItems: 'flex-end', justifyContent: 'center' },
     card: { marginHorizontal: 16, borderRadius: 12, overflow: 'hidden' },
     sectionHeader: {
       fontSize: 12, fontWeight: '600', letterSpacing: 0.5,

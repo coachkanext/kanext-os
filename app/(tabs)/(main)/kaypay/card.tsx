@@ -13,6 +13,7 @@ import {
   StyleSheet,
   Switch,
   Alert,
+  Animated,
 } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useFocusEffect } from 'expo-router';
@@ -25,13 +26,13 @@ import { useColors, type ComponentColors } from '@/hooks/use-colors';
 import { openSidePanel } from '@/utils/global-side-panel';
 import { resetFooter } from '@/utils/global-footer-hide';
 import { useDemoRole } from '@/utils/demo-role-store';
+import { useScrollHeader } from '@/hooks/use-scroll-header';
 
 // ── Constants ─────────────────────────────────────────────────────────────────
 
 const GAIN    = '#5A8A6E';
 const HEAT    = '#B85C5C';
 const CAUTION = '#B8943E';
-const TOP_BAR_H = 52;
 
 // ── Data ──────────────────────────────────────────────────────────────────────
 
@@ -75,6 +76,9 @@ export default function CardScreen() {
   const [role, cycleRole, roleCycles] = useDemoRole('personal:kaypay');
   const isOwner = role === roleCycles[0];
 
+  const TOP_BAR_H = insets.top + 54;
+  const { opacity, onScroll, scrollEventThrottle } = useScrollHeader(TOP_BAR_H);
+
   const [frozen,        setFrozen]        = useState(false);
   const [notifications, setNotifications] = useState(true);
   const [international, setInternational] = useState(false);
@@ -87,10 +91,11 @@ export default function CardScreen() {
     <View style={[s.root, { backgroundColor: C.bg }]}>
 
       {/* ── Top Bar ─────────────────────────────────────────────────────────── */}
-      <View style={[s.topBarOuter, {
+      <Animated.View style={[s.topBarOuter, {
         backgroundColor: C.bg,
         borderBottomColor: C.separator,
         paddingTop: insets.top,
+        opacity,
       }]}>
         <View style={s.topBar}>
           <Pressable onPress={() => { tap(); openSidePanel(); }} style={{ width: 40, alignItems: 'center' }}>
@@ -101,12 +106,14 @@ export default function CardScreen() {
           </View>
           <RolePill role={role} onPress={cycleRole} accentColor={C.label} isPrimary={isOwner} />
         </View>
-      </View>
+      </Animated.View>
 
       <ScrollView
+        onScroll={onScroll}
+        scrollEventThrottle={scrollEventThrottle}
         showsVerticalScrollIndicator={false}
         contentContainerStyle={{
-          paddingTop: insets.top + TOP_BAR_H + 16,
+          paddingTop: TOP_BAR_H + 16,
           paddingBottom: insets.bottom + 60,
           gap: 24,
         }}
@@ -380,7 +387,7 @@ export default function CardScreen() {
 function makeStyles(C: ComponentColors) {
   return StyleSheet.create({
     root:        { flex: 1 },
-    topBarOuter: { position: 'absolute', top: 0, left: 0, right: 0, zIndex: 100, borderBottomWidth: StyleSheet.hairlineWidth },
+    topBarOuter: { position: 'absolute', top: 0, left: 0, right: 0, zIndex: 10, borderBottomWidth: StyleSheet.hairlineWidth },
     topBar:      { height: TOP_BAR_H, flexDirection: 'row', alignItems: 'center', paddingHorizontal: 16 },
     topBarTitle: { fontSize: 17, fontWeight: '700' },
 

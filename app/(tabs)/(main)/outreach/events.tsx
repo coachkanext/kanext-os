@@ -12,6 +12,7 @@ import { IconSymbol } from '@/components/ui/icon-symbol';
 import { KMenuButton } from '@/components/ui/k-menu-button';
 import { RolePill } from '@/components/ui/role-pill';
 import { useColors, type ComponentColors } from '@/hooks/use-colors';
+import { useScrollHeader } from '@/hooks/use-scroll-header';
 import { openSidePanel } from '@/utils/global-side-panel';
 import { resetFooter } from '@/utils/global-footer-hide';
 import { useDemoRole } from '@/utils/demo-role-store';
@@ -98,6 +99,7 @@ export default function OutreachEventsScreen() {
   }, [isPastor, router]));
 
   const topBarH = insets.top + TOP_BAR_H;
+  const { opacity, onScroll, scrollEventThrottle } = useScrollHeader(topBarH);
 
   if (!isPastor) return null;
 
@@ -225,6 +227,8 @@ export default function OutreachEventsScreen() {
           paddingBottom: 120,
         }}
         showsVerticalScrollIndicator={false}
+        onScroll={onScroll}
+        scrollEventThrottle={scrollEventThrottle}
       >
         {/* Upcoming Events */}
         <Text style={[s.sectionTitle, { color: C.secondary }]}>Upcoming Events</Text>
@@ -238,7 +242,7 @@ export default function OutreachEventsScreen() {
       </ScrollView>
 
       {/* Top bar — position absolute */}
-      <View style={[s.topBarWrap, { paddingTop: insets.top, height: topBarH, backgroundColor: C.bg }]}>
+      <Animated.View style={[s.topBarWrap, { paddingTop: insets.top, backgroundColor: C.bg, opacity }]}>
         <View style={s.topBar}>
           <View style={s.topBarSide}>
             <Pressable
@@ -258,7 +262,7 @@ export default function OutreachEventsScreen() {
             <RolePill role={role} onPress={cycleRole} accentColor={C.label} isPrimary={isPastor} />
           </View>
         </View>
-      </View>
+      </Animated.View>
 
       {/* FAB — Create Event */}
       <Pressable
@@ -282,7 +286,7 @@ export default function OutreachEventsScreen() {
 const makeStyles = (C: ComponentColors) => StyleSheet.create({
   screen:     { flex: 1 },
   topBarWrap: { position: 'absolute', top: 0, left: 0, right: 0, zIndex: 10 },
-  topBar:     { flex: 1, flexDirection: 'row', alignItems: 'center', paddingHorizontal: 16 },
+  topBar:     { height: TOP_BAR_H, flexDirection: 'row', alignItems: 'center', paddingHorizontal: 16 },
   topBarSide: { width: 80, justifyContent: 'center' },
   titlePill: {
     flex: 1,

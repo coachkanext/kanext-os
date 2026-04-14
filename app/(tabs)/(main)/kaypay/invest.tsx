@@ -11,6 +11,7 @@ import {
   Pressable,
   ScrollView,
   Alert,
+  Animated,
 } from 'react-native';
 import * as Haptics from 'expo-haptics';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
@@ -23,13 +24,13 @@ import { useColors, type ComponentColors } from '@/hooks/use-colors';
 import { openSidePanel } from '@/utils/global-side-panel';
 import { resetFooter } from '@/utils/global-footer-hide';
 import { useDemoRole } from '@/utils/demo-role-store';
+import { useScrollHeader } from '@/hooks/use-scroll-header';
 
 // ── Constants ─────────────────────────────────────────────────────────────────
 
 const GAIN    = '#5A8A6E';
 const HEAT    = '#B85C5C';
 const CAUTION = '#B8943E';
-const TOP_BAR_H = 52;
 
 // ── Data ──────────────────────────────────────────────────────────────────────
 
@@ -64,37 +65,45 @@ export default function InvestScreen() {
   const [role, cycleRole, roleCycles] = useDemoRole('personal:kaypay');
   const isOwner = role === roleCycles[0];
 
+  const TOP_BAR_H = insets.top + 54;
+  const { opacity, onScroll, scrollEventThrottle } = useScrollHeader(TOP_BAR_H);
+
   useFocusEffect(useCallback(() => { resetFooter(); }, []));
 
   return (
     <View style={[s.root, { backgroundColor: C.bg }]}>
 
       {/* ── Top Bar ─────────────────────────────────────────────────────────── */}
-      <View style={[s.topBar, {
+      <Animated.View style={[s.topBarOuter, {
         paddingTop: insets.top,
         height: insets.top + TOP_BAR_H,
         backgroundColor: C.bg,
         borderBottomColor: C.separator,
+        opacity,
       }]}>
-        <Pressable
-          style={s.iconBtn}
-          onPress={() => { Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light); openSidePanel(); }}
-        >
-          <KMenuButton />
-        </Pressable>
+        <View style={s.topBar}>
+          <Pressable
+            style={s.iconBtn}
+            onPress={() => { Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light); openSidePanel(); }}
+          >
+            <KMenuButton />
+          </Pressable>
 
-        <Text style={{ fontSize: 17, fontWeight: '700', color: C.label }}>Invest</Text>
+          <Text style={{ fontSize: 17, fontWeight: '700', color: C.label }}>Invest</Text>
 
-        <View style={{ marginRight: 4 }}>
-          <RolePill role={role} onPress={cycleRole} isPrimary={isOwner} accentColor={C.label} />
+          <View style={{ marginRight: 4 }}>
+            <RolePill role={role} onPress={cycleRole} isPrimary={isOwner} accentColor={C.label} />
+          </View>
         </View>
-      </View>
+      </Animated.View>
 
       {/* ── Scroll Content ──────────────────────────────────────────────────── */}
       <ScrollView
+        onScroll={onScroll}
+        scrollEventThrottle={scrollEventThrottle}
         showsVerticalScrollIndicator={false}
         contentContainerStyle={{
-          paddingTop: insets.top + TOP_BAR_H + 16,
+          paddingTop: TOP_BAR_H + 16,
           paddingBottom: insets.bottom + 100,
         }}
       >
@@ -264,16 +273,19 @@ export default function InvestScreen() {
 function makeStyles(C: ComponentColors) {
   return StyleSheet.create({
     root: { flex: 1 },
-    topBar: {
+    topBarOuter: {
       position: 'absolute',
       top: 0, left: 0, right: 0,
-      zIndex: 100,
+      zIndex: 10,
+      borderBottomWidth: StyleSheet.hairlineWidth,
+    },
+    topBar: {
       flexDirection: 'row',
       alignItems: 'flex-end',
       justifyContent: 'space-between',
       paddingHorizontal: 12,
       paddingBottom: 8,
-      borderBottomWidth: StyleSheet.hairlineWidth,
+      flex: 1,
     },
     iconBtn: { width: 40, alignItems: 'center' },
     row:     { flexDirection: 'row', alignItems: 'center' },

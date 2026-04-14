@@ -5,7 +5,7 @@
 import React, { useState, useMemo } from 'react';
 import {
   View, Text, TextInput, Pressable, FlatList, StyleSheet,
-  useWindowDimensions,
+  useWindowDimensions, Animated,
 } from 'react-native';
 import * as Haptics from 'expo-haptics';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
@@ -13,6 +13,7 @@ import { useLocalSearchParams, useRouter } from 'expo-router';
 
 import { IconSymbol } from '@/components/ui/icon-symbol';
 import { useColors, type ComponentColors } from '@/hooks/use-colors';
+import { useScrollHeader } from '@/hooks/use-scroll-header';
 import { useAppContext } from '@/context/app-context';
 import {
   getKayTVFeed, getExploreRows, getWatchHistoryFeed, getWatchLaterFeed,
@@ -59,6 +60,10 @@ export default function KayTVSearchScreen() {
   const mode = state.activeContext.mode as string;
   const { source } = useLocalSearchParams<{ source: string }>();
 
+  const TOP_BAR_H = insets.top + 54;
+
+  const { opacity, onScroll, scrollEventThrottle } = useScrollHeader();
+
   const [query, setQuery] = useState('');
 
   const allItems = useMemo(() => {
@@ -91,36 +96,38 @@ export default function KayTVSearchScreen() {
   const sourceLabel = source === 'Explore' ? 'Search all videos…' : source === 'Library' ? 'Search your library…' : 'Search KayTV…';
 
   return (
-    <View style={[styles.screen, { backgroundColor: C.bg, paddingTop: insets.top }]}>
+    <View style={[styles.screen, { backgroundColor: C.bg }]}>
 
       {/* Header */}
-      <View style={styles.header}>
-        <Pressable onPress={() => router.back()} hitSlop={10} style={styles.backBtn}>
-          <IconSymbol name="chevron.left" size={20} color={C.label} />
-        </Pressable>
-        <View style={[styles.searchBar, { backgroundColor: C.surface, borderColor: C.inputBorder }]}>
-          <IconSymbol name="magnifyingglass" size={15} color={C.secondary} />
-          <TextInput
-            autoFocus
-            value={query}
-            onChangeText={setQuery}
-            placeholder={sourceLabel}
-            placeholderTextColor={C.muted}
-            style={[styles.searchInput, { color: C.label }]}
-            returnKeyType="search"
-            clearButtonMode="never"
-          />
-          {query.length > 0 ? (
-            <Pressable onPress={() => setQuery('')} hitSlop={8}>
-              <IconSymbol name="xmark.circle.fill" size={16} color={C.muted} />
-            </Pressable>
-          ) : null}
+      <Animated.View style={{ backgroundColor: C.bg, paddingTop: insets.top, borderBottomWidth: StyleSheet.hairlineWidth, borderBottomColor: C.separator, position: 'absolute', top: 0, left: 0, right: 0, zIndex: 10, opacity }}>
+        <View style={styles.header}>
+          <Pressable onPress={() => router.back()} hitSlop={10} style={styles.backBtn}>
+            <IconSymbol name="chevron.left" size={20} color={C.label} />
+          </Pressable>
+          <View style={[styles.searchBar, { backgroundColor: C.surface, borderColor: C.inputBorder }]}>
+            <IconSymbol name="magnifyingglass" size={15} color={C.secondary} />
+            <TextInput
+              autoFocus
+              value={query}
+              onChangeText={setQuery}
+              placeholder={sourceLabel}
+              placeholderTextColor={C.muted}
+              style={[styles.searchInput, { color: C.label }]}
+              returnKeyType="search"
+              clearButtonMode="never"
+            />
+            {query.length > 0 ? (
+              <Pressable onPress={() => setQuery('')} hitSlop={8}>
+                <IconSymbol name="xmark.circle.fill" size={16} color={C.muted} />
+              </Pressable>
+            ) : null}
+          </View>
         </View>
-      </View>
+      </Animated.View>
 
       {/* Results */}
       {results === null ? (
-        <View style={styles.emptyState}>
+        <View style={[styles.emptyState, { marginTop: TOP_BAR_H }]}>
           <IconSymbol name="magnifyingglass" size={40} color={C.muted} />
           <Text style={[styles.emptyTitle, { color: C.secondary }]}>Search KayTV</Text>
           <Text style={[styles.emptySub, { color: C.muted }]}>
@@ -128,7 +135,7 @@ export default function KayTVSearchScreen() {
           </Text>
         </View>
       ) : results.length === 0 ? (
-        <View style={styles.emptyState}>
+        <View style={[styles.emptyState, { marginTop: TOP_BAR_H }]}>
           <IconSymbol name="magnifyingglass" size={40} color={C.muted} />
           <Text style={[styles.emptyTitle, { color: C.secondary }]}>No results for "{query}"</Text>
         </View>
@@ -137,7 +144,9 @@ export default function KayTVSearchScreen() {
           data={results}
           keyExtractor={v => v.id}
           showsVerticalScrollIndicator={false}
-          contentContainerStyle={{ paddingBottom: 120 }}
+          onScroll={onScroll}
+          scrollEventThrottle={scrollEventThrottle}
+          contentContainerStyle={{ paddingTop: TOP_BAR_H, paddingBottom: 120 }}
           renderItem={({ item }) => (
             <SearchResultCard
               video={item}

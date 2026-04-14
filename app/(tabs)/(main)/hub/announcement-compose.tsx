@@ -5,7 +5,7 @@
 
 import React, { useState, useCallback } from 'react';
 import {
-  View, Text, Pressable, TextInput, ScrollView, StyleSheet,
+  View, Text, Pressable, TextInput, ScrollView, StyleSheet, Animated,
 } from 'react-native';
 import * as Haptics from 'expo-haptics';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
@@ -15,6 +15,9 @@ import { IconSymbol } from '@/components/ui/icon-symbol';
 import { KMenuButton } from '@/components/ui/k-menu-button';
 import { useColors } from '@/hooks/use-colors';
 import { openSidePanel } from '@/utils/global-side-panel';
+import { useScrollHeader } from '@/hooks/use-scroll-header';
+
+const TOP_BAR_H = 44;
 
 const TO_OPTIONS = [
   { label: 'All Members',   value: 'all',         count: 487 },
@@ -29,7 +32,7 @@ export default function AnnouncementCompose() {
   const C = useColors();
   const insets = useSafeAreaInsets();
   const router = useRouter();
-
+  const { opacity, onScroll, scrollEventThrottle } = useScrollHeader();
   const [toValue, setToValue]           = useState('all');
   const [toDropdownOpen, setToDropdown] = useState(false);
   const [subject, setSubject]           = useState('');
@@ -47,22 +50,24 @@ export default function AnnouncementCompose() {
 
   return (
     <View style={[st.screen, { backgroundColor: C.bg }]}>
-      {/* Top Bar */}
-      <View style={[st.topBar, { paddingTop: insets.top + 6, backgroundColor: C.bg, borderBottomColor: C.separator }]}>
-        <KMenuButton onPress={openSidePanel} />
-        <Text style={[st.topBarTitle, { color: C.label }]}>New Announcement</Text>
-        <Pressable
-          style={[st.sendBtn, { backgroundColor: subject.trim() && body.trim() ? C.accent : C.surfacePressed }]}
-          onPress={handleSend}
-          disabled={!subject.trim() || !body.trim()}
-        >
-          <Text style={[st.sendBtnText, { color: subject.trim() && body.trim() ? '#fff' : C.muted }]}>Send</Text>
-        </Pressable>
-      </View>
-
+      <Animated.View style={[st.topBarOuter, { paddingTop: insets.top + 6, backgroundColor: C.bg, borderBottomColor: C.separator, borderBottomWidth: StyleSheet.hairlineWidth, opacity }]}>
+        <View style={st.topBar}>
+          <KMenuButton onPress={openSidePanel} />
+          <Text style={[st.topBarTitle, { color: C.label }]}>New Announcement</Text>
+          <Pressable
+            style={[st.sendBtn, { backgroundColor: subject.trim() && body.trim() ? C.accent : C.surfacePressed }]}
+            onPress={handleSend}
+            disabled={!subject.trim() || !body.trim()}
+          >
+            <Text style={[st.sendBtnText, { color: subject.trim() && body.trim() ? '#fff' : C.muted }]}>Send</Text>
+          </Pressable>
+        </View>
+      </Animated.View>
       <ScrollView
+        onScroll={onScroll}
+        scrollEventThrottle={scrollEventThrottle}
         style={st.scroll}
-        contentContainerStyle={{ paddingHorizontal: 16, paddingBottom: insets.bottom + 32 }}
+        contentContainerStyle={{ paddingTop: insets.top + 6 + TOP_BAR_H + 8, paddingHorizontal: 16, paddingBottom: insets.bottom + 32 }}
         keyboardShouldPersistTaps="handled"
       >
         {/* To field */}
@@ -161,10 +166,10 @@ export default function AnnouncementCompose() {
 
 const st = StyleSheet.create({
   screen: { flex: 1 },
+  topBarOuter: { position: 'absolute', top: 0, left: 0, right: 0, zIndex: 10, borderBottomWidth: StyleSheet.hairlineWidth },
   topBar: {
-    flexDirection: 'row', alignItems: 'center',
-    paddingHorizontal: 16, paddingBottom: 12, gap: 12,
-    borderBottomWidth: StyleSheet.hairlineWidth,
+    height: TOP_BAR_H, flexDirection: 'row', alignItems: 'center',
+    paddingHorizontal: 16, gap: 12,
   },
   topBarTitle: { flex: 1, fontSize: 16, fontWeight: '700', textAlign: 'center' },
   sendBtn:     { paddingHorizontal: 16, paddingVertical: 8, borderRadius: 20 },

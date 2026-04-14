@@ -19,6 +19,7 @@ import { useFocusEffect } from 'expo-router';
 import { IconSymbol } from '@/components/ui/icon-symbol';
 import { RolePill } from '@/components/ui/role-pill';
 import { useColors, type ComponentColors } from '@/hooks/use-colors';
+import { useScrollHeader } from '@/hooks/use-scroll-header';
 import { openSidePanel } from '@/utils/global-side-panel';
 import { resetFooter, hideFooter, showFooter } from '@/utils/global-footer-hide';
 import { useDemoRole } from '@/utils/demo-role-store';
@@ -561,6 +562,7 @@ export default function AdmissionsScreen() {
   const dataMode = useDataMode();
 
   const topBarH   = insets.top + TOP_BAR_H;
+  const { opacity, onScroll: onScrollHeader } = useScrollHeader(topBarH);
   const pillsAnim  = useRef(new Animated.Value(0)).current;
   const detailAnim = useRef(new Animated.Value(0)).current;
   const scrollRef  = useRef<ScrollView>(null);
@@ -613,11 +615,12 @@ export default function AdmissionsScreen() {
   // Footer scroll
   const lastScrollY = useRef(0);
   const onScroll = useCallback((e: any) => {
+    onScrollHeader(e);
     const y = e.nativeEvent.contentOffset.y;
     if (y - lastScrollY.current > 10) hideFooter();
     else if (lastScrollY.current - y > 10) showFooter();
     lastScrollY.current = y;
-  }, []);
+  }, [onScrollHeader]);
 
   useFocusEffect(useCallback(() => { resetFooter(); }, []));
 
@@ -1707,7 +1710,7 @@ export default function AdmissionsScreen() {
       )}
 
       {/* Absolute top bar */}
-      <View style={[s.topBarWrap, { paddingTop: insets.top, backgroundColor: C.bg }]}>
+      <Animated.View style={[s.topBarWrap, { paddingTop: insets.top, backgroundColor: C.bg, opacity }]}>
         <View style={s.topBar}>
           {/* Left: K button */}
           <View style={s.topBarSide}>
@@ -1782,7 +1785,7 @@ export default function AdmissionsScreen() {
             })}
           </ScrollView>
         </Animated.View>
-      </View>
+      </Animated.View>
 
       {/* Applicant detail sheet */}
       {detailOpen && (

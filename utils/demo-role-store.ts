@@ -60,6 +60,8 @@ const DEFAULTS: Record<string, string[]> = {
   'personal:my-page':     ['Owner',   'Follower'],
   'personal:agenda':      ['Owner',   'Follower'],
   'personal:social':      ['Owner',   'Follower'],
+  'personal:portfolio':   ['Owner',   'Follower'],
+  'personal:inquiries':   ['Owner',   'Follower'],
   'personal:network':     ['Owner',   'Follower'],
   'personal:deals':       ['Owner',   'Follower'],
   'personal:store':       ['Owner',   'Follower'],

@@ -18,6 +18,7 @@ import * as Haptics from 'expo-haptics';
 import { IconSymbol } from '@/components/ui/icon-symbol';
 import { BottomSheet } from '@/components/ui/bottom-sheet';
 import { useColors, type ComponentColors } from '@/hooks/use-colors';
+import { useScrollHeader } from '@/hooks/use-scroll-header';
 import { useMode, useAppContext } from '@/context/app-context';
 import { useRouter } from 'expo-router';
 import { hideFooter, showFooter } from '@/utils/global-footer-hide';
@@ -1177,6 +1178,7 @@ export default function PhoneScreen() {
   const fabBottom = insets.bottom + FOOTER_HEIGHT + 16;
   const searchBarBottom = insets.bottom + FOOTER_HEIGHT;
   const headerHeight = insets.top + 14 + 50; // approx header block height
+  const { opacity, onScroll: onScrollHeader } = useScrollHeader(headerHeight);
 
   // ── Contacts: grouped sections + alphabet index ─────────────────────────────
   const contactGroupPills = useMemo(() => {
@@ -1204,6 +1206,7 @@ export default function PhoneScreen() {
   const sectionListRef = useRef<SectionList<PhoneContact>>(null);
   const lastScrollYRef = useRef(0);
   const handleScroll = useCallback((e: any) => {
+    onScrollHeader(e);
     const y = e.nativeEvent.contentOffset.y;
     const dy = y - lastScrollYRef.current;
     lastScrollYRef.current = y;
@@ -1329,7 +1332,8 @@ export default function PhoneScreen() {
         pointerEvents={searchActive ? 'none' : 'auto'}
       >
         {/* Header */}
-        <View style={[styles.header, { paddingTop: insets.top + 14 }]}>
+        <Animated.View style={[{ position: 'absolute', top: 0, left: 0, right: 0, zIndex: 10, backgroundColor: C.bg }, { paddingTop: insets.top + 14, opacity }]}>
+        <View style={styles.header}>
           {/* Left */}
           {editFavoritesMode ? (
             <Pressable
@@ -1422,6 +1426,7 @@ export default function PhoneScreen() {
             <View style={styles.filterBtn} />
           )}
         </View>
+        </Animated.View>
 
         {/* Group filter pills — Contacts view only, slides in */}
         {tab === 'Contacts' && (
@@ -1500,7 +1505,7 @@ export default function PhoneScreen() {
             showsVerticalScrollIndicator={false}
             onScroll={handleScroll}
             scrollEventThrottle={16}
-            contentContainerStyle={{ paddingBottom: insets.bottom + FOOTER_HEIGHT + 150 }}
+            contentContainerStyle={{ paddingTop: headerHeight, paddingBottom: insets.bottom + FOOTER_HEIGHT + 150 }}
             onScrollToIndexFailed={() => {}}
           />
         ) : (
@@ -1509,7 +1514,7 @@ export default function PhoneScreen() {
             showsVerticalScrollIndicator={false}
             onScroll={handleScroll}
             scrollEventThrottle={16}
-            contentContainerStyle={{ paddingBottom: insets.bottom + FOOTER_HEIGHT + 150 }}
+            contentContainerStyle={{ paddingTop: headerHeight, paddingBottom: insets.bottom + FOOTER_HEIGHT + 150 }}
           >
             {(displayFavorites.length > 0 || editFavoritesMode) && tab === 'Calls' && !selectMode && (
               <View style={[styles.section, styles.favsSection]}>

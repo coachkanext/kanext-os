@@ -14,6 +14,7 @@ import {
   Pressable,
   ScrollView,
   Alert,
+  Animated,
 } from 'react-native';
 import * as Haptics from 'expo-haptics';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
@@ -25,6 +26,8 @@ import { useColors, type ComponentColors } from '@/hooks/use-colors';
 import { openSidePanel } from '@/utils/global-side-panel';
 import { resetFooter } from '@/utils/global-footer-hide';
 import { useDemoRole } from '@/utils/demo-role-store';
+import { useScrollHeader } from '@/hooks/use-scroll-header';
+
 
 // ── Semantic color constants ──────────────────────────────────────────────────
 
@@ -721,6 +724,8 @@ export default function SportsCoachCalendarScreen() {
   const [role, cycleRole, roleCycles] = useDemoRole('sports:agenda');
   const isHeadCoach = role === roleCycles[0];
 
+  const { opacity, onScroll, scrollEventThrottle } = useScrollHeader();
+
   const [activeFilter, setActiveFilter] = useState<FilterCategory>('All');
   const [selectedDay, setSelectedDay] = useState<Date>(d(4, 10));
   const [complianceOn, setComplianceOn] = useState(false);
@@ -793,35 +798,38 @@ export default function SportsCoachCalendarScreen() {
   return (
     <View style={[s.root, { backgroundColor: C.bg }]}>
 
-      {/* ── Top Bar ───────────────────────────────────────────────────────────── */}
-      <View style={[s.topBar, { paddingTop: insets.top, backgroundColor: C.bg, borderBottomColor: C.separator }]}>
-        <Pressable
-          style={s.kBtn}
-          onPress={() => {
-            Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
-            openSidePanel();
-          }}
-          hitSlop={8}
-        >
-          <KMenuButton />
-        </Pressable>
+      <Animated.View style={[s.topBarOuter, { paddingTop: insets.top, backgroundColor: C.bg, borderBottomColor: C.separator, borderBottomWidth: StyleSheet.hairlineWidth, opacity }]}>
+        <View style={s.topBar}>
+          <Pressable
+            style={s.kBtn}
+            onPress={() => {
+              Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+              openSidePanel();
+            }}
+            hitSlop={8}
+          >
+            <KMenuButton />
+          </Pressable>
 
-        <View style={{ flex: 1, alignItems: 'center' }}>
-          <View style={[s.titlePill, { backgroundColor: C.surface, borderColor: C.separator }]}>
-            <Text style={[s.titleText, { color: C.label }]}>LU Men's Basketball</Text>
+          <View style={{ flex: 1, alignItems: 'center' }}>
+            <View style={[s.titlePill, { backgroundColor: C.surface, borderColor: C.separator }]}>
+              <Text style={[s.titleText, { color: C.label }]}>LU Men's Basketball</Text>
+            </View>
+          </View>
+
+          <View style={s.rolePillWrap}>
+            <RolePill role={role} onPress={cycleRole} isPrimary={isHeadCoach} />
           </View>
         </View>
-
-        <View style={s.rolePillWrap}>
-          <RolePill role={role} onPress={cycleRole} isPrimary={isHeadCoach} />
-        </View>
-      </View>
+      </Animated.View>
 
       <ScrollView
         ref={scrollRef}
         style={{ flex: 1 }}
-        contentContainerStyle={[s.scrollContent, { paddingBottom: contentBottom }]}
+        contentContainerStyle={[s.scrollContent, { paddingTop: insets.top + 52 + 8, paddingBottom: contentBottom }]}
         showsVerticalScrollIndicator={false}
+        onScroll={onScroll}
+        scrollEventThrottle={scrollEventThrottle}
       >
 
         {/* ── Category Filter Pills ────────────────────────────────────────────── */}
@@ -1030,17 +1038,12 @@ function makeStyles(C: ComponentColors) {
     root: { flex: 1 },
 
     // Top bar
+    topBarOuter: { position: 'absolute', top: 0, left: 0, right: 0, zIndex: 10 },
     topBar: {
-      position: 'absolute',
-      top: 0,
-      left: 0,
-      right: 0,
-      zIndex: 100,
+      height: 52,
       flexDirection: 'row',
-      alignItems: 'flex-end',
-      paddingBottom: 10,
+      alignItems: 'center',
       paddingHorizontal: 16,
-      borderBottomWidth: StyleSheet.hairlineWidth,
     },
     kBtn: { width: 44, height: 36, justifyContent: 'center' },
     titlePill: {
@@ -1057,7 +1060,7 @@ function makeStyles(C: ComponentColors) {
 
     // Scroll
     scrollContent: {
-      paddingTop: 100,
+      paddingTop: 0,
       gap: 0,
     },
 

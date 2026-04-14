@@ -9,7 +9,7 @@
 
 import React, { useCallback } from 'react';
 import {
-  View, Text, Pressable, ScrollView, Image, StyleSheet,
+  View, Text, Pressable, ScrollView, Image, StyleSheet, Animated,
 } from 'react-native';
 import * as Haptics from 'expo-haptics';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
@@ -19,6 +19,7 @@ import { IconSymbol } from '@/components/ui/icon-symbol';
 import { RolePill } from '@/components/ui/role-pill';
 import { KMenuButton } from '@/components/ui/k-menu-button';
 import { useColors } from '@/hooks/use-colors';
+import { useScrollHeader } from '@/hooks/use-scroll-header';
 import { openSidePanel } from '@/utils/global-side-panel';
 import { resetFooter } from '@/utils/global-footer-hide';
 import { useDemoRole } from '@/utils/demo-role-store';
@@ -106,6 +107,7 @@ export default function BusinessHub() {
   const activeCount = ACTIVE_PROJECTS.filter(p => p.progress > 14).length;
 
   useFocusEffect(useCallback(() => { resetFooter(); }, []));
+  const { opacity, onScroll, scrollEventThrottle } = useScrollHeader(insets.top + TOP_BAR_H + 10);
 
   const go = (route: string) => {
     Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
@@ -116,17 +118,21 @@ export default function BusinessHub() {
     <View style={[s.root, { backgroundColor: C.bg }]}>
 
       {/* ── Floating top bar ─────────────────────────────────────────────── */}
-      <View style={[s.topBar, { paddingTop: insets.top, height: insets.top + TOP_BAR_H }]}>
-        <KMenuButton onPress={() => { Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light); openSidePanel(); }} />
-        <View style={s.topCenter}>
-          <Text style={s.topTitle}>Hub</Text>
+      <Animated.View style={[s.topBarOuter, { paddingTop: insets.top, height: insets.top + TOP_BAR_H, opacity }]}>
+        <View style={s.topBar}>
+          <KMenuButton onPress={() => { Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light); openSidePanel(); }} />
+          <View style={s.topCenter}>
+            <Text style={s.topTitle}>Hub</Text>
+          </View>
+          <RolePill role={role} onPress={() => { Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light); toggleRole(); }} />
         </View>
-        <RolePill role={role} onPress={() => { Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light); toggleRole(); }} />
-      </View>
+      </Animated.View>
 
       <ScrollView
         showsVerticalScrollIndicator={false}
         contentContainerStyle={{ paddingBottom: 120 }}
+        onScroll={onScroll}
+        scrollEventThrottle={scrollEventThrottle}
       >
         {/* ── Cover photo + overlapping avatar ─────────────────────────── */}
         <View style={{ position: 'relative', marginBottom: AVATAR_OVR + 12 }}>
@@ -326,8 +332,10 @@ export default function BusinessHub() {
 const s = StyleSheet.create({
   root: { flex: 1 },
 
-  topBar: {
+  topBarOuter: {
     position: 'absolute', top: 0, left: 0, right: 0, zIndex: 10,
+  },
+  topBar: {
     flexDirection: 'row', alignItems: 'flex-end',
     paddingHorizontal: 16, paddingBottom: 10,
   },

@@ -7,7 +7,7 @@
 
 import React, { useState, useCallback, useMemo } from 'react';
 import {
-  View, Text, Pressable, ScrollView, Alert, StyleSheet,
+  View, Text, Pressable, ScrollView, Alert, StyleSheet, Animated,
 } from 'react-native';
 import * as Haptics from 'expo-haptics';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
@@ -20,6 +20,7 @@ import { openSidePanel } from '@/utils/global-side-panel';
 import { KMenuButton } from '@/components/ui/k-menu-button';
 import { RolePill } from '@/components/ui/role-pill';
 import { useDemoRole } from '@/utils/demo-role-store';
+import { useScrollHeader } from '@/hooks/use-scroll-header';
 
 // ── Static mock data ──────────────────────────────────────────────────────────
 
@@ -65,6 +66,7 @@ export default function CareRequestsScreen() {
   const [role, cycleRole, roleCycles] = useDemoRole('community:hub');
   const isPastor = role === roleCycles[0];
 
+  const { opacity, onScroll, scrollEventThrottle } = useScrollHeader();
   const [activePill, setActivePill]       = useState('All');
   const [resolvedExpanded, setResolvedExpanded] = useState(false);
 
@@ -74,9 +76,6 @@ export default function CareRequestsScreen() {
       router.replace('/(tabs)/(main)/hub/community' as any);
     }
   }, [isPastor, router]));
-
-  const topBarH        = insets.top + TOP_BAR_H;
-  const scrollPaddingTop = topBarH + 16;
 
   const filteredRequests = useMemo(() => {
     if (activePill === 'Urgent')     return OPEN_REQUESTS.filter(r => r.priority === 'Urgent');
@@ -102,9 +101,20 @@ export default function CareRequestsScreen() {
 
   return (
     <View style={[s.screen, { backgroundColor: C.bg }]}>
+      <Animated.View style={[s.topBarOuter, { paddingTop: insets.top, backgroundColor: C.bg, borderBottomColor: C.separator, borderBottomWidth: StyleSheet.hairlineWidth, opacity }]}>
+        <View style={s.topBar}>
+          <Pressable onPress={() => { Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light); openSidePanel(); }} hitSlop={12}>
+            <KMenuButton />
+          </Pressable>
+          <Text style={[s.topBarTitle, { color: C.label }]}>Care Requests</Text>
+          <RolePill role={role} onPress={cycleRole} isPrimary={isPastor} />
+        </View>
+      </Animated.View>
       <ScrollView
+        onScroll={onScroll}
+        scrollEventThrottle={scrollEventThrottle}
         showsVerticalScrollIndicator={false}
-        contentContainerStyle={{ paddingTop: scrollPaddingTop, paddingBottom: insets.bottom + 100 }}
+        contentContainerStyle={{ paddingTop: insets.top + TOP_BAR_H + 8, paddingBottom: insets.bottom + 100 }}
       >
         {/* Filter Pills */}
         <ScrollView
@@ -202,17 +212,6 @@ export default function CareRequestsScreen() {
         </View>
       </ScrollView>
 
-      {/* Top Bar */}
-      <View style={[s.topBarWrap, { paddingTop: insets.top, backgroundColor: C.bg }]}>
-        <View style={s.topBar}>
-          <Pressable onPress={() => { Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light); openSidePanel(); }} hitSlop={12}>
-            <KMenuButton />
-          </Pressable>
-          <Text style={[s.topBarTitle, { color: C.label }]}>Care Requests</Text>
-          <RolePill role={role} onPress={cycleRole} isPrimary={isPastor} />
-        </View>
-      </View>
-
       {/* FAB */}
       <Pressable
         style={[s.fab, { bottom: insets.bottom + 49 + 16, backgroundColor: C.label }]}
@@ -229,7 +228,7 @@ export default function CareRequestsScreen() {
 function makeStyles(C: ComponentColors) {
   return StyleSheet.create({
     screen:     { flex: 1 },
-    topBarWrap: { position: 'absolute', top: 0, left: 0, right: 0, zIndex: 100 },
+    topBarOuter:{ position: 'absolute', top: 0, left: 0, right: 0, zIndex: 10, borderBottomWidth: StyleSheet.hairlineWidth },
     topBar:     { height: TOP_BAR_H, flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', paddingHorizontal: 16 },
     topBarTitle:{ fontSize: 16, fontWeight: '700', flex: 1, textAlign: 'center' },
 

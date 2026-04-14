@@ -5,7 +5,7 @@
 
 import React, { useState, useCallback } from 'react';
 import {
-  View, Text, Pressable, TextInput, ScrollView, StyleSheet, Switch,
+  View, Text, Pressable, TextInput, ScrollView, StyleSheet, Switch, Animated,
 } from 'react-native';
 import * as Haptics from 'expo-haptics';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
@@ -15,15 +15,17 @@ import { IconSymbol } from '@/components/ui/icon-symbol';
 import { KMenuButton } from '@/components/ui/k-menu-button';
 import { useColors } from '@/hooks/use-colors';
 import { openSidePanel } from '@/utils/global-side-panel';
+import { useScrollHeader } from '@/hooks/use-scroll-header';
 import type { CareRequestType } from '@/data/mock-community-hub';
 
+const TOP_BAR_H = 44;
 const REQUEST_TYPES: CareRequestType[] = ['Prayer', 'Counseling', 'Financial Aid', 'General'];
 
 export default function CareRequestScreen() {
   const C = useColors();
   const insets = useSafeAreaInsets();
   const router = useRouter();
-
+  const { opacity, onScroll, scrollEventThrottle } = useScrollHeader();
   const [reqType, setReqType]   = useState<CareRequestType>('Prayer');
   const [details, setDetails]   = useState('');
   const [anonymous, setAnon]    = useState(false);
@@ -61,21 +63,23 @@ export default function CareRequestScreen() {
 
   return (
     <View style={[st.screen, { backgroundColor: C.bg }]}>
-      {/* Top Bar */}
-      <View style={[st.topBar, { paddingTop: insets.top + 6, borderBottomColor: C.separator, backgroundColor: C.bg }]}>
-        <KMenuButton onPress={openSidePanel} />
-        <Text style={[st.topBarTitle, { color: C.label }]}>Care Request</Text>
-        <Pressable
-          style={[st.submitBtn, { backgroundColor: details.trim() ? C.accent : C.surfacePressed }]}
-          onPress={handleSubmit}
-          disabled={!details.trim()}
-        >
-          <Text style={[st.submitBtnText, { color: details.trim() ? '#fff' : C.muted }]}>Submit</Text>
-        </Pressable>
-      </View>
-
+      <Animated.View style={[st.topBarOuter, { paddingTop: insets.top + 6, backgroundColor: C.bg, borderBottomColor: C.separator, borderBottomWidth: StyleSheet.hairlineWidth, opacity }]}>
+        <View style={st.topBar}>
+          <KMenuButton onPress={openSidePanel} />
+          <Text style={[st.topBarTitle, { color: C.label }]}>Care Request</Text>
+          <Pressable
+            style={[st.submitBtn, { backgroundColor: details.trim() ? C.accent : C.surfacePressed }]}
+            onPress={handleSubmit}
+            disabled={!details.trim()}
+          >
+            <Text style={[st.submitBtnText, { color: details.trim() ? '#fff' : C.muted }]}>Submit</Text>
+          </Pressable>
+        </View>
+      </Animated.View>
       <ScrollView
-        contentContainerStyle={{ paddingHorizontal: 16, paddingTop: 20, paddingBottom: insets.bottom + 32 }}
+        onScroll={onScroll}
+        scrollEventThrottle={scrollEventThrottle}
+        contentContainerStyle={{ paddingTop: insets.top + 6 + TOP_BAR_H + 8, paddingHorizontal: 16, paddingBottom: insets.bottom + 32 }}
         keyboardShouldPersistTaps="handled"
       >
         {/* Privacy notice */}
@@ -138,10 +142,10 @@ export default function CareRequestScreen() {
 
 const st = StyleSheet.create({
   screen: { flex: 1 },
+  topBarOuter: { position: 'absolute', top: 0, left: 0, right: 0, zIndex: 10, borderBottomWidth: StyleSheet.hairlineWidth },
   topBar: {
-    flexDirection: 'row', alignItems: 'center',
-    paddingHorizontal: 16, paddingBottom: 12, gap: 12,
-    borderBottomWidth: StyleSheet.hairlineWidth,
+    height: TOP_BAR_H, flexDirection: 'row', alignItems: 'center',
+    paddingHorizontal: 16, gap: 12,
   },
   topBarTitle: { flex: 1, fontSize: 16, fontWeight: '700', textAlign: 'center' },
   submitBtn:   { paddingHorizontal: 16, paddingVertical: 8, borderRadius: 20 },

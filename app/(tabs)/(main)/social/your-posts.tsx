@@ -5,7 +5,7 @@
 
 import React, { useMemo } from 'react';
 import {
-  View, Text, Pressable, Image, ScrollView, StyleSheet, useWindowDimensions,
+  View, Text, Pressable, Image, ScrollView, StyleSheet, useWindowDimensions, Animated,
 } from 'react-native';
 import * as Haptics from 'expo-haptics';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
@@ -14,30 +14,33 @@ import { useRouter } from 'expo-router';
 import { IconSymbol } from '@/components/ui/icon-symbol';
 import { useColors } from '@/hooks/use-colors';
 import { getSammyPosts } from '@/data/mock-social';
+import { useScrollHeader } from '@/hooks/use-scroll-header';
 
 export default function YourPostsScreen() {
   const C = useColors();
   const insets = useSafeAreaInsets();
   const router = useRouter();
   const { width } = useWindowDimensions();
+  const { opacity, onScroll, scrollEventThrottle } = useScrollHeader();
   const posts = useMemo(() => getSammyPosts(), []);
   const cellSize = (width - 2) / 3;
 
   return (
     <View style={[s.screen, { backgroundColor: C.bg }]}>
       {/* Header */}
-      <View style={[s.header, { paddingTop: insets.top + 8, borderBottomColor: C.separator }]}>
-        <Pressable
-          style={s.backBtn}
-          onPress={() => { Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light); router.back(); }}
-        >
-          <IconSymbol name="chevron.left" size={20} color={C.label} />
-        </Pressable>
-        <Text style={[s.title, { color: C.label }]}>Your Posts</Text>
-        <View style={s.backBtn} />
-      </View>
-
-      <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={{ paddingBottom: insets.bottom + 80 }}>
+      <Animated.View style={[s.topBarOuter, { paddingTop: insets.top + 8, borderBottomColor: C.separator, backgroundColor: C.bg, borderBottomWidth: StyleSheet.hairlineWidth, opacity }]}>
+        <View style={s.header}>
+          <Pressable
+            style={s.backBtn}
+            onPress={() => { Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light); router.back(); }}
+          >
+            <IconSymbol name="chevron.left" size={20} color={C.label} />
+          </Pressable>
+          <Text style={[s.title, { color: C.label }]}>Your Posts</Text>
+          <View style={s.backBtn} />
+        </View>
+      </Animated.View>
+      <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={{ paddingTop: insets.top + 8 + 52 + 8, paddingBottom: insets.bottom + 80 }} onScroll={onScroll} scrollEventThrottle={scrollEventThrottle}>
         {/* Stats bar */}
         <View style={[s.statsBar, { borderBottomColor: C.separator }]}>
           <Text style={[s.statsText, { color: C.secondary }]}>
@@ -86,10 +89,11 @@ export default function YourPostsScreen() {
 }
 
 const s = StyleSheet.create({
-  screen:    { flex: 1 },
-  header:    { flexDirection: 'row', alignItems: 'center', paddingHorizontal: 16, paddingBottom: 12, borderBottomWidth: StyleSheet.hairlineWidth },
-  backBtn:   { width: 40, alignItems: 'flex-start', justifyContent: 'center' },
-  title:     { flex: 1, fontSize: 17, fontWeight: '700', textAlign: 'center' },
+  screen:      { flex: 1 },
+  topBarOuter: { position: 'absolute', top: 0, left: 0, right: 0, zIndex: 10 },
+  header:      { height: 52, flexDirection: 'row', alignItems: 'center', paddingHorizontal: 16 },
+  backBtn:     { width: 40, alignItems: 'flex-start', justifyContent: 'center' },
+  title:       { flex: 1, fontSize: 17, fontWeight: '700', textAlign: 'center' },
   statsBar:  { paddingHorizontal: 16, paddingVertical: 10, borderBottomWidth: StyleSheet.hairlineWidth },
   statsText: { fontSize: 13 },
   grid:      { flexDirection: 'row', flexWrap: 'wrap', gap: 1 },

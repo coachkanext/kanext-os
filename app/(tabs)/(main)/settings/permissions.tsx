@@ -3,7 +3,7 @@
  */
 
 import React, { useState, useMemo, useCallback } from 'react';
-import { View, Text, Pressable, ScrollView, StyleSheet } from 'react-native';
+import { View, Text, Pressable, ScrollView, StyleSheet, Animated } from 'react-native';
 import * as Haptics from 'expo-haptics';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useFocusEffect, useRouter } from 'expo-router';
@@ -11,6 +11,7 @@ import { IconSymbol } from '@/components/ui/icon-symbol';
 import { GlassView } from '@/components/ui/glass-view';
 import { useColors, type ComponentColors } from '@/hooks/use-colors';
 import { resetFooter } from '@/utils/global-footer-hide';
+import { useScrollHeader } from '@/hooks/use-scroll-header';
 
 const TOP_BAR_H = 44;
 
@@ -26,8 +27,6 @@ export default function PermissionsSettingsScreen() {
   const router = useRouter();
   const s      = useMemo(() => makeStyles(C), [C]);
 
-  const topBarH           = insets.top + TOP_BAR_H;
-  const contentPaddingTop = topBarH + 8;
   const haptic = () => Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
 
   const [contentApproval,          setContentApproval]          = useState(false);
@@ -35,6 +34,8 @@ export default function PermissionsSettingsScreen() {
   const [directoryMemberProfiles,  setDirectoryMemberProfiles]  = useState(true);
   const [directoryMemberActivity,  setDirectoryMemberActivity]  = useState(false);
   const [modSensitivity,           setModSensitivity]           = useState<'low' | 'medium' | 'high'>('medium');
+
+  const { opacity, onScroll, scrollEventThrottle } = useScrollHeader();
 
   useFocusEffect(useCallback(() => { resetFooter(); }, []));
 
@@ -57,20 +58,24 @@ export default function PermissionsSettingsScreen() {
 
   return (
     <View style={[s.root, { backgroundColor: C.bg }]}>
-      {/* Top Bar */}
-      <View style={[s.topBar, { height: topBarH, paddingTop: insets.top, backgroundColor: C.bg, borderBottomColor: C.separator }]}>
-        <Pressable onPress={() => { haptic(); router.back(); }} hitSlop={8} style={s.topBarBtn}>
-          <IconSymbol name="chevron.left" size={20} color={C.label} />
-        </Pressable>
-        <View style={[s.pill, { backgroundColor: C.surface, borderColor: C.separator }]}>
-          <Text style={[s.pillText, { color: C.label }]}>Permissions</Text>
+      <Animated.View style={[s.topBarOuter, { paddingTop: insets.top, backgroundColor: C.bg, borderBottomColor: C.separator, opacity }]}>
+        <View style={s.topBar}>
+          <Pressable onPress={() => { haptic(); router.back(); }} hitSlop={8} style={s.topBarBtn}>
+            <IconSymbol name="chevron.left" size={20} color={C.label} />
+          </Pressable>
+          <View style={{ flex: 1, alignItems: 'center' }}>
+            <View style={[s.pill, { backgroundColor: C.surface, borderColor: C.separator }]}>
+              <Text style={[s.pillText, { color: C.label }]}>Permissions</Text>
+            </View>
+          </View>
+          <View style={s.topBarBtn} />
         </View>
-        <View style={s.topBarBtn} />
-      </View>
-
+      </Animated.View>
       <ScrollView
+        onScroll={onScroll}
+        scrollEventThrottle={scrollEventThrottle}
         style={{ flex: 1 }}
-        contentContainerStyle={{ paddingTop: contentPaddingTop, paddingBottom: insets.bottom + 80 }}
+        contentContainerStyle={{ paddingTop: insets.top + TOP_BAR_H + 8, paddingBottom: insets.bottom + 80 }}
         showsVerticalScrollIndicator={false}
       >
         {/* CONTENT */}
@@ -183,15 +188,14 @@ export default function PermissionsSettingsScreen() {
 function makeStyles(C: ComponentColors) {
   return StyleSheet.create({
     root: { flex: 1 },
+    topBarOuter: { position: 'absolute', top: 0, left: 0, right: 0, zIndex: 10, borderBottomWidth: StyleSheet.hairlineWidth },
     topBar: {
-      position: 'absolute', top: 0, left: 0, right: 0, zIndex: 100,
-      flexDirection: 'row', alignItems: 'flex-end',
-      paddingHorizontal: 12, paddingBottom: 6,
-      borderBottomWidth: StyleSheet.hairlineWidth,
+      flexDirection: 'row', alignItems: 'center',
+      paddingHorizontal: 12, paddingBottom: 6, height: TOP_BAR_H,
     },
     topBarBtn: { width: 40, height: 32, alignItems: 'center', justifyContent: 'center' },
-    pill:      { flex: 1, alignItems: 'center', justifyContent: 'center', height: 32, borderRadius: 16, borderWidth: 1, marginHorizontal: 10 },
-    pillText:  { fontSize: 14, fontWeight: '700' },
+    pill:      { paddingHorizontal: 12, paddingVertical: 5, borderRadius: 14, borderWidth: 1 },
+    pillText:  { fontSize: 12, fontWeight: '600', letterSpacing: 0.3 },
 
     sectionLabel: {
       fontSize: 11, fontWeight: '700', letterSpacing: 0.6,

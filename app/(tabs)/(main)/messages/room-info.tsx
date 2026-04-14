@@ -16,7 +16,9 @@ import {
   Switch,
   StyleSheet,
   Alert,
+  Animated,
 } from 'react-native';
+import { useScrollHeader } from '@/hooks/use-scroll-header';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import * as Haptics from 'expo-haptics';
@@ -79,6 +81,7 @@ export default function RoomInfoScreen() {
   const insets = useSafeAreaInsets();
   const router = useRouter();
   const accent = useAccentColor();
+  const { opacity, onScroll, scrollEventThrottle } = useScrollHeader();
   const { state } = useAppContext();
 
   const { threadId, title: routeTitle, memberCount } = useLocalSearchParams<{
@@ -107,7 +110,7 @@ export default function RoomInfoScreen() {
   return (
     <View style={[s.root, { backgroundColor: C.bg }]}>
       {/* ── Nav bar ── */}
-      <View style={[s.nav, { paddingTop: insets.top }]}>
+      <Animated.View style={[s.nav, { paddingTop: insets.top, opacity }]}>
         <Pressable
           style={s.backBtn}
           onPress={() => router.back()}
@@ -119,9 +122,14 @@ export default function RoomInfoScreen() {
         </Pressable>
         <Text style={[s.navTitle, { color: C.label }]}>Room Info</Text>
         <View style={{ width: 40 }} />
-      </View>
+      </Animated.View>
 
-      <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={{ paddingBottom: insets.bottom + 40 }}>
+      <ScrollView
+        onScroll={onScroll}
+        scrollEventThrottle={scrollEventThrottle}
+        showsVerticalScrollIndicator={false}
+        contentContainerStyle={{ paddingBottom: insets.bottom + 40 }}
+      >
 
         {/* ── Hero: icon + name + description ── */}
         <View style={s.heroSection}>

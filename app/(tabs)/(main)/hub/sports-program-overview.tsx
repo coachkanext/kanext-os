@@ -6,7 +6,7 @@
 
 import React, { useCallback, useMemo, useState } from 'react';
 import {
-  View, Text, Pressable, ScrollView, Image, StyleSheet,
+  View, Text, Pressable, ScrollView, Image, StyleSheet, Animated,
 } from 'react-native';
 import { BottomSheetScrollView } from '@gorhom/bottom-sheet';
 import * as Haptics from 'expo-haptics';
@@ -20,6 +20,7 @@ import { useColors, type ComponentColors } from '@/hooks/use-colors';
 import { openSidePanel } from '@/utils/global-side-panel';
 import { resetFooter } from '@/utils/global-footer-hide';
 import { useDemoRole } from '@/utils/demo-role-store';
+import { useScrollHeader } from '@/hooks/use-scroll-header';
 import { BottomSheet } from '@/components/ui/bottom-sheet';
 
 
@@ -163,7 +164,8 @@ export default function SportsProgramOverview() {
   const [role, cycleRole, roleCycles] = useDemoRole('sports:hub');
   const isHeadCoach = role === roleCycles[0];
   const s = useMemo(() => makeStyles(C), [C]);
-  const topBarHeight = insets.top + 56;
+  const TOP_BAR_H = insets.top + 54;
+  const { opacity, onScroll, scrollEventThrottle } = useScrollHeader(TOP_BAR_H);
 
   useFocusEffect(useCallback(() => {
     resetFooter();
@@ -190,25 +192,29 @@ export default function SportsProgramOverview() {
     <View style={[s.root, { backgroundColor: C.bg }]}>
 
       {/* ── Top bar ──────────────────────────────────────────────────────── */}
-      <View style={[s.topBar, { paddingTop: insets.top, backgroundColor: C.bg, borderBottomColor: C.separator }]}>
-        <Pressable
-          style={s.kBtn}
-          onPress={() => { Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light); openSidePanel(); }}
-          hitSlop={8}
-        >
-          <KMenuButton />
-        </Pressable>
-        <View style={{ flex: 1, alignItems: 'center' }}>
-          <View style={[s.titlePill, { backgroundColor: C.surface, borderColor: C.separator }]}>
-            <Text style={[s.titleText, { color: C.label }]}>{TEAM.name.toUpperCase()}</Text>
+      <Animated.View style={[s.topBarOuter, { paddingTop: insets.top, backgroundColor: C.bg, borderBottomColor: C.separator, opacity }]}>
+        <View style={s.topBar}>
+          <Pressable
+            style={s.kBtn}
+            onPress={() => { Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light); openSidePanel(); }}
+            hitSlop={8}
+          >
+            <KMenuButton />
+          </Pressable>
+          <View style={{ flex: 1, alignItems: 'center' }}>
+            <View style={[s.titlePill, { backgroundColor: C.surface, borderColor: C.separator }]}>
+              <Text style={[s.titleText, { color: C.label }]}>{TEAM.name.toUpperCase()}</Text>
+            </View>
           </View>
+          <RolePill role={role} onPress={cycleRole} isPrimary={false} />
         </View>
-        <RolePill role={role} onPress={cycleRole} isPrimary={false} />
-      </View>
+      </Animated.View>
 
       <ScrollView
         showsVerticalScrollIndicator={false}
-        contentContainerStyle={{ paddingTop: topBarHeight + 16, paddingBottom: 120 }}
+        contentContainerStyle={{ paddingTop: TOP_BAR_H + 16, paddingBottom: 120 }}
+        onScroll={onScroll}
+        scrollEventThrottle={scrollEventThrottle}
       >
 
         {/* ── Card 1: Team KR ──────────────────────────────────────────── */}
@@ -536,11 +542,13 @@ function makeStyles(C: ComponentColors) {
   return StyleSheet.create({
     root: { flex: 1 },
 
-    topBar: {
+    topBarOuter: {
       position: 'absolute', top: 0, left: 0, right: 0, zIndex: 100,
+      borderBottomWidth: StyleSheet.hairlineWidth,
+    },
+    topBar: {
       flexDirection: 'row', alignItems: 'flex-end',
       paddingBottom: 10, paddingHorizontal: 16,
-      borderBottomWidth: StyleSheet.hairlineWidth,
     },
     kBtn: { width: 44, height: 36, justifyContent: 'center' },
     titlePill: { borderRadius: 18, paddingHorizontal: 14, paddingVertical: 6, borderWidth: 1 },

@@ -208,6 +208,11 @@ def export_players(conn) -> list[dict]:
                 pss.usage_rate,
                 pss.bpr_season_avg,
                 pss.bpr_trend,
+                bac.efg_pct,
+                bac.ts_pct,
+                bac.three_p_rate,
+                bac.ft_rate,
+                bac.ast_tov_ratio,
                 NULL::numeric AS kr,
                 NULL::numeric AS okr,
                 NULL::numeric AS dkr,
@@ -223,6 +228,7 @@ def export_players(conn) -> list[dict]:
             LEFT JOIN conferences c ON c.id = t.conference_id
             LEFT JOIN competitive_levels cl ON cl.id = t.competitive_level_id
             LEFT JOIN player_season_stats pss ON pss.player_team_season_id = pts.id
+            LEFT JOIN bball_adv_computed bac ON bac.player_id = p.id AND bac.season = '2025-26'
             WHERE ts.season = '2025-26'
             ORDER BY p.id, t.name,
                      COALESCE(pss.games_played, 0) DESC,
@@ -241,6 +247,7 @@ def export_players(conn) -> list[dict]:
             gp, gs, mpg, ppg, rpg, apg, spg, bpg, topg,
             fg_pct, three_pct, ft_pct, oreb, dreb, fga, threepa, fta, pf,
             usage, bpr_avg, bpr_trend,
+            efg_pct, ts_pct, three_p_rate, ft_rate, ast_tov_ratio,
             kr, okr, dkr, primary_archetype, all_archetypes,
             confidence_pct, kr_position, impact_modifier
         ) = row
@@ -304,6 +311,11 @@ def export_players(conn) -> list[dict]:
             "usageRate": _f(usage),
             "bprAvg": _f(bpr_avg),
             "bprTrend": _f(bpr_trend),
+            "efgPct": _f(efg_pct),
+            "tsPct": _f(ts_pct),
+            "threePRate": _f(three_p_rate),
+            "ftRate": _f(ft_rate),
+            "astTovRatio": _f(ast_tov_ratio),
         })
 
     print(f"  Players: {len(players)}")

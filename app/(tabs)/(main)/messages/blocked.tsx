@@ -9,6 +9,7 @@ import {
   Pressable,
   ScrollView,
   StyleSheet,
+  Animated,
 } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import * as Haptics from 'expo-haptics';
@@ -16,6 +17,7 @@ import * as Haptics from 'expo-haptics';
 import { IconSymbol } from '@/components/ui/icon-symbol';
 import { useAccentColor } from '@/hooks/use-accent-color';
 import { useColors, type ComponentColors } from '@/hooks/use-colors';
+import { useScrollHeader } from '@/hooks/use-scroll-header';
 
 const MOCK_BLOCKED = [
   { id: 'mb1', name: 'Spam Account', username: '@spammer123', initials: 'SA' },
@@ -27,6 +29,9 @@ export default function BlockedUsersScreen() {
   const accent = useAccentColor();
   const C = useColors();
   const styles = useMemo(() => makeStyles(C), [C]);
+
+  const TOP_BAR_H = insets.top + 54;
+  const { opacity, onScroll, scrollEventThrottle } = useScrollHeader(TOP_BAR_H);
   const [blocked, setBlocked] = useState(MOCK_BLOCKED);
 
   const unblock = (id: string) => {
@@ -35,12 +40,17 @@ export default function BlockedUsersScreen() {
   };
 
   return (
-    <View style={[styles.container, { paddingTop: insets.top }]}>
-      <View style={styles.header}>
-        <Text style={styles.title}>Blocked Users</Text>
-      </View>
+    <View style={styles.container}>
+      <Animated.View style={[styles.topBar, { paddingTop: insets.top, opacity }]}>
+        <View style={styles.header}>
+          <Text style={styles.title}>Blocked Users</Text>
+        </View>
+      </Animated.View>
 
-      <ScrollView style={styles.list} contentContainerStyle={{ paddingBottom: 100 }} showsVerticalScrollIndicator={false}>
+      <ScrollView style={styles.list} contentContainerStyle={{ paddingTop: TOP_BAR_H, paddingBottom: 100 }}
+        showsVerticalScrollIndicator={false}
+        onScroll={onScroll}
+        scrollEventThrottle={scrollEventThrottle}>
         {blocked.map((user) => (
           <View key={user.id} style={styles.row}>
             <View style={styles.avatar}>
@@ -73,6 +83,7 @@ export default function BlockedUsersScreen() {
 
 const makeStyles = (C: ComponentColors) => StyleSheet.create({
   container: { flex: 1, backgroundColor: C.bg },
+  topBar: { position: 'absolute', top: 0, left: 0, right: 0, zIndex: 10, backgroundColor: C.bg },
   header: { paddingHorizontal: 20, paddingTop: 8, paddingBottom: 12 },
   title: { fontSize: 28, fontWeight: '700', color: C.label },
   list: { flex: 1 },

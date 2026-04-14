@@ -5,6 +5,7 @@ import {
   Pressable,
   ScrollView,
   StyleSheet,
+  Animated,
 } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import * as Haptics from 'expo-haptics';
@@ -19,6 +20,7 @@ import { useMode } from '@/context/app-context';
 import { resetFooter } from '@/utils/global-footer-hide';
 import { useScrollFooter } from '@/hooks/use-scroll-footer';
 import { useOwnerGuard } from '@/hooks/use-owner-guard';
+import { useScrollHeader } from '@/hooks/use-scroll-header';
 
 // ---------------------------------------------------------------------------
 // Types
@@ -140,6 +142,7 @@ export default function ReportsScreen() {
   useFocusEffect(useCallback(() => { resetFooter(); }, []));
 
   const scrollFooter = useScrollFooter();
+  const { opacity, onScroll, scrollEventThrottle } = useScrollHeader();
 
   const data        = REPORT_DATA[period];
   const dayValues   = DAY_ORDER.map(d => data.dayEvents[d] ?? 0);
@@ -149,44 +152,44 @@ export default function ReportsScreen() {
 
   return (
     <View style={[styles.root, { backgroundColor: C.bg }]}>
-      {/* Top bar */}
-      <View style={[styles.topBar, { paddingTop: insets.top + 8 }]}>
-        <Pressable onPress={() => openSidePanel()} hitSlop={8} style={styles.topBarSide}>
-          <KMenuButton />
-        </Pressable>
-        <View style={[styles.titlePill, { backgroundColor: C.surface, borderColor: C.separator }]}>
-          <Text style={[styles.titleText, { color: C.label }]}>Reports</Text>
+      <Animated.View style={[styles.topBarOuter, { paddingTop: insets.top + 8, backgroundColor: C.bg, borderBottomColor: C.separator, borderBottomWidth: StyleSheet.hairlineWidth, opacity }]}>
+        <View style={styles.topBar}>
+          <Pressable onPress={() => openSidePanel()} hitSlop={8} style={styles.topBarSide}>
+            <KMenuButton />
+          </Pressable>
+          <View style={[styles.titlePill, { backgroundColor: C.surface, borderColor: C.separator }]}>
+            <Text style={[styles.titleText, { color: C.label }]}>Reports</Text>
+          </View>
+          <View style={{ minWidth: 44, alignItems: 'flex-end', justifyContent: 'center' }}>
+            <RolePill role={role} onPress={guardedCycle} isPrimary={isOwner} />
+          </View>
         </View>
-        <View style={{ minWidth: 44, alignItems: 'flex-end', justifyContent: 'center' }}>
-          <RolePill role={role} onPress={guardedCycle} isPrimary={isOwner} />
-        </View>
-      </View>
+      </Animated.View>
+      <ScrollView {...scrollFooter} style={{ flex: 1 }} contentContainerStyle={{ paddingTop: insets.top + 8 + 52 + 8, paddingBottom: 24 }} showsVerticalScrollIndicator={false} onScroll={onScroll} scrollEventThrottle={scrollEventThrottle}>
 
-      {/* Period selector */}
-      <View style={styles.periodRow}>
-        {PERIOD_LABELS.map(({ key, label }) => {
-          const active = period === key;
-          return (
-            <Pressable
-              key={key}
-              style={[
-                styles.periodPill,
-                { backgroundColor: active ? C.activePill : 'transparent', borderColor: active ? C.activePill : C.separator },
-              ]}
-              onPress={() => { Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light); setPeriod(key); }}
-            >
-              <Text
-                style={[styles.periodPillText, { color: active ? C.activePillText : C.secondary }]}
-                numberOfLines={1}
+        {/* Period selector */}
+        <View style={styles.periodRow}>
+          {PERIOD_LABELS.map(({ key, label }) => {
+            const active = period === key;
+            return (
+              <Pressable
+                key={key}
+                style={[
+                  styles.periodPill,
+                  { backgroundColor: active ? C.activePill : 'transparent', borderColor: active ? C.activePill : C.separator },
+                ]}
+                onPress={() => { Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light); setPeriod(key); }}
               >
-                {label}
-              </Text>
-            </Pressable>
-          );
-        })}
-      </View>
-
-      <ScrollView {...scrollFooter} style={{ flex: 1 }} contentContainerStyle={{ paddingBottom: 24 }} showsVerticalScrollIndicator={false}>
+                <Text
+                  style={[styles.periodPillText, { color: active ? C.activePillText : C.secondary }]}
+                  numberOfLines={1}
+                >
+                  {label}
+                </Text>
+              </Pressable>
+            );
+          })}
+        </View>
 
         {/* Card 1: Time Breakdown */}
         <View style={[styles.card, { backgroundColor: C.surface }]}>
@@ -335,11 +338,12 @@ export default function ReportsScreen() {
 const styles = StyleSheet.create({
   root: { flex: 1 },
 
+  topBarOuter: { position: 'absolute', top: 0, left: 0, right: 0, zIndex: 10 },
   topBar: {
+    height: 52,
     flexDirection: 'row',
     alignItems: 'center',
     paddingHorizontal: 12,
-    paddingBottom: 10,
   },
   topBarSide: {
     width: 44,

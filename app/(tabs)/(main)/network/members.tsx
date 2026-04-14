@@ -1,5 +1,5 @@
 import React, { useState, useMemo } from 'react';
-import { View, Text, Pressable, ScrollView, TextInput, StyleSheet } from 'react-native';
+import { View, Text, Pressable, ScrollView, TextInput, StyleSheet, Animated } from 'react-native';
 import * as Haptics from 'expo-haptics';
 import { useRouter } from 'expo-router';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
@@ -8,6 +8,7 @@ import { BottomSheet } from '@/components/ui/bottom-sheet';
 import { RolePill } from '@/components/ui/role-pill';
 import { KMenuButton } from '@/components/ui/k-menu-button';
 import { useColors } from '@/hooks/use-colors';
+import { useScrollHeader } from '@/hooks/use-scroll-header';
 import { useDemoRole } from '@/utils/demo-role-store';
 import { openSidePanel } from '@/utils/global-side-panel';
 
@@ -90,6 +91,8 @@ export default function MembersScreen() {
 
   const topBarH = insets.top + 52;
 
+  const { opacity, onScroll, scrollEventThrottle } = useScrollHeader();
+
   const [searchQuery, setSearchQuery] = useState('');
   const [tierFilter, setTierFilter] = useState('All');
   const [profileOpen, setProfileOpen] = useState(false);
@@ -152,27 +155,32 @@ export default function MembersScreen() {
     <View style={{ flex: 1, backgroundColor: C.bg }}>
 
       {/* Top bar */}
-      <View style={{
-        position: 'absolute', top: 0, left: 0, right: 0, zIndex: 20,
+      <Animated.View style={{
+        position: 'absolute', top: 0, left: 0, right: 0, zIndex: 10,
         height: topBarH, paddingTop: insets.top,
-        flexDirection: 'row', alignItems: 'center', paddingHorizontal: 16,
         borderBottomWidth: StyleSheet.hairlineWidth, borderBottomColor: C.separator,
-        backgroundColor: C.bg,
+        backgroundColor: C.bg, opacity,
       }}>
-        <Pressable onPress={() => { Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light); openSidePanel(); }} style={{ width: 36, height: 36, alignItems: 'center', justifyContent: 'center' }}>
-          <KMenuButton />
-        </Pressable>
-        <View style={{ flex: 1, alignItems: 'center' }}>
-          <View style={{ backgroundColor: C.label, borderRadius: 20, paddingHorizontal: 16, paddingVertical: 6 }}>
-            <Text style={{ fontSize: 14, fontWeight: '700', color: C.bg }}>Members</Text>
+        <View style={{
+          flex: 1, flexDirection: 'row', alignItems: 'center', paddingHorizontal: 16,
+        }}>
+          <Pressable onPress={() => { Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light); openSidePanel(); }} style={{ width: 36, height: 36, alignItems: 'center', justifyContent: 'center' }}>
+            <KMenuButton />
+          </Pressable>
+          <View style={{ flex: 1, alignItems: 'center' }}>
+            <View style={{ backgroundColor: C.label, borderRadius: 20, paddingHorizontal: 16, paddingVertical: 6 }}>
+              <Text style={{ fontSize: 14, fontWeight: '700', color: C.bg }}>Members</Text>
+            </View>
           </View>
+          <RolePill role={role} onPress={cycleRole} accentColor={C.label} isPrimary={isOwner} />
         </View>
-        <RolePill role={role} onPress={cycleRole} accentColor={C.label} isPrimary={isOwner} />
-      </View>
+      </Animated.View>
 
       <ScrollView
         contentContainerStyle={{ paddingTop: topBarH + 8, paddingBottom: insets.bottom + 80 }}
         showsVerticalScrollIndicator={false}
+        onScroll={onScroll}
+        scrollEventThrottle={scrollEventThrottle}
       >
         {/* Stat cards — Owner only */}
         {isOwner && (

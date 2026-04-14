@@ -30,6 +30,7 @@ import { useDemoRole } from '@/utils/demo-role-store';
 import { useMode } from '@/context/app-context';
 import { resetFooter } from '@/utils/global-footer-hide';
 import { useOwnerGuard } from '@/hooks/use-owner-guard';
+import { useScrollHeader } from '@/hooks/use-scroll-header';
 
 // ── Types ─────────────────────────────────────────────────────────────────────
 
@@ -661,6 +662,8 @@ export default function TasksScreen() {
     }, []),
   );
 
+  const { opacity, onScroll, scrollEventThrottle } = useScrollHeader();
+
   // ── Filter logic ─────────────────────────────────────────────────────────────
 
   const filteredTasks = useMemo(() => {
@@ -838,88 +841,82 @@ export default function TasksScreen() {
 
   return (
     <View style={[styles.root, { backgroundColor: C.bg }]}>
-      {/* ── Top Bar ─────────────────────────────────────────────────────────── */}
-      <View
-        style={[
-          styles.topBar,
-          {
-            paddingTop: insets.top + 8,
-            borderBottomColor: C.separator,
-            backgroundColor: C.bg,
-          },
-        ]}
-      >
-        <Pressable onPress={() => openSidePanel()} style={styles.topBarSide}>
-          <KMenuButton />
-        </Pressable>
-
-        <View style={[styles.titlePill, { backgroundColor: C.surface, borderColor: C.separator }]}>
-          <Text style={[styles.titlePillText, { color: C.label }]}>Tasks</Text>
-        </View>
-
-        <View style={styles.topBarSide}>
-          <RolePill
-            role={role}
-            onPress={guardedCycle}
-            accentColor={accent}
-            isPrimary={isOwner}
-          />
-        </View>
-      </View>
-
-      {/* ── Filter Pills ─────────────────────────────────────────────────────── */}
-      <View style={[styles.filterBar, { borderBottomColor: C.separator }]}>
-        <ScrollView
-          horizontal
-          showsHorizontalScrollIndicator={false}
-          contentContainerStyle={styles.filterScrollContent}
-        >
-          {FILTERS.map((f) => {
-            const active = filter === f;
-            return (
-              <Pressable
-                key={f}
-                onPress={() => setFilter(f)}
-                style={[
-                  styles.filterPill,
-                  {
-                    backgroundColor: active ? C.activePill : 'transparent',
-                    borderColor: active ? C.activePill : C.separator,
-                  },
-                ]}
-              >
-                <Text
-                  style={[
-                    styles.filterPillText,
-                    { color: active ? C.activePillText : C.secondary },
-                  ]}
-                >
-                  {f}
-                </Text>
-              </Pressable>
-            );
-          })}
-        </ScrollView>
-      </View>
-
-      {/* ── Clear All (Completed filter only) ───────────────────────────────── */}
-      {filter === 'Completed' && filteredTasks.length > 0 && (
-        <View style={[styles.clearAllBar, { borderBottomColor: C.separator }]}>
-          <Pressable onPress={clearCompleted}>
-            <Text style={[styles.clearAllText, { color: '#B85C5C' }]}>Clear All</Text>
+      <Animated.View style={[styles.topBarOuter, { paddingTop: insets.top, backgroundColor: C.bg, borderBottomColor: C.separator, borderBottomWidth: StyleSheet.hairlineWidth, opacity }]}>
+        <View style={styles.topBar}>
+          <Pressable onPress={() => openSidePanel()} style={styles.topBarSide}>
+            <KMenuButton />
           </Pressable>
-        </View>
-      )}
 
+          <View style={{ flex: 1, alignItems: 'center' }}>
+            <View style={[styles.titlePill, { backgroundColor: C.surface, borderColor: C.separator }]}>
+              <Text style={[styles.titlePillText, { color: C.label }]}>Tasks</Text>
+            </View>
+          </View>
+
+          <View style={styles.topBarSide}>
+            <RolePill
+              role={role}
+              onPress={guardedCycle}
+              accentColor={accent}
+              isPrimary={isOwner}
+            />
+          </View>
+        </View>
+      </Animated.View>
       {/* ── Task List ────────────────────────────────────────────────────────── */}
       <ScrollView
         style={styles.scrollView}
         contentContainerStyle={[
           styles.scrollContent,
-          { paddingBottom: contentBottom },
+          { paddingTop: insets.top + 56 + 8, paddingBottom: contentBottom },
         ]}
         showsVerticalScrollIndicator={false}
+        onScroll={onScroll}
+        scrollEventThrottle={scrollEventThrottle}
       >
+        {/* ── Filter Pills ─────────────────────────────────────────────────────── */}
+        <View style={[styles.filterBar, { borderBottomColor: C.separator }]}>
+          <ScrollView
+            horizontal
+            showsHorizontalScrollIndicator={false}
+            contentContainerStyle={styles.filterScrollContent}
+          >
+            {FILTERS.map((f) => {
+              const active = filter === f;
+              return (
+                <Pressable
+                  key={f}
+                  onPress={() => setFilter(f)}
+                  style={[
+                    styles.filterPill,
+                    {
+                      backgroundColor: active ? C.activePill : 'transparent',
+                      borderColor: active ? C.activePill : C.separator,
+                    },
+                  ]}
+                >
+                  <Text
+                    style={[
+                      styles.filterPillText,
+                      { color: active ? C.activePillText : C.secondary },
+                    ]}
+                  >
+                    {f}
+                  </Text>
+                </Pressable>
+              );
+            })}
+          </ScrollView>
+        </View>
+
+        {/* ── Clear All (Completed filter only) ───────────────────────────────── */}
+        {filter === 'Completed' && filteredTasks.length > 0 && (
+          <View style={[styles.clearAllBar, { borderBottomColor: C.separator }]}>
+            <Pressable onPress={clearCompleted}>
+              <Text style={[styles.clearAllText, { color: '#B85C5C' }]}>Clear All</Text>
+            </Pressable>
+          </View>
+        )}
         {filteredTasks.length === 0 ? (
           <EmptyState message={emptyMessage[filter]} C={C} />
         ) : (
@@ -986,30 +983,28 @@ const styles = StyleSheet.create({
   },
 
   // Top bar
+  topBarOuter: { position: 'absolute', top: 0, left: 0, right: 0, zIndex: 10 },
   topBar: {
+    height: 56,
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
     paddingHorizontal: 16,
-    paddingBottom: 12,
-    borderBottomWidth: StyleSheet.hairlineWidth,
   },
   topBarSide: {
     width: 80,
     alignItems: 'flex-start',
   },
   titlePill: {
-    flex: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
-    height: 32,
-    borderRadius: 16,
-    borderWidth: 1,
-    marginHorizontal: 10,
+    paddingHorizontal: 12,
+    paddingVertical:    5,
+    borderRadius:      14,
+    borderWidth:        1,
   },
   titlePillText: {
-    fontSize: 14,
-    fontWeight: '700',
+    fontSize:      12,
+    fontWeight:    '600',
+    letterSpacing: 0.3,
   },
 
   // Filter bar
@@ -1050,7 +1045,7 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   scrollContent: {
-    paddingTop: 12,
+    paddingTop: 0,
   },
 
   // Card wrapper (for swipe background)

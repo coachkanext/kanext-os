@@ -29,6 +29,7 @@ import * as Speech from 'expo-speech';
 import { useColors, type ComponentColors } from '@/hooks/use-colors';
 import { IconSymbol } from '@/components/ui/icon-symbol';
 import { NexusPageTopBar } from '@/components/nexus/nexus-page-top-bar';
+import { openDipsonSheet } from '@/utils/global-dipson-sheet';
 import { BottomSheet } from '@/components/ui/bottom-sheet';
 import { GlassView } from '@/components/ui/glass-view';
 import { ArtifactSheet, type Artifact } from '@/components/nexus/artifact-sheet';
@@ -984,6 +985,7 @@ export default function NexusScreen() {
           showNewChat={hasMessages}
           onHamburger={() => setIsSidebarOpen(true)}
           onNewChat={handleNewChat}
+          onDoubleTap={() => openDipsonSheet('Nexus')}
           section={activeSection ? (SECTION_LABELS[activeSection] ?? activeSection) : undefined}
         />
       </View>

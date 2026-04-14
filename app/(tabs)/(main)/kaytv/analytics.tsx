@@ -4,7 +4,7 @@
  */
 
 import React, { useState, useMemo, useCallback, useEffect } from 'react';
-import { View, Text, ScrollView, Pressable, StyleSheet } from 'react-native';
+import { View, Text, ScrollView, Pressable, StyleSheet, Animated } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useFocusEffect, useRouter } from 'expo-router';
 import * as Haptics from 'expo-haptics';
@@ -13,6 +13,7 @@ import { IconSymbol } from '@/components/ui/icon-symbol';
 import { KMenuButton } from '@/components/ui/k-menu-button';
 import { RolePill } from '@/components/ui/role-pill';
 import { useColors, type ComponentColors } from '@/hooks/use-colors';
+import { useScrollHeader } from '@/hooks/use-scroll-header';
 import { openSidePanel } from '@/utils/global-side-panel';
 import { resetFooter } from '@/utils/global-footer-hide';
 import { useDemoRole } from '@/utils/demo-role-store';
@@ -128,10 +129,14 @@ const periodTotalViews: Record<Period, number> = {
 
 // ── Main Screen ───────────────────────────────────────────────────────────────
 
+const TOP_BAR_H = 52;
+
 export default function KayTVAnalyticsPage() {
   const C       = useColors();
   const insets  = useSafeAreaInsets();
-  const topBarH = insets.top + 52;
+  const topBarH = insets.top + TOP_BAR_H;
+
+  const { opacity, onScroll, scrollEventThrottle } = useScrollHeader();
 
   const router = useRouter();
   const [role, cycleRole, roleCycles] = useDemoRole('personal:kaytv');
@@ -156,6 +161,7 @@ export default function KayTVAnalyticsPage() {
 
   useFocusEffect(useCallback(() => { resetFooter(); }, []));
 
+
   const styles = useMemo(() => makeStyles(C), [C]);
 
   // ── JSX ──────────────────────────────────────────────────────────────────────
@@ -164,35 +170,38 @@ export default function KayTVAnalyticsPage() {
     <View style={{ flex: 1, backgroundColor: C.bg }}>
 
       {/* ── Top Bar ─────────────────────────────────────────────────────────── */}
-      <View style={[styles.topBar, { height: topBarH, paddingTop: insets.top, backgroundColor: C.bg }]}>
-        <Pressable
-          onPress={() => { Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light); openSidePanel(); }}
-          style={styles.topBarLeft}
-        >
-          <KMenuButton />
-        </Pressable>
+      <Animated.View style={[styles.topBarOuter, { paddingTop: insets.top, backgroundColor: C.bg, borderBottomColor: C.separator, borderBottomWidth: StyleSheet.hairlineWidth, opacity }]}>
+        <View style={styles.topBar}>
+          <Pressable
+            onPress={() => { Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light); openSidePanel(); }}
+            style={styles.topBarLeft}
+          >
+            <KMenuButton />
+          </Pressable>
 
-        <View style={{ flex: 1, alignItems: 'center' }}>
-          <View style={[styles.staticPill, { backgroundColor: C.surface, borderColor: C.separator }]}>
-            <Text style={[styles.staticPillText, { color: C.label }]}>Analytics</Text>
+          <View style={{ flex: 1, alignItems: 'center' }}>
+            <View style={[styles.staticPill, { backgroundColor: C.surface, borderColor: C.separator }]}>
+              <Text style={[styles.staticPillText, { color: C.label }]}>Analytics</Text>
+            </View>
+          </View>
+
+          <View style={styles.topBarRight}>
+            <RolePill role={role} onPress={cycleRole} isPrimary={isOwner} />
           </View>
         </View>
-
-        <View style={styles.topBarRight}>
-          <RolePill role={role} onPress={cycleRole} isPrimary={isOwner} />
-        </View>
-      </View>
+      </Animated.View>
 
       {/* ── Scroll Content ──────────────────────────────────────────────────── */}
       <ScrollView
+        onScroll={onScroll}
+        scrollEventThrottle={scrollEventThrottle}
         contentContainerStyle={{
-          paddingTop: topBarH + 16,
           paddingHorizontal: 16,
+          paddingTop: insets.top + TOP_BAR_H + 8,
           paddingBottom: insets.bottom + 80,
         }}
         showsVerticalScrollIndicator={false}
       >
-
         {/* ── Period Filter Pills ─────────────────────────────────────────── */}
         <ScrollView
           horizontal
@@ -428,14 +437,19 @@ export default function KayTVAnalyticsPage() {
 function makeStyles(C: ComponentColors) {
   return StyleSheet.create({
     // Top bar
-    topBar: {
+    topBarOuter: {
       position: 'absolute',
-      top: 0, left: 0, right: 0,
+      top: 0,
+      left: 0,
+      right: 0,
       zIndex: 10,
+      borderBottomWidth: StyleSheet.hairlineWidth,
+    },
+    topBar: {
+      height: TOP_BAR_H,
       flexDirection: 'row',
-      alignItems: 'flex-end',
+      alignItems: 'center',
       paddingHorizontal: 16,
-      paddingBottom: 8,
     },
     topBarLeft: {
       width: 40,

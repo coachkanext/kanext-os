@@ -7,7 +7,7 @@
 
 import React, { useCallback, useMemo } from 'react';
 import {
-  View, Text, Pressable, ScrollView, Alert, StyleSheet,
+  View, Text, Pressable, ScrollView, Alert, StyleSheet, Animated,
 } from 'react-native';
 import * as Haptics from 'expo-haptics';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
@@ -20,6 +20,7 @@ import { openSidePanel } from '@/utils/global-side-panel';
 import { KMenuButton } from '@/components/ui/k-menu-button';
 import { RolePill } from '@/components/ui/role-pill';
 import { useDemoRole } from '@/utils/demo-role-store';
+import { useScrollHeader } from '@/hooks/use-scroll-header';
 
 // ── Static mock data ──────────────────────────────────────────────────────────
 
@@ -53,6 +54,7 @@ export default function VolunteersScreen() {
   const s = useMemo(() => makeStyles(C), [C]);
   const insets = useSafeAreaInsets();
   const router = useRouter();
+  const { opacity, onScroll, scrollEventThrottle } = useScrollHeader();
   const [role, cycleRole, roleCycles] = useDemoRole('community:hub');
   const isPastor = role === roleCycles[0];
 
@@ -63,16 +65,24 @@ export default function VolunteersScreen() {
     }
   }, [isPastor, router]));
 
-  const topBarH        = insets.top + TOP_BAR_H;
-  const scrollPaddingTop = topBarH + 16;
-
   if (!isPastor) return <View style={[s.screen, { backgroundColor: C.bg }]} />;
 
   return (
     <View style={[s.screen, { backgroundColor: C.bg }]}>
+      <Animated.View style={[s.topBarOuter, { paddingTop: insets.top, backgroundColor: C.bg, borderBottomColor: C.separator, borderBottomWidth: StyleSheet.hairlineWidth, opacity }]}>
+        <View style={s.topBar}>
+          <Pressable onPress={() => { Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light); openSidePanel(); }} hitSlop={12}>
+            <KMenuButton />
+          </Pressable>
+          <Text style={[s.topBarTitle, { color: C.label }]}>Volunteers</Text>
+          <RolePill role={role} onPress={cycleRole} isPrimary={isPastor} />
+        </View>
+      </Animated.View>
       <ScrollView
         showsVerticalScrollIndicator={false}
-        contentContainerStyle={{ paddingTop: scrollPaddingTop, paddingHorizontal: 16, paddingBottom: insets.bottom + 100 }}
+        contentContainerStyle={{ paddingTop: insets.top + TOP_BAR_H + 8, paddingHorizontal: 16, paddingBottom: insets.bottom + 100 }}
+        onScroll={onScroll}
+        scrollEventThrottle={scrollEventThrottle}
       >
         {/* Stat Cards */}
         <View style={s.statRow}>
@@ -138,17 +148,6 @@ export default function VolunteersScreen() {
         </View>
       </ScrollView>
 
-      {/* Top Bar */}
-      <View style={[s.topBarWrap, { paddingTop: insets.top, backgroundColor: C.bg }]}>
-        <View style={s.topBar}>
-          <Pressable onPress={() => { Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light); openSidePanel(); }} hitSlop={12}>
-            <KMenuButton />
-          </Pressable>
-          <Text style={[s.topBarTitle, { color: C.label }]}>Volunteers</Text>
-          <RolePill role={role} onPress={cycleRole} isPrimary={isPastor} />
-        </View>
-      </View>
-
       {/* FAB */}
       <Pressable
         style={[s.fab, { bottom: insets.bottom + 49 + 16, backgroundColor: C.label }]}
@@ -165,7 +164,7 @@ export default function VolunteersScreen() {
 function makeStyles(C: ComponentColors) {
   return StyleSheet.create({
     screen:     { flex: 1 },
-    topBarWrap: { position: 'absolute', top: 0, left: 0, right: 0, zIndex: 100 },
+    topBarOuter:{ position: 'absolute', top: 0, left: 0, right: 0, zIndex: 10, borderBottomWidth: StyleSheet.hairlineWidth },
     topBar:     { height: TOP_BAR_H, flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', paddingHorizontal: 16 },
     topBarTitle:{ fontSize: 16, fontWeight: '700', flex: 1, textAlign: 'center' },
 

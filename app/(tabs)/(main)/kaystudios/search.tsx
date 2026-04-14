@@ -6,7 +6,7 @@
 import React, { useState, useCallback, useMemo, useRef, useEffect } from 'react';
 import {
   View, Text, Pressable, ScrollView, TextInput,
-  StyleSheet, KeyboardAvoidingView, Platform,
+  StyleSheet, KeyboardAvoidingView, Platform, Animated,
 } from 'react-native';
 import * as Haptics from 'expo-haptics';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
@@ -14,6 +14,7 @@ import { useRouter } from 'expo-router';
 
 import { IconSymbol } from '@/components/ui/icon-symbol';
 import { useColors, type ComponentColors } from '@/hooks/use-colors';
+import { useScrollHeader } from '@/hooks/use-scroll-header';
 import { searchContent, type StudioContent, type ExperienceType } from '@/data/mock-kaystudios';
 
 function TypeBadge({ type, C }: { type: ExperienceType; C: ComponentColors }) {
@@ -61,6 +62,9 @@ export default function StudioSearchScreen() {
     return () => clearTimeout(t);
   }, []);
 
+  const TOP_BAR_H = insets.top + 64;
+  const { opacity, onScroll, scrollEventThrottle } = useScrollHeader(TOP_BAR_H);
+
   const results = useMemo(() => searchContent(query), [query]);
 
   const navigateToDetail = useCallback((item: StudioContent) => {
@@ -77,7 +81,8 @@ export default function StudioSearchScreen() {
       behavior={Platform.OS === 'ios' ? 'padding' : undefined}
     >
       {/* Search bar */}
-      <View style={[styles.searchBarWrap, { paddingTop: insets.top + 8, backgroundColor: C.bg, borderBottomColor: C.separator }]}>
+      <Animated.View style={[styles.searchBarWrap, { paddingTop: insets.top + 8, backgroundColor: C.bg, borderBottomColor: C.separator, opacity }]}>
+        <View style={styles.searchBarInner}>
         <View style={[styles.searchBar, { backgroundColor: C.surface }]}>
           <IconSymbol name="magnifyingglass" size={16} color={C.secondary} />
           <TextInput
@@ -104,13 +109,16 @@ export default function StudioSearchScreen() {
         >
           <Text style={[styles.cancelText, { color: C.accent }]}>Cancel</Text>
         </Pressable>
-      </View>
+        </View>
+      </Animated.View>
 
       {/* Results */}
       <ScrollView
         keyboardDismissMode="on-drag"
         showsVerticalScrollIndicator={false}
-        contentContainerStyle={{ paddingBottom: 120, paddingTop: 8 }}
+        onScroll={onScroll}
+        scrollEventThrottle={scrollEventThrottle}
+        contentContainerStyle={{ paddingBottom: 120, paddingTop: TOP_BAR_H }}
       >
         {!query && (
           <View style={[styles.emptyState, { marginTop: 60 }]}>
@@ -149,9 +157,12 @@ const styles = StyleSheet.create({
   screen: { flex: 1 },
 
   searchBarWrap: {
+    position: 'absolute', top: 0, left: 0, right: 0, zIndex: 10,
+    borderBottomWidth: StyleSheet.hairlineWidth,
+  },
+  searchBarInner: {
     flexDirection: 'row', alignItems: 'center', gap: 10,
     paddingHorizontal: 16, paddingBottom: 12,
-    borderBottomWidth: StyleSheet.hairlineWidth,
   },
   searchBar: {
     flex: 1, flexDirection: 'row', alignItems: 'center', gap: 8,

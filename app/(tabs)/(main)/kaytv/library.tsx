@@ -6,7 +6,7 @@
 
 import React, { useState, useMemo, useCallback } from 'react';
 import {
-  View, Text, Pressable, ScrollView, TextInput, StyleSheet,
+  View, Text, Pressable, ScrollView, TextInput, StyleSheet, Animated,
 } from 'react-native';
 import * as Haptics from 'expo-haptics';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
@@ -16,6 +16,7 @@ import { IconSymbol } from '@/components/ui/icon-symbol';
 import { KMenuButton } from '@/components/ui/k-menu-button';
 import { RolePill } from '@/components/ui/role-pill';
 import { useColors, type ComponentColors } from '@/hooks/use-colors';
+import { useScrollHeader } from '@/hooks/use-scroll-header';
 import { openSidePanel } from '@/utils/global-side-panel';
 import { resetFooter } from '@/utils/global-footer-hide';
 import { useDemoRole } from '@/utils/demo-role-store';
@@ -95,6 +96,8 @@ export default function LibraryScreen() {
   const [searchQuery,  setSearchQuery]  = useState('');
   const [removed,      setRemoved]      = useState<Set<string>>(new Set());
 
+  const { opacity, onScroll, scrollEventThrottle } = useScrollHeader();
+
   useFocusEffect(useCallback(() => { resetFooter(); }, []));
 
   const filtered = useMemo(() => {
@@ -114,12 +117,10 @@ export default function LibraryScreen() {
     setRemoved(prev => new Set([...prev, id]));
   }
 
-  const topBarH = insets.top + TOP_BAR_H;
-
   return (
     <View style={[s.root, { backgroundColor: C.bg }]}>
       {/* ── Top Bar ── */}
-      <View style={[s.topBarOuter, { backgroundColor: C.bg, borderBottomColor: C.separator, paddingTop: insets.top }]}>
+      <Animated.View style={[s.topBarOuter, { paddingTop: insets.top, backgroundColor: C.bg, borderBottomColor: C.separator, borderBottomWidth: StyleSheet.hairlineWidth, opacity }]}>
         <View style={s.topBar}>
           <Pressable onPress={() => { Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light); openSidePanel(); }} style={{ width: 40, alignItems: 'center' }}>
             <KMenuButton />
@@ -129,11 +130,12 @@ export default function LibraryScreen() {
           </View>
           <RolePill role={role} onPress={cycleRole} accentColor="#1A1714" isPrimary={isOwner} />
         </View>
-      </View>
-
+      </Animated.View>
       <ScrollView
+        onScroll={onScroll}
+        scrollEventThrottle={scrollEventThrottle}
         showsVerticalScrollIndicator={false}
-        contentContainerStyle={{ paddingTop: topBarH + 12, paddingBottom: insets.bottom + 100 }}
+        contentContainerStyle={{ paddingTop: insets.top + TOP_BAR_H + 8, paddingBottom: insets.bottom + 100 }}
       >
         {/* ── Search Bar ── */}
         <View style={[s.searchWrap, { backgroundColor: C.surface }]}>
@@ -243,7 +245,7 @@ export default function LibraryScreen() {
 
 const makeStyles = (C: ComponentColors) => StyleSheet.create({
   root:        { flex: 1 },
-  topBarOuter: { position: 'absolute', top: 0, left: 0, right: 0, zIndex: 100, borderBottomWidth: StyleSheet.hairlineWidth },
+  topBarOuter: { position: 'absolute', top: 0, left: 0, right: 0, zIndex: 10, borderBottomWidth: StyleSheet.hairlineWidth },
   topBar:      { height: TOP_BAR_H, flexDirection: 'row', alignItems: 'center', paddingHorizontal: 16 },
   titleWrap:   { flex: 1, alignItems: 'center' },
   title:       { fontSize: 15, fontWeight: '700' },

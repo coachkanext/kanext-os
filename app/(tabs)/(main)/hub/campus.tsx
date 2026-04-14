@@ -8,7 +8,7 @@
  *   peer names + program only (no GPA/financial), own profile card.
  */
 
-import React, { useState, useCallback, useRef } from 'react';
+import React, { useState, useCallback } from 'react';
 import {
   View,
   Text,
@@ -17,6 +17,7 @@ import {
   StyleSheet,
   TextInput,
   Linking,
+  Animated,
 } from 'react-native';
 import * as Haptics from 'expo-haptics';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
@@ -26,6 +27,7 @@ import { IconSymbol } from '@/components/ui/icon-symbol';
 import { BottomSheet } from '@/components/ui/bottom-sheet';
 import { RolePill } from '@/components/ui/role-pill';
 import { useColors, type ComponentColors } from '@/hooks/use-colors';
+import { useScrollHeader } from '@/hooks/use-scroll-header';
 import { useDemoRole } from '@/utils/demo-role-store';
 import { hideFooter, showFooter, resetFooter } from '@/utils/global-footer-hide';
 import { openSidePanel } from '@/utils/global-side-panel';
@@ -389,16 +391,8 @@ function PresidentView({ role, cycleRole, roleCycles, insets, C }: PresidentView
   const [selectedFaculty, setSelectedFaculty] = useState<FacultyMember | null>(null);
   const [facultySheetOpen, setFacultySheetOpen] = useState(false);
 
-  const lastScrollY = useRef(0);
   const topBarH = insets.top + TOP_BAR_H;
-
-  const handleScroll = useCallback((e: any) => {
-    const y = e.nativeEvent.contentOffset.y;
-    if (y > lastScrollY.current + 10) hideFooter();
-    else if (y < lastScrollY.current - 10) showFooter();
-    lastScrollY.current = y;
-    if (y <= 0) showFooter();
-  }, []);
+  const { opacity: pvTranslateY, onScroll: handleScroll, scrollEventThrottle: pvSET } = useScrollHeader(topBarH);
 
   const filteredStudents = STUDENTS.filter(s => {
     const q = search.toLowerCase();
@@ -674,7 +668,7 @@ function PresidentView({ role, cycleRole, roleCycles, insets, C }: PresidentView
   return (
     <View style={{ flex: 1, backgroundColor: C.bg }}>
       {/* Top Bar */}
-      <View style={[pv.topBarWrap, { paddingTop: insets.top, backgroundColor: C.bg }]}>
+      <Animated.View style={[pv.topBarWrap, { paddingTop: insets.top, backgroundColor: C.bg, opacity: pvTranslateY }]}>
         <View style={pv.topBar}>
           {/* Hamburger */}
           <View style={pv.topBarSide}>
@@ -699,7 +693,7 @@ function PresidentView({ role, cycleRole, roleCycles, insets, C }: PresidentView
             <RolePill role={role} onPress={cycleRole} isPrimary={isPrimary} />
           </View>
         </View>
-      </View>
+      </Animated.View>
 
       {/* Tab dropdown */}
       {dropdownOpen && (
@@ -732,7 +726,7 @@ function PresidentView({ role, cycleRole, roleCycles, insets, C }: PresidentView
         key={peopleTab}
         style={{ flex: 1 }}
         onScroll={handleScroll}
-        scrollEventThrottle={16}
+        scrollEventThrottle={pvSET}
         showsVerticalScrollIndicator={false}
         contentContainerStyle={{ paddingTop: insets.top + TOP_BAR_H + 16, paddingHorizontal: 16, paddingBottom: 120 }}
       >
@@ -766,15 +760,7 @@ interface StudentDirectoryViewProps {
 
 function StudentDirectoryView({ role, cycleRole, roleCycles, insets, C }: StudentDirectoryViewProps) {
   const [search, setSearch] = useState('');
-  const lastScrollY = useRef(0);
-
-  const handleScroll = useCallback((e: any) => {
-    const y = e.nativeEvent.contentOffset.y;
-    if (y > lastScrollY.current + 10) hideFooter();
-    else if (y < lastScrollY.current - 10) showFooter();
-    lastScrollY.current = y;
-    if (y <= 0) showFooter();
-  }, []);
+  const { opacity: dvTranslateY, onScroll: handleScroll, scrollEventThrottle: dvSET } = useScrollHeader(insets.top + TOP_BAR_H);
 
   const q = search.toLowerCase();
 
@@ -793,7 +779,7 @@ function StudentDirectoryView({ role, cycleRole, roleCycles, insets, C }: Studen
   return (
     <View style={{ flex: 1, backgroundColor: C.bg }}>
       {/* Top Bar */}
-      <View style={[pv.topBarWrap, { paddingTop: insets.top, backgroundColor: C.bg }]}>
+      <Animated.View style={[pv.topBarWrap, { paddingTop: insets.top, backgroundColor: C.bg, opacity: dvTranslateY }]}>
         <View style={pv.topBar}>
           <View style={pv.topBarSide}>
             <Pressable onPress={() => { Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light); openSidePanel(); }} hitSlop={12}>
@@ -809,13 +795,13 @@ function StudentDirectoryView({ role, cycleRole, roleCycles, insets, C }: Studen
             <RolePill role={role} onPress={cycleRole} isPrimary={isPrimary} />
           </View>
         </View>
-      </View>
+      </Animated.View>
 
       {/* Content */}
       <ScrollView
         style={{ flex: 1 }}
         onScroll={handleScroll}
-        scrollEventThrottle={16}
+        scrollEventThrottle={dvSET}
         showsVerticalScrollIndicator={false}
         contentContainerStyle={{ paddingTop: insets.top + TOP_BAR_H + 16, paddingHorizontal: 16, paddingBottom: 120 }}
       >

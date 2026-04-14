@@ -5,13 +5,14 @@
  */
 
 import React, { useState, useRef, useCallback, useEffect, useMemo } from 'react';
-import { View, Text, Pressable, ScrollView, TextInput, StyleSheet } from 'react-native';
+import { View, Text, Pressable, ScrollView, TextInput, StyleSheet, Animated } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Swipeable } from 'react-native-gesture-handler';
 import * as Haptics from 'expo-haptics';
 import { useRouter } from 'expo-router';
 
 import { useColors } from '@/hooks/use-colors';
+import { useScrollHeader } from '@/hooks/use-scroll-header';
 import { IconSymbol } from '@/components/ui/icon-symbol';
 import { BottomSheet } from '@/components/ui/bottom-sheet';
 import { hideFooter, showFooter } from '@/utils/global-footer-hide';
@@ -615,6 +616,8 @@ export default function PulseScreen() {
   const C      = useColors();
   const insets = useSafeAreaInsets();
   const router = useRouter();
+  const TOP_BAR_H = insets.top + 52;
+  const { opacity, onScroll: onScrollHeader } = useScrollHeader(TOP_BAR_H);
 
   const [items,            setItems]           = useState<PulseItem[]>(SEED_ITEMS);
   const [expandedId,       setExpandedId]      = useState<string | null>(null);
@@ -662,6 +665,7 @@ export default function PulseScreen() {
   }, [filtered, pinnedIds]);
 
   const onScroll = useCallback((e: any) => {
+    onScrollHeader(e);
     const y  = e.nativeEvent.contentOffset.y;
     const dy = y - lastScrollY.current;
     if (dy > 4)       hideFooter();
@@ -669,7 +673,7 @@ export default function PulseScreen() {
     lastScrollY.current    = y;
     isScrolledDown.current = y > 150;
     if (y < 100 && showNewPill) setShowNewPill(false);
-  }, [showNewPill]);
+  }, [showNewPill, onScrollHeader]);
 
   const markAsRead = useCallback((id: string) => {
     setItems(p => p.map(i => i.id === id ? { ...i, isRead: true } : i));
@@ -713,11 +717,13 @@ export default function PulseScreen() {
     <View style={[s.root, { backgroundColor: C.bg }]}>
 
       {/* ── Top bar ── */}
-      <View style={[s.topBar, { paddingTop: insets.top + 8 }]}>
-        <View style={[s.titlePill, { backgroundColor: C.surface }]}>
-          <Text style={[s.titleText, { color: C.label }]}>Pulse</Text>
+      <Animated.View style={[s.topBarOuter, { paddingTop: insets.top + 8, opacity }]}>
+        <View style={s.topBar}>
+          <View style={[s.titlePill, { backgroundColor: C.surface }]}>
+            <Text style={[s.titleText, { color: C.label }]}>Pulse</Text>
+          </View>
         </View>
-      </View>
+      </Animated.View>
 
       {/* ── "New activity" pill ── */}
       {showNewPill && (
@@ -738,7 +744,7 @@ export default function PulseScreen() {
       ) : (
         <ScrollView ref={scrollRef} onScroll={onScroll} scrollEventThrottle={16}
           showsVerticalScrollIndicator={false}
-          contentContainerStyle={{ paddingBottom: insets.bottom + 49 + 16 }}>
+          contentContainerStyle={{ paddingTop: TOP_BAR_H, paddingBottom: insets.bottom + 49 + 16 }}>
           {SECTION_ORDER.map(key => (
             <SectionBlock key={key} sectionKey={key} items={sections[key]}
               expandedId={expandedId} pinnedIds={pinnedIds}
@@ -792,9 +798,10 @@ export default function PulseScreen() {
 const s = StyleSheet.create({
   root: { flex: 1 },
 
+  topBarOuter: { position: 'absolute', top: 0, left: 0, right: 0, zIndex: 10 },
   topBar:    { alignItems: 'center', paddingHorizontal: 8, paddingBottom: 10 },
-  titlePill: { paddingHorizontal: 16, paddingVertical: 6, borderRadius: 16 },
-  titleText: { fontSize: 15, fontWeight: '600' },
+  titlePill: { paddingHorizontal: 12, paddingVertical: 5, borderRadius: 14, borderWidth: 1 },
+  titleText: { fontSize: 12, fontWeight: '600', letterSpacing: 0.3 },
 
   newPill:     { position: 'absolute', top: 100, alignSelf: 'center', flexDirection: 'row', alignItems: 'center', gap: 6, paddingHorizontal: 14, paddingVertical: 8, borderRadius: 20, zIndex: 100, shadowColor: '#000', shadowOffset: { width: 0, height: 2 }, shadowOpacity: 0.15, shadowRadius: 8, elevation: 6 },
   newPillText: { fontSize: 13, fontWeight: '600' },

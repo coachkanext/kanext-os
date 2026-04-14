@@ -4,7 +4,7 @@
  */
 
 import React, { useState, useMemo, useCallback } from 'react';
-import { View, Text, ScrollView, Pressable, StyleSheet, TextInput } from 'react-native';
+import { View, Text, ScrollView, Pressable, StyleSheet, TextInput, Animated } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useFocusEffect } from 'expo-router';
 import * as Haptics from 'expo-haptics';
@@ -17,6 +17,7 @@ import { useColors, type ComponentColors } from '@/hooks/use-colors';
 import { openSidePanel } from '@/utils/global-side-panel';
 import { resetFooter } from '@/utils/global-footer-hide';
 import { useDemoRole } from '@/utils/demo-role-store';
+import { useScrollHeader } from '@/hooks/use-scroll-header';
 
 // ── Module-level semantic constants ───────────────────────────────────────────
 
@@ -88,7 +89,8 @@ type FilterPill = typeof FILTER_PILLS[number];
 export default function TransactionsPage() {
   const C       = useColors();
   const insets  = useSafeAreaInsets();
-  const topBarH = insets.top + 52;
+  const TOP_BAR_H = insets.top + 54;
+  const { opacity, onScroll, scrollEventThrottle } = useScrollHeader(TOP_BAR_H);
 
   const [role, cycleRole, roleCycles] = useDemoRole('personal:kaypay');
   const isOwner = role === roleCycles[0];
@@ -157,34 +159,38 @@ export default function TransactionsPage() {
     <View style={[styles.root, { backgroundColor: C.bg }]}>
 
       {/* ── Top Bar ─────────────────────────────────────────────────────────── */}
-      <View style={[styles.topBar, { height: topBarH, paddingTop: insets.top, backgroundColor: C.bg }]}>
-        <Pressable
-          onPress={() => {
-            Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
-            openSidePanel();
-          }}
-          style={styles.topBarLeft}
-        >
-          <KMenuButton />
-        </Pressable>
+      <Animated.View style={[styles.topBarOuter, { height: TOP_BAR_H, paddingTop: insets.top, backgroundColor: C.bg, opacity }]}>
+        <View style={styles.topBar}>
+          <Pressable
+            onPress={() => {
+              Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+              openSidePanel();
+            }}
+            style={styles.topBarLeft}
+          >
+            <KMenuButton />
+          </Pressable>
 
-        <View style={styles.topBarCenter}>
-          <View style={[styles.staticPill, { backgroundColor: C.surface, borderColor: C.separator }]}>
-            <Text style={[styles.staticPillText, { color: C.label }]}>Transactions</Text>
+          <View style={styles.topBarCenter}>
+            <View style={[styles.staticPill, { backgroundColor: C.surface, borderColor: C.separator }]}>
+              <Text style={[styles.staticPillText, { color: C.label }]}>Transactions</Text>
+            </View>
+          </View>
+
+          <View style={styles.topBarRight}>
+            <RolePill role={role} onPress={cycleRole} isPrimary={isOwner} />
           </View>
         </View>
-
-        <View style={styles.topBarRight}>
-          <RolePill role={role} onPress={cycleRole} isPrimary={isOwner} />
-        </View>
-      </View>
+      </Animated.View>
 
       {/* ── Scroll Content ──────────────────────────────────────────────────── */}
       <ScrollView
         contentContainerStyle={[
           styles.scrollContent,
-          { paddingTop: topBarH + 16, paddingBottom: insets.bottom + 80 },
+          { paddingTop: TOP_BAR_H + 16, paddingBottom: insets.bottom + 80 },
         ]}
+        onScroll={onScroll}
+        scrollEventThrottle={scrollEventThrottle}
         showsVerticalScrollIndicator={false}
         keyboardShouldPersistTaps="handled"
       >
@@ -363,16 +369,19 @@ function makeStyles(C: ComponentColors) {
     },
 
     // ── Top bar ──────────────────────────────────────────────────────────────
-    topBar: {
+    topBarOuter: {
       position: 'absolute',
       top: 0,
       left: 0,
       right: 0,
       zIndex: 10,
+    },
+    topBar: {
       flexDirection: 'row',
       alignItems: 'flex-end',
       paddingHorizontal: 16,
       paddingBottom: 8,
+      flex: 1,
     },
     topBarLeft: {
       width: 40,

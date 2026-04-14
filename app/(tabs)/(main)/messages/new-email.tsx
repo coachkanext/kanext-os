@@ -8,13 +8,14 @@
 import React, { useState, useMemo } from 'react';
 import {
   View, Text, TextInput, Pressable, ScrollView,
-  KeyboardAvoidingView, Platform, StyleSheet,
+  KeyboardAvoidingView, Platform, StyleSheet, Animated,
 } from 'react-native';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import * as Haptics from 'expo-haptics';
 
 import { useColors } from '@/hooks/use-colors';
+import { useScrollHeader } from '@/hooks/use-scroll-header';
 import { IconSymbol } from '@/components/ui/icon-symbol';
 import { BottomSheet } from '@/components/ui/bottom-sheet';
 import { useAccentColor } from '@/hooks/use-accent-color';
@@ -106,6 +107,7 @@ export default function NewEmailScreen() {
   const insets = useSafeAreaInsets();
   const router = useRouter();
   const accent = useAccentColor();
+  const { opacity, onScroll, scrollEventThrottle } = useScrollHeader();
 
   const {
     mode,
@@ -260,7 +262,7 @@ export default function NewEmailScreen() {
         keyboardVerticalOffset={0}
       >
         {/* ── Nav bar ── */}
-        <View style={[s.nav, { paddingTop: insets.top }]}>
+        <Animated.View style={[s.nav, { paddingTop: insets.top, opacity }]}>
           <Pressable onPress={() => router.back()} style={s.cancelBtn}>
             <Text style={[s.cancelText, { color: accent }]}>Cancel</Text>
           </Pressable>
@@ -286,7 +288,7 @@ export default function NewEmailScreen() {
               {scheduledFor ? 'Schedule' : 'Send'}
             </Text>
           </Pressable>
-        </View>
+        </Animated.View>
 
         {/* ── Suggestions (above fields when typing) ── */}
         {suggestions.length > 0 && (
@@ -298,7 +300,7 @@ export default function NewEmailScreen() {
         )}
 
         {/* ── Fields + Body ── */}
-        <ScrollView style={{ flex: 1 }} keyboardShouldPersistTaps="handled" showsVerticalScrollIndicator={false}>
+        <ScrollView style={{ flex: 1 }} keyboardShouldPersistTaps="handled" showsVerticalScrollIndicator={false} onScroll={onScroll} scrollEventThrottle={scrollEventThrottle}>
           {/* To */}
           <RecipientField field="to" list={toList} label="To" />
 

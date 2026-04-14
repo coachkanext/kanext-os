@@ -12,6 +12,7 @@ import {
   ScrollView,
   Alert,
   useWindowDimensions,
+  Animated,
 } from 'react-native';
 import * as Haptics from 'expo-haptics';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
@@ -23,6 +24,7 @@ import { useColors, type ComponentColors } from '@/hooks/use-colors';
 import { openSidePanel } from '@/utils/global-side-panel';
 import { resetFooter } from '@/utils/global-footer-hide';
 import { useDemoRole } from '@/utils/demo-role-store';
+import { useScrollHeader } from '@/hooks/use-scroll-header';
 
 // ─── Constants ────────────────────────────────────────────────────────────────
 
@@ -104,7 +106,7 @@ function makeStyles(C: ComponentColors) {
       top: 0,
       left: 0,
       right: 0,
-      zIndex: 100,
+      zIndex: 10,
       borderBottomWidth: StyleSheet.hairlineWidth,
     },
     topBar: {
@@ -320,6 +322,9 @@ export default function KayStudiosAnalyticsScreen() {
 
   const isOwner = role === 'owner';
 
+  const TOP_BAR_H_FULL = insets.top + TOP_BAR_H;
+  const { opacity, onScroll, scrollEventThrottle } = useScrollHeader(TOP_BAR_H_FULL);
+
   useFocusEffect(
     useCallback(() => {
       resetFooter();
@@ -335,10 +340,10 @@ export default function KayStudiosAnalyticsScreen() {
   return (
     <View style={[styles.root, { backgroundColor: C.bg }]}>
       {/* ── Top Bar ── */}
-      <View
+      <Animated.View
         style={[
           styles.topBarOuter,
-          { top: insets.top, backgroundColor: C.bg, borderBottomColor: C.separator },
+          { top: 0, paddingTop: insets.top, backgroundColor: C.bg, borderBottomColor: C.separator, opacity },
         ]}
       >
         <View style={styles.topBar}>
@@ -348,13 +353,15 @@ export default function KayStudiosAnalyticsScreen() {
             <RolePill />
           </View>
         </View>
-      </View>
+      </Animated.View>
 
       {/* ── Scrollable Content ── */}
       <ScrollView
+        onScroll={onScroll}
+        scrollEventThrottle={scrollEventThrottle}
         contentContainerStyle={[
           styles.scrollContent,
-          { paddingTop: insets.top + TOP_BAR_H + 16 },
+          { paddingTop: TOP_BAR_H_FULL + 16 },
         ]}
         showsVerticalScrollIndicator={false}
       >

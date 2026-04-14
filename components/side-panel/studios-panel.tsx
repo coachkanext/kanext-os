@@ -4,8 +4,21 @@ import * as Haptics from 'expo-haptics';
 import { useRouter } from 'expo-router';
 import { IconSymbol } from '@/components/ui/icon-symbol';
 import { closeSidePanel } from '@/utils/global-side-panel';
+import { openDipsonSheet } from '@/utils/global-dipson-sheet';
 import { useColors, type ComponentColors } from '@/hooks/use-colors';
 import { useDemoRole } from '@/utils/demo-role-store';
+
+type NavItem = {
+  icon: string;
+  label: string;
+  route?: string;
+  isDipson?: boolean;
+};
+
+const BOTTOM_ITEMS: NavItem[] = [
+  { icon: 'sparkles',            label: 'Dipson',   isDipson: true },
+  { icon: 'questionmark.circle', label: 'Help',     route: '/(tabs)/(main)/kaystudios/help' },
+];
 
 export function StudiosPanel() {
   const C = useColors();
@@ -14,13 +27,20 @@ export function StudiosPanel() {
   const [role, , roleCycles] = useDemoRole('personal:kaystudios');
   const isOwner = role === roleCycles[0];
 
-  const go = (route: string) => {
+  const go = (item: NavItem) => {
     Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+    if (item.isDipson) {
+      closeSidePanel();
+      setTimeout(() => openDipsonSheet('Studios'), 300);
+      return;
+    }
     closeSidePanel();
-    setTimeout(() => router.push(route as any), 80);
+    setTimeout(() => {
+      if (item.route) router.push(item.route as any);
+    }, 80);
   };
 
-  const NAV_ITEMS = isOwner ? [
+  const NAV_ITEMS: NavItem[] = isOwner ? [
     { icon: 'square.grid.2x2.fill', label: 'My Courses', route: '/(tabs)/(main)/kaystudios' },
     { icon: 'safari.fill',          label: 'Explore',    route: '/(tabs)/(main)/kaystudios/explore' },
     { icon: 'books.vertical.fill',  label: 'Library',    route: '/(tabs)/(main)/kaystudios/library'  },
@@ -30,7 +50,7 @@ export function StudiosPanel() {
     { icon: 'books.vertical.fill',  label: 'Library',    route: '/(tabs)/(main)/kaystudios/library'  },
   ];
 
-  const MANAGE_ITEMS = [
+  const MANAGE_ITEMS: NavItem[] = [
     { icon: 'chart.bar.fill',  label: 'Analytics', route: '/(tabs)/(main)/kaystudios/analytics' },
     { icon: 'gearshape.fill',  label: 'Settings',  route: '/(tabs)/(main)/kaystudios/settings'  },
   ];
@@ -42,7 +62,7 @@ export function StudiosPanel() {
         <Pressable
           key={item.label}
           style={({ pressed }) => [s.row, pressed && { backgroundColor: C.bg }, idx < NAV_ITEMS.length - 1 && [s.rowBorder, { borderBottomColor: C.separator }]]}
-          onPress={() => go(item.route)}
+          onPress={() => go(item)}
         >
           <IconSymbol name={item.icon as any} size={18} color={C.secondary} />
           <Text style={[s.rowLabel, { color: C.label }]}>{item.label}</Text>
@@ -58,7 +78,7 @@ export function StudiosPanel() {
             <Pressable
               key={item.label}
               style={({ pressed }) => [s.row, pressed && { backgroundColor: C.bg }, idx < MANAGE_ITEMS.length - 1 && [s.rowBorder, { borderBottomColor: C.separator }]]}
-              onPress={() => go(item.route)}
+              onPress={() => go(item)}
             >
               <IconSymbol name={item.icon as any} size={18} color={C.secondary} />
               <Text style={[s.rowLabel, { color: C.label }]}>{item.label}</Text>
@@ -66,6 +86,19 @@ export function StudiosPanel() {
           ))}
         </>
       )}
+
+      {/* Bottom utilities — Dipson + Help */}
+      <View style={[s.divider, { backgroundColor: C.separator }]} />
+      {BOTTOM_ITEMS.map((item, idx) => (
+        <Pressable
+          key={item.label}
+          style={({ pressed }) => [s.row, pressed && { backgroundColor: C.bg }, idx < BOTTOM_ITEMS.length - 1 && [s.rowBorder, { borderBottomColor: C.separator }]]}
+          onPress={() => go(item)}
+        >
+          <IconSymbol name={item.icon as any} size={18} color={C.secondary} />
+          <Text style={[s.rowLabel, { color: C.label }]}>{item.label}</Text>
+        </Pressable>
+      ))}
     </View>
   );
 }

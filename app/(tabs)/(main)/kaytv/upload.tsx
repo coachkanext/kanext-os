@@ -7,14 +7,14 @@
 import React, { useState, useCallback } from 'react';
 import {
   View, Text, TextInput, Pressable, ScrollView,
-  StyleSheet, ActivityIndicator,
+  StyleSheet, ActivityIndicator, Animated,
 } from 'react-native';
 import * as Haptics from 'expo-haptics';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useRouter } from 'expo-router';
-
 import { IconSymbol } from '@/components/ui/icon-symbol';
 import { useColors } from '@/hooks/use-colors';
+import { useScrollHeader } from '@/hooks/use-scroll-header';
 import { useAppContext } from '@/context/app-context';
 import { useDemoRole } from '@/utils/demo-role-store';
 
@@ -32,6 +32,10 @@ export default function KayTVUploadScreen() {
   const isOwner = role === roleCycles[0];
   // Personal mode: only owners can upload. Other modes: all admins can.
   const canUpload = mode === 'personal' ? isOwner : mode !== 'personal';
+
+  const TOP_BAR_H = insets.top + 54;
+
+  const { opacity, onScroll, scrollEventThrottle } = useScrollHeader();
 
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
@@ -102,32 +106,35 @@ export default function KayTVUploadScreen() {
   return (
     <View style={[styles.screen, { backgroundColor: C.bg }]}>
       {/* Header */}
-      <View style={[styles.header, { paddingTop: insets.top + 12 }]}>
-        <Pressable onPress={() => { Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light); router.back(); }} hitSlop={10} style={styles.closeBtn}>
-          <IconSymbol name="xmark" size={18} color={C.label} />
-        </Pressable>
-        <Text style={[styles.headerTitle, { color: C.label }]}>Upload to KTV</Text>
-        <Pressable
-          style={[
-            styles.uploadBtn,
-            { backgroundColor: title.trim() ? C.label : C.surface },
-          ]}
-          onPress={handleUpload}
-          disabled={!title.trim() || uploading}
-        >
-          {uploading ? (
-            <ActivityIndicator size="small" color={C.bg} />
-          ) : (
-            <Text style={[styles.uploadBtnText, { color: title.trim() ? C.bg : C.secondary }]}>
-              Upload
-            </Text>
-          )}
-        </Pressable>
-      </View>
-
+      <Animated.View style={{ backgroundColor: C.bg, paddingTop: insets.top, borderBottomWidth: StyleSheet.hairlineWidth, borderBottomColor: C.separator, position: 'absolute', top: 0, left: 0, right: 0, zIndex: 10, opacity }}>
+        <View style={[styles.header, { paddingTop: 12 }]}>
+          <Pressable onPress={() => { Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light); router.back(); }} hitSlop={10} style={styles.closeBtn}>
+            <IconSymbol name="xmark" size={18} color={C.label} />
+          </Pressable>
+          <Text style={[styles.headerTitle, { color: C.label }]}>Upload to KTV</Text>
+          <Pressable
+            style={[
+              styles.uploadBtn,
+              { backgroundColor: title.trim() ? C.label : C.surface },
+            ]}
+            onPress={handleUpload}
+            disabled={!title.trim() || uploading}
+          >
+            {uploading ? (
+              <ActivityIndicator size="small" color={C.bg} />
+            ) : (
+              <Text style={[styles.uploadBtnText, { color: title.trim() ? C.bg : C.secondary }]}>
+                Upload
+              </Text>
+            )}
+          </Pressable>
+        </View>
+      </Animated.View>
       <ScrollView
+        onScroll={onScroll}
+        scrollEventThrottle={scrollEventThrottle}
         showsVerticalScrollIndicator={false}
-        contentContainerStyle={{ paddingBottom: insets.bottom + 40 }}
+        contentContainerStyle={{ paddingTop: TOP_BAR_H + 8, paddingBottom: insets.bottom + 40 }}
         keyboardShouldPersistTaps="handled"
       >
         {/* Source row */}

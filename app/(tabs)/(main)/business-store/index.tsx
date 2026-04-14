@@ -14,6 +14,7 @@ import { useFocusEffect } from 'expo-router';
 import { GlassView } from '@/components/ui/glass-view';
 import { IconSymbol } from '@/components/ui/icon-symbol';
 import { useColors, type ComponentColors } from '@/hooks/use-colors';
+import { useScrollHeader } from '@/hooks/use-scroll-header';
 import { openSidePanel } from '@/utils/global-side-panel';
 import { resetFooter } from '@/utils/global-footer-hide';
 import { KMenuButton } from '@/components/ui/k-menu-button';
@@ -64,6 +65,7 @@ export default function BusinessStoreScreen() {
   const insets = useSafeAreaInsets();
   const s      = useMemo(() => makeStyles(C), [C]);
   const topBarH = insets.top + TOP_BAR_H;
+  const { opacity, onScroll, scrollEventThrottle } = useScrollHeader(topBarH);
 
   const [activeTab,    setActiveTab]    = useState<StoreTab>('Revenue');
   const [role,         setRole]         = useState<StoreRole>('Admin');
@@ -119,7 +121,7 @@ export default function BusinessStoreScreen() {
 
   function renderRevenue() {
     return (
-      <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={{ paddingTop: contentPaddingTop, paddingBottom: 32 }}>
+      <ScrollView showsVerticalScrollIndicator={false} onScroll={onScroll} scrollEventThrottle={scrollEventThrottle} contentContainerStyle={{ paddingTop: contentPaddingTop, paddingBottom: 32 }}>
 
         {/* Key metrics */}
         <ScrollView horizontal showsHorizontalScrollIndicator={false}
@@ -277,7 +279,7 @@ export default function BusinessStoreScreen() {
     if (selectedProductId) {
       const product = PRODUCTS.find(p => p.id === selectedProductId);
       if (product) return (
-        <ScrollView showsVerticalScrollIndicator={false}>
+        <ScrollView showsVerticalScrollIndicator={false} onScroll={onScroll} scrollEventThrottle={scrollEventThrottle}>
           <View style={{ paddingTop: contentPaddingTop }}>
             {renderProductDetail(product)}
           </View>
@@ -289,7 +291,7 @@ export default function BusinessStoreScreen() {
     const totalUnits   = PRODUCTS.reduce((s, p) => s + p.unitsSold, 0);
 
     return (
-      <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={{ paddingTop: contentPaddingTop, paddingBottom: 100 }}>
+      <ScrollView showsVerticalScrollIndicator={false} onScroll={onScroll} scrollEventThrottle={scrollEventThrottle} contentContainerStyle={{ paddingTop: contentPaddingTop, paddingBottom: 100 }}>
         {/* Stats bar */}
         <View style={[s.row, { gap: 8, paddingHorizontal: 16, marginBottom: 12 }]}>
           {[
@@ -453,7 +455,7 @@ export default function BusinessStoreScreen() {
     if (selectedInvoiceId) {
       const invoice = INVOICES.find(i => i.id === selectedInvoiceId);
       if (invoice) return (
-        <ScrollView showsVerticalScrollIndicator={false}>
+        <ScrollView showsVerticalScrollIndicator={false} onScroll={onScroll} scrollEventThrottle={scrollEventThrottle}>
           <View style={{ paddingTop: contentPaddingTop }}>
             {renderInvoiceDetail(invoice)}
           </View>
@@ -462,7 +464,7 @@ export default function BusinessStoreScreen() {
     }
 
     return (
-      <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={{ paddingTop: contentPaddingTop, paddingBottom: 100 }}>
+      <ScrollView showsVerticalScrollIndicator={false} onScroll={onScroll} scrollEventThrottle={scrollEventThrottle} contentContainerStyle={{ paddingTop: contentPaddingTop, paddingBottom: 100 }}>
         {/* Stats row */}
         <View style={[s.row, { gap: 8, paddingHorizontal: 16, marginBottom: 12, flexWrap: 'wrap' }]}>
           {[
@@ -524,7 +526,7 @@ export default function BusinessStoreScreen() {
     <View style={[s.root, { backgroundColor: C.bg }]}>
 
       {/* Top bar */}
-      <View style={[s.topBarOuter, { backgroundColor: C.bg, borderBottomColor: C.separator as string, paddingTop: insets.top }]}>
+      <Animated.View style={[s.topBarOuter, { backgroundColor: C.bg, borderBottomColor: C.separator as string, paddingTop: insets.top, opacity }]}>
         <View style={s.topBar}>
           <Pressable onPress={() => { Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light); openSidePanel(); }} style={s.iconBtn} hitSlop={8}>
             <KMenuButton />
@@ -573,7 +575,7 @@ export default function BusinessStoreScreen() {
             </ScrollView>
           </Animated.View>
         )}
-      </View>
+      </Animated.View>
 
       {/* Dropdown */}
       {dropdownOpen && (

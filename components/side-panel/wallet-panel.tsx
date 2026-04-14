@@ -1,144 +1,134 @@
 /**
- * Wallet Side Panel — role-aware (Personal mode KPay).
- * Owner: Wallet · Pay · Invest · Card · MANAGE (Invoices · Tax · Settings)
- * Follower: Wallet · Pay · Invest · Card · MANAGE (Tax · Settings)
+ * Wallet Side Panel — Personal Mode KPay.
+ * Owner:    Wallet · Activity · Card · Tax · Linked Banks + Dipson/Settings/Help
+ * Follower: Wallet · Activity · Card · Linked Banks + Dipson/Settings/Help
  */
 
-import React, { useMemo } from 'react';
+import React, { useCallback, useMemo } from 'react';
 import { View, Text, Pressable, StyleSheet } from 'react-native';
 import * as Haptics from 'expo-haptics';
-
 import { useRouter } from 'expo-router';
 import { IconSymbol } from '@/components/ui/icon-symbol';
 import { closeSidePanel } from '@/utils/global-side-panel';
+import { openDipsonSheet } from '@/utils/global-dipson-sheet';
 import { useColors, type ComponentColors } from '@/hooks/use-colors';
 import { useDemoRole } from '@/utils/demo-role-store';
 
-// ── Types ──────────────────────────────────────────────────────────────────────
+// ── Data ──────────────────────────────────────────────────────────────────────
 
-type NavItem = { icon: string; label: string; route: string; bold?: boolean };
+type NavItem = {
+  icon: string;
+  label: string;
+  route?: string;
+  isDipson?: boolean;
+};
 
-// ── Nav item definitions ───────────────────────────────────────────────────────
-
-const PRIMARY_ITEMS: NavItem[] = [
-  { icon: 'wallet.bifold.fill',        label: 'Wallet',  route: '/(tabs)/(main)/kaypay',         bold: true },
-  { icon: 'arrow.up.arrow.down',       label: 'Pay',     route: '/(tabs)/(main)/kaypay/pay'              },
-  { icon: 'chart.line.uptrend.xyaxis', label: 'Invest',  route: '/(tabs)/(main)/kaypay/invest'           },
-  { icon: 'creditcard.fill',           label: 'Card',    route: '/(tabs)/(main)/kaypay/card'             },
+const OWNER_NAV: NavItem[] = [
+  { icon: 'wallet.bifold.fill',    label: 'Wallet',       route: '/(tabs)/(main)/kaypay' },
+  { icon: 'list.bullet',           label: 'Activity',     route: '/(tabs)/(main)/kaypay/personal-activity' },
+  { icon: 'creditcard.fill',       label: 'Card',         route: '/(tabs)/(main)/kaypay/personal-card' },
+  { icon: 'building.columns.fill', label: 'Tax',          route: '/(tabs)/(main)/kaypay/personal-tax' },
+  { icon: 'link',                  label: 'Linked Banks', route: '/(tabs)/(main)/kaypay/personal-linked-banks' },
 ];
 
-const MANAGE_OWNER: NavItem[] = [
-  { icon: 'doc.text.fill',        label: 'Invoices', route: '/(tabs)/(main)/kaypay/invoices'  },
-  { icon: 'building.columns.fill', label: 'Tax',      route: '/(tabs)/(main)/kaypay/tax'       },
-  { icon: 'gearshape.fill',        label: 'Settings', route: '/(tabs)/(main)/kaypay/settings'  },
+const FOLLOWER_NAV: NavItem[] = [
+  { icon: 'wallet.bifold.fill',    label: 'Wallet',       route: '/(tabs)/(main)/kaypay' },
+  { icon: 'list.bullet',           label: 'Activity',     route: '/(tabs)/(main)/kaypay/personal-activity' },
+  { icon: 'creditcard.fill',       label: 'Card',         route: '/(tabs)/(main)/kaypay/personal-card' },
+  { icon: 'link',                  label: 'Linked Banks', route: '/(tabs)/(main)/kaypay/personal-linked-banks' },
 ];
 
-const MANAGE_FOLLOWER: NavItem[] = [
-  { icon: 'building.columns.fill', label: 'Tax',      route: '/(tabs)/(main)/kaypay/tax'      },
-  { icon: 'gearshape.fill',        label: 'Settings', route: '/(tabs)/(main)/kaypay/settings' },
+const BOTTOM_ITEMS: NavItem[] = [
+  { icon: 'sparkles',            label: 'Dipson',   isDipson: true },
+  { icon: 'gearshape',           label: 'Settings', route: '/(tabs)/(main)/kaypay/settings' },
+  { icon: 'questionmark.circle', label: 'Help',     route: '/(tabs)/(main)/kaypay/help' },
 ];
 
-// ── Component ──────────────────────────────────────────────────────────────────
+// ── Component ─────────────────────────────────────────────────────────────────
 
 export function WalletPanel() {
-  const C      = useColors();
-  const s      = useMemo(() => makeStyles(C), [C]);
+  const C = useColors();
+  const s = useMemo(() => makeStyles(C), [C]);
   const router = useRouter();
   const [role, , roleCycles] = useDemoRole('personal:kaypay');
   const isOwner = role === roleCycles[0];
 
-  const manageItems = isOwner ? MANAGE_OWNER : MANAGE_FOLLOWER;
+  const navItems = isOwner ? OWNER_NAV : FOLLOWER_NAV;
 
-  const goPage = (route: string) => {
+  const go = useCallback((item: NavItem) => {
     Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+    if (item.isDipson) {
+      closeSidePanel();
+      setTimeout(() => openDipsonSheet('KPay'), 300);
+      return;
+    }
     closeSidePanel();
-    setTimeout(() => { router.navigate(route as any); }, 80);
-  };
+    setTimeout(() => {
+      if (item.route) router.navigate(item.route as any);
+    }, 80);
+  }, [router]);
 
   return (
-    <View style={[s.root, { backgroundColor: C.surface }]}>
+    <View style={s.root}>
 
-      {/* ── Primary items ── */}
-      {PRIMARY_ITEMS.map((item, idx) => (
-        <Pressable
-          key={item.label}
-          style={({ pressed }) => [
-            s.row,
-            pressed && { backgroundColor: C.bg },
-            idx < PRIMARY_ITEMS.length - 1 && [s.rowBorder, { borderBottomColor: C.separator }],
-          ]}
-          onPress={() => goPage(item.route)}
-        >
-          <IconSymbol
-            name={item.icon as any}
-            size={18}
-            color={item.bold ? C.label : C.secondary}
-          />
-          <Text
-            style={[
-              s.rowLabel,
-              { color: C.label },
-              item.bold && { fontWeight: '600' },
-            ]}
+      {/* ── Identity header ── */}
+      <View style={s.header}>
+        <View style={[s.avatar, { backgroundColor: C.separator }]}>
+          <IconSymbol name="person.fill" size={20} color={C.secondary} />
+        </View>
+        <Text style={[s.name, { color: C.label }]}>Sammy Kalejaiye</Text>
+        <Text style={[s.handle, { color: C.secondary }]}>@sammyk</Text>
+      </View>
+
+      {/* ── Nav items ── */}
+      <View style={s.nav}>
+        {navItems.map(item => (
+          <Pressable
+            key={item.label}
+            style={({ pressed }) => [s.navRow, pressed && { backgroundColor: C.surface }]}
+            onPress={() => go(item)}
           >
-            {item.label}
-          </Text>
-        </Pressable>
-      ))}
+            <IconSymbol name={item.icon as any} size={22} color={C.label} />
+            <Text style={[s.navLabel, { color: C.label }]}>{item.label}</Text>
+          </Pressable>
+        ))}
+      </View>
 
-      {/* ── Divider ── */}
+      {/* ── Bottom utilities ── */}
       <View style={[s.divider, { backgroundColor: C.separator }]} />
-
-      {/* ── Manage section ── */}
-      <Text style={[s.sectionLabel, { color: C.secondary }]}>Manage</Text>
-      {manageItems.map((item, idx) => (
-        <Pressable
-          key={item.label}
-          style={({ pressed }) => [
-            s.row,
-            pressed && { backgroundColor: C.bg },
-            idx < manageItems.length - 1 && [s.rowBorder, { borderBottomColor: C.separator }],
-          ]}
-          onPress={() => goPage(item.route)}
-        >
-          <IconSymbol name={item.icon as any} size={18} color={C.secondary} />
-          <Text style={[s.rowLabel, { color: C.label }]}>{item.label}</Text>
-        </Pressable>
-      ))}
+      <View style={s.nav}>
+        {BOTTOM_ITEMS.map(item => (
+          <Pressable
+            key={item.label}
+            style={({ pressed }) => [s.navRow, pressed && { backgroundColor: C.surface }]}
+            onPress={() => go(item)}
+          >
+            <IconSymbol name={item.icon as any} size={22} color={C.label} />
+            <Text style={[s.navLabel, { color: C.label }]}>{item.label}</Text>
+          </Pressable>
+        ))}
+      </View>
 
     </View>
   );
 }
 
-// ── Styles ─────────────────────────────────────────────────────────────────────
+// ── Styles ────────────────────────────────────────────────────────────────────
 
 const makeStyles = (C: ComponentColors) => StyleSheet.create({
-  root: { flex: 1, paddingTop: 8, paddingBottom: 16 },
+  root: { flex: 1 },
 
-  divider: {
-    height: StyleSheet.hairlineWidth,
-    marginVertical: 12,
-    marginHorizontal: 16,
+  header: { paddingHorizontal: 20, paddingTop: 8, paddingBottom: 20 },
+  avatar: {
+    width: 44, height: 44, borderRadius: 22,
+    alignItems: 'center', justifyContent: 'center', marginBottom: 10,
   },
+  name:   { fontSize: 17, fontWeight: '700', letterSpacing: -0.3, marginBottom: 2 },
+  handle: { fontSize: 14, fontWeight: '400' },
 
-  sectionLabel: {
-    fontSize: 11,
-    fontWeight: '600',
-    letterSpacing: 0.6,
-    textTransform: 'uppercase',
-    paddingHorizontal: 16,
-    marginBottom: 2,
-    marginTop: 4,
-  },
+  nav:     { paddingHorizontal: 8 },
+  navRow:  { flexDirection: 'row', alignItems: 'center', height: 44, gap: 16, paddingHorizontal: 12, borderRadius: 8 },
+  navLabel:{ fontSize: 16, fontWeight: '500' },
 
-  row: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 12,
-    paddingHorizontal: 16,
-    paddingVertical: 13,
-    borderRadius: 8,
-  },
-  rowBorder: { borderBottomWidth: StyleSheet.hairlineWidth },
-  rowLabel:  { flex: 1, fontSize: 15 },
+  divider: { height: StyleSheet.hairlineWidth, marginVertical: 8, marginHorizontal: 20 },
 });

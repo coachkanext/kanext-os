@@ -7,13 +7,11 @@
  */
 
 import React from 'react';
-import { View, Text, Pressable, ScrollView, StyleSheet, Dimensions } from 'react-native';
-import * as Haptics from 'expo-haptics';
+import { View, ScrollView, StyleSheet, Dimensions } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { usePathname } from 'expo-router';
 import { useColors } from '@/hooks/use-colors';
 import { DrawerPanel } from '@/components/ui/drawer-panel';
-import { KMenuButton } from '@/components/ui/k-menu-button';
 
 import { MessagesPanel } from './messages-panel';
 import { PhonePanel } from './phone-panel';
@@ -32,6 +30,7 @@ import { GivePanel } from './give-panel';
 import { KayTVPanel } from './kaytv-panel';
 import { WalletPanel } from './wallet-panel';
 import { StudiosPanel } from './studios-panel';
+import { KPlayPanel } from './kplay-panel';
 import { HubPanel } from './hub-panel';
 import { CommunityHubPanel } from './community-hub-panel';
 import { CommunitySocialPanel } from './community-social-panel';
@@ -53,6 +52,8 @@ import { SportsRecruitsPanel } from './sports-recruits-panel';
 import { SportsBoosterPanel } from './sports-booster-panel';
 import { NetworkPanel } from './network-panel';
 import { DealsPanel } from './deals-panel';
+import { PortfolioPanel } from './portfolio-panel';
+import { PersonalInquiriesPanel } from './personal-inquiries-panel';
 import { DefaultPanel } from './default-panel';
 import { BusinessHubPanel } from './business-hub-panel';
 import { TeamPanel } from './team-panel';
@@ -63,13 +64,6 @@ import { useMode } from '@/context/app-context';
 const { width: SCREEN_WIDTH } = Dimensions.get('window');
 export const SIDE_PANEL_WIDTH = Math.min(300, SCREEN_WIDTH * 0.82);
 
-const BRAND_NAMES: Record<string, string> = {
-  personal:  'Sammy Kalejaiye',
-  business:  'KaNeXT',
-  education: 'Lincoln University',
-  community: 'ICCLA',
-  sports:    "LU Men's Basketball",
-};
 
 interface SidePanelProps {
   visible: boolean;
@@ -81,7 +75,6 @@ export function SidePanel({ visible, onClose }: SidePanelProps) {
   const insets = useSafeAreaInsets();
   const pathname = usePathname();
   const mode = useMode();
-  const brandName = BRAND_NAMES[mode] ?? '';
 
   const isMessages = pathname.includes('messages');
   const isPhone = pathname.includes('phone');
@@ -107,45 +100,50 @@ export function SidePanel({ visible, onClose }: SidePanelProps) {
   const isTeam         = pathname.includes('/team') && !pathname.includes('admissions');
   const isInquiries    = pathname.includes('/inquiries');
   const isHub = pathname.includes('hub') && !isHubCommunity && !isHubEducation && !isCampus && !isHubSports && !isHubBusiness;
-  const isDeals    = pathname.includes('deals');
-  const isNetwork  = pathname.includes('network');
+  const isDeals     = pathname.includes('deals');
+  const isPortfolio          = pathname.includes('portfolio');
+  const isPersonalInquiries  = pathname.includes('personal-inquiries');
+  const isNetwork   = pathname.includes('network');
   const isMembers  = pathname.includes('members');
   const isOutreach = pathname.includes('outreach');
   const isGive     = pathname.includes('/give');
   const isFund     = pathname.includes('/fund');
-  const isPersonalHub = isHub && mode === 'personal';
+  const isSettings = pathname.includes('/settings') || pathname.includes('/help');
+
+  // Personal mode panels: full-height bg container, no ScrollView — same as hub-panel
+  // NOTE: isSettings intentionally excluded — tile-specific settings pages (agenda/settings, social/settings, etc.)
+  // include '/settings' in their path but should resolve via their tile flag (isAgenda, isSocial, etc.)
+  const isPersonalPanel = mode === 'personal' && (
+    isHub || isWallet || isStudios || isKayTV ||
+    isPortfolio || isDeals || isNetwork || isPersonalInquiries
+  );
+
+  // Resolve which personal panel to render
+  const PersonalPanelContent = isPersonalPanel ? (
+    isWallet   ? <WalletPanel />
+    : isStudios  ? <KPlayPanel />
+    : isKayTV    ? <KayTVPanel />
+    : isPortfolio? <PortfolioPanel />
+    : isDeals    ? <DealsPanel />
+    : isNetwork  ? <NetworkPanel />
+    : isPersonalInquiries ? <PersonalInquiriesPanel />
+    : <HubPanel />   // hub + settings
+  ) : null;
 
   return (
-    <DrawerPanel visible={visible} onClose={onClose} width={SIDE_PANEL_WIDTH} backgroundColor={isPersonalHub ? C.surface : C.bg}>
-      {isPersonalHub ? (
-        /* Personal hub: full-height flex container — HubPanel owns its layout */
-        <View style={{ flex: 1, backgroundColor: C.surface, paddingTop: insets.top + 20, paddingBottom: insets.bottom }}>
-          <HubPanel />
+    <DrawerPanel visible={visible} onClose={onClose} width={SIDE_PANEL_WIDTH} backgroundColor={C.bg}>
+      {isPersonalPanel ? (
+        /* Personal panels: full-height bg container, no ScrollView — panel owns its layout */
+        <View style={{ flex: 1, backgroundColor: C.bg, paddingTop: insets.top + 20, paddingBottom: insets.bottom }}>
+          {PersonalPanelContent}
         </View>
       ) : (
         <View style={{ flex: 1, backgroundColor: C.bg }}>
-          {/* K toggle + brand name */}
-          <Pressable
-            style={[styles.kBtn, { top: insets.top + 14 }]}
-            onPress={() => {
-              Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
-              onClose();
-            }}
-            hitSlop={8}
-          >
-            <KMenuButton />
-          </Pressable>
-          {brandName ? (
-            <View style={[styles.brandWrap, { top: insets.top + 14 }]}>
-              <Text style={[styles.brandName, { color: C.label }]} numberOfLines={1}>{brandName}</Text>
-            </View>
-          ) : null}
-
           <ScrollView
             style={styles.scroll}
             contentContainerStyle={[
               styles.scrollContent,
-              { paddingTop: insets.top + 88, paddingBottom: insets.bottom + 24 },
+              { paddingTop: insets.top + 20, paddingBottom: insets.bottom + 24 },
             ]}
             showsVerticalScrollIndicator={false}
           >
@@ -187,7 +185,7 @@ export function SidePanel({ visible, onClose }: SidePanelProps) {
                             : isHub
                             ? <HubPanel />
                             : isStudios
-                            ? (mode === 'community' ? <CommunityKplayPanel /> : <StudiosPanel />)
+                            ? (mode === 'community' ? <CommunityKplayPanel /> : mode === 'personal' ? <KPlayPanel /> : <StudiosPanel />)
                             : isMode
                           ? <ModePanel />
                           : isAgenda
@@ -202,6 +200,10 @@ export function SidePanel({ visible, onClose }: SidePanelProps) {
                                     ? <CommunityOutreachPanel />
                                     : isDeals
                                       ? <DealsPanel />
+                                    : isPortfolio
+                                      ? <PortfolioPanel />
+                                    : isPersonalInquiries
+                                      ? <PersonalInquiriesPanel />
                                     : isNetwork
                                       ? <NetworkPanel />
                                       : isMembers
@@ -210,7 +212,13 @@ export function SidePanel({ visible, onClose }: SidePanelProps) {
                                         ? <CommunityGivePanel />
                                         : isFund
                                           ? <EduFundPanel />
-                                          : <DefaultPanel pathname={pathname} />
+                                          : isSettings
+                                            ? (mode === 'sports' ? <SportsHubPanel />
+                                               : mode === 'education' ? <EducationHubPanel />
+                                               : mode === 'community' ? <CommunityHubPanel />
+                                               : mode === 'business' ? <BusinessHubPanel />
+                                               : <HubPanel />)
+                                            : <DefaultPanel pathname={pathname} />
             }
           </ScrollView>
         </View>
@@ -220,28 +228,6 @@ export function SidePanel({ visible, onClose }: SidePanelProps) {
 }
 
 const styles = StyleSheet.create({
-  kBtn: {
-    position: 'absolute',
-    left: 0,
-    width: 52,
-    height: 44,
-    justifyContent: 'center',
-    paddingLeft: 16,
-    zIndex: 10,
-  },
-  brandWrap: {
-    position: 'absolute',
-    left: 52,
-    right: 16,
-    height: 44,
-    justifyContent: 'center',
-    zIndex: 10,
-  },
-  brandName: {
-    fontSize: 15,
-    fontWeight: '600',
-    letterSpacing: -0.2,
-  },
   scroll: {
     flex: 1,
   },

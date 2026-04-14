@@ -2,7 +2,7 @@
  * Portfolio — Projects (default screen).
  */
 import React, { useState, useCallback, useMemo } from 'react';
-import { View, Text, Pressable, ScrollView, StyleSheet, Animated, useColorScheme } from 'react-native';
+import { View, Text, Pressable, ScrollView, StyleSheet, Animated, useColorScheme, Image } from 'react-native';
 import * as Haptics from 'expo-haptics';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useFocusEffect } from 'expo-router';
@@ -15,9 +15,13 @@ import { useScrollHeader } from '@/hooks/use-scroll-header';
 import { openSidePanel } from '@/utils/global-side-panel';
 import { resetFooter } from '@/utils/global-footer-hide';
 import { useDemoRole } from '@/utils/demo-role-store';
-import { PORTFOLIO_PROJECTS, type PortfolioProject } from '@/data/mock-portfolio';
+import { PORTFOLIO_PROJECTS, type PortfolioProject, type ProjectType } from '@/data/mock-portfolio';
 
 const TOP_BAR_H = 52;
+const PILLS_H   = 48;
+
+type FilterType = 'All' | ProjectType;
+const FILTER_PILLS: FilterType[] = ['All', 'Sponsored', 'Self-produced', 'Collaboration', 'Article', 'Speaking'];
 
 // ── Design tokens (light / dark) ──────────────────────────────────────────────
 const ACCENT_L = '#2563EB';
@@ -62,12 +66,18 @@ export default function ProjectsScreen() {
   const isOwner = role === roleCycles[0];
   const { opacity, onScroll, scrollEventThrottle } = useScrollHeader();
   const [expandedProj, setExpandedProj] = useState<string | null>(null);
+  const [activeFilter, setActiveFilter] = useState<FilterType>('All');
 
   useFocusEffect(useCallback(() => { resetFooter(); }, []));
 
   const ACCENT = dark ? ACCENT_D : ACCENT_L;
   const SURF2  = dark ? SURF2_D  : SURF2_L;
   const TSEC   = dark ? TSEC_D   : TSEC_L;
+
+  const filteredProjects = useMemo(() => {
+    if (activeFilter === 'All') return PORTFOLIO_PROJECTS;
+    return PORTFOLIO_PROJECTS.filter(p => p.type === activeFilter);
+  }, [activeFilter]);
 
   return (
     <View style={[s.root, { backgroundColor: C.bg }]}>
@@ -95,14 +105,43 @@ export default function ProjectsScreen() {
       {/* ── List ── */}
       <ScrollView
         style={{ flex: 1 }}
-        contentContainerStyle={{ paddingTop: insets.top + TOP_BAR_H + 16, paddingBottom: insets.bottom + 80, paddingHorizontal: 16 }}
+        contentContainerStyle={{ paddingTop: insets.top + TOP_BAR_H, paddingBottom: insets.bottom + 80, paddingHorizontal: 16 }}
         showsVerticalScrollIndicator={false}
         onScroll={onScroll}
         scrollEventThrottle={scrollEventThrottle}
       >
+        {/* ── Filter pills ── */}
+        <View style={[s.pillsRow, { borderBottomColor: C.separator, marginHorizontal: -16, marginBottom: 8 }]}>
+          <ScrollView
+            horizontal
+            showsHorizontalScrollIndicator={false}
+            contentContainerStyle={s.pillsScroll}
+          >
+            {FILTER_PILLS.map(f => {
+              const active = activeFilter === f;
+              return (
+                <Pressable
+                  key={f}
+                  style={[
+                    s.pill,
+                    active
+                      ? { backgroundColor: C.activePill, borderColor: C.activePill }
+                      : { backgroundColor: C.surface, borderColor: C.separator },
+                  ]}
+                  onPress={() => { Haptics.selectionAsync(); setActiveFilter(f); setExpandedProj(null); }}
+                >
+                  <Text style={[s.pillText, { color: active ? C.activePillText : C.secondary }]}>{f}</Text>
+                </Pressable>
+              );
+            })}
+          </ScrollView>
+        </View>
+
         {/* Section header */}
         <View style={s.sectionHeaderRow}>
-          <Text style={[s.sectionLabel, { color: TSEC }]}>ALL PROJECTS</Text>
+          <Text style={[s.sectionLabel, { color: TSEC }]}>
+            {activeFilter === 'All' ? 'ALL PROJECTS' : activeFilter.toUpperCase()}
+          </Text>
           {isOwner && (
             <Pressable
               style={s.addBtn}
@@ -114,21 +153,28 @@ export default function ProjectsScreen() {
           )}
         </View>
 
-        {PORTFOLIO_PROJECTS.map(proj => (
-          <ProjectCard
-            key={proj.id}
-            proj={proj}
-            expanded={expandedProj === proj.id}
-            onToggle={() => {
-              Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
-              setExpandedProj(p => p === proj.id ? null : proj.id);
-            }}
-            C={C}
-            s={s}
-            ACCENT={ACCENT}
-            SURF2={SURF2}
-          />
-        ))}
+        {filteredProjects.length === 0 ? (
+          <View style={{ alignItems: 'center', paddingVertical: 56, gap: 10 }}>
+            <IconSymbol name="tray" size={36} color={C.secondary} />
+            <Text style={{ fontSize: 15, fontWeight: '600', color: C.label }}>No {activeFilter} projects</Text>
+          </View>
+        ) : (
+          filteredProjects.map(proj => (
+            <ProjectCard
+              key={proj.id}
+              proj={proj}
+              expanded={expandedProj === proj.id}
+              onToggle={() => {
+                Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+                setExpandedProj(p => p === proj.id ? null : proj.id);
+              }}
+              C={C}
+              s={s}
+              ACCENT={ACCENT}
+              SURF2={SURF2}
+            />
+          ))
+        )}
       </ScrollView>
     </View>
   );
@@ -148,7 +194,6 @@ function ProjectCard({
   SURF2: string;
 }) {
   const cv      = cover(proj.coverHue);
-  const isSelf  = proj.client === 'Self-produced';
   const mark    = brandMark(proj.client);
 
   return (
@@ -156,17 +201,26 @@ function ProjectCard({
 
       {/* ── Cover ── */}
       <View style={[s.projCover, { backgroundColor: cv.bg }]}>
-        {/* Mid-tone overlay for depth */}
-        <View style={[StyleSheet.absoluteFillObject, { backgroundColor: cv.mid, opacity: 0.45 }]} />
-
-        {/* Brand mark */}
-        <View style={[s.brandMarkBg, { backgroundColor: cv.markBg }]}>
-          <Text style={[s.brandMarkText, { color: cv.markTxt }]}>{mark}</Text>
-        </View>
+        {proj.coverUri ? (
+          <>
+            <Image source={{ uri: proj.coverUri }} style={StyleSheet.absoluteFillObject} resizeMode="cover" />
+            {/* Subtle dark overlay so badges stay readable */}
+            <View style={[StyleSheet.absoluteFillObject, { backgroundColor: 'rgba(0,0,0,0.28)' }]} />
+          </>
+        ) : (
+          <>
+            {/* Mid-tone overlay for depth */}
+            <View style={[StyleSheet.absoluteFillObject, { backgroundColor: cv.mid, opacity: 0.45 }]} />
+            {/* Brand mark */}
+            <View style={[s.brandMarkBg, { backgroundColor: cv.markBg }]}>
+              <Text style={[s.brandMarkText, { color: cv.markTxt }]}>{mark}</Text>
+            </View>
+          </>
+        )}
 
         {/* Type badge — frosted overlay on dark cover */}
         <View style={s.coverBadge}>
-          <Text style={s.coverBadgeText}>{isSelf ? 'Self-produced' : 'Sponsored'}</Text>
+          <Text style={s.coverBadgeText}>{proj.type}</Text>
         </View>
       </View>
 
@@ -175,7 +229,7 @@ function ProjectCard({
 
         {/* Client pill + expand chevron */}
         <View style={s.projMeta}>
-          <View style={[s.clientPill, { backgroundColor: SURF2 }]}>
+          <View style={[s.clientPill, { backgroundColor: C.surface, borderColor: C.separator }]}>
             <Text style={[s.clientPillText, { color: C.label }]}>{proj.client}</Text>
           </View>
           <Pressable onPress={onToggle} hitSlop={12}>
@@ -191,7 +245,7 @@ function ProjectCard({
         {/* Metric pills */}
         <View style={s.resultsRow}>
           {proj.results.map(r => (
-            <View key={r.label} style={[s.resultPill, { backgroundColor: SURF2 }]}>
+            <View key={r.label} style={[s.resultPill, { backgroundColor: C.surface, borderColor: C.separator }]}>
               <Text style={[s.resultValue, { color: ACCENT }]}>{r.value}</Text>
               <Text style={[s.resultLabel, { color: C.secondary }]}> {r.label}</Text>
             </View>
@@ -243,6 +297,15 @@ const makeStyles = (C: ComponentColors) => StyleSheet.create({
   titlePillText:{ fontSize: 12, fontWeight: '600', letterSpacing: 0.3 },
   rolePillWrap: { width: 80, alignItems: 'flex-end', justifyContent: 'center' },
 
+  // Filter pills
+  pillsRow: {
+    height: PILLS_H, borderBottomWidth: StyleSheet.hairlineWidth,
+    justifyContent: 'center',
+  },
+  pillsScroll: { paddingHorizontal: 16, gap: 8, alignItems: 'center' },
+  pill: { paddingHorizontal: 13, paddingVertical: 6, borderRadius: 14, borderWidth: 1 },
+  pillText: { fontSize: 13, fontWeight: '600', letterSpacing: 0.2 },
+
   // Section header
   sectionHeaderRow: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', marginBottom: 14 },
   sectionLabel:     { fontSize: 11, fontWeight: '700', letterSpacing: 0.9, textTransform: 'uppercase' },
@@ -266,14 +329,14 @@ const makeStyles = (C: ComponentColors) => StyleSheet.create({
   // Body
   projBody:   { padding: 14, gap: 8 },
   projMeta:   { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' },
-  clientPill: { paddingHorizontal: 9, paddingVertical: 3, borderRadius: 8 },
+  clientPill: { paddingHorizontal: 9, paddingVertical: 3, borderRadius: 8, borderWidth: 1 },
   clientPillText: { fontSize: 12, fontWeight: '500' },
   projTitle:  { fontSize: 16, fontWeight: '700', letterSpacing: -0.3, lineHeight: 22 },
   projDesc:   { fontSize: 14, lineHeight: 20 },
 
   // Metric pills
   resultsRow:  { flexDirection: 'row', flexWrap: 'wrap', gap: 6 },
-  resultPill:  { flexDirection: 'row', alignItems: 'center', paddingHorizontal: 9, paddingVertical: 4, borderRadius: 8 },
+  resultPill:  { flexDirection: 'row', alignItems: 'center', paddingHorizontal: 9, paddingVertical: 4, borderRadius: 8, borderWidth: 1 },
   resultValue: { fontSize: 12, fontWeight: '700' },
   resultLabel: { fontSize: 12 },
 

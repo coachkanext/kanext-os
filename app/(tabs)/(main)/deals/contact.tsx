@@ -6,7 +6,7 @@
 
 import React, { useState, useMemo, useCallback } from 'react';
 import {
-  View, Text, ScrollView, Pressable, StyleSheet, TextInput,
+  View, Text, ScrollView, Pressable, StyleSheet, TextInput, Animated,
 } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useLocalSearchParams, useRouter, useFocusEffect } from 'expo-router';
@@ -16,6 +16,7 @@ import { IconSymbol } from '@/components/ui/icon-symbol';
 import { BottomSheet } from '@/components/ui/bottom-sheet';
 import { useColors } from '@/hooks/use-colors';
 import { resetFooter } from '@/utils/global-footer-hide';
+import { useScrollHeader } from '@/hooks/use-scroll-header';
 import {
   PERSONAL_DEALS, PRIORITY_COLORS, STAGE_PROBABILITIES,
   type PersonalDeal, type CRMStage,
@@ -199,6 +200,9 @@ export default function ContactDetailScreen() {
   const router = useRouter();
   const { contactId } = useLocalSearchParams<{ contactId: string }>();
 
+  const TOP_BAR_H = insets.top + 52;
+  const { opacity, onScroll, scrollEventThrottle } = useScrollHeader(TOP_BAR_H);
+
   useFocusEffect(useCallback(() => { resetFooter(); }, []));
 
   const contact = getContactById(contactId);
@@ -246,20 +250,24 @@ export default function ContactDetailScreen() {
     <View style={{ flex: 1, backgroundColor: C.bg }}>
 
       {/* Top Bar */}
-      <View style={[styles.topBar, { height: insets.top + 52, paddingTop: insets.top, backgroundColor: C.bg, borderBottomColor: C.separator }]}>
-        <Pressable onPress={() => router.back()} style={styles.backBtn}>
-          <IconSymbol name="chevron.left" size={20} color={C.label} />
-        </Pressable>
-        <Text style={{ flex: 1, fontSize: 16, fontWeight: '700', color: C.label, textAlign: 'center' }} numberOfLines={1}>
-          {contact.name}
-        </Text>
-        <View style={{ width: 40 }} />
-      </View>
+      <Animated.View style={[styles.topBarOuter, { paddingTop: insets.top, backgroundColor: C.bg, borderBottomColor: C.separator, opacity }]}>
+        <View style={styles.topBar}>
+          <Pressable onPress={() => router.back()} style={styles.backBtn}>
+            <IconSymbol name="chevron.left" size={20} color={C.label} />
+          </Pressable>
+          <Text style={{ flex: 1, fontSize: 16, fontWeight: '700', color: C.label, textAlign: 'center' }} numberOfLines={1}>
+            {contact.name}
+          </Text>
+          <View style={{ width: 40 }} />
+        </View>
+      </Animated.View>
 
       <ScrollView
         style={{ flex: 1 }}
-        contentContainerStyle={{ paddingTop: insets.top + 52 + 12, paddingHorizontal: 16, paddingBottom: insets.bottom + 80 }}
+        contentContainerStyle={{ paddingTop: TOP_BAR_H + 12, paddingHorizontal: 16, paddingBottom: insets.bottom + 80 }}
         showsVerticalScrollIndicator={false}
+        onScroll={onScroll}
+        scrollEventThrottle={scrollEventThrottle}
       >
 
         {/* Hero */}
@@ -514,11 +522,14 @@ export default function ContactDetailScreen() {
 }
 
 const styles = StyleSheet.create({
-  topBar: {
+  topBarOuter: {
     position: 'absolute', top: 0, left: 0, right: 0, zIndex: 10,
+    borderBottomWidth: StyleSheet.hairlineWidth,
+  },
+  topBar: {
     flexDirection: 'row', alignItems: 'flex-end',
     paddingHorizontal: 16, paddingBottom: 8,
-    borderBottomWidth: StyleSheet.hairlineWidth,
+    height: 52,
   },
   backBtn: { width: 40, height: 36, alignItems: 'flex-start', justifyContent: 'center' },
 });

@@ -1,5 +1,5 @@
 import React, { useMemo, useCallback } from 'react';
-import { View, Text, StyleSheet, Pressable, ScrollView } from 'react-native';
+import { View, Text, StyleSheet, Pressable, ScrollView, Animated } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import * as Haptics from 'expo-haptics';
 import { useFocusEffect } from 'expo-router';
@@ -9,6 +9,7 @@ import { openSidePanel } from '@/utils/global-side-panel';
 import { KMenuButton } from '@/components/ui/k-menu-button';
 import { resetFooter } from '@/utils/global-footer-hide';
 import { useScrollFooter } from '@/hooks/use-scroll-footer';
+import { useScrollHeader } from '@/hooks/use-scroll-header';
 
 // ---------------------------------------------------------------------------
 // Types & mock data
@@ -87,6 +88,9 @@ export default function StaffScreen() {
   const [activeDept, setActiveDept] = React.useState('All');
   const s = useMemo(() => makeStyles(C), [C]);
   const scrollFooter = useScrollFooter();
+  const TOP_BAR_H = 52;
+  const topBarH = insets.top + TOP_BAR_H;
+  const { opacity, onScroll, scrollEventThrottle } = useScrollHeader(topBarH);
 
   useFocusEffect(useCallback(() => { resetFooter(); }, []));
 
@@ -96,20 +100,24 @@ export default function StaffScreen() {
   );
 
   return (
-    <View style={[s.root, { paddingTop: insets.top, backgroundColor: C.bg }]}>
+    <View style={[s.root, { backgroundColor: C.bg }]}>
       {/* Top bar */}
-      <View style={s.topBar}>
-        <Pressable onPress={() => openSidePanel()} hitSlop={8} style={s.topBarSide}>
-          <KMenuButton />
-        </Pressable>
-        <View style={[s.titlePill, { backgroundColor: C.surface, borderColor: C.separator }]}>
-          <Text style={[s.titlePillText, { color: C.label }]}>Staff</Text>
+      <Animated.View style={[s.topBarOuter, { paddingTop: insets.top, backgroundColor: C.bg, opacity }]}>
+        <View style={s.topBar}>
+          <Pressable onPress={() => openSidePanel()} hitSlop={8} style={s.topBarSide}>
+            <KMenuButton />
+          </Pressable>
+          <View style={{ flex: 1, alignItems: 'center' }}>
+            <View style={[s.titlePill, { backgroundColor: C.surface, borderColor: C.separator }]}>
+              <Text style={[s.titlePillText, { color: C.label }]}>Staff</Text>
+            </View>
+          </View>
+          <View style={{ width: 44 }} />
         </View>
-        <View style={{ width: 44 }} />
-      </View>
+      </Animated.View>
 
       {/* Stats strip */}
-      <View style={[s.statsStrip, { backgroundColor: C.surface, borderColor: C.separator }]}>
+      <View style={[s.statsStrip, { backgroundColor: C.surface, borderColor: C.separator, marginTop: topBarH }]}>
         <View style={s.statCell}>
           <Text style={[s.statVal, { color: C.label }]}>{STAFF.length}</Text>
           <Text style={[s.statLabel, { color: C.secondary }]}>Total Staff</Text>
@@ -148,6 +156,8 @@ export default function StaffScreen() {
         {...scrollFooter}
         showsVerticalScrollIndicator={false}
         contentContainerStyle={[s.listContent, { paddingBottom: insets.bottom + 24 }]}
+        onScroll={onScroll}
+        scrollEventThrottle={scrollEventThrottle}
       >
         {filtered.map(member => (
           <StaffCard key={member.id} member={member} C={C} s={s} />
@@ -163,10 +173,11 @@ export default function StaffScreen() {
 
 const makeStyles = (C: ComponentColors) => StyleSheet.create({
   root: { flex: 1 },
-  topBar: { flexDirection: 'row', alignItems: 'center', paddingHorizontal: 12, paddingVertical: 10 },
+  topBarOuter: { position: 'absolute', top: 0, left: 0, right: 0, zIndex: 10 },
+  topBar: { flexDirection: 'row', alignItems: 'center', paddingHorizontal: 12, paddingBottom: 10 },
   topBarSide: { width: 44, alignItems: 'center', justifyContent: 'center' },
-  titlePill: { flex: 1, marginHorizontal: 10, height: 32, borderRadius: 16, borderWidth: 1, alignItems: 'center', justifyContent: 'center' },
-  titlePillText: { fontSize: 14, fontWeight: '700', letterSpacing: 0.1 },
+  titlePill: { paddingHorizontal: 12, paddingVertical: 5, borderRadius: 14, borderWidth: 1 },
+  titlePillText: { fontSize: 12, fontWeight: '600', letterSpacing: 0.3 },
 
   statsStrip: { flexDirection: 'row', borderTopWidth: StyleSheet.hairlineWidth, borderBottomWidth: StyleSheet.hairlineWidth, paddingVertical: 10 },
   statCell: { flex: 1, alignItems: 'center' },

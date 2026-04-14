@@ -1,4 +1,4 @@
-import { View, Text, StyleSheet, Pressable, ScrollView, Alert } from 'react-native';
+import { View, Text, StyleSheet, Pressable, ScrollView, Alert, Animated } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import * as Haptics from 'expo-haptics';
 import { useFocusEffect } from 'expo-router';
@@ -9,6 +9,7 @@ import { openSidePanel } from '@/utils/global-side-panel';
 import { KMenuButton } from '@/components/ui/k-menu-button';
 import { resetFooter } from '@/utils/global-footer-hide';
 import { useScrollFooter } from '@/hooks/use-scroll-footer';
+import { useScrollHeader } from '@/hooks/use-scroll-header';
 
 // ---------------------------------------------------------------------------
 // Types
@@ -330,6 +331,13 @@ const makeStyles = (C: ComponentColors) =>
   StyleSheet.create({
     root: { flex: 1, backgroundColor: C.bg },
 
+    topBarOuter: {
+      position: 'absolute',
+      top: 0,
+      left: 0,
+      right: 0,
+      zIndex: 10,
+    },
     topBar: {
       flexDirection: 'row',
       alignItems: 'center',
@@ -338,15 +346,8 @@ const makeStyles = (C: ComponentColors) =>
       gap: 8,
     },
     topBarSide: { width: 36, alignItems: 'center', justifyContent: 'center' },
-    titlePill: {
-      flex: 1,
-      borderRadius: 20,
-      borderWidth: StyleSheet.hairlineWidth,
-      paddingVertical: 6,
-      alignItems: 'center',
-      justifyContent: 'center',
-    },
-    titlePillText: { fontSize: 15, fontWeight: '600', letterSpacing: 0.2 },
+    titlePill: { paddingHorizontal: 12, paddingVertical: 5, borderRadius: 14, borderWidth: StyleSheet.hairlineWidth },
+    titlePillText: { fontSize: 12, fontWeight: '600', letterSpacing: 0.3 },
     whatIfBtn: {
       borderRadius: 14,
       paddingHorizontal: 12,
@@ -471,6 +472,9 @@ export default function DepthChartScreen() {
   const [whatIf, setWhatIf] = useState(false);
   const s = useMemo(() => makeStyles(C), [C]);
   const scrollFooter = useScrollFooter();
+  const TOP_BAR_H2 = 52;
+  const topBarH = insets.top + TOP_BAR_H2;
+  const { opacity, onScroll, scrollEventThrottle } = useScrollHeader(topBarH);
 
   useFocusEffect(
     useCallback(() => {
@@ -484,35 +488,41 @@ export default function DepthChartScreen() {
   }
 
   return (
-    <View style={[s.root, { paddingTop: insets.top }]}>
+    <View style={[s.root]}>
       {/* Top Bar */}
-      <View style={s.topBar}>
-        <Pressable onPress={() => openSidePanel()} hitSlop={8} style={s.topBarSide}>
-          <KMenuButton />
-        </Pressable>
-        <View style={[s.titlePill, { backgroundColor: C.surface, borderColor: C.separator }]}>
-          <Text style={[s.titlePillText, { color: C.label }]}>Depth Chart</Text>
+      <Animated.View style={[s.topBarOuter, { paddingTop: insets.top, backgroundColor: C.bg, opacity }]}>
+        <View style={s.topBar}>
+          <Pressable onPress={() => openSidePanel()} hitSlop={8} style={s.topBarSide}>
+            <KMenuButton />
+          </Pressable>
+          <View style={{ flex: 1, alignItems: 'center' }}>
+            <View style={[s.titlePill, { backgroundColor: C.surface, borderColor: C.separator }]}>
+              <Text style={[s.titlePillText, { color: C.label }]}>Depth Chart</Text>
+            </View>
+          </View>
+          <Pressable
+            onPress={toggleWhatIf}
+            style={[
+              s.whatIfBtn,
+              { borderColor: whatIf ? C.activePill : C.separator },
+              whatIf && { backgroundColor: C.activePill },
+            ]}
+            hitSlop={8}
+          >
+            <Text style={[s.whatIfText, { color: whatIf ? C.activePillText : C.secondary }]}>
+              What If
+            </Text>
+          </Pressable>
         </View>
-        <Pressable
-          onPress={toggleWhatIf}
-          style={[
-            s.whatIfBtn,
-            { borderColor: whatIf ? C.activePill : C.separator },
-            whatIf && { backgroundColor: C.activePill },
-          ]}
-          hitSlop={8}
-        >
-          <Text style={[s.whatIfText, { color: whatIf ? C.activePillText : C.secondary }]}>
-            What If
-          </Text>
-        </Pressable>
-      </View>
+      </Animated.View>
 
       {/* Body */}
       <ScrollView
         {...scrollFooter}
         showsVerticalScrollIndicator={false}
-        contentContainerStyle={[s.scrollContent, { paddingTop: 8, paddingBottom: insets.bottom + 24 }]}
+        contentContainerStyle={[s.scrollContent, { paddingTop: topBarH + 8, paddingBottom: insets.bottom + 24 }]}
+        onScroll={onScroll}
+        scrollEventThrottle={scrollEventThrottle}
       >
         {POSITION_GROUPS.map(group => (
           <PositionGroup key={group.abbr} group={group} whatIf={whatIf} C={C} s={s} />

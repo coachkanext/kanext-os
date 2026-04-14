@@ -5,7 +5,7 @@
  */
 
 import React, { useState, useMemo, useCallback } from 'react';
-import { View, Text, Pressable, ScrollView, StyleSheet } from 'react-native';
+import { View, Text, Pressable, ScrollView, StyleSheet, Animated } from 'react-native';
 import * as Haptics from 'expo-haptics';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useFocusEffect } from 'expo-router';
@@ -13,6 +13,7 @@ import { useFocusEffect } from 'expo-router';
 import { IconSymbol } from '@/components/ui/icon-symbol';
 import { GlassView } from '@/components/ui/glass-view';
 import { useColors, type ComponentColors } from '@/hooks/use-colors';
+import { useScrollHeader } from '@/hooks/use-scroll-header';
 import { openSidePanel } from '@/utils/global-side-panel';
 import { resetFooter } from '@/utils/global-footer-hide';
 import { KMenuButton } from '@/components/ui/k-menu-button';
@@ -46,6 +47,7 @@ export default function NewFollowersScreen() {
 
   const topBarH           = insets.top + TOP_BAR_H;
   const contentPaddingTop = topBarH + 8;
+  const { opacity, onScroll, scrollEventThrottle } = useScrollHeader(insets.top + TOP_BAR_H + 6);
 
   const haptic = () => Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
 
@@ -67,20 +69,26 @@ export default function NewFollowersScreen() {
   return (
     <View style={[s.root, { backgroundColor: C.bg }]}>
       {/* Top Bar */}
-      <View style={[s.topBar, { height: topBarH, paddingTop: insets.top, backgroundColor: C.bg, borderBottomColor: C.separator }]}>
-        <Pressable onPress={() => { haptic(); openSidePanel(); }} hitSlop={8} style={s.topBarBtn}>
-          <KMenuButton />
-        </Pressable>
-        <View style={[s.pill, { backgroundColor: C.surface, borderColor: C.separator }]}>
-          <Text style={[s.pillText, { color: C.label }]}>New Followers</Text>
+      <Animated.View style={[s.topBarOuter, { paddingTop: insets.top, backgroundColor: C.bg, borderBottomColor: C.separator, opacity }]}>
+        <View style={s.topBar}>
+          <Pressable onPress={() => { haptic(); openSidePanel(); }} hitSlop={8} style={s.topBarBtn}>
+            <KMenuButton />
+          </Pressable>
+          <View style={{ flex: 1, alignItems: 'center' }}>
+            <View style={[s.pill, { backgroundColor: C.surface, borderColor: C.separator }]}>
+              <Text style={[s.pillText, { color: C.label }]}>New Followers</Text>
+            </View>
+          </View>
+          <View style={s.topBarBtn} />
         </View>
-        <View style={s.topBarBtn} />
-      </View>
+      </Animated.View>
 
       <ScrollView
         style={{ flex: 1 }}
         contentContainerStyle={{ paddingTop: contentPaddingTop, paddingBottom: insets.bottom + 80 }}
         showsVerticalScrollIndicator={false}
+        onScroll={onScroll}
+        scrollEventThrottle={scrollEventThrottle}
       >
         <View style={{ paddingHorizontal: 16, marginTop: 12 }}>
           <Text style={[s.countLabel, { color: C.secondary }]}>
@@ -149,15 +157,17 @@ export default function NewFollowersScreen() {
 function makeStyles(C: ComponentColors) {
   return StyleSheet.create({
     root: { flex: 1 },
-    topBar: {
+    topBarOuter: {
       position: 'absolute', top: 0, left: 0, right: 0, zIndex: 100,
-      flexDirection: 'row', alignItems: 'flex-end',
-      paddingHorizontal: 12, paddingBottom: 6,
       borderBottomWidth: StyleSheet.hairlineWidth,
     },
+    topBar: {
+      flexDirection: 'row', alignItems: 'flex-end',
+      paddingHorizontal: 12, paddingBottom: 6,
+    },
     topBarBtn:    { width: 40, height: 32, alignItems: 'center', justifyContent: 'center' },
-    pill:         { flex: 1, alignItems: 'center', justifyContent: 'center', height: 32, borderRadius: 16, borderWidth: 1, marginHorizontal: 10 },
-    pillText:     { fontSize: 14, fontWeight: '700' },
+    pill:         { paddingHorizontal: 12, paddingVertical: 5, borderRadius: 14, borderWidth: 1 },
+    pillText:     { fontSize: 12, fontWeight: '600', letterSpacing: 0.3 },
     countLabel:   { fontSize: 13, marginBottom: 10 },
     row:          { flexDirection: 'row', alignItems: 'center', gap: 10, paddingHorizontal: 14, paddingVertical: 12 },
     avatar:       { width: 40, height: 40, borderRadius: 20, alignItems: 'center', justifyContent: 'center', borderWidth: 1, flexShrink: 0 },

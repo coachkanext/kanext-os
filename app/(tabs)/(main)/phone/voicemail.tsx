@@ -11,7 +11,9 @@ import {
   ScrollView,
   StyleSheet,
   Animated as RNAnimated,
+  Animated,
 } from 'react-native';
+import { useScrollHeader } from '@/hooks/use-scroll-header';
 import { Swipeable } from 'react-native-gesture-handler';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import * as Haptics from 'expo-haptics';
@@ -113,11 +115,14 @@ function VoicemailRow({
   );
 }
 
+const TOP_BAR_H = 56;
+
 export default function VoicemailScreen() {
   const insets = useSafeAreaInsets();
   const accent = useAccentColor();
   const C = useColors();
   const styles = useMemo(() => makeStyles(C), [C]);
+  const { opacity, onScroll, scrollEventThrottle } = useScrollHeader();
 
   const [expandedId, setExpandedId] = useState<string | null>(null);
   const [heardIds, setHeardIds] = useState<Set<string>>(new Set());
@@ -131,14 +136,19 @@ export default function VoicemailScreen() {
   }, []);
 
   return (
-    <View
-      style={[styles.container, { paddingTop: insets.top }]}
-    >
-      <View style={styles.header}>
-        <Text style={styles.title}>Voicemail</Text>
-      </View>
-
-      <ScrollView style={styles.list} contentContainerStyle={{ paddingBottom: 100 }} showsVerticalScrollIndicator={false}>
+    <View style={styles.container}>
+      <Animated.View style={[styles.topBar, { paddingTop: insets.top, opacity }]}>
+        <View style={styles.header}>
+          <Text style={styles.title}>Voicemail</Text>
+        </View>
+      </Animated.View>
+      <ScrollView
+        onScroll={onScroll}
+        scrollEventThrottle={scrollEventThrottle}
+        style={styles.list}
+        contentContainerStyle={{ paddingTop: insets.top + TOP_BAR_H, paddingBottom: 100 }}
+        showsVerticalScrollIndicator={false}
+      >
         {visible.map((vm, idx) => (
           <React.Fragment key={vm.id}>
             <VoicemailRow
@@ -171,6 +181,7 @@ export default function VoicemailScreen() {
 
 const makeStyles = (C: ComponentColors) => StyleSheet.create({
   container: { flex: 1, backgroundColor: C.bg },
+  topBar: { position: 'absolute', top: 0, left: 0, right: 0, zIndex: 10, backgroundColor: C.bg },
   header: { paddingHorizontal: 20, paddingTop: 8, paddingBottom: 12 },
   title: { fontSize: 28, fontWeight: '700', color: C.label },
   list: { flex: 1 },

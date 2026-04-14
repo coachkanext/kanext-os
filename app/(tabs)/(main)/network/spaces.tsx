@@ -1,5 +1,5 @@
 import React, { useState, useMemo } from 'react';
-import { View, Text, Pressable, ScrollView, TextInput, StyleSheet } from 'react-native';
+import { View, Text, Pressable, ScrollView, TextInput, StyleSheet, Animated } from 'react-native';
 import * as Haptics from 'expo-haptics';
 import { useRouter } from 'expo-router';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
@@ -7,6 +7,7 @@ import { IconSymbol } from '@/components/ui/icon-symbol';
 import { BottomSheet } from '@/components/ui/bottom-sheet';
 import { KMenuButton } from '@/components/ui/k-menu-button';
 import { useColors } from '@/hooks/use-colors';
+import { useScrollHeader } from '@/hooks/use-scroll-header';
 import { useDemoRole } from '@/utils/demo-role-store';
 import { openSidePanel } from '@/utils/global-side-panel';
 
@@ -140,6 +141,8 @@ export default function SpacesScreen() {
   const isOwner = role === roleCycles[0];
 
   const topBarH = insets.top + 52;
+
+  const { opacity, onScroll, scrollEventThrottle } = useScrollHeader();
 
   const [spaceId, setSpaceId] = useState<string | null>(null);
   const [upgradeSheet, setUpgradeSheet] = useState(false);
@@ -372,19 +375,26 @@ export default function SpacesScreen() {
 
   return (
     <View style={{ flex: 1, backgroundColor: C.bg }}>
-      <View style={{ height: topBarH, paddingTop: insets.top, flexDirection: 'row', alignItems: 'center', paddingHorizontal: 16, borderBottomWidth: StyleSheet.hairlineWidth, borderBottomColor: C.separator, backgroundColor: C.bg }}>
-        <Pressable onPress={() => { Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light); openSidePanel(); }} style={{ width: 36, height: 36, alignItems: 'center', justifyContent: 'center' }}>
-          <KMenuButton />
-        </Pressable>
-        <View style={{ flex: 1, alignItems: 'center' }}>
-          <View style={{ backgroundColor: C.label, borderRadius: 20, paddingHorizontal: 16, paddingVertical: 6 }}>
-            <Text style={{ fontSize: 14, fontWeight: '700', color: C.bg }}>Spaces</Text>
+      {/* Top bar — absolute, animated */}
+      <Animated.View style={{
+        position: 'absolute', top: 0, left: 0, right: 0, zIndex: 10,
+        height: topBarH, paddingTop: insets.top,
+        borderBottomWidth: StyleSheet.hairlineWidth, borderBottomColor: C.separator,
+        backgroundColor: C.bg, opacity,
+      }}>
+        <View style={{ flex: 1, flexDirection: 'row', alignItems: 'center', paddingHorizontal: 16 }}>
+          <Pressable onPress={() => { Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light); openSidePanel(); }} style={{ width: 36, height: 36, alignItems: 'center', justifyContent: 'center' }}>
+            <KMenuButton />
+          </Pressable>
+          <View style={{ flex: 1, alignItems: 'center' }}>
+            <View style={{ backgroundColor: C.label, borderRadius: 20, paddingHorizontal: 16, paddingVertical: 6 }}>
+              <Text style={{ fontSize: 14, fontWeight: '700', color: C.bg }}>Spaces</Text>
+            </View>
           </View>
+          <View style={{ width: 36 }} />
         </View>
-        <View style={{ width: 36 }} />
-      </View>
-
-      <ScrollView contentContainerStyle={{ paddingTop: 8, paddingBottom: insets.bottom + 80 }} showsVerticalScrollIndicator={false}>
+      </Animated.View>
+      <ScrollView contentContainerStyle={{ paddingTop: topBarH + 8, paddingBottom: insets.bottom + 80 }} showsVerticalScrollIndicator={false} onScroll={onScroll} scrollEventThrottle={scrollEventThrottle}>
         {isOwner ? (
           <>
             <Text style={{ fontSize: 11, fontWeight: '700', color: C.secondary, marginHorizontal: 16, marginBottom: 8, marginTop: 4, textTransform: 'uppercase', letterSpacing: 0.6 }}>

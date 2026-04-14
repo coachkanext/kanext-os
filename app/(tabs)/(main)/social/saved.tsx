@@ -5,7 +5,7 @@
 
 import React, { useMemo } from 'react';
 import {
-  View, Text, Pressable, Image, ScrollView, StyleSheet, useWindowDimensions,
+  View, Text, Pressable, Image, ScrollView, StyleSheet, useWindowDimensions, Animated,
 } from 'react-native';
 import * as Haptics from 'expo-haptics';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
@@ -14,6 +14,7 @@ import { useRouter } from 'expo-router';
 import { IconSymbol } from '@/components/ui/icon-symbol';
 import { useColors } from '@/hooks/use-colors';
 import { getFeedPosts } from '@/data/mock-social';
+import { useScrollHeader } from '@/hooks/use-scroll-header';
 
 // Pick a fixed subset of posts to act as saved content
 const SAVED_MODES = ['sports', 'business', 'community', 'education'] as const;
@@ -25,6 +26,7 @@ export default function SavedScreen() {
   const { width } = useWindowDimensions();
   const cellSize = (width - 2) / 3;
 
+  const { opacity, onScroll, scrollEventThrottle } = useScrollHeader();
   const savedPosts = useMemo(() => {
     return SAVED_MODES.flatMap(m => getFeedPosts(m).filter(p => p.isBookmarked));
   }, []);
@@ -32,18 +34,19 @@ export default function SavedScreen() {
   return (
     <View style={[s.screen, { backgroundColor: C.bg }]}>
       {/* Header */}
-      <View style={[s.header, { paddingTop: insets.top + 8, borderBottomColor: C.separator }]}>
-        <Pressable
-          style={s.backBtn}
-          onPress={() => { Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light); router.back(); }}
-        >
-          <IconSymbol name="chevron.left" size={20} color={C.label} />
-        </Pressable>
-        <Text style={[s.title, { color: C.label }]}>Saved</Text>
-        <View style={s.backBtn} />
-      </View>
-
-      <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={{ paddingBottom: insets.bottom + 80 }}>
+      <Animated.View style={[s.topBarOuter, { paddingTop: insets.top + 8, borderBottomColor: C.separator, backgroundColor: C.bg, borderBottomWidth: StyleSheet.hairlineWidth, opacity }]}>
+        <View style={s.header}>
+          <Pressable
+            style={s.backBtn}
+            onPress={() => { Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light); router.back(); }}
+          >
+            <IconSymbol name="chevron.left" size={20} color={C.label} />
+          </Pressable>
+          <Text style={[s.title, { color: C.label }]}>Saved</Text>
+          <View style={s.backBtn} />
+        </View>
+      </Animated.View>
+      <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={{ paddingTop: insets.top + 8 + 52 + 8, paddingBottom: insets.bottom + 80 }} onScroll={onScroll} scrollEventThrottle={scrollEventThrottle}>
         {/* Stats */}
         <View style={[s.statsBar, { borderBottomColor: C.separator }]}>
           <Text style={[s.statsText, { color: C.secondary }]}>{savedPosts.length} saved posts</Text>
@@ -94,7 +97,8 @@ export default function SavedScreen() {
 
 const s = StyleSheet.create({
   screen:         { flex: 1 },
-  header:         { flexDirection: 'row', alignItems: 'center', paddingHorizontal: 16, paddingBottom: 12, borderBottomWidth: StyleSheet.hairlineWidth },
+  topBarOuter:    { position: 'absolute', top: 0, left: 0, right: 0, zIndex: 10 },
+  header:         { height: 52, flexDirection: 'row', alignItems: 'center', paddingHorizontal: 16 },
   backBtn:        { width: 40, alignItems: 'flex-start', justifyContent: 'center' },
   title:          { flex: 1, fontSize: 17, fontWeight: '700', textAlign: 'center' },
   statsBar:       { paddingHorizontal: 16, paddingVertical: 10, borderBottomWidth: StyleSheet.hairlineWidth },

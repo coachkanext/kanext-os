@@ -1,1073 +1,758 @@
-/**
- * Reminders — Personal mode agenda sub-screen.
- * Filter pills: All | Today | Upcoming | Completed
- * Swipe left → Complete, swipe right → Snooze
- * FAB → Create Reminder sheet
- */
-
-import React, { useState, useMemo, useCallback, useRef } from 'react';
+import React, {
+  useState,
+  useRef,
+  useMemo,
+  useCallback,
+} from 'react';
 import {
   View,
   Text,
   Pressable,
+  StyleSheet,
   ScrollView,
   TextInput,
+  Alert,
   Animated,
-  PanResponder,
-  StyleSheet,
-  TouchableOpacity,
+  useColorScheme,
 } from 'react-native';
-import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import {
+  BottomSheetModal,
+  BottomSheetView,
+  BottomSheetBackdrop,
+} from '@gorhom/bottom-sheet';
+import type { BottomSheetBackdropProps } from '@gorhom/bottom-sheet';
 import * as Haptics from 'expo-haptics';
 import { useFocusEffect } from 'expo-router';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { IconSymbol } from '@/components/ui/icon-symbol';
-import { BottomSheet } from '@/components/ui/bottom-sheet';
+import { KMenuButton } from '@/components/ui/k-menu-button';
 import { RolePill } from '@/components/ui/role-pill';
 import { useColors, type ComponentColors } from '@/hooks/use-colors';
-import { KMenuButton } from '@/components/ui/k-menu-button';
 import { openSidePanel } from '@/utils/global-side-panel';
-import { useDemoRole } from '@/utils/demo-role-store';
-import { useMode } from '@/context/app-context';
+import { openDipsonSheet } from '@/utils/global-dipson-sheet';
 import { resetFooter } from '@/utils/global-footer-hide';
-import { useScrollFooter } from '@/hooks/use-scroll-footer';
-import { useOwnerGuard } from '@/hooks/use-owner-guard';
+import { useDemoRole } from '@/utils/demo-role-store';
+import { useScrollHeader } from '@/hooks/use-scroll-header';
+
+// ── Semantic color constants ──────────────────────────────────────────────────
+const HEAT    = '#B85C5C';
+const CAUTION = '#B8943E';
+const GAIN    = '#5A8A6E';
+
+// Card background tints — light / dark pairs
+const DANGER_BG  = { light: '#FCEBEB', dark: '#3D1717' } as const;
+const WARNING_BG = { light: '#FFF8EB', dark: '#3D2E0F' } as const;
 
 // ── Types ─────────────────────────────────────────────────────────────────────
+type Priority       = 'none' | 'medium' | 'high';
+type ReminderStatus = 'pending' | 'completed';
+type FilterTab      = 'Today' | 'Scheduled' | 'Flagged' | 'All';
+type DateChoice     = 'today' | 'tomorrow' | 'weekend' | 'none';
 
-type RepeatOption = 'none' | 'daily' | 'weekly' | 'monthly' | 'custom';
-type FilterKey = 'all' | 'today' | 'upcoming' | 'completed';
+type Reminder = {
+  id: number;
+  text: string;
+  subtitle?: string;
+  dueDate?: string;
+  dueTime?: string;
+  priority: Priority;
+  flagged: boolean;
+  status: ReminderStatus;
+  isOverdue: boolean;
+  overdueLabel?: string;
+  completedAt?: number;
+};
 
-interface Reminder {
-  id: string;
-  title: string;
-  dueDate: Date;
-  completed: boolean;
-  recurring?: RepeatOption;
-  notes?: string;
-}
-
-// ── Date Helpers ───────────────────────────────────────────────────────────────
-
-function addDays(base: Date, days: number, hours = 0, minutes = 0): Date {
-  const d = new Date(base);
-  d.setDate(d.getDate() + days);
-  d.setHours(hours, minutes, 0, 0);
-  return d;
-}
-
-function startOfDay(d: Date): Date {
-  const out = new Date(d);
-  out.setHours(0, 0, 0, 0);
-  return out;
-}
-
-function formatDueDate(date: Date): string {
-  const today = startOfDay(new Date());
-  const tomorrow = addDays(today, 1);
-  const itemDay = startOfDay(date);
-
-  const timeStr = date.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit', hour12: true });
-
-  if (itemDay.getTime() === today.getTime()) return `Today, ${timeStr}`;
-  if (itemDay.getTime() === tomorrow.getTime()) return `Tomorrow, ${timeStr}`;
-
-  const month = date.toLocaleString('en-US', { month: 'short' });
-  const day = date.getDate();
-  return `${month} ${day}, ${timeStr}`;
-}
-
-function isOverdue(date: Date, completed: boolean): boolean {
-  if (completed) return false;
-  return date < new Date();
-}
-
-function isToday(date: Date): boolean {
-  const today = startOfDay(new Date());
-  return startOfDay(date).getTime() === today.getTime();
-}
-
-function isUpcoming(date: Date): boolean {
-  const tomorrow = startOfDay(addDays(new Date(), 1));
-  return startOfDay(date) >= tomorrow;
-}
-
-function nextHour(): Date {
-  const d = new Date();
-  d.setMinutes(0, 0, 0);
-  d.setHours(d.getHours() + 1);
-  return d;
-}
-
-// ── Demo Data ─────────────────────────────────────────────────────────────────
-
-const _today = new Date();
-_today.setHours(0, 0, 0, 0);
-
+// ── Mock data ─────────────────────────────────────────────────────────────────
 const INITIAL_REMINDERS: Reminder[] = [
-  {
-    id: '1',
-    title: 'Follow up with Nike',
-    dueDate: addDays(_today, 0, 15, 0),
-    completed: false,
-  },
-  {
-    id: '2',
-    title: 'Post behind-the-scenes content',
-    dueDate: addDays(_today, 0, 18, 0),
-    completed: false,
-  },
-  {
-    id: '3',
-    title: 'Review weekly analytics',
-    dueDate: addDays(_today, 1, 9, 0),
-    completed: false,
-    recurring: 'weekly',
-  },
-  {
-    id: '4',
-    title: 'Send invoice to Gatorade',
-    dueDate: addDays(_today, 2, 10, 0),
-    completed: false,
-  },
-  {
-    id: '5',
-    title: 'Prep for Under Armour call',
-    dueDate: addDays(_today, 3, 14, 0),
-    completed: false,
-  },
-  {
-    id: '6',
-    title: 'Submit quarterly tax payment',
-    dueDate: addDays(_today, 9, 12, 0),
-    completed: false,
-  },
-  {
-    id: '7',
-    title: 'Update rate card pricing',
-    dueDate: addDays(_today, 14, 10, 0),
-    completed: false,
-  },
-  {
-    id: '8',
-    title: 'Called back Marcus T.',
-    dueDate: addDays(_today, -1, 11, 0),
-    completed: true,
-  },
+  // OVERDUE
+  { id: 1,  text: 'Follow up with Puma on contract terms',  subtitle: 'Deals \u00b7 Contract negotiation',       dueDate: '2026-04-10', dueTime: '10:00 AM', priority: 'high',   flagged: true,  status: 'pending',   isOverdue: true,  overdueLabel: '3 days overdue' },
+  { id: 2,  text: "Post Tuesday's reel to IG and TikTok",   subtitle: 'Content \u00b7 Spring collection series',  dueDate: '2026-04-11', dueTime: '9:00 AM',  priority: 'medium', flagged: false, status: 'pending',   isOverdue: true,  overdueLabel: 'Yesterday' },
+  // TODAY
+  { id: 3,  text: 'Nike brand call \u2014 prep talking points',   subtitle: 'Meetings \u00b7 Partnership discussion',   dueDate: '2026-04-13', dueTime: '1:00 PM',  priority: 'high',   flagged: true,  status: 'pending',   isOverdue: false },
+  { id: 4,  text: 'Review April content calendar',           subtitle: 'Content \u00b7 Monthly planning',          dueDate: '2026-04-13', dueTime: '3:00 PM',  priority: 'medium', flagged: false, status: 'pending',   isOverdue: false },
+  { id: 5,  text: 'Send invoice to Alex',                    subtitle: 'Earnings \u00b7 Coaching session payment', dueDate: '2026-04-13', dueTime: '6:00 PM',  priority: 'none',   flagged: false, status: 'pending',   isOverdue: false },
+  // SCHEDULED
+  { id: 6,  text: 'Adidas proposal deadline',                subtitle: 'Deals \u00b7 Spring campaign pitch',       dueDate: '2026-04-14', dueTime: '5:00 PM',  priority: 'high',   flagged: true,  status: 'pending',   isOverdue: false },
+  { id: 7,  text: 'Record podcast intro segments',           subtitle: 'Content \u00b7 Episode 43',                dueDate: '2026-04-15', dueTime: '10:00 AM', priority: 'none',   flagged: false, status: 'pending',   isOverdue: false },
+  { id: 8,  text: 'Inner Circle Q&A prep',                   subtitle: 'Bookings \u00b7 12 members attending',    dueDate: '2026-04-16', dueTime: '11:00 AM', priority: 'medium', flagged: false, status: 'pending',   isOverdue: false },
+  { id: 9,  text: 'Monthly analytics review',                subtitle: 'Analytics \u00b7 Growth trends check',     dueDate: '2026-04-17', dueTime: '2:00 PM',  priority: 'none',   flagged: false, status: 'pending',   isOverdue: false },
+  { id: 10, text: 'Lululemon pitch deck draft',              subtitle: 'Deals \u00b7 Initial brand meeting prep',  dueDate: '2026-04-20', dueTime: '9:00 AM',  priority: 'medium', flagged: true,  status: 'pending',   isOverdue: false },
+  { id: 11, text: 'Subscriber newsletter \u2014 May edition',     subtitle: 'Content \u00b7 Monthly newsletter',        dueDate: '2026-04-22', dueTime: '12:00 PM', priority: 'none',   flagged: false, status: 'pending',   isOverdue: false },
+  // COMPLETED
+  { id: 12, text: 'Upload BTS photoshoot clips',             subtitle: 'Content',  dueDate: '2026-04-11', dueTime: '4:00 PM',  priority: 'none', flagged: false, status: 'completed', isOverdue: false, completedAt: Date.now() - 86400000 },
+  { id: 13, text: 'Schedule week 3 content batch',           subtitle: 'Content',  dueDate: '2026-04-10', dueTime: '2:00 PM',  priority: 'none', flagged: false, status: 'completed', isOverdue: false, completedAt: Date.now() - 172800000 },
+  { id: 14, text: 'Reply to brand DMs',                      subtitle: 'Meetings', dueDate: '2026-04-12', dueTime: '11:00 AM', priority: 'none', flagged: false, status: 'completed', isOverdue: false, completedAt: Date.now() - 7200000 },
 ];
 
-// ── Swipeable Reminder Card ───────────────────────────────────────────────────
+// ── Helpers ───────────────────────────────────────────────────────────────────
+const MONTHS = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+const DAYS   = ['SUN','MON','TUE','WED','THU','FRI','SAT'];
 
-interface CardProps {
-  reminder: Reminder;
-  C: ComponentColors;
-  onComplete: (id: string) => void;
-  onSnooze: (id: string) => void;
-  onEdit: (id: string) => void;
+function formatDueLabel(r: Reminder): string {
+  if (!r.dueDate) return '';
+  if (r.isOverdue) return r.overdueLabel ?? 'Overdue';
+  if (r.dueDate === '2026-04-13') return r.dueTime ?? 'Today';
+  const parts = r.dueDate.split('-');
+  const mIdx  = parseInt(parts[1]) - 1;
+  const day   = parseInt(parts[2]);
+  return `${MONTHS[mIdx]} ${day}`;
 }
 
-function ReminderCard({ reminder, C, onComplete, onSnooze, onEdit }: CardProps) {
-  const swipeX = useRef(new Animated.Value(0)).current;
-  const THRESHOLD = 80;
+function formatDateHeader(dateStr: string): string {
+  const [y, m, d] = dateStr.split('-').map(Number);
+  const date      = new Date(y, m - 1, d);
+  const dayAbbr   = DAYS[date.getDay()];
+  const monAbbr   = MONTHS[m - 1].toUpperCase();
+  return `${dayAbbr} ${monAbbr} ${d}`;
+}
 
-  const panResponder = useRef(
-    PanResponder.create({
-      onStartShouldSetPanResponder: () => false,
-      onMoveShouldSetPanResponder: (_, gs) =>
-        Math.abs(gs.dx) > 6 && Math.abs(gs.dx) > Math.abs(gs.dy),
-      onPanResponderGrant: () => {
-        swipeX.stopAnimation();
-      },
-      onPanResponderMove: (_, gs) => {
-        swipeX.setValue(gs.dx);
-      },
-      onPanResponderRelease: (_, gs) => {
-        if (gs.dx < -THRESHOLD) {
-          // Swipe left → complete
-          Animated.timing(swipeX, { toValue: -300, duration: 200, useNativeDriver: true }).start(
-            () => {
-              swipeX.setValue(0);
-              onComplete(reminder.id);
-            }
-          );
-          Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
-        } else if (gs.dx > THRESHOLD) {
-          // Swipe right → snooze
-          Animated.timing(swipeX, { toValue: 300, duration: 200, useNativeDriver: true }).start(
-            () => {
-              swipeX.setValue(0);
-              onSnooze(reminder.id);
-            }
-          );
-          Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
-        } else {
-          Animated.spring(swipeX, { toValue: 0, useNativeDriver: true, tension: 120, friction: 10 }).start();
-        }
-      },
-      onPanResponderTerminate: () => {
-        Animated.spring(swipeX, { toValue: 0, useNativeDriver: true, tension: 120, friction: 10 }).start();
-      },
-    })
-  ).current;
+// Category color system — maps category name → border/dot color
+function getCategoryColor(subtitle: string | undefined, C: ComponentColors): string {
+  if (!subtitle) return C.secondary;
+  const cat = subtitle.split(/[\u00b7·]/)[0].trim().toLowerCase();
+  if (cat === 'content')   return C.label;
+  if (cat === 'deals')     return CAUTION;
+  if (cat === 'meetings')  return C.secondary;
+  if (cat === 'earnings')  return GAIN;
+  return C.secondary;
+}
 
-  const overdue = isOverdue(reminder.dueDate, reminder.completed);
-  const dateColor = overdue ? '#B85C5C' : C.secondary;
+function getLeftBorderColor(r: Reminder, C: ComponentColors): string {
+  if (r.status === 'completed')     return GAIN;
+  if (r.isOverdue)                  return HEAT;
+  // Today cards: category-based color
+  if (r.dueDate === '2026-04-13')   return getCategoryColor(r.subtitle, C);
+  // Scheduled / future: priority-based
+  if (r.priority === 'high')        return HEAT;
+  if (r.priority === 'medium')      return CAUTION;
+  if (r.flagged)                    return CAUTION;
+  return 'transparent';
+}
 
-  // Action background opacity based on swipe direction
-  const completeOpacity = swipeX.interpolate({ inputRange: [-THRESHOLD, 0], outputRange: [1, 0], extrapolate: 'clamp' });
-  const snoozeOpacity = swipeX.interpolate({ inputRange: [0, THRESHOLD], outputRange: [0, 1], extrapolate: 'clamp' });
+// ── Reminder Row ──────────────────────────────────────────────────────────────
+
+interface ReminderRowProps {
+  reminder:   Reminder;
+  onToggle:   (id: number) => void;
+  onFlag:     (id: number) => void;
+  onDelete:   (id: number) => void;
+  C:          ComponentColors;
+  dangerBg:   string;
+  warningBg:  string;
+  fadeValue:  Animated.Value;
+}
+
+function ReminderRow({ reminder, onToggle, onFlag, onDelete, C, dangerBg, warningBg, fadeValue }: ReminderRowProps) {
+  const isCompleted  = reminder.status === 'completed';
+  const isToday      = reminder.dueDate === '2026-04-13' && !reminder.isOverdue;
+  const borderColor  = getLeftBorderColor(reminder, C);
+  const hasBorder    = borderColor !== 'transparent';
+  const dueLabel     = formatDueLabel(reminder);
+  const catColor     = getCategoryColor(reminder.subtitle, C);
+
+  // Card background
+  let cardBg = C.surface;
+  if (reminder.isOverdue)              cardBg = dangerBg;
+  else if (isToday && reminder.flagged) cardBg = warningBg;
+
+  // Due label color
+  const dueLabelColor = reminder.isOverdue ? HEAT : C.label;
 
   return (
-    <View style={styles.cardWrapper}>
-      {/* Swipe action backgrounds */}
-      <Animated.View style={[styles.actionBg, styles.actionBgLeft, { opacity: completeOpacity }]}>
-        <Text style={styles.actionText}>Complete</Text>
-      </Animated.View>
-      <Animated.View style={[styles.actionBg, styles.actionBgRight, { opacity: snoozeOpacity }]}>
-        <Text style={styles.actionText}>Snooze</Text>
-      </Animated.View>
-
-      {/* Card */}
-      <Animated.View
-        style={{ transform: [{ translateX: swipeX }] }}
-        {...panResponder.panHandlers}
+    <Animated.View style={{ opacity: fadeValue }}>
+      <Pressable
+        onLongPress={() =>
+          Alert.alert('Options', undefined, [
+            { text: reminder.flagged ? 'Remove Flag' : 'Flag', onPress: () => onFlag(reminder.id) },
+            { text: 'Delete', style: 'destructive', onPress: () => onDelete(reminder.id) },
+            { text: 'Cancel', style: 'cancel' },
+          ])
+        }
+        style={[
+          styles.reminderRow,
+          {
+            backgroundColor: cardBg,
+            borderLeftColor: hasBorder ? borderColor : undefined,
+            borderLeftWidth: hasBorder ? 3 : 0,
+            paddingLeft:     hasBorder ? 11 : 14,
+          },
+        ]}
       >
-        <Pressable
-          onPress={() => !reminder.completed && onEdit(reminder.id)}
-          style={[
-            styles.card,
-            { backgroundColor: C.surface },
-          ]}
-        >
-          {/* Checkbox */}
-          <Pressable
-            onPress={() => { onComplete(reminder.id); Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light); }}
-            style={[
-              styles.checkbox,
-              reminder.completed
-                ? { backgroundColor: '#5A8A6E', borderColor: '#5A8A6E' }
-                : { borderColor: C.separator },
-            ]}
-            hitSlop={10}
-          >
-            {reminder.completed && (
-              <IconSymbol name="checkmark" size={12} color="#FFFFFF" />
-            )}
-          </Pressable>
+        {/* Checkbox */}
+        <Pressable onPress={() => onToggle(reminder.id)} hitSlop={8} style={styles.checkboxWrapper}>
+          {isCompleted ? (
+            <IconSymbol name="checkmark.circle.fill" size={22} color={GAIN} />
+          ) : (
+            <View style={[styles.emptyCircle, { borderColor: C.separator }]} />
+          )}
+        </Pressable>
 
-          {/* Content */}
-          <View style={styles.cardContent}>
+        {/* Content */}
+        <View style={styles.reminderContent}>
+          <View style={styles.priorityTextRow}>
+            {reminder.priority !== 'none' && (
+              <View style={[styles.priorityDot, { backgroundColor: reminder.priority === 'high' ? HEAT : CAUTION }]} />
+            )}
             <Text
               style={[
-                styles.cardTitle,
-                { color: reminder.completed ? C.muted : C.label },
-                reminder.completed && styles.cardTitleCompleted,
+                styles.reminderText,
+                { color: C.label },
+                isCompleted && { textDecorationLine: 'line-through', color: C.secondary },
               ]}
               numberOfLines={2}
             >
-              {reminder.title}
+              {reminder.text}
             </Text>
-
-            <View style={styles.cardMeta}>
-              <Text style={[styles.cardDate, { color: dateColor }]}>
-                {formatDueDate(reminder.dueDate)}
-              </Text>
-              {overdue && (
-                <View style={styles.overdueBadge}>
-                  <Text style={styles.overdueBadgeText}>Overdue</Text>
-                </View>
-              )}
-            </View>
-
-            {reminder.recurring && reminder.recurring !== 'none' && (
-              <View style={styles.recurringRow}>
-                <IconSymbol name="repeat" size={11} color={C.muted} />
-                <Text style={[styles.recurringText, { color: C.muted }]}>
-                  {' '}Repeats {reminder.recurring}
-                </Text>
-              </View>
-            )}
           </View>
 
-        </Pressable>
-      </Animated.View>
-    </View>
+          {/* Subtitle with category dot */}
+          {reminder.subtitle ? (
+            <View style={styles.subtitleRow}>
+              {!isCompleted && (
+                <View style={[styles.catDot, { backgroundColor: catColor }]} />
+              )}
+              <Text style={[styles.reminderSubtitle, { color: C.secondary }]} numberOfLines={1}>
+                {reminder.subtitle}
+              </Text>
+            </View>
+          ) : null}
+        </View>
+
+        {/* Right: flag + timestamp */}
+        <View style={styles.reminderRight}>
+          <Pressable onPress={() => onFlag(reminder.id)} hitSlop={8}>
+            <IconSymbol
+              name={reminder.flagged ? 'flag.fill' : 'flag'}
+              size={13}
+              color={reminder.flagged ? CAUTION : C.separator}
+            />
+          </Pressable>
+          {reminder.dueDate ? (
+            <Text
+              style={[
+                styles.dueLabel,
+                {
+                  color:      dueLabelColor,
+                  fontWeight: reminder.isOverdue ? '600' : '500',
+                },
+              ]}
+            >
+              {dueLabel}
+            </Text>
+          ) : null}
+        </View>
+      </Pressable>
+    </Animated.View>
   );
 }
-
-// ── Repeat Label ──────────────────────────────────────────────────────────────
-
-const REPEAT_LABELS: Record<RepeatOption, string> = {
-  none: 'None',
-  daily: 'Daily',
-  weekly: 'Weekly',
-  monthly: 'Monthly',
-  custom: 'Custom',
-};
-
-const REPEAT_OPTIONS: RepeatOption[] = ['none', 'daily', 'weekly', 'monthly', 'custom'];
-
-// ── Snooze Options ────────────────────────────────────────────────────────────
-
-const SNOOZE_OPTIONS = [
-  { label: '15 minutes', minutes: 15 },
-  { label: '1 hour', minutes: 60 },
-  { label: '3 hours', minutes: 180 },
-  { label: 'Tomorrow', minutes: 60 * 24 },
-  { label: 'Next Week', minutes: 60 * 24 * 7 },
-];
 
 // ── Main Screen ───────────────────────────────────────────────────────────────
 
 export default function RemindersScreen() {
-  const C = useColors();
-  const insets = useSafeAreaInsets();
-  const mode = useMode();
-  const _rk = mode === 'sports' ? 'sports:agenda' : mode === 'community' ? 'community:agenda' : mode === 'education' ? 'education' : mode === 'business' ? 'business' : 'personal:agenda';
-  const [role, cycleRole, roleCycles] = useDemoRole(_rk);
+  const C         = useColors();
+  const insets    = useSafeAreaInsets();
+  const scheme    = useColorScheme();
+  const isDark    = scheme === 'dark';
+  const dangerBg  = isDark ? DANGER_BG.dark  : DANGER_BG.light;
+  const warningBg = isDark ? WARNING_BG.dark : WARNING_BG.light;
+
+  const [role, cycleRole, roleCycles] = useDemoRole('personal:agenda');
   const isOwner = role === roleCycles[0];
-  const guardedCycle = useOwnerGuard(role, roleCycles, cycleRole, '/(tabs)/(main)/agenda');
-  const accent = C.label;
 
-  // State
-  const [reminders, setReminders] = useState<Reminder[]>(INITIAL_REMINDERS);
-  const [activeFilter, setActiveFilter] = useState<FilterKey>('all');
-  const [showCreate, setShowCreate] = useState(false);
-  const [showEdit, setShowEdit] = useState(false);
-  const [editId, setEditId] = useState<string | null>(null);
-  const [showSnooze, setShowSnooze] = useState(false);
-  const [snoozeId, setSnoozeId] = useState<string | null>(null);
-  const [showRepeat, setShowRepeat] = useState(false);
+  const [reminders,     setReminders]     = useState<Reminder[]>(INITIAL_REMINDERS);
+  const [activeFilter,  setActiveFilter]  = useState<FilterTab>('Today');
+  const [showCompleted, setShowCompleted] = useState(false);
 
-  // Create/Edit form state
-  const [formTitle, setFormTitle] = useState('');
-  const [formDate, setFormDate] = useState(new Date());
-  const [formTime, setFormTime] = useState(nextHour());
-  const [formRepeat, setFormRepeat] = useState<RepeatOption>('none');
-  const [formNotes, setFormNotes] = useState('');
-  const [showNotes, setShowNotes] = useState(false);
+  // Create sheet state
+  const sheetRef      = useRef<BottomSheetModal>(null);
+  const inputRef      = useRef<TextInput>(null);
+  const [newText,     setNewText]     = useState('');
+  const [newSubtitle, setNewSubtitle] = useState('');
+  const [newDate,     setNewDate]     = useState<DateChoice>('today');
+  const [newTime,     setNewTime]     = useState('');
+  const [newPriority, setNewPriority] = useState<Priority>('none');
+  const [newFlagged,  setNewFlagged]  = useState(false);
 
-  useFocusEffect(
-    useCallback(() => {
-      resetFooter();
-    }, [])
-  );
-
-  const scrollFooter = useScrollFooter();
-
-  // ── Filtered reminders ────────────────────────────────────────────────────
-
-  const filtered = useMemo(() => {
-    let list = [...reminders];
-
-    switch (activeFilter) {
-      case 'today':
-        list = list.filter((r) => !r.completed && isToday(r.dueDate));
-        list.sort((a, b) => a.dueDate.getTime() - b.dueDate.getTime());
-        break;
-      case 'upcoming':
-        list = list.filter((r) => !r.completed && isUpcoming(r.dueDate));
-        list.sort((a, b) => a.dueDate.getTime() - b.dueDate.getTime());
-        break;
-      case 'completed':
-        list = list.filter((r) => r.completed);
-        list.sort((a, b) => b.dueDate.getTime() - a.dueDate.getTime());
-        break;
-      case 'all':
-      default:
-        // Overdue pinned first, then sorted by date, completed excluded from top
-        const overdue = list.filter((r) => !r.completed && isOverdue(r.dueDate, r.completed));
-        const active = list.filter((r) => !r.completed && !isOverdue(r.dueDate, r.completed));
-        const done = list.filter((r) => r.completed);
-        overdue.sort((a, b) => a.dueDate.getTime() - b.dueDate.getTime());
-        active.sort((a, b) => a.dueDate.getTime() - b.dueDate.getTime());
-        list = [...overdue, ...active, ...done];
-        break;
+  // Animated fade values per reminder id
+  const fadeValues = useRef<Map<number, Animated.Value>>(new Map());
+  const getFadeValue = useCallback((id: number): Animated.Value => {
+    if (!fadeValues.current.has(id)) {
+      fadeValues.current.set(id, new Animated.Value(1));
     }
-    return list;
-  }, [reminders, activeFilter]);
-
-  // ── Actions ──────────────────────────────────────────────────────────────
-
-  const handleComplete = useCallback((id: string) => {
-    setReminders((prev) =>
-      prev.map((r) => (r.id === id ? { ...r, completed: !r.completed } : r))
-    );
+    return fadeValues.current.get(id)!;
   }, []);
 
-  const handleSnoozeOpen = useCallback((id: string) => {
-    setSnoozeId(id);
-    setShowSnooze(true);
-  }, []);
+  useFocusEffect(useCallback(() => { resetFooter(); }, []));
+  const { opacity, onScroll, scrollEventThrottle } = useScrollHeader();
 
-  const handleSnoozeSelect = useCallback(
-    (minutes: number) => {
-      if (!snoozeId) return;
-      setReminders((prev) =>
-        prev.map((r) => {
-          if (r.id !== snoozeId) return r;
-          const newDate = new Date(r.dueDate.getTime() + minutes * 60 * 1000);
-          return { ...r, dueDate: newDate };
-        })
+  // ── Derived lists ───────────────────────────────────────────────────────────
+  const pending   = reminders.filter(r => r.status === 'pending');
+  const completed = reminders.filter(r => r.status === 'completed');
+
+  const overdue    = pending.filter(r => r.isOverdue);
+  const todayItems = pending.filter(r => !r.isOverdue && r.dueDate === '2026-04-13');
+  const scheduled  = pending.filter(r => !r.isOverdue && r.dueDate && r.dueDate > '2026-04-13');
+  const flagged    = pending.filter(r => r.flagged);
+
+  const filteredPending = useMemo(() => {
+    if (activeFilter === 'Today')     return { overdue,    today: todayItems };
+    if (activeFilter === 'Scheduled') return { overdue: [], today: scheduled };
+    if (activeFilter === 'Flagged')   return { overdue: [], today: flagged };
+    return { overdue, today: pending.filter(r => !r.isOverdue) };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [activeFilter, reminders]);
+
+  const scheduledGroups = useMemo(() => {
+    if (activeFilter !== 'Scheduled') return [];
+    const byDate: Record<string, Reminder[]> = {};
+    scheduled.forEach(r => {
+      const k = r.dueDate!;
+      if (!byDate[k]) byDate[k] = [];
+      byDate[k].push(r);
+    });
+    return Object.entries(byDate)
+      .sort(([a], [b]) => a.localeCompare(b))
+      .map(([date, items]) => ({ date, items }));
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [activeFilter, reminders]);
+
+  // ── Actions ─────────────────────────────────────────────────────────────────
+  const toggleComplete = useCallback((id: number) => {
+    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+    const reminder = reminders.find(r => r.id === id);
+    if (!reminder) return;
+
+    if (reminder.status === 'pending') {
+      // Fade out, then move to completed
+      const fadeVal = getFadeValue(id);
+      Animated.timing(fadeVal, { toValue: 0, duration: 350, useNativeDriver: true }).start(() => {
+        setReminders(prev =>
+          prev.map(r => r.id === id ? { ...r, status: 'completed', completedAt: Date.now() } : r)
+        );
+        // Reset for possible un-complete
+        fadeVal.setValue(1);
+      });
+    } else {
+      setReminders(prev =>
+        prev.map(r => r.id === id ? { ...r, status: 'pending' } : r)
       );
-      setShowSnooze(false);
-      setSnoozeId(null);
-      Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
-    },
-    [snoozeId]
-  );
+    }
+  }, [reminders, getFadeValue]);
 
-  const handleEditOpen = useCallback(
-    (id: string) => {
-      const r = reminders.find((x) => x.id === id);
-      if (!r) return;
-      setEditId(id);
-      setFormTitle(r.title);
-      setFormDate(r.dueDate);
-      setFormTime(r.dueDate);
-      setFormRepeat(r.recurring ?? 'none');
-      setFormNotes(r.notes ?? '');
-      setShowNotes(!!r.notes);
-      setShowEdit(true);
-    },
-    [reminders]
-  );
-
-  const handleCreateOpen = useCallback(() => {
-    setFormTitle('');
-    const t = nextHour();
-    setFormDate(t);
-    setFormTime(t);
-    setFormRepeat('none');
-    setFormNotes('');
-    setShowNotes(false);
-    setShowCreate(true);
+  const toggleFlag = useCallback((id: number) => {
+    Haptics.selectionAsync();
+    setReminders(prev => prev.map(r => r.id === id ? { ...r, flagged: !r.flagged } : r));
   }, []);
 
-  const buildDueDate = (): Date => {
-    const d = new Date(formDate);
-    d.setHours(formTime.getHours(), formTime.getMinutes(), 0, 0);
-    return d;
-  };
-
-  const handleSaveCreate = useCallback(() => {
-    if (!formTitle.trim()) return;
-    const newReminder: Reminder = {
-      id: String(Date.now()),
-      title: formTitle.trim(),
-      dueDate: buildDueDate(),
-      completed: false,
-      recurring: formRepeat !== 'none' ? formRepeat : undefined,
-      notes: formNotes.trim() || undefined,
-    };
-    setReminders((prev) => [newReminder, ...prev]);
-    setShowCreate(false);
-    Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
-  }, [formTitle, formDate, formTime, formRepeat, formNotes]);
-
-  const handleSaveEdit = useCallback(() => {
-    if (!formTitle.trim() || !editId) return;
-    setReminders((prev) =>
-      prev.map((r) =>
-        r.id === editId
-          ? {
-              ...r,
-              title: formTitle.trim(),
-              dueDate: buildDueDate(),
-              recurring: formRepeat !== 'none' ? formRepeat : undefined,
-              notes: formNotes.trim() || undefined,
-            }
-          : r
-      )
-    );
-    setShowEdit(false);
-    setEditId(null);
-    Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
-  }, [formTitle, formDate, formTime, formRepeat, formNotes, editId]);
-
-  const handleDelete = useCallback(() => {
-    if (!editId) return;
-    setReminders((prev) => prev.filter((r) => r.id !== editId));
-    setShowEdit(false);
-    setEditId(null);
+  const deleteReminder = useCallback((id: number) => {
     Haptics.notificationAsync(Haptics.NotificationFeedbackType.Warning);
-  }, [editId]);
-
-  const handleClearAllCompleted = useCallback(() => {
-    setReminders((prev) => prev.filter((r) => !r.completed));
+    setReminders(prev => prev.filter(r => r.id !== id));
   }, []);
 
-  // ── Filter Pills ──────────────────────────────────────────────────────────
+  const clearCompleted = useCallback(() => {
+    Alert.alert('Clear Completed', 'Remove all completed reminders?', [
+      { text: 'Cancel', style: 'cancel' },
+      { text: 'Clear All', style: 'destructive', onPress: () => setReminders(prev => prev.filter(r => r.status !== 'completed')) },
+    ]);
+  }, []);
 
-  const FILTERS: { key: FilterKey; label: string }[] = [
-    { key: 'all', label: 'All' },
-    { key: 'today', label: 'Today' },
-    { key: 'upcoming', label: 'Upcoming' },
-    { key: 'completed', label: 'Completed' },
-  ];
+  const createReminder = useCallback(() => {
+    if (!newText.trim()) return;
+    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
+    const dueDateMap: Record<DateChoice, string | undefined> = {
+      today: '2026-04-13', tomorrow: '2026-04-14', weekend: '2026-04-18', none: undefined,
+    };
+    const dueDate = dueDateMap[newDate];
+    const newR: Reminder = {
+      id:        Date.now(),
+      text:      newText.trim(),
+      subtitle:  newSubtitle.trim() || undefined,
+      dueDate,
+      dueTime:   newTime || (newDate === 'today' ? '9:00 AM' : undefined),
+      priority:  newPriority,
+      flagged:   newFlagged,
+      status:    'pending',
+      isOverdue: false,
+    };
+    setReminders(prev => [newR, ...prev]);
+    setNewText(''); setNewSubtitle(''); setNewDate('today');
+    setNewTime(''); setNewPriority('none'); setNewFlagged(false);
+    sheetRef.current?.dismiss();
+  }, [newText, newSubtitle, newDate, newTime, newPriority, newFlagged]);
 
-  // ── Form Sheet Content ────────────────────────────────────────────────────
-
-  const renderFormFields = (isEdit: boolean) => (
-    <View style={styles.sheetContent}>
-      {/* Title */}
-      <View style={[styles.sheetField, { borderColor: C.separator }]}>
-        <TextInput
-          style={[styles.sheetInput, { color: C.label }]}
-          placeholder="Remind me to…"
-          placeholderTextColor={C.muted}
-          value={formTitle}
-          onChangeText={setFormTitle}
-          autoFocus={!isEdit}
-          returnKeyType="done"
-        />
-      </View>
-
-      {/* Date row */}
-      <Pressable
-        style={[styles.sheetRow, { borderColor: C.separator }]}
-        onPress={() => {/* Date picker — future enhancement */}}
-      >
-        <IconSymbol name="calendar" size={16} color={C.secondary} />
-        <Text style={[styles.sheetRowLabel, { color: C.label }]}>
-          {formatDueDate(formDate).split(',')[0]}
-        </Text>
-        <IconSymbol name="chevron.right" size={13} color={C.muted} style={{ marginLeft: 'auto' }} />
-      </Pressable>
-
-      {/* Time row */}
-      <Pressable
-        style={[styles.sheetRow, { borderColor: C.separator }]}
-        onPress={() => {/* Time picker — future enhancement */}}
-      >
-        <IconSymbol name="clock" size={16} color={C.secondary} />
-        <Text style={[styles.sheetRowLabel, { color: C.label }]}>
-          {formTime.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit', hour12: true })}
-        </Text>
-        <IconSymbol name="chevron.right" size={13} color={C.muted} style={{ marginLeft: 'auto' }} />
-      </Pressable>
-
-      {/* Repeat row */}
-      <Pressable
-        style={[styles.sheetRow, { borderColor: C.separator }]}
-        onPress={() => setShowRepeat(true)}
-      >
-        <IconSymbol name="repeat" size={16} color={C.secondary} />
-        <Text style={[styles.sheetRowLabel, { color: C.label }]}>Repeat</Text>
-        <Text style={[styles.sheetRowValue, { color: C.secondary, marginLeft: 'auto' }]}>
-          {REPEAT_LABELS[formRepeat]}
-        </Text>
-        <IconSymbol name="chevron.right" size={13} color={C.muted} />
-      </Pressable>
-
-      {/* Notes toggle */}
-      <Pressable
-        style={[styles.sheetRow, { borderColor: C.separator }]}
-        onPress={() => setShowNotes((v) => !v)}
-      >
-        <IconSymbol name="note.text" size={16} color={C.secondary} />
-        <Text style={[styles.sheetRowLabel, { color: C.label }]}>Add notes</Text>
-        <IconSymbol
-          name={showNotes ? 'chevron.up' : 'chevron.down'}
-          size={13}
-          color={C.muted}
-          style={{ marginLeft: 'auto' }}
-        />
-      </Pressable>
-
-      {showNotes && (
-        <View style={[styles.sheetField, { borderColor: C.separator, marginTop: 0 }]}>
-          <TextInput
-            style={[styles.sheetInput, styles.sheetNotesInput, { color: C.label }]}
-            placeholder="Notes…"
-            placeholderTextColor={C.muted}
-            value={formNotes}
-            onChangeText={setFormNotes}
-            multiline
-            numberOfLines={3}
-            textAlignVertical="top"
-          />
-        </View>
-      )}
-
-      {/* Save */}
-      <Pressable
-        style={[styles.saveButton, { backgroundColor: C.label }]}
-        onPress={isEdit ? handleSaveEdit : handleSaveCreate}
-      >
-        <Text style={[styles.saveButtonText, { color: C.bg }]}>Save</Text>
-      </Pressable>
-
-      {/* Delete (edit only) */}
-      {isEdit && (
-        <Pressable style={styles.deleteButton} onPress={handleDelete}>
-          <Text style={[styles.deleteButtonText, { color: '#B85C5C' }]}>Delete Reminder</Text>
-        </Pressable>
-      )}
-    </View>
+  // ── Backdrop ────────────────────────────────────────────────────────────────
+  const renderBackdrop = useCallback(
+    (props: BottomSheetBackdropProps) => (
+      <BottomSheetBackdrop {...props} disappearsOnIndex={-1} appearsOnIndex={0} opacity={0.4} pressBehavior="close" />
+    ),
+    []
   );
 
-  // ── Empty State ───────────────────────────────────────────────────────────
+  const handleFilter = useCallback((f: FilterTab) => {
+    Haptics.selectionAsync();
+    setActiveFilter(f);
+  }, []);
 
-  const EMPTY_MESSAGES: Record<FilterKey, string> = {
-    all: 'No reminders. Tap + to create one.',
-    today: 'Nothing due today.',
-    upcoming: 'No upcoming reminders.',
-    completed: 'No completed reminders.',
-  };
+  const hasOverdue = filteredPending.overdue.length > 0;
+  const hasToday   = filteredPending.today.length > 0;
+  const isEmpty    = !hasOverdue && !hasToday;
+  const fabBottom  = insets.bottom + 80;
 
-  const FOOTER_HEIGHT = 49 + insets.bottom;
+  // Shared row renderer
+  const renderRow = (r: Reminder) => (
+    <ReminderRow
+      key={r.id}
+      reminder={r}
+      onToggle={toggleComplete}
+      onFlag={toggleFlag}
+      onDelete={deleteReminder}
+      C={C}
+      dangerBg={dangerBg}
+      warningBg={warningBg}
+      fadeValue={getFadeValue(r.id)}
+    />
+  );
 
   return (
     <View style={[styles.root, { backgroundColor: C.bg }]}>
-      {/* Top Bar */}
-      <View style={[styles.topBar, { paddingTop: insets.top + 8, borderBottomColor: C.separator }]}>
-        <Pressable onPress={() => openSidePanel()} style={styles.topBarSide}>
-          <KMenuButton />
-        </Pressable>
-
-        <View style={[styles.titlePill, { backgroundColor: C.surface, borderColor: C.separator }]}>
-          <Text style={[styles.titlePillText, { color: C.label }]}>Reminders</Text>
+      {/* ── Top bar ─────────────────────────────────────────────────────────── */}
+      <Animated.View style={[styles.topBarOuter, { paddingTop: insets.top, backgroundColor: C.bg, borderBottomColor: C.separator, borderBottomWidth: StyleSheet.hairlineWidth, opacity }]}>
+        <View style={styles.topBar}>
+          <KMenuButton onPress={() => openSidePanel()} />
+          <View style={styles.topBarCenter}>
+            <View style={[styles.screenPill, { backgroundColor: C.surface, borderColor: C.separator }]}>
+              <Text style={[styles.screenPillText, { color: C.label }]}>Reminders</Text>
+            </View>
+          </View>
+          <RolePill role={role} onPress={cycleRole} />
         </View>
+      </Animated.View>
 
-        <View style={styles.topBarSide}>
-          <RolePill
-            role={role}
-            onPress={guardedCycle}
-            accentColor={accent}
-            isPrimary={isOwner}
-          />
-        </View>
-      </View>
-
-      {/* Filter Pills */}
-      <View style={[styles.filterBar, { borderBottomColor: C.separator }]}>
-        <ScrollView
-          horizontal
-          showsHorizontalScrollIndicator={false}
-          contentContainerStyle={styles.filterBarContent}
-        >
-          {FILTERS.map((f) => {
-            const active = activeFilter === f.key;
+      <ScrollView
+        showsVerticalScrollIndicator={false}
+        contentContainerStyle={{ paddingTop: insets.top + 52 + 8, paddingBottom: insets.bottom + 80 }}
+        keyboardShouldPersistTaps="handled"
+        onScroll={onScroll}
+        scrollEventThrottle={scrollEventThrottle}
+      >
+        {/* ── Filter pills ─────────────────────────────────────────────────── */}
+        <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.filterRow}>
+          {(['Today', 'Scheduled', 'Flagged', 'All'] as FilterTab[]).map(f => {
+            const active = activeFilter === f;
             return (
               <Pressable
-                key={f.key}
-                onPress={() => setActiveFilter(f.key)}
-                style={[
-                  styles.filterPill,
-                  {
-                    backgroundColor: active ? C.activePill : C.surface,
-                    borderColor: active ? C.activePill : C.separator,
-                  },
-                ]}
+                key={f}
+                onPress={() => handleFilter(f)}
+                style={[styles.filterPill, { backgroundColor: active ? C.label : 'transparent', borderColor: active ? C.label : C.separator }]}
               >
-                <Text
-                  style={[
-                    styles.filterPillText,
-                    { color: active ? C.activePillText : C.secondary },
-                  ]}
-                >
-                  {f.label}
-                </Text>
+                <Text style={[styles.filterPillText, { color: active ? C.bg : C.label }]}>{f}</Text>
               </Pressable>
             );
           })}
         </ScrollView>
-      </View>
 
-      {/* Completed — Clear All header */}
-      {activeFilter === 'completed' && filtered.length > 0 && (
-        <View style={[styles.clearAllRow, { borderBottomColor: C.separator }]}>
-          <Text style={[styles.clearAllCount, { color: C.secondary }]}>
-            {filtered.length} completed
-          </Text>
-          <Pressable onPress={handleClearAllCompleted}>
-            <Text style={[styles.clearAllBtn, { color: '#B85C5C' }]}>Clear All</Text>
-          </Pressable>
-        </View>
-      )}
-
-      {/* Reminders List */}
-      <ScrollView
-        {...scrollFooter}
-        style={styles.list}
-        contentContainerStyle={[
-          styles.listContent,
-          { paddingBottom: FOOTER_HEIGHT + 72 },
-        ]}
-        showsVerticalScrollIndicator={false}
-        keyboardShouldPersistTaps="handled"
-      >
-        {filtered.length === 0 ? (
-          <View style={styles.emptyState}>
-            <IconSymbol name="bell.slash" size={36} color={C.muted} />
-            <Text style={[styles.emptyText, { color: C.muted }]}>
-              {EMPTY_MESSAGES[activeFilter]}
-            </Text>
+        {/* ── OVERDUE section ──────────────────────────────────────────────── */}
+        {activeFilter === 'Today' && hasOverdue && (
+          <View style={styles.overdueSection}>
+            <Text style={[styles.sectionHeader, { color: HEAT }]}>OVERDUE</Text>
+            {filteredPending.overdue.map(renderRow)}
           </View>
+        )}
+
+        {/* ── Divider between OVERDUE and TODAY ────────────────────────────── */}
+        {activeFilter === 'Today' && hasOverdue && hasToday && (
+          <View style={[styles.sectionDivider, { backgroundColor: C.separator }]} />
+        )}
+
+        {/* ── TODAY / main list ────────────────────────────────────────────── */}
+        {activeFilter !== 'Scheduled' ? (
+          <>
+            {hasToday && activeFilter === 'Today' && (
+              <Text style={[styles.sectionHeader, { color: C.secondary }]}>TODAY</Text>
+            )}
+            {filteredPending.today.map(renderRow)}
+
+            {/* Today empty (when overdue exists but today is clear) */}
+            {activeFilter === 'Today' && hasOverdue && !hasToday && (
+              <View style={styles.todayEmptyState}>
+                <Text style={[styles.todayEmptyTitle, { color: C.secondary }]}>All clear for today</Text>
+                <Pressable
+                  onPress={() => openDipsonSheet('Reminders')}
+                  style={[styles.dipsonBtn, { backgroundColor: C.surface, borderColor: C.separator }]}
+                >
+                  <IconSymbol name="sparkles" size={14} color={C.secondary} />
+                  <Text style={[styles.dipsonBtnText, { color: C.label }]}>Ask Dipson to plan your day</Text>
+                </Pressable>
+              </View>
+            )}
+          </>
         ) : (
-          filtered.map((r) => (
-            <ReminderCard
-              key={r.id}
-              reminder={r}
-              C={C}
-              onComplete={handleComplete}
-              onSnooze={handleSnoozeOpen}
-              onEdit={handleEditOpen}
-            />
+          scheduledGroups.map(group => (
+            <View key={group.date}>
+              <Text style={[styles.dateHeader, { color: C.secondary, borderBottomColor: C.separator }]}>
+                {formatDateHeader(group.date)}
+              </Text>
+              {group.items.map(renderRow)}
+            </View>
           ))
+        )}
+
+        {/* ── Full empty state ─────────────────────────────────────────────── */}
+        {isEmpty && (
+          <View style={styles.emptyState}>
+            <IconSymbol name="checkmark.circle" size={52} color={C.separator} />
+            <Text style={[styles.emptyTitle, { color: C.label }]}>No reminders</Text>
+            <Text style={[styles.emptySubtitle, { color: C.secondary }]}>
+              Tap + to create one, or ask Dipson
+            </Text>
+            <Pressable
+              onPress={() => openDipsonSheet('Reminders')}
+              style={[styles.dipsonBtn, { backgroundColor: C.surface, borderColor: C.separator }]}
+            >
+              <IconSymbol name="sparkles" size={14} color={C.secondary} />
+              <Text style={[styles.dipsonBtnText, { color: C.label }]}>Ask Dipson</Text>
+            </Pressable>
+          </View>
+        )}
+
+        {/* ── Completed section ────────────────────────────────────────────── */}
+        {completed.length > 0 && (
+          <View style={styles.completedSection}>
+            <View style={[styles.completedHeader, { borderTopColor: C.separator }]}>
+              <Pressable onPress={() => setShowCompleted(v => !v)} style={styles.completedHeaderLeft}>
+                <IconSymbol name={showCompleted ? 'chevron.down' : 'chevron.right'} size={12} color={C.secondary} />
+                <Text style={[styles.completedHeaderText, { color: C.secondary }]}>
+                  Completed ({completed.length})
+                </Text>
+              </Pressable>
+              <Pressable onPress={clearCompleted} hitSlop={8}>
+                <Text style={[styles.clearText, { color: HEAT }]}>Clear</Text>
+              </Pressable>
+            </View>
+            {showCompleted && completed.map(renderRow)}
+          </View>
         )}
       </ScrollView>
 
-      {/* FAB */}
-      <Pressable
-        style={[
-          styles.fab,
-          {
-            backgroundColor: C.label,
-            bottom: FOOTER_HEIGHT + 16,
-          },
-        ]}
-        onPress={handleCreateOpen}
-      >
-        <IconSymbol name="plus" size={22} color={C.bg} />
-      </Pressable>
+      {/* ── FAB ─────────────────────────────────────────────────────────────── */}
+      {isOwner && (
+        <Pressable
+          onPress={() => { Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light); sheetRef.current?.present(); }}
+          style={[styles.fab, { backgroundColor: C.label, bottom: fabBottom }]}
+        >
+          <IconSymbol name="plus" size={24} color={C.bg} />
+        </Pressable>
+      )}
 
-      {/* Create Sheet */}
-      <BottomSheet
-        visible={showCreate}
-        onClose={() => setShowCreate(false)}
-        title="New Reminder"
-        useModal
-        snapPoints={['50%', '90%']}
+      {/* ── Create sheet ─────────────────────────────────────────────────────── */}
+      <BottomSheetModal
+        ref={sheetRef}
+        snapPoints={['60%', '90%']}
+        enableDynamicSizing={false}
+        backdropComponent={renderBackdrop}
+        backgroundStyle={{ backgroundColor: C.bg }}
+        handleIndicatorStyle={{ backgroundColor: C.separator }}
+        onDismiss={() => {
+          setNewText(''); setNewSubtitle(''); setNewDate('today');
+          setNewTime(''); setNewPriority('none'); setNewFlagged(false);
+        }}
       >
-        {renderFormFields(false)}
-      </BottomSheet>
+        <BottomSheetView style={[styles.sheetContent, { backgroundColor: C.bg }]}>
+          <Text style={[styles.sheetTitle, { color: C.label }]}>New Reminder</Text>
 
-      {/* Edit Sheet */}
-      <BottomSheet
-        visible={showEdit}
-        onClose={() => { setShowEdit(false); setEditId(null); }}
-        title="Edit Reminder"
-        useModal
-        snapPoints={['50%', '90%']}
-      >
-        {renderFormFields(true)}
-      </BottomSheet>
+          <TextInput
+            ref={inputRef}
+            placeholder="What do you need to remember?"
+            placeholderTextColor={C.secondary}
+            value={newText}
+            onChangeText={setNewText}
+            autoFocus
+            multiline
+            style={[styles.mainInput, { color: C.label, backgroundColor: C.surface, borderColor: C.separator }]}
+          />
 
-      {/* Snooze Sheet */}
-      <BottomSheet
-        visible={showSnooze}
-        onClose={() => { setShowSnooze(false); setSnoozeId(null); }}
-        title="Snooze until…"
-        useModal
-        snapPoints={['40%', '50%']}
-      >
-        <View style={styles.snoozeList}>
-          {SNOOZE_OPTIONS.map((opt) => (
-            <Pressable
-              key={opt.label}
-              style={[styles.snoozeOption, { borderBottomColor: C.separator }]}
-              onPress={() => handleSnoozeSelect(opt.minutes)}
-            >
-              <Text style={[styles.snoozeOptionText, { color: C.label }]}>{opt.label}</Text>
-              <IconSymbol name="chevron.right" size={14} color={C.muted} />
-            </Pressable>
-          ))}
-        </View>
-      </BottomSheet>
+          <TextInput
+            placeholder="Add notes (optional)"
+            placeholderTextColor={C.secondary}
+            value={newSubtitle}
+            onChangeText={setNewSubtitle}
+            style={[styles.notesInput, { color: C.label, backgroundColor: C.surface, borderColor: C.separator }]}
+          />
 
-      {/* Repeat Picker Sheet */}
-      <BottomSheet
-        visible={showRepeat}
-        onClose={() => setShowRepeat(false)}
-        title="Repeat"
-        useModal
-        snapPoints={['40%', '50%']}
-      >
-        <View style={styles.snoozeList}>
-          {REPEAT_OPTIONS.map((opt) => (
-            <Pressable
-              key={opt}
-              style={[styles.snoozeOption, { borderBottomColor: C.separator }]}
-              onPress={() => { setFormRepeat(opt); setShowRepeat(false); }}
-            >
-              <Text style={[styles.snoozeOptionText, { color: C.label }]}>{REPEAT_LABELS[opt]}</Text>
-              {formRepeat === opt && (
-                <IconSymbol name="checkmark" size={14} color={C.label} />
-              )}
-            </Pressable>
-          ))}
-        </View>
-      </BottomSheet>
+          <Text style={[styles.sheetSectionLabel, { color: C.secondary }]}>When</Text>
+          <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.chipRow}>
+            {(['today', 'tomorrow', 'weekend', 'none'] as DateChoice[]).map(d => {
+              const active = newDate === d;
+              const label: Record<DateChoice, string> = { today: 'Today', tomorrow: 'Tomorrow', weekend: 'Weekend', none: 'No Date' };
+              return (
+                <Pressable
+                  key={d}
+                  onPress={() => setNewDate(d)}
+                  style={[styles.chip, { backgroundColor: active ? C.label : C.surface, borderColor: active ? C.label : C.separator }]}
+                >
+                  <Text style={[styles.chipText, { color: active ? C.bg : C.label }]}>{label[d]}</Text>
+                </Pressable>
+              );
+            })}
+          </ScrollView>
+
+          <Text style={[styles.sheetSectionLabel, { color: C.secondary }]}>Priority</Text>
+          <View style={styles.priorityRow}>
+            {(['none', 'medium', 'high'] as Priority[]).map(p => {
+              const active = newPriority === p;
+              const label  = p.charAt(0).toUpperCase() + p.slice(1);
+              return (
+                <Pressable
+                  key={p}
+                  onPress={() => setNewPriority(p)}
+                  style={[styles.priorityChip, { backgroundColor: active ? C.label : C.surface, borderColor: active ? C.label : C.separator }]}
+                >
+                  {p !== 'none' && (
+                    <View style={[styles.priorityDot, { backgroundColor: p === 'high' ? HEAT : CAUTION }]} />
+                  )}
+                  <Text style={[styles.chipText, { color: active ? C.bg : C.label }]}>{label}</Text>
+                </Pressable>
+              );
+            })}
+          </View>
+
+          <Pressable onPress={() => setNewFlagged(v => !v)} style={[styles.flagRow, { borderColor: C.separator }]}>
+            <IconSymbol name={newFlagged ? 'flag.fill' : 'flag'} size={16} color={newFlagged ? CAUTION : C.secondary} />
+            <Text style={[styles.flagRowText, { color: C.label }]}>Flag this reminder</Text>
+            {newFlagged && (
+              <View style={[styles.flaggedBadge, { backgroundColor: CAUTION + '22' }]}>
+                <Text style={[styles.flaggedBadgeText, { color: CAUTION }]}>Flagged</Text>
+              </View>
+            )}
+          </Pressable>
+
+          <Pressable
+            onPress={createReminder}
+            disabled={!newText.trim()}
+            style={[styles.addButton, { backgroundColor: newText.trim() ? C.label : C.separator }]}
+          >
+            <Text style={[styles.addButtonText, { color: newText.trim() ? C.bg : C.secondary }]}>Add Reminder</Text>
+          </Pressable>
+        </BottomSheetView>
+      </BottomSheetModal>
     </View>
   );
 }
 
 // ── Styles ────────────────────────────────────────────────────────────────────
-
 const styles = StyleSheet.create({
-  root: {
-    flex: 1,
-  },
+  root: { flex: 1 },
 
-  // Top Bar
+  // Top bar
+  topBarOuter: { position: 'absolute', top: 0, left: 0, right: 0, zIndex: 10 },
   topBar: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    paddingHorizontal: 16,
-    paddingBottom: 10,
-    borderBottomWidth: StyleSheet.hairlineWidth,
+    height: 52, flexDirection: 'row', alignItems: 'center', paddingHorizontal: 16,
   },
-  topBarSide: {
-    width: 80,
-    alignItems: 'flex-start',
+  topBarCenter: { flex: 1, alignItems: 'center', justifyContent: 'flex-end' },
+  screenPill: { paddingHorizontal: 12, paddingVertical: 5, borderRadius: 14, borderWidth: 1 },
+  screenPillText: { fontSize: 12, fontWeight: '600', letterSpacing: 0.3 },
+
+  // Filter row
+  filterRow: { paddingHorizontal: 12, paddingVertical: 10, gap: 8, flexDirection: 'row', alignItems: 'center' },
+  filterPill: { paddingHorizontal: 14, paddingVertical: 7, borderRadius: 16, borderWidth: 1 },
+  filterPillText: { fontSize: 13, fontWeight: '500' },
+
+  // Section headers
+  overdueSection: { marginBottom: 4 },
+  sectionHeader: {
+    paddingHorizontal: 16, paddingVertical: 8,
+    fontSize: 11, fontWeight: '700', letterSpacing: 0.7,
   },
-  titlePill: {
-    flex: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
-    height: 32,
-    borderRadius: 16,
-    borderWidth: 1,
-    marginHorizontal: 10,
-  },
-  titlePillText: {
-    fontSize: 14,
-    fontWeight: '700',
+  sectionDivider: { height: StyleSheet.hairlineWidth, marginHorizontal: 16, marginTop: 8, marginBottom: 16 },
+  dateHeader: {
+    paddingHorizontal: 16, paddingTop: 16, paddingBottom: 8,
+    fontSize: 11, fontWeight: '700', letterSpacing: 0.7,
+    borderBottomWidth: StyleSheet.hairlineWidth, marginBottom: 4,
   },
 
-  // Filter Pills
-  filterBar: {
-    borderBottomWidth: StyleSheet.hairlineWidth,
-  },
-  filterBarContent: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    paddingHorizontal: 16,
-    paddingVertical: 10,
-    gap: 8,
-  },
-  filterPill: {
-    borderRadius: 20,
-    borderWidth: 1.5,
-    paddingHorizontal: 14,
-    paddingVertical: 6,
-  },
-  filterPillText: {
-    fontSize: 13,
-    fontWeight: '500',
-  },
-
-  // Clear All
-  clearAllRow: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    paddingHorizontal: 16,
-    paddingVertical: 8,
-    borderBottomWidth: StyleSheet.hairlineWidth,
-  },
-  clearAllCount: {
-    fontSize: 13,
-  },
-  clearAllBtn: {
-    fontSize: 13,
-    fontWeight: '600',
-  },
-
-  // List
-  list: {
-    flex: 1,
-  },
-  listContent: {
-    paddingTop: 12,
-  },
-
-  // Card wrapper for action backgrounds
-  cardWrapper: {
+  // Reminder row
+  reminderRow: {
     marginHorizontal: 16,
-    marginBottom: 8,
-    borderRadius: 14,
-    overflow: 'hidden',
+    marginBottom:     12,
+    borderRadius:     12,
+    paddingRight:     14,
+    paddingTop:       14,
+    paddingBottom:    14,
+    flexDirection:    'row',
+    alignItems:       'flex-start',
+    gap:              12,
   },
-  actionBg: {
-    position: 'absolute',
-    top: 0,
-    bottom: 0,
-    width: '100%',
-    justifyContent: 'center',
-    borderRadius: 14,
-  },
-  actionBgLeft: {
-    backgroundColor: '#5A8A6E',
-    alignItems: 'flex-end',
-    paddingRight: 20,
-  },
-  actionBgRight: {
-    backgroundColor: '#B8943E',
-    alignItems: 'flex-start',
-    paddingLeft: 20,
-  },
-  actionText: {
-    color: '#FFFFFF',
-    fontWeight: '700',
-    fontSize: 14,
-  },
+  checkboxWrapper: { width: 22, height: 22, alignItems: 'center', justifyContent: 'center', marginTop: 1 },
+  emptyCircle: { width: 22, height: 22, borderRadius: 11, borderWidth: 1.5 },
+  reminderContent: { flex: 1 },
+  priorityTextRow: { flexDirection: 'row', alignItems: 'center', gap: 6 },
+  priorityDot: { width: 7, height: 7, borderRadius: 3.5, flexShrink: 0 },
+  reminderText: { fontSize: 15, fontWeight: '500', flex: 1 },
+  subtitleRow: { flexDirection: 'row', alignItems: 'center', gap: 5, marginTop: 3 },
+  catDot: { width: 6, height: 6, borderRadius: 3, flexShrink: 0 },
+  reminderSubtitle: { fontSize: 12, flex: 1 },
+  reminderRight: { alignItems: 'flex-end', gap: 4, paddingTop: 1, minWidth: 56 },
+  dueLabel: { fontSize: 11 },
 
-  // Card
-  card: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    borderRadius: 14,
-    paddingHorizontal: 14,
-    paddingVertical: 14,
-    gap: 12,
+  // Today empty (all-clear sub-state)
+  todayEmptyState: { alignItems: 'center', paddingVertical: 24, gap: 12 },
+  todayEmptyTitle: { fontSize: 14 },
+
+  // Full empty state
+  emptyState: { alignItems: 'center', justifyContent: 'center', paddingVertical: 64, gap: 10 },
+  emptyTitle: { fontSize: 20, fontWeight: '600', marginTop: 8 },
+  emptySubtitle: { fontSize: 14, textAlign: 'center' },
+  dipsonBtn: {
+    flexDirection: 'row', alignItems: 'center', gap: 6,
+    marginTop: 8, paddingHorizontal: 16, paddingVertical: 9,
+    borderRadius: 20, borderWidth: 1,
   },
-  checkbox: {
-    width: 24,
-    height: 24,
-    borderRadius: 12,
-    borderWidth: 1.5,
-    alignItems: 'center',
-    justifyContent: 'center',
+  dipsonBtnText: { fontSize: 14, fontWeight: '500' },
+
+  // Completed section
+  completedSection: { marginTop: 8 },
+  completedHeader: {
+    flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center',
+    paddingHorizontal: 16, paddingVertical: 12, borderTopWidth: StyleSheet.hairlineWidth,
   },
-  cardContent: {
-    flex: 1,
-    gap: 2,
-  },
-  cardTitle: {
-    fontSize: 15,
-    fontWeight: '600',
-    lineHeight: 20,
-  },
-  cardTitleCompleted: {
-    textDecorationLine: 'line-through',
-  },
-  cardMeta: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 6,
-  },
-  cardDate: {
-    fontSize: 13,
-  },
-  overdueBadge: {
-    backgroundColor: '#B85C5C',
-    borderRadius: 6,
-    paddingHorizontal: 6,
-    paddingVertical: 2,
-  },
-  overdueBadgeText: {
-    color: '#FFFFFF',
-    fontSize: 10,
-    fontWeight: '600',
-  },
-  recurringRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginTop: 2,
-  },
-  recurringText: {
-    fontSize: 11,
-  },
+  completedHeaderLeft: { flexDirection: 'row', alignItems: 'center', gap: 6 },
+  completedHeaderText: { fontSize: 14, fontWeight: '500' },
+  clearText: { fontSize: 13, fontWeight: '500' },
 
   // FAB
   fab: {
-    position: 'absolute',
-    right: 20,
-    width: 52,
-    height: 52,
-    borderRadius: 26,
-    alignItems: 'center',
-    justifyContent: 'center',
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.18,
-    shadowRadius: 6,
-    elevation: 6,
+    position: 'absolute', right: 16,
+    width: 52, height: 52, borderRadius: 26,
+    alignItems: 'center', justifyContent: 'center',
+    shadowColor: '#000', shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.15, shadowRadius: 6, elevation: 4,
   },
 
-  // Sheet
-  sheetContent: {
-    paddingHorizontal: 16,
-    paddingTop: 8,
-    gap: 0,
+  // Create sheet
+  sheetContent: { flex: 1, padding: 16 },
+  sheetTitle: { fontSize: 18, fontWeight: '700', marginBottom: 16 },
+  mainInput: {
+    borderRadius: 12, borderWidth: 1, padding: 12, fontSize: 15,
+    minHeight: 80, textAlignVertical: 'top', marginBottom: 10,
   },
-  sheetField: {
-    borderWidth: 1,
-    borderRadius: 10,
-    paddingHorizontal: 14,
-    paddingVertical: 10,
-    marginBottom: 10,
+  notesInput: { borderRadius: 12, borderWidth: 1, padding: 12, fontSize: 14, marginBottom: 16 },
+  sheetSectionLabel: { fontSize: 12, fontWeight: '600', letterSpacing: 0.5, marginBottom: 8, textTransform: 'uppercase' },
+  chipRow: { flexDirection: 'row', gap: 8, marginBottom: 16, paddingRight: 4 },
+  chip: { paddingHorizontal: 14, paddingVertical: 8, borderRadius: 20, borderWidth: 1 },
+  chipText: { fontSize: 13, fontWeight: '500' },
+  priorityRow: { flexDirection: 'row', gap: 8, marginBottom: 16 },
+  priorityChip: {
+    flex: 1, flexDirection: 'row', alignItems: 'center', justifyContent: 'center',
+    gap: 6, paddingVertical: 9, borderRadius: 12, borderWidth: 1,
   },
-  sheetInput: {
-    fontSize: 15,
-    minHeight: 36,
+  flagRow: {
+    flexDirection: 'row', alignItems: 'center', gap: 10, paddingVertical: 12,
+    borderTopWidth: StyleSheet.hairlineWidth, borderBottomWidth: StyleSheet.hairlineWidth, marginBottom: 16,
   },
-  sheetNotesInput: {
-    minHeight: 72,
-  },
-  sheetRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 10,
-    borderWidth: 1,
-    borderRadius: 10,
-    paddingHorizontal: 14,
-    paddingVertical: 13,
-    marginBottom: 10,
-  },
-  sheetRowLabel: {
-    fontSize: 15,
-  },
-  sheetRowValue: {
-    fontSize: 14,
-  },
-  saveButton: {
-    borderRadius: 12,
-    paddingVertical: 15,
-    alignItems: 'center',
-    marginTop: 8,
-    marginBottom: 8,
-  },
-  saveButtonText: {
-    fontSize: 16,
-    fontWeight: '700',
-  },
-  deleteButton: {
-    alignItems: 'center',
-    paddingVertical: 12,
-    marginBottom: 8,
-  },
-  deleteButtonText: {
-    fontSize: 15,
-    fontWeight: '600',
-  },
-
-  // Snooze / Repeat Sheet
-  snoozeList: {
-    paddingHorizontal: 16,
-    paddingTop: 4,
-  },
-  snoozeOption: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    paddingVertical: 16,
-    borderBottomWidth: StyleSheet.hairlineWidth,
-  },
-  snoozeOptionText: {
-    fontSize: 16,
-  },
-
-  // Empty State
-  emptyState: {
-    alignItems: 'center',
-    paddingTop: 80,
-    gap: 14,
-  },
-  emptyText: {
-    fontSize: 15,
-    textAlign: 'center',
-  },
+  flagRowText: { fontSize: 15, fontWeight: '500', flex: 1 },
+  flaggedBadge: { paddingHorizontal: 10, paddingVertical: 4, borderRadius: 10 },
+  flaggedBadgeText: { fontSize: 12, fontWeight: '600' },
+  addButton: { paddingVertical: 14, borderRadius: 16, alignItems: 'center', marginTop: 16 },
+  addButtonText: { fontSize: 16, fontWeight: '600' },
 });

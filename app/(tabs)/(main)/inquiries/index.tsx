@@ -17,6 +17,7 @@ import { useFocusEffect } from 'expo-router';
 import { GlassView } from '@/components/ui/glass-view';
 import { IconSymbol } from '@/components/ui/icon-symbol';
 import { useColors, type ComponentColors } from '@/hooks/use-colors';
+import { useScrollHeader } from '@/hooks/use-scroll-header';
 import { openSidePanel } from '@/utils/global-side-panel';
 import { resetFooter } from '@/utils/global-footer-hide';
 import { useDataMode } from '@/utils/global-demo-mode';
@@ -103,6 +104,7 @@ export default function InquiriesScreen() {
   const s      = useMemo(() => makeStyles(C), [C]);
 
   const topBarH = insets.top + TOP_BAR_H;
+  const { opacity, onScroll, scrollEventThrottle } = useScrollHeader(topBarH);
 
   const [activeTab,    setActiveTab]    = useState<InqTab>('Pipeline');
   const [role, cycleRole, roleCycles]  = useDemoRole('business:inquiries');
@@ -267,7 +269,7 @@ export default function InquiriesScreen() {
     if (selectedDealId) {
       const deal = DEALS.find(d => d.id === selectedDealId);
       if (deal) return (
-        <ScrollView showsVerticalScrollIndicator={false}>
+        <ScrollView showsVerticalScrollIndicator={false} onScroll={onScroll} scrollEventThrottle={scrollEventThrottle}>
           <View style={{ paddingTop: contentPaddingTop }}>
             {renderDealDetail(deal)}
           </View>
@@ -279,7 +281,7 @@ export default function InquiriesScreen() {
     const stagesToShow = filterStage ? [filterStage] : PIPELINE_STAGES;
 
     return (
-      <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={{ paddingTop: contentPaddingTop, paddingBottom: 100 }}>
+      <ScrollView showsVerticalScrollIndicator={false} onScroll={onScroll} scrollEventThrottle={scrollEventThrottle} contentContainerStyle={{ paddingTop: contentPaddingTop, paddingBottom: 100 }}>
         {/* Summary bar */}
         <View style={[s.row, { gap: 8, paddingHorizontal: 16, marginBottom: 12 }]}>
           {[
@@ -439,7 +441,7 @@ export default function InquiriesScreen() {
     if (selectedContactId) {
       const contact = getContactById(selectedContactId);
       if (contact) return (
-        <ScrollView showsVerticalScrollIndicator={false}>
+        <ScrollView showsVerticalScrollIndicator={false} onScroll={onScroll} scrollEventThrottle={scrollEventThrottle}>
           <View style={{ paddingTop: contentPaddingTop }}>
             {renderContactProfile(contact)}
           </View>
@@ -458,7 +460,7 @@ export default function InquiriesScreen() {
     }
 
     return (
-      <ScrollView showsVerticalScrollIndicator={false} keyboardShouldPersistTaps="handled"
+      <ScrollView showsVerticalScrollIndicator={false} onScroll={onScroll} scrollEventThrottle={scrollEventThrottle} keyboardShouldPersistTaps="handled"
         contentContainerStyle={{ paddingTop: contentPaddingTop, paddingBottom: 100 }}>
         <View style={[s.searchBar, { backgroundColor: C.surface, borderColor: C.inputBorder as string, marginHorizontal: 16, marginBottom: 12 }]}>
           <IconSymbol name="magnifyingglass" size={16} color={C.muted as string} />
@@ -565,7 +567,7 @@ export default function InquiriesScreen() {
 
   function renderAnalytics() {
     return (
-      <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={{ paddingTop: contentPaddingTop, paddingBottom: 120 }}>
+      <ScrollView showsVerticalScrollIndicator={false} onScroll={onScroll} scrollEventThrottle={scrollEventThrottle} contentContainerStyle={{ paddingTop: contentPaddingTop, paddingBottom: 120 }}>
 
         {/* Stats row */}
         <View style={[s.row, { gap: 8, paddingHorizontal: 16, marginBottom: 12 }]}>
@@ -874,7 +876,7 @@ export default function InquiriesScreen() {
     ];
 
     return (
-      <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={{ paddingTop: contentPaddingTop, paddingBottom: 120 }}>
+      <ScrollView showsVerticalScrollIndicator={false} onScroll={onScroll} scrollEventThrottle={scrollEventThrottle} contentContainerStyle={{ paddingTop: contentPaddingTop, paddingBottom: 120 }}>
 
         {/* ── My Engagement Card ────────────────────────────────────────── */}
         <View style={{ marginHorizontal: 16, marginBottom: 16 }}>
@@ -1056,7 +1058,7 @@ export default function InquiriesScreen() {
     <View style={[s.root, { backgroundColor: C.bg }]}>
 
       {/* Top bar */}
-      <View style={[s.topBarOuter, { backgroundColor: C.bg, borderBottomColor: C.separator as string, paddingTop: insets.top }]}>
+      <Animated.View style={[s.topBarOuter, { backgroundColor: C.bg, borderBottomColor: C.separator as string, paddingTop: insets.top, opacity }]}>
         <View style={s.topBar}>
           <Pressable onPress={() => { Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light); if (isAdmin) openSidePanel(); }} style={s.iconBtn} hitSlop={8}>
             <KMenuButton />
@@ -1121,7 +1123,7 @@ export default function InquiriesScreen() {
             </ScrollView>
           </Animated.View>
         )}
-      </View>
+      </Animated.View>
 
       {/* Content */}
       {!isCEO ? renderClientView() : (

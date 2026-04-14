@@ -4,7 +4,7 @@
 
 import React, { useCallback, useMemo } from 'react';
 import {
-  View, Text, StyleSheet, Pressable, ScrollView, Alert,
+  View, Text, StyleSheet, Pressable, ScrollView, Alert, Animated,
 } from 'react-native';
 import * as Haptics from 'expo-haptics';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
@@ -16,6 +16,7 @@ import { useColors, type ComponentColors } from '@/hooks/use-colors';
 import { openSidePanel } from '@/utils/global-side-panel';
 import { resetFooter } from '@/utils/global-footer-hide';
 import { useDemoRole } from '@/utils/demo-role-store';
+import { useScrollHeader } from '@/hooks/use-scroll-header';
 import { KMenuButton } from '@/components/ui/k-menu-button';
 
 const GAIN    = '#5A8A6E';
@@ -68,6 +69,9 @@ export default function CommunityLearnScreen() {
   const [role, cycleRole, roleCycles] = useDemoRole('community:kaystudios');
   const isPastor = role === roleCycles[0];
 
+  const TOP_BAR_H_FULL = insets.top + TOP_BAR_H;
+  const { opacity, onScroll, scrollEventThrottle } = useScrollHeader(TOP_BAR_H_FULL);
+
   useFocusEffect(useCallback(() => {
     resetFooter();
   }, []));
@@ -75,24 +79,28 @@ export default function CommunityLearnScreen() {
   return (
     <View style={[s.root, { backgroundColor: C.bg }]}>
       {/* Top Bar */}
-      <View style={[s.topBar, { paddingTop: insets.top, backgroundColor: C.bg, borderBottomColor: C.separator }]}>
-        <Pressable style={s.kBtn} onPress={() => { Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light); openSidePanel(); }} hitSlop={8}>
-          <KMenuButton />
-        </Pressable>
-        <View style={{ flex: 1, alignItems: 'center' }}>
-          <View style={[s.titlePill, { backgroundColor: C.surface, borderColor: C.separator }]}>
-            <Text style={[s.titleText, { color: C.label }]}>Learn</Text>
+      <Animated.View style={[s.topBarOuter, { paddingTop: insets.top, backgroundColor: C.bg, borderBottomColor: C.separator, opacity }]}>
+        <View style={s.topBar}>
+          <Pressable style={s.kBtn} onPress={() => { Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light); openSidePanel(); }} hitSlop={8}>
+            <KMenuButton />
+          </Pressable>
+          <View style={{ flex: 1, alignItems: 'center' }}>
+            <View style={[s.titlePill, { backgroundColor: C.surface, borderColor: C.separator }]}>
+              <Text style={[s.titleText, { color: C.label }]}>Learn</Text>
+            </View>
+          </View>
+          <View style={s.rolePillWrap}>
+            <RolePill role={role} onPress={cycleRole} isPrimary={isPastor} />
           </View>
         </View>
-        <View style={s.rolePillWrap}>
-          <RolePill role={role} onPress={cycleRole} isPrimary={isPastor} />
-        </View>
-      </View>
+      </Animated.View>
 
       <ScrollView
         style={{ flex: 1 }}
+        onScroll={onScroll}
+        scrollEventThrottle={scrollEventThrottle}
         contentContainerStyle={{
-          paddingTop: insets.top + TOP_BAR_H + 12,
+          paddingTop: TOP_BAR_H_FULL + 12,
           paddingBottom: insets.bottom + 80,
           gap: 16,
         }}
@@ -251,11 +259,14 @@ function makeStyles(C: ComponentColors) {
   return StyleSheet.create({
     root: { flex: 1 },
 
+    topBarOuter: {
+      position: 'absolute', top: 0, left: 0, right: 0, zIndex: 10,
+      borderBottomWidth: StyleSheet.hairlineWidth,
+    },
     topBar: {
-      position: 'absolute', top: 0, left: 0, right: 0, zIndex: 100,
       flexDirection: 'row', alignItems: 'flex-end',
       paddingBottom: 10, paddingHorizontal: 16,
-      borderBottomWidth: StyleSheet.hairlineWidth,
+      height: TOP_BAR_H,
     },
     kBtn:         { width: 44, height: 36, justifyContent: 'center' },
     titlePill:    { borderRadius: 18, paddingHorizontal: 14, paddingVertical: 6, borderWidth: 1 },

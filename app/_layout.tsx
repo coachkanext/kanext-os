@@ -45,6 +45,7 @@ import { registerSettingsPanelHandlers } from '@/utils/global-settings-panel';
 import { SettingsPanel } from '@/components/settings-panel';
 import { registerSidePanelHandlers } from '@/utils/global-side-panel';
 import { SidePanel } from '@/components/side-panel/side-panel';
+import { DipsonHalfSheet } from '@/components/dipson/dipson-half-sheet';
 
 import { registerViewSwitchCallback } from '@/utils/view-switch-lifecycle';
 import { requestHomeReset } from '@/utils/global-home';
@@ -308,6 +309,9 @@ function AppShell() {
       {/* Side panels — rendered after content so they overlay it correctly */}
       <SettingsPanel visible={settingsPanelVisible} onClose={dismissPanel} />
       <SidePanel visible={sidePanelVisible} onClose={dismissSidePanelCb} />
+
+      {/* Dipson half-sheet — portal-based, triggered from any sidebar */}
+      <DipsonHalfSheet />
 
       {/* Universal entity sheets (single sheet per entity type) */}
       <TeamSheet

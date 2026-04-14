@@ -10,6 +10,7 @@ import {
   Pressable,
   ScrollView,
   Alert,
+  Animated,
 } from 'react-native';
 import * as Haptics from 'expo-haptics';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
@@ -21,7 +22,9 @@ import { useColors, type ComponentColors } from '@/hooks/use-colors';
 import { openSidePanel } from '@/utils/global-side-panel';
 import { resetFooter } from '@/utils/global-footer-hide';
 import { useDemoRole } from '@/utils/demo-role-store';
+import { useScrollHeader } from '@/hooks/use-scroll-header';
 
+const TOP_BAR_H = 44;
 const GAIN = '#5A8A6E';
 const HEAT = '#B85C5C';
 const CAUTION = '#B8943E';
@@ -87,6 +90,7 @@ export default function SportsFilmRoom() {
   const [role, cycleRole, roleCycles] = useDemoRole('sports:hub');
   const isHeadCoach = role === roleCycles[0];
 
+  const { opacity, onScroll, scrollEventThrottle } = useScrollHeader();
   const [selectedFilm, setSelectedFilm] = useState<GameFilm | null>(null);
   const [isPlaying, setIsPlaying] = useState(false);
   const [activeSpeed, setActiveSpeed] = useState('1x');
@@ -131,19 +135,21 @@ export default function SportsFilmRoom() {
   }, []);
 
   return (
-    <View style={[styles.root, { paddingTop: insets.top }]}>
-      {/* Top Bar */}
-      <View style={styles.topBar}>
-        <KMenuButton onPress={() => openSidePanel()} />
-        <View style={[styles.titlePill, { backgroundColor: C.surface, borderColor: C.separator }]}>
-          <Text style={[styles.titlePillText, { color: C.label }]}>Film Room</Text>
+    <View style={styles.root}>
+      <Animated.View style={[styles.topBarOuter, { paddingTop: insets.top, backgroundColor: C.bg, borderBottomColor: C.separator, borderBottomWidth: StyleSheet.hairlineWidth, opacity }]}>
+        <View style={styles.topBar}>
+          <KMenuButton onPress={() => openSidePanel()} />
+          <View style={[styles.titlePill, { backgroundColor: C.surface, borderColor: C.separator }]}>
+            <Text style={[styles.titlePillText, { color: C.label }]}>Film Room</Text>
+          </View>
+          <RolePill role={role} onPress={cycleRole} />
         </View>
-        <RolePill role={role} onPress={cycleRole} />
-      </View>
-
+      </Animated.View>
       <ScrollView
+        onScroll={onScroll}
+        scrollEventThrottle={scrollEventThrottle}
         style={styles.scroll}
-        contentContainerStyle={styles.scrollContent}
+        contentContainerStyle={[styles.scrollContent, { paddingTop: insets.top + TOP_BAR_H + 8 }]}
         showsVerticalScrollIndicator={false}
       >
         {/* GAME FILM LIBRARY */}
@@ -372,12 +378,16 @@ function makeStyles(C: ComponentColors, insets: ReturnType<typeof useSafeAreaIns
       flex: 1,
       backgroundColor: C.bg,
     },
+    topBarOuter: {
+      position: 'absolute', top: 0, left: 0, right: 0, zIndex: 10,
+      borderBottomWidth: StyleSheet.hairlineWidth,
+    },
     topBar: {
+      height: TOP_BAR_H,
       flexDirection: 'row',
       alignItems: 'center',
       justifyContent: 'space-between',
       paddingHorizontal: 16,
-      paddingVertical: 10,
     },
     titlePill: {
       borderRadius: 18,

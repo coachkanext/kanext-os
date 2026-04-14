@@ -14,12 +14,14 @@ import {
   KeyboardAvoidingView,
   Platform,
   StyleSheet,
+  Animated,
 } from 'react-native';
 import { useRouter } from 'expo-router';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import * as Haptics from 'expo-haptics';
 
 import { useColors } from '@/hooks/use-colors';
+import { useScrollHeader } from '@/hooks/use-scroll-header';
 import { IconSymbol } from '@/components/ui/icon-symbol';
 import { useAccentColor } from '@/hooks/use-accent-color';
 import { useAppContext } from '@/context/app-context';
@@ -78,6 +80,7 @@ export default function NewChannelScreen() {
 
   const roleBadge = state.activeView?.derived_role_badge ?? state.activeContext.derived_role_badge ?? '';
   const hasPermission = canCreateRoom(roleBadge);
+  const { opacity, onScroll, scrollEventThrottle } = useScrollHeader();
 
   const [roomIcon,    setRoomIcon]    = useState('number');
   const [name,        setName]        = useState('');
@@ -129,13 +132,13 @@ export default function NewChannelScreen() {
   if (!hasPermission) {
     return (
       <View style={[s.root, { backgroundColor: C.bg }]}>
-        <View style={[s.nav, { paddingTop: insets.top }]}>
+        <Animated.View style={[s.nav, { paddingTop: insets.top, opacity }]}>
           <Pressable onPress={() => router.back()} style={s.cancel}>
             <Text style={[s.cancelText, { color: accent }]}>Cancel</Text>
           </Pressable>
           <Text style={[s.navTitle, { color: C.label }]}>New Room</Text>
           <View style={s.createBtn} />
-        </View>
+        </Animated.View>
         <View style={s.rbacWrap}>
           <View style={[s.rbacIcon, { backgroundColor: C.surfacePressed }]}>
             <IconSymbol name="lock.fill" size={28} color={C.muted} />
@@ -156,7 +159,7 @@ export default function NewChannelScreen() {
       behavior={Platform.OS === 'ios' ? 'padding' : undefined}
     >
       {/* ── Nav bar ── */}
-      <View style={[s.nav, { paddingTop: insets.top }]}>
+      <Animated.View style={[s.nav, { paddingTop: insets.top, opacity }]}>
         <Pressable onPress={() => router.back()} style={s.cancel}>
           <Text style={[s.cancelText, { color: accent }]}>Cancel</Text>
         </Pressable>
@@ -168,9 +171,9 @@ export default function NewChannelScreen() {
         >
           <Text style={[s.createText, { color: canCreate ? '#fff' : C.muted }]}>Create</Text>
         </Pressable>
-      </View>
+      </Animated.View>
 
-      <ScrollView keyboardShouldPersistTaps="handled" style={s.scroll}>
+      <ScrollView keyboardShouldPersistTaps="handled" style={s.scroll} onScroll={onScroll} scrollEventThrottle={scrollEventThrottle}>
 
         {/* ── Room identity ── */}
         <View style={[s.identityCard, { backgroundColor: C.surface, borderColor: C.separator }]}>

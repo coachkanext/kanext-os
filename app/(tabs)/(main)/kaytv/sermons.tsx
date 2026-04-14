@@ -7,7 +7,7 @@
 
 import React, { useState, useMemo, useCallback } from 'react';
 import {
-  View, Text, Pressable, ScrollView, Alert, StyleSheet,
+  View, Text, Pressable, ScrollView, Alert, StyleSheet, Animated,
 } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useFocusEffect } from 'expo-router';
@@ -17,9 +17,12 @@ import { IconSymbol } from '@/components/ui/icon-symbol';
 import { KMenuButton } from '@/components/ui/k-menu-button';
 import { RolePill } from '@/components/ui/role-pill';
 import { useColors, type ComponentColors } from '@/hooks/use-colors';
+import { useScrollHeader } from '@/hooks/use-scroll-header';
 import { openSidePanel } from '@/utils/global-side-panel';
 import { resetFooter } from '@/utils/global-footer-hide';
 import { useDemoRole } from '@/utils/demo-role-store';
+
+const TOP_BAR_H = 52;
 
 // ── Types ─────────────────────────────────────────────────────────────────────
 
@@ -84,11 +87,13 @@ export default function SermonsPage() {
   const [liked, setLiked]           = useState<Set<string>>(new Set());
   const [saved, setSaved]           = useState<Set<string>>(new Set());
 
+  const { opacity, onScroll, scrollEventThrottle } = useScrollHeader();
+
   useFocusEffect(useCallback(() => {
     resetFooter();
   }, []));
 
-  const topBarH = insets.top + 52;
+  const topBarH = insets.top + TOP_BAR_H;
 
   const toggleLike = (id: string) => {
     Haptics.selectionAsync();
@@ -119,29 +124,32 @@ export default function SermonsPage() {
     <View style={{ flex: 1, backgroundColor: C.bg }}>
 
       {/* ── Top Bar ───────────────────────────────────────────────────────── */}
-      <View style={[s.topBar, { height: topBarH, paddingTop: insets.top, backgroundColor: C.bg }]}>
-        <Pressable
-          onPress={() => { Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light); openSidePanel(); }}
-          style={s.kBtn}
-        >
-          <KMenuButton />
-        </Pressable>
-        <View style={s.titleWrap}>
-          <View style={[s.titlePill, { backgroundColor: C.surface, borderColor: C.separator }]}>
-            <Text style={[s.titleText, { color: C.label }]}>Sermons</Text>
+      <Animated.View style={[s.topBarOuter, { paddingTop: insets.top, backgroundColor: C.bg, borderBottomColor: C.separator, borderBottomWidth: StyleSheet.hairlineWidth, opacity }]}>
+        <View style={s.topBar}>
+          <Pressable
+            onPress={() => { Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light); openSidePanel(); }}
+            style={s.kBtn}
+          >
+            <KMenuButton />
+          </Pressable>
+          <View style={s.titleWrap}>
+            <View style={[s.titlePill, { backgroundColor: C.surface, borderColor: C.separator }]}>
+              <Text style={[s.titleText, { color: C.label }]}>Sermons</Text>
+            </View>
+          </View>
+          <View style={s.rolePillWrap}>
+            <RolePill role={role} onPress={cycleRole} isPrimary={isPastor} />
           </View>
         </View>
-        <View style={s.rolePillWrap}>
-          <RolePill role={role} onPress={cycleRole} isPrimary={isPastor} />
-        </View>
-      </View>
+      </Animated.View>
 
       <ScrollView
-        contentContainerStyle={{ paddingTop: topBarH + 12, paddingBottom: insets.bottom + 100 }}
+        onScroll={onScroll}
+        scrollEventThrottle={scrollEventThrottle}
+        contentContainerStyle={{ paddingTop: topBarH + 8, paddingBottom: insets.bottom + 100 }}
         showsVerticalScrollIndicator={false}
         onStartShouldSetResponder={() => { if (menuOpen) { setMenuOpen(null); return true; } return false; }}
       >
-
         {/* ── Featured Banner ── */}
         <View style={[s.featuredBanner, { backgroundColor: C.label }]}>
           <View style={s.featuredInner}>
@@ -353,7 +361,8 @@ export default function SermonsPage() {
 
 function makeStyles(C: ComponentColors) {
   return StyleSheet.create({
-    topBar:      { position: 'absolute', top: 0, left: 0, right: 0, zIndex: 10, flexDirection: 'row', alignItems: 'center', paddingHorizontal: 16 },
+    topBarOuter: { position: 'absolute', top: 0, left: 0, right: 0, zIndex: 10, borderBottomWidth: StyleSheet.hairlineWidth },
+    topBar:      { height: TOP_BAR_H, flexDirection: 'row', alignItems: 'center', paddingHorizontal: 16 },
     kBtn:        { width: 40, alignItems: 'center' },
     titleWrap:   { flex: 1, alignItems: 'center' },
     titlePill:   { borderRadius: 18, paddingHorizontal: 14, paddingVertical: 6, borderWidth: 1 },

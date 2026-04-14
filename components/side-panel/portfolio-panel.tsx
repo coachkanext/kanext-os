@@ -28,8 +28,8 @@ const SECTION_ITEMS: NavItem[] = [
 
 const BOTTOM_ITEMS: NavItem[] = [
   { icon: 'sparkles',            label: 'Dipson',   route: '/nexus'                        },
-  { icon: 'gearshape',           label: 'Settings', route: '/(tabs)/(main)/settings'       },
-  { icon: 'questionmark.circle', label: 'Help',     route: '/(tabs)/(main)/settings/help'  },
+  { icon: 'gearshape',           label: 'Settings', route: '/(tabs)/(main)/portfolio/settings' },
+  { icon: 'questionmark.circle', label: 'Help',     route: '/(tabs)/(main)/portfolio/help'  },
 ];
 
 // ── Component ─────────────────────────────────────────────────────────────────

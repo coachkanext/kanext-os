@@ -26,6 +26,7 @@ import * as Haptics from 'expo-haptics';
 
 import { IconSymbol } from '@/components/ui/icon-symbol';
 import { BottomSheet } from '@/components/ui/bottom-sheet';
+import { useScrollHeader } from '@/hooks/use-scroll-header';
 import { ChatComposer, VoiceNoteBubble } from '@/components/messages/chat-composer';
 import type { VoiceNotePayload } from '@/components/messages/chat-composer';
 import { useAccentColor } from '@/hooks/use-accent-color';
@@ -765,6 +766,7 @@ export default function ThreadScreen() {
   const router = useRouter();
   const C = useColors();
   const styles = useMemo(() => makeStyles(C), [C]);
+  const { opacity, onScroll: onScrollHeader, scrollEventThrottle } = useScrollHeader();
   const { threadId, type, title, username: routeUsername, unreadCount, initialBody, memberCount: routeMemberCount } = useLocalSearchParams<{
     threadId: string;
     type: 'channel' | 'dm';
@@ -821,7 +823,8 @@ export default function ThreadScreen() {
   const lastScrollY = useRef(0);
   const handleScroll = useCallback((e: any) => {
     lastScrollY.current = e.nativeEvent.contentOffset.y;
-  }, []);
+    onScrollHeader(e);
+  }, [onScrollHeader]);
 
   // Simulate typing indicator for DMs (show for 3s then hide, repeating)
   const [showTyping, setShowTyping] = useState(false);
@@ -950,7 +953,7 @@ export default function ThreadScreen() {
   return (
     <View style={[styles.container, { paddingTop: insets.top }]}>
       {/* ── Header ── */}
-      <View style={styles.navBar}>
+      <Animated.View style={[styles.navBar, { opacity }]}>
         <View style={styles.navLeft}>
           <Pressable
             style={styles.backBtn}
@@ -1032,7 +1035,7 @@ export default function ThreadScreen() {
             </Pressable>
           </>
         )}
-      </View>
+      </Animated.View>
 
       {/* ── Chat ── */}
       <KeyboardAvoidingView
@@ -1046,7 +1049,7 @@ export default function ThreadScreen() {
             data={displayItems}
             keyExtractor={(item) => item.key}
             onScroll={handleScroll}
-            scrollEventThrottle={16}
+            scrollEventThrottle={scrollEventThrottle}
             onContentSizeChange={() => {
               if (!hasScrolledToEnd.current) {
                 flatListRef.current?.scrollToEnd({ animated: false });

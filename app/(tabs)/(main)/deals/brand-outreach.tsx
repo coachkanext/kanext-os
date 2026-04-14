@@ -4,7 +4,7 @@
  */
 
 import React, { useState, useMemo, useCallback } from 'react';
-import { View, Text, Pressable, ScrollView, TextInput, StyleSheet } from 'react-native';
+import { View, Text, Pressable, ScrollView, TextInput, StyleSheet, Animated } from 'react-native';
 import * as Haptics from 'expo-haptics';
 import { useRouter, useFocusEffect } from 'expo-router';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
@@ -12,6 +12,7 @@ import { IconSymbol } from '@/components/ui/icon-symbol';
 import { BottomSheet } from '@/components/ui/bottom-sheet';
 import { useColors } from '@/hooks/use-colors';
 import { resetFooter } from '@/utils/global-footer-hide';
+import { useScrollHeader } from '@/hooks/use-scroll-header';
 
 // ── Types & Data ──────────────────────────────────────────────────────────────
 
@@ -90,6 +91,7 @@ export default function BrandOutreachScreen() {
   const router = useRouter();
   const insets = useSafeAreaInsets();
   const topBarH = insets.top + 52;
+  const { opacity, onScroll, scrollEventThrottle } = useScrollHeader(topBarH);
 
   const [pitches, setPitches] = useState<PitchEntry[]>(INITIAL_PITCHES);
   const [selectedPitch, setSelectedPitch] = useState<PitchEntry | null>(null);
@@ -164,21 +166,23 @@ export default function BrandOutreachScreen() {
     <View style={{ flex: 1, backgroundColor: C.bg }}>
 
       {/* Top Bar */}
-      <View style={{ position: 'absolute', top: 0, left: 0, right: 0, zIndex: 20, height: topBarH, paddingTop: insets.top, flexDirection: 'row', alignItems: 'center', paddingHorizontal: 16, borderBottomWidth: StyleSheet.hairlineWidth, borderBottomColor: C.separator, backgroundColor: C.bg }}>
-        <Pressable onPress={() => { Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light); router.back(); }} style={{ width: 36, height: 36, alignItems: 'center', justifyContent: 'center' }}>
-          <IconSymbol name="chevron.left" size={20} color={C.label} />
-        </Pressable>
-        <View style={{ flex: 1, alignItems: 'center' }}>
-          <View style={{ backgroundColor: C.label, borderRadius: 18, paddingHorizontal: 14, paddingVertical: 5 }}>
-            <Text style={{ fontSize: 14, fontWeight: '700', color: C.bg }}>Brand Outreach</Text>
+      <Animated.View style={{ position: 'absolute', top: 0, left: 0, right: 0, zIndex: 20, paddingTop: insets.top, borderBottomWidth: StyleSheet.hairlineWidth, borderBottomColor: C.separator, backgroundColor: C.bg, opacity }}>
+        <View style={{ height: 52, flexDirection: 'row', alignItems: 'center', paddingHorizontal: 16 }}>
+          <Pressable onPress={() => { Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light); router.back(); }} style={{ width: 36, height: 36, alignItems: 'center', justifyContent: 'center' }}>
+            <IconSymbol name="chevron.left" size={20} color={C.label} />
+          </Pressable>
+          <View style={{ flex: 1, alignItems: 'center' }}>
+            <View style={{ backgroundColor: C.label, borderRadius: 18, paddingHorizontal: 14, paddingVertical: 5 }}>
+              <Text style={{ fontSize: 14, fontWeight: '700', color: C.bg }}>Brand Outreach</Text>
+            </View>
           </View>
+          <Pressable onPress={() => { Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light); setNewPitchOpen(true); }} style={{ width: 36, height: 36, alignItems: 'center', justifyContent: 'center' }}>
+            <IconSymbol name="plus" size={22} color={C.label} />
+          </Pressable>
         </View>
-        <Pressable onPress={() => { Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light); setNewPitchOpen(true); }} style={{ width: 36, height: 36, alignItems: 'center', justifyContent: 'center' }}>
-          <IconSymbol name="plus" size={22} color={C.label} />
-        </Pressable>
-      </View>
+      </Animated.View>
 
-      <ScrollView contentContainerStyle={{ paddingTop: topBarH + 8, paddingBottom: insets.bottom + 80 }} showsVerticalScrollIndicator={false}>
+      <ScrollView contentContainerStyle={{ paddingTop: topBarH + 8, paddingBottom: insets.bottom + 80 }} showsVerticalScrollIndicator={false} onScroll={onScroll} scrollEventThrottle={scrollEventThrottle}>
 
         {/* Overdue Follow-ups */}
         {overdue.length > 0 && (

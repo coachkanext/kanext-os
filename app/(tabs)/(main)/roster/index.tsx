@@ -7,7 +7,7 @@
 import React, { useState, useMemo, useCallback, useRef, Alert } from 'react';
 import {
   View, Text, Pressable, ScrollView, TextInput,
-  StyleSheet, Alert as RNAlert,
+  StyleSheet, Alert as RNAlert, Animated,
 } from 'react-native';
 import * as Haptics from 'expo-haptics';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
@@ -16,6 +16,7 @@ import { useFocusEffect, useRouter } from 'expo-router';
 import { IconSymbol }  from '@/components/ui/icon-symbol';
 import { RolePill }    from '@/components/ui/role-pill';
 import { useColors, type ComponentColors } from '@/hooks/use-colors';
+import { useScrollHeader } from '@/hooks/use-scroll-header';
 import { useDemoRole } from '@/utils/demo-role-store';
 import { resetFooter, hideFooter, showFooter } from '@/utils/global-footer-hide';
 import { openSidePanel } from '@/utils/global-side-panel';
@@ -312,7 +313,8 @@ export default function RosterScreen() {
     else if (y < lastScrollY.current - 10) showFooter();
     lastScrollY.current = y;
     if (y <= 0) showFooter();
-  }, []);
+    onScrollHeader(e);
+  }, [onScrollHeader]);
 
   // ── Sorted & filtered players ──
   const sorted = useMemo(() => {
@@ -335,6 +337,7 @@ export default function RosterScreen() {
 
   // ── Layout ──
   const topBarH  = insets.top + TOP_BAR_H;
+  const { opacity, onScroll: onScrollHeader } = useScrollHeader(topBarH);
   const scrollPB = insets.bottom + 80; // extra clearance above universal footer
 
   // ── Navigate to player profile ──
@@ -561,7 +564,7 @@ export default function RosterScreen() {
       {isCoach ? renderCoachView() : renderPlayerView()}
 
       {/* Fixed Top Bar */}
-      <View style={[s.topBarWrap, { paddingTop: insets.top, backgroundColor: C.bg }]}>
+      <Animated.View style={[s.topBarWrap, { paddingTop: insets.top, backgroundColor: C.bg, opacity }]}>
         <View style={s.topBar}>
           {/* Left: KMenuButton */}
           <View style={s.topBarSide}>
@@ -592,7 +595,7 @@ export default function RosterScreen() {
             />
           </View>
         </View>
-      </View>
+      </Animated.View>
 
       {/* FAB — Coach only */}
       {isCoach && (
@@ -626,8 +629,8 @@ const s = StyleSheet.create({
   topBarSide:  { width: 80, justifyContent: 'center' },
   topBarRight: { alignItems: 'flex-end' },
   centerWrap:  { flex: 1, alignItems: 'center', justifyContent: 'center' },
-  centerPill:  { paddingHorizontal: 14, paddingVertical: 6, borderRadius: 20, borderWidth: 1 },
-  centerPillTxt: { fontSize: 14, fontWeight: '700' },
+  centerPill:  { paddingHorizontal: 12, paddingVertical: 5, borderRadius: 14, borderWidth: 1 },
+  centerPillTxt: { fontSize: 12, fontWeight: '600', letterSpacing: 0.3 },
 });
 
 // Team header card

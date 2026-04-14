@@ -4,10 +4,10 @@
  * Navigation (Dashboard / Content / Analytics) lives in the sidebar — no dropdown.
  */
 
-import React, { useState, useCallback, useRef, useEffect } from 'react';
+import React, { useState, useCallback, useEffect } from 'react';
 import {
   View, Text, Pressable, ScrollView, TextInput,
-  Image, StyleSheet,
+  Image, StyleSheet, Animated,
 } from 'react-native';
 import * as Haptics from 'expo-haptics';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
@@ -18,6 +18,7 @@ import FontAwesome6 from '@expo/vector-icons/FontAwesome6';
 import { RolePill } from '@/components/ui/role-pill';
 import { BottomSheet } from '@/components/ui/bottom-sheet';
 import { useColors, type ComponentColors } from '@/hooks/use-colors';
+import { useScrollHeader } from '@/hooks/use-scroll-header';
 import { useAppContext } from '@/context/app-context';
 import { hideFooter, showFooter, resetFooter } from '@/utils/global-footer-hide';
 import { openSidePanel } from '@/utils/global-side-panel';
@@ -694,7 +695,7 @@ export default function HubScreen() {
   const [contentSearch, setContentSearch] = useState('');
   const [showComposer,  setShowComposer]  = useState(false);
 
-  const lastScrollY = useRef(0);
+  const { opacity: topBarAnim, onScroll: handleScroll, scrollEventThrottle } = useScrollHeader(insets.top + TOP_BAR_H);
 
   useFocusEffect(useCallback(() => {
     resetFooter();
@@ -709,19 +710,14 @@ export default function HubScreen() {
   // ── Sports mode: render nothing while redirect fires ─────────────────────────
   if (mode === 'sports') return null;
 
-  const handleScroll = useCallback((e: any) => {
-    const y = e.nativeEvent.contentOffset.y;
-    if (y > lastScrollY.current + 10) hideFooter();
-    else if (y < lastScrollY.current - 10) showFooter();
-    lastScrollY.current = y;
-    if (y <= 0) showFooter();
-  }, []);
+
 
 
   if (dataMode === 'live') return <LiveHubView mode={mode} C={C} insets={insets} />;
 
   const topBarH = insets.top + TOP_BAR_H;
   const contentPaddingTop = topBarH + 8;
+  const contentPaddingTopWithTabs = contentPaddingTop;
 
   // ── Owner Dashboard ───────────────────────────────────────────────────────────
 
@@ -736,9 +732,9 @@ export default function HubScreen() {
       <ScrollView
         key="owner-overview"
         onScroll={handleScroll}
-        scrollEventThrottle={16}
+        scrollEventThrottle={scrollEventThrottle}
         showsVerticalScrollIndicator={false}
-        contentContainerStyle={{ paddingTop: contentPaddingTop, paddingHorizontal: 16, paddingBottom: 120 }}
+        contentContainerStyle={{ paddingTop: contentPaddingTopWithTabs, paddingHorizontal: 16, paddingBottom: 120 }}
       >
         {/* Stats horizontal scroll */}
         <ScrollView horizontal showsHorizontalScrollIndicator={false} style={{ marginBottom: 20 }}>
@@ -833,7 +829,7 @@ export default function HubScreen() {
   const renderOwnerProfile = (viewerIsOwner = true) => (
     <ScrollView
       onScroll={handleScroll}
-      scrollEventThrottle={16}
+      scrollEventThrottle={scrollEventThrottle}
       showsVerticalScrollIndicator={false}
       contentContainerStyle={{ paddingTop: 0, paddingBottom: 120 }}
     >
@@ -841,14 +837,12 @@ export default function HubScreen() {
       <View style={{ position: 'relative', marginBottom: AVATAR_OVERLAP + 12 }}>
         {/* Cover image */}
         <Pressable disabled={!viewerIsOwner}>
-          <View style={{ height: COVER_H, backgroundColor: C.surface, overflow: 'hidden' }}>
+          <View style={{ height: COVER_H, backgroundColor: C.bg, overflow: 'hidden' }}>
             <Image
               source={{ uri: 'https://picsum.photos/seed/kanext-city/900/500' }}
               style={{ width: '100%', height: '100%' }}
               resizeMode="cover"
             />
-            {/* bottom scrim for avatar area */}
-            <View style={{ position: 'absolute', bottom: 0, left: 0, right: 0, height: 60, backgroundColor: 'rgba(0,0,0,0.20)' }} />
             {viewerIsOwner && (
               <View style={{ position: 'absolute', bottom: 10, right: 12, backgroundColor: 'rgba(0,0,0,0.50)', borderRadius: 8, paddingHorizontal: 10, paddingVertical: 5, flexDirection: 'row', alignItems: 'center', gap: 5 }}>
                 <IconSymbol name="camera.fill" size={12} color="#fff" />
@@ -857,21 +851,6 @@ export default function HubScreen() {
             )}
           </View>
         </Pressable>
-        {/* Nav row — scrolls with cover */}
-        <View style={{ position: 'absolute', top: insets.top, left: 0, right: 0, height: 44, flexDirection: 'row', alignItems: 'center', paddingHorizontal: 16, zIndex: 2 }}>
-          <View style={{ width: 44, justifyContent: 'center' }}>
-            <Pressable onPress={() => { Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light); if (isOwner) openSidePanel(); }} hitSlop={12}>
-              <Text style={{ fontSize: 20, fontWeight: '800', letterSpacing: -0.5, color: '#fff' }}>K</Text>
-            </Pressable>
-          </View>
-          <View style={{ flex: 1, alignItems: 'center' }}>
-            <Text style={{ fontSize: 15, fontWeight: '700', color: '#fff' }}>@sammyk</Text>
-          </View>
-          <View style={{ alignItems: 'flex-end' }}>
-            <RolePill role={role} onPress={cycleRole} isPrimary={isOwner} />
-          </View>
-        </View>
-
         {/* Profile photo — overlapping */}
         <View style={{ position: 'absolute', bottom: -AVATAR_OVERLAP, left: 20 }}>
           <Pressable disabled={!viewerIsOwner}>
@@ -1008,9 +987,9 @@ export default function HubScreen() {
     <ScrollView
       key="visitor-overview"
       onScroll={handleScroll}
-      scrollEventThrottle={16}
+      scrollEventThrottle={scrollEventThrottle}
       showsVerticalScrollIndicator={false}
-      contentContainerStyle={{ paddingTop: contentPaddingTop, paddingHorizontal: 16, paddingBottom: 120 }}
+      contentContainerStyle={{ paddingTop: contentPaddingTopWithTabs, paddingHorizontal: 16, paddingBottom: 120 }}
     >
       {/* Hero */}
       <View style={s.heroCenter}>
@@ -1096,9 +1075,9 @@ export default function HubScreen() {
       <ScrollView
         key="owner-content"
         onScroll={handleScroll}
-        scrollEventThrottle={16}
+        scrollEventThrottle={scrollEventThrottle}
         showsVerticalScrollIndicator={false}
-        contentContainerStyle={{ paddingTop: contentPaddingTop, paddingHorizontal: 16, paddingBottom: 120 }}
+        contentContainerStyle={{ paddingTop: contentPaddingTopWithTabs, paddingHorizontal: 16, paddingBottom: 120 }}
       >
         {/* ── Calendar ── */}
         <SectionHeader title="Content Calendar" C={C} />
@@ -1269,9 +1248,9 @@ export default function HubScreen() {
     <ScrollView
       key="visitor-members"
       onScroll={handleScroll}
-      scrollEventThrottle={16}
+      scrollEventThrottle={scrollEventThrottle}
       showsVerticalScrollIndicator={false}
-      contentContainerStyle={{ paddingTop: contentPaddingTop, paddingHorizontal: 16, paddingBottom: 120 }}
+      contentContainerStyle={{ paddingTop: contentPaddingTopWithTabs, paddingHorizontal: 16, paddingBottom: 120 }}
     >
       {/* Social proof */}
       <View style={[s.socialProof, { backgroundColor: C.surface }]}>
@@ -1322,9 +1301,9 @@ export default function HubScreen() {
       <ScrollView
         key="owner-analytics"
         onScroll={handleScroll}
-        scrollEventThrottle={16}
+        scrollEventThrottle={scrollEventThrottle}
         showsVerticalScrollIndicator={false}
-        contentContainerStyle={{ paddingTop: contentPaddingTop, paddingHorizontal: 16, paddingBottom: insets.bottom + 70 }}
+        contentContainerStyle={{ paddingTop: contentPaddingTopWithTabs, paddingHorizontal: 16, paddingBottom: insets.bottom + 70 }}
       >
         {/* ── Engagement ── */}
         <SectionHeader title="Engagement" C={C} />
@@ -1702,9 +1681,9 @@ export default function HubScreen() {
     <ScrollView
       key={`nonpersonal-${tabName}`}
       onScroll={handleScroll}
-      scrollEventThrottle={16}
+      scrollEventThrottle={scrollEventThrottle}
       showsVerticalScrollIndicator={false}
-      contentContainerStyle={{ paddingTop: contentPaddingTop, paddingHorizontal: 16, paddingBottom: 120 }}
+      contentContainerStyle={{ paddingTop: contentPaddingTopWithTabs, paddingHorizontal: 16, paddingBottom: 120 }}
     >
       <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center', paddingTop: 80, paddingBottom: 100 }}>
         <Text style={{ fontSize: 16, color: C.secondary, fontWeight: '600' }}>{tabName}</Text>
@@ -1713,20 +1692,441 @@ export default function HubScreen() {
     </ScrollView>
   );
 
+  // ── Universal Mode Profile (Hub Overview for non-personal modes) ─────────────
+
+  const renderModeProfile = (isAdmin: boolean) => {
+    if (mode === 'personal') return renderOwnerProfile(isAdmin);
+
+    // ── Mode-specific data ──
+    const profileData = mode === 'community' ? {
+      name: 'Intl. Christian Center LA',
+      subtitle: 'Los Angeles, CA',
+      coverSeed: 'iccla-church',
+      avatarInitials: 'IC',
+      avatarHue: 220,
+      followersLabel: '842 members',
+      adminActionLabel: 'Manage',
+      visitorActionLabel: 'Join',
+    } : mode === 'sports' ? {
+      name: "LU Men's Basketball",
+      subtitle: '22–8 · 14–2 GAAC',
+      coverSeed: 'lu-basketball',
+      avatarInitials: 'LU',
+      avatarHue: 0,
+      followersLabel: '3,241 fans',
+      adminActionLabel: 'Manage',
+      visitorActionLabel: 'Follow',
+    } : mode === 'education' ? {
+      name: 'Lincoln University',
+      subtitle: 'Oakland, California',
+      coverSeed: 'lincoln-campus',
+      avatarInitials: 'LU',
+      avatarHue: 200,
+      followersLabel: '800 students',
+      adminActionLabel: 'Manage',
+      visitorActionLabel: 'Apply Now',
+    } : {
+      // business
+      name: 'KaNeXT',
+      subtitle: 'Technology · Oakland, CA',
+      coverSeed: 'kanext-office',
+      avatarInitials: 'KN',
+      avatarHue: 240,
+      followersLabel: '2,847 followers',
+      adminActionLabel: 'Manage',
+      visitorActionLabel: 'Follow',
+    };
+
+    // ── Mode-specific sections ──
+    const renderModeSections = () => {
+      if (mode === 'community') return (
+        <>
+          {/* SERVICES */}
+          <View style={{ paddingHorizontal: 16, marginBottom: 28 }}>
+            <Text style={{ fontSize: 11, fontWeight: '700', color: C.secondary, letterSpacing: 0.8, textTransform: 'uppercase', marginBottom: 12 }}>Services</Text>
+            {[
+              { name: 'Sunday Morning', time: '9:00 AM' },
+              { name: 'Sunday Evening', time: '6:00 PM' },
+              { name: 'Wednesday', time: 'Bible Study 7:00 PM' },
+            ].map(svc => (
+              <View key={svc.name} style={{ backgroundColor: C.surface, borderRadius: 12, paddingHorizontal: 14, paddingVertical: 13, marginBottom: 8, flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
+                <Text style={{ fontSize: 14, fontWeight: '600', color: C.label }}>{svc.name}</Text>
+                <Text style={{ fontSize: 13, color: C.secondary }}>{svc.time}</Text>
+              </View>
+            ))}
+          </View>
+
+          {/* MINISTRIES */}
+          <View style={{ paddingHorizontal: 16, marginBottom: 28 }}>
+            <Text style={{ fontSize: 11, fontWeight: '700', color: C.secondary, letterSpacing: 0.8, textTransform: 'uppercase', marginBottom: 12 }}>Ministries</Text>
+            {[
+              { name: 'Youth Ministry', leader: 'Pastor James', count: 128 },
+              { name: "Women's Ministry", leader: 'Sister Grace', count: 94 },
+              { name: "Men's Ministry", leader: 'Deacon Paul', count: 76 },
+            ].map(min => (
+              <View key={min.name} style={{ backgroundColor: C.surface, borderRadius: 12, paddingHorizontal: 14, paddingVertical: 13, marginBottom: 8, flexDirection: 'row', alignItems: 'center' }}>
+                <View style={{ flex: 1 }}>
+                  <Text style={{ fontSize: 14, fontWeight: '600', color: C.label }}>{min.name}</Text>
+                  <Text style={{ fontSize: 12, color: C.secondary, marginTop: 2 }}>{min.leader}</Text>
+                </View>
+                <View style={{ paddingHorizontal: 10, paddingVertical: 4, backgroundColor: C.separator, borderRadius: 10 }}>
+                  <Text style={{ fontSize: 11, fontWeight: '600', color: C.secondary }}>{min.count} members</Text>
+                </View>
+              </View>
+            ))}
+          </View>
+
+          {/* UPCOMING EVENTS */}
+          <View style={{ paddingHorizontal: 16, marginBottom: 28 }}>
+            <Text style={{ fontSize: 11, fontWeight: '700', color: C.secondary, letterSpacing: 0.8, textTransform: 'uppercase', marginBottom: 12 }}>Upcoming Events</Text>
+            {[
+              { title: 'Easter Sunday Service', date: 'Apr 20', location: 'Main Sanctuary' },
+              { title: 'Community Outreach Day', date: 'Apr 26', location: 'Crenshaw District' },
+              { title: 'Youth Conference 2026', date: 'May 3', location: 'Fellowship Hall' },
+            ].map(evt => (
+              <View key={evt.title} style={{ backgroundColor: C.surface, borderRadius: 12, paddingHorizontal: 14, paddingVertical: 13, marginBottom: 8 }}>
+                <Text style={{ fontSize: 14, fontWeight: '600', color: C.label }}>{evt.title}</Text>
+                <Text style={{ fontSize: 12, color: C.secondary, marginTop: 4 }}>{evt.date} · {evt.location}</Text>
+              </View>
+            ))}
+          </View>
+
+          {/* LEADERSHIP */}
+          <View style={{ paddingHorizontal: 16, marginBottom: 28 }}>
+            <Text style={{ fontSize: 11, fontWeight: '700', color: C.secondary, letterSpacing: 0.8, textTransform: 'uppercase', marginBottom: 12 }}>Leadership</Text>
+            {[
+              { name: 'Pastor Michael Thompson', title: 'Senior Pastor', initials: 'MT' },
+              { name: 'Pastor David Rivera', title: 'Associate Pastor', initials: 'DR' },
+            ].map(leader => (
+              <View key={leader.name} style={{ backgroundColor: C.surface, borderRadius: 12, paddingHorizontal: 14, paddingVertical: 13, marginBottom: 8, flexDirection: 'row', alignItems: 'center', gap: 12 }}>
+                <View style={{ width: 40, height: 40, borderRadius: 20, backgroundColor: C.separator, alignItems: 'center', justifyContent: 'center' }}>
+                  <Text style={{ fontSize: 13, fontWeight: '700', color: C.secondary }}>{leader.initials}</Text>
+                </View>
+                <View style={{ flex: 1 }}>
+                  <Text style={{ fontSize: 14, fontWeight: '600', color: C.label }}>{leader.name}</Text>
+                  <Text style={{ fontSize: 12, color: C.secondary, marginTop: 2 }}>{leader.title}</Text>
+                </View>
+              </View>
+            ))}
+          </View>
+
+          {/* GIVING */}
+          <View style={{ paddingHorizontal: 16, marginBottom: 28 }}>
+            <Text style={{ fontSize: 11, fontWeight: '700', color: C.secondary, letterSpacing: 0.8, textTransform: 'uppercase', marginBottom: 12 }}>Giving</Text>
+            <View style={{ backgroundColor: C.surface, borderRadius: 12, paddingHorizontal: 14, paddingVertical: 16 }}>
+              <Text style={{ fontSize: 12, color: C.secondary, marginBottom: 6 }}>Monthly Goal</Text>
+              <Text style={{ fontSize: 18, fontWeight: '700', color: C.label, marginBottom: 10 }}>$3,200 / $5,000</Text>
+              <View style={{ height: 6, backgroundColor: C.separator, borderRadius: 3, marginBottom: 16, overflow: 'hidden' }}>
+                <View style={{ width: '64%', height: '100%', backgroundColor: C.label, borderRadius: 3 }} />
+              </View>
+              {isAdmin ? (
+                <Pressable style={{ paddingVertical: 10, borderRadius: 20, borderWidth: 1.5, borderColor: C.separator, alignItems: 'center' }}>
+                  <Text style={{ fontSize: 13, fontWeight: '600', color: C.label }}>View Giving</Text>
+                </Pressable>
+              ) : (
+                <Pressable style={{ paddingVertical: 10, borderRadius: 20, backgroundColor: C.activePill, alignItems: 'center' }}>
+                  <Text style={{ fontSize: 13, fontWeight: '700', color: C.activePillText }}>Support the Mission</Text>
+                </Pressable>
+              )}
+            </View>
+          </View>
+        </>
+      );
+
+      if (mode === 'sports') return (
+        <>
+          {/* INTELLIGENCE */}
+          <View style={{ paddingHorizontal: 16, marginBottom: 28 }}>
+            <Text style={{ fontSize: 11, fontWeight: '700', color: C.secondary, letterSpacing: 0.8, textTransform: 'uppercase', marginBottom: 12 }}>Intelligence</Text>
+            <View style={{ backgroundColor: C.surface, borderRadius: 12, paddingHorizontal: 14, paddingVertical: 14 }}>
+              <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', marginBottom: 10 }}>
+                <Text style={{ fontSize: 12, fontWeight: '700', color: C.secondary, letterSpacing: 0.5, textTransform: 'uppercase' }}>Team KR</Text>
+                <Text style={{ fontSize: 12, color: C.secondary }}>Confidence: High</Text>
+              </View>
+              <Text style={{ fontSize: 32, fontWeight: '800', color: C.label, marginBottom: 12 }}>87.4</Text>
+              <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginBottom: 6 }}>
+                <Text style={{ fontSize: 13, color: C.secondary }}>Offensive KR</Text>
+                <Text style={{ fontSize: 13, fontWeight: '700', color: C.label }}>89.1</Text>
+              </View>
+              <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginBottom: 12 }}>
+                <Text style={{ fontSize: 13, color: C.secondary }}>Defensive KR</Text>
+                <Text style={{ fontSize: 13, fontWeight: '700', color: C.label }}>85.7</Text>
+              </View>
+              <Text style={{ fontSize: 11, color: C.muted }}>Updated Apr 11</Text>
+            </View>
+          </View>
+
+          {/* SEASON */}
+          <View style={{ paddingHorizontal: 16, marginBottom: 28 }}>
+            <Text style={{ fontSize: 11, fontWeight: '700', color: C.secondary, letterSpacing: 0.8, textTransform: 'uppercase', marginBottom: 12 }}>Season</Text>
+            <View style={{ backgroundColor: C.surface, borderRadius: 12, paddingHorizontal: 14, paddingVertical: 14 }}>
+              <View style={{ flexDirection: 'row', gap: 8, marginBottom: 10 }}>
+                <View style={{ paddingHorizontal: 12, paddingVertical: 5, backgroundColor: '#5A8A6E22', borderRadius: 10 }}>
+                  <Text style={{ fontSize: 13, fontWeight: '700', color: '#5A8A6E' }}>22 W</Text>
+                </View>
+                <View style={{ paddingHorizontal: 12, paddingVertical: 5, backgroundColor: '#B85C5C22', borderRadius: 10 }}>
+                  <Text style={{ fontSize: 13, fontWeight: '700', color: '#B85C5C' }}>8 L</Text>
+                </View>
+              </View>
+              <Text style={{ fontSize: 13, color: C.secondary, marginBottom: 10 }}>14–2 GAAC · 2nd Place</Text>
+              <View style={{ alignSelf: 'flex-start', paddingHorizontal: 10, paddingVertical: 4, borderRadius: 10, borderWidth: 1, borderColor: '#B8943E' }}>
+                <Text style={{ fontSize: 11, fontWeight: '600', color: '#B8943E' }}>GAAC Tournament Finalist</Text>
+              </View>
+            </View>
+          </View>
+
+          {/* ROSTER */}
+          <View style={{ paddingHorizontal: 16, marginBottom: 28 }}>
+            <Text style={{ fontSize: 11, fontWeight: '700', color: C.secondary, letterSpacing: 0.8, textTransform: 'uppercase', marginBottom: 12 }}>Roster</Text>
+            <ScrollView horizontal showsHorizontalScrollIndicator={false} style={{ marginHorizontal: -16, paddingHorizontal: 16 }}>
+              <View style={{ flexDirection: 'row', gap: 14, paddingRight: 16 }}>
+                {[
+                  { initials: 'MJ', name: 'Marcus Johnson', kr: '91.2' },
+                  { initials: 'DW', name: 'Deon Williams', kr: '88.7' },
+                  { initials: 'TB', name: 'Tyler Brooks', kr: '85.4' },
+                  { initials: 'AD', name: 'Antoine Davis', kr: '83.1' },
+                  { initials: 'JS', name: 'Jerome Smith', kr: '79.8' },
+                  { initials: 'CP', name: 'Chris Parker', kr: '76.3' },
+                ].map(player => (
+                  <View key={player.name} style={{ alignItems: 'center', width: 64 }}>
+                    <View style={{ width: 48, height: 48, borderRadius: 24, backgroundColor: C.surface, alignItems: 'center', justifyContent: 'center', marginBottom: 6 }}>
+                      <Text style={{ fontSize: 14, fontWeight: '700', color: C.label }}>{player.initials}</Text>
+                    </View>
+                    <Text style={{ fontSize: 10, fontWeight: '600', color: C.label, textAlign: 'center' }} numberOfLines={1}>{player.name}</Text>
+                    <Text style={{ fontSize: 10, color: C.secondary, marginTop: 2 }}>{player.kr}</Text>
+                  </View>
+                ))}
+              </View>
+            </ScrollView>
+          </View>
+
+          {/* SCHEDULE */}
+          <View style={{ paddingHorizontal: 16, marginBottom: 28 }}>
+            <Text style={{ fontSize: 11, fontWeight: '700', color: C.secondary, letterSpacing: 0.8, textTransform: 'uppercase', marginBottom: 12 }}>Schedule</Text>
+            <View style={{ backgroundColor: C.surface, borderRadius: 12, paddingHorizontal: 14, paddingVertical: 14 }}>
+              <Text style={{ fontSize: 11, fontWeight: '700', color: C.secondary, letterSpacing: 0.5, textTransform: 'uppercase', marginBottom: 8 }}>Next Game</Text>
+              <Text style={{ fontSize: 16, fontWeight: '700', color: C.label, marginBottom: 6 }}>vs. Holy Names University</Text>
+              <Text style={{ fontSize: 13, color: C.secondary, marginBottom: 14 }}>Sat Apr 19 · 2:00 PM · Home</Text>
+              <Pressable style={{ alignSelf: 'flex-start', paddingHorizontal: 14, paddingVertical: 7, borderRadius: 16, borderWidth: 1.5, borderColor: C.separator }}>
+                <Text style={{ fontSize: 12, fontWeight: '600', color: C.label }}>View Full Schedule</Text>
+              </Pressable>
+            </View>
+          </View>
+        </>
+      );
+
+      if (mode === 'education') return (
+        <>
+          {/* PROGRAMS */}
+          <View style={{ paddingHorizontal: 16, marginBottom: 28 }}>
+            <Text style={{ fontSize: 11, fontWeight: '700', color: C.secondary, letterSpacing: 0.8, textTransform: 'uppercase', marginBottom: 12 }}>Programs</Text>
+            {[
+              { name: 'Bachelor of Science in Business Administration', level: 'Undergraduate' },
+              { name: 'Master of Business Administration (MBA)', level: 'Graduate' },
+              { name: 'Doctor of Business Administration (DBA)', level: 'Graduate' },
+              { name: 'Master of Science in Health Sciences', level: 'Graduate' },
+            ].map(prog => (
+              <View key={prog.name} style={{ backgroundColor: C.surface, borderRadius: 12, paddingHorizontal: 14, paddingVertical: 13, marginBottom: 8, flexDirection: 'row', alignItems: 'center' }}>
+                <Text style={{ flex: 1, fontSize: 14, fontWeight: '600', color: C.label }}>{prog.name}</Text>
+                <View style={{ paddingHorizontal: 8, paddingVertical: 4, backgroundColor: C.separator, borderRadius: 8, marginLeft: 10 }}>
+                  <Text style={{ fontSize: 10, fontWeight: '600', color: C.secondary }}>{prog.level}</Text>
+                </View>
+              </View>
+            ))}
+          </View>
+
+          {/* UPCOMING EVENTS */}
+          <View style={{ paddingHorizontal: 16, marginBottom: 28 }}>
+            <Text style={{ fontSize: 11, fontWeight: '700', color: C.secondary, letterSpacing: 0.8, textTransform: 'uppercase', marginBottom: 12 }}>Upcoming Events</Text>
+            {[
+              { title: 'Open House', date: 'Apr 15', location: 'Main Campus' },
+              { title: 'Info Session', date: 'Apr 22', location: 'Online' },
+              { title: 'Commencement', date: 'May 10', location: 'Paramount Theatre' },
+            ].map(evt => (
+              <View key={evt.title} style={{ backgroundColor: C.surface, borderRadius: 12, paddingHorizontal: 14, paddingVertical: 13, marginBottom: 8 }}>
+                <Text style={{ fontSize: 14, fontWeight: '600', color: C.label }}>{evt.title}</Text>
+                <Text style={{ fontSize: 12, color: C.secondary, marginTop: 4 }}>{evt.date} · {evt.location}</Text>
+              </View>
+            ))}
+          </View>
+
+          {/* QUICK LINKS */}
+          <View style={{ paddingHorizontal: 16, marginBottom: 28 }}>
+            <Text style={{ fontSize: 11, fontWeight: '700', color: C.secondary, letterSpacing: 0.8, textTransform: 'uppercase', marginBottom: 12 }}>Quick Links</Text>
+            {[
+              { icon: 'globe', title: 'Apply for Admission', url: 'kanext.io/apply' },
+              { icon: 'dollarsign.circle', title: 'Financial Aid', url: 'kanext.io/aid' },
+              { icon: 'calendar', title: 'Academic Calendar', url: 'kanext.io/calendar' },
+            ].map(link => (
+              <Pressable
+                key={link.title}
+                style={({ pressed }) => [{ flexDirection: 'row', alignItems: 'center', backgroundColor: C.surface, borderRadius: 12, paddingHorizontal: 14, paddingVertical: 13, marginBottom: 8, gap: 12 }, pressed && { opacity: 0.75 }]}
+              >
+                <View style={{ width: 36, height: 36, borderRadius: 8, backgroundColor: C.separator, alignItems: 'center', justifyContent: 'center' }}>
+                  <IconSymbol name={link.icon as any} size={16} color={C.label} />
+                </View>
+                <View style={{ flex: 1 }}>
+                  <Text style={{ fontSize: 14, fontWeight: '600', color: C.label }}>{link.title}</Text>
+                  <Text style={{ fontSize: 12, color: C.secondary, marginTop: 1 }}>{link.url}</Text>
+                </View>
+                <IconSymbol name="chevron.right" size={14} color={C.muted} />
+              </Pressable>
+            ))}
+          </View>
+        </>
+      );
+
+      // business
+      return (
+        <>
+          {/* PRODUCTS */}
+          <View style={{ paddingHorizontal: 16, marginBottom: 28 }}>
+            <Text style={{ fontSize: 11, fontWeight: '700', color: C.secondary, letterSpacing: 0.8, textTransform: 'uppercase', marginBottom: 12 }}>Products</Text>
+            {[
+              { name: 'KaNeXT OS', desc: 'Sports Intelligence Platform' },
+              { name: 'KaNeXT Dipson', desc: 'AI-Powered Institutional Assistant' },
+              { name: 'KaNeXT Analytics', desc: 'Real-Time Data Dashboard' },
+            ].map(prod => (
+              <Pressable
+                key={prod.name}
+                style={({ pressed }) => [{ flexDirection: 'row', alignItems: 'center', backgroundColor: C.surface, borderRadius: 12, paddingHorizontal: 14, paddingVertical: 13, marginBottom: 8, gap: 12 }, pressed && { opacity: 0.75 }]}
+              >
+                <View style={{ flex: 1 }}>
+                  <Text style={{ fontSize: 14, fontWeight: '600', color: C.label }}>{prod.name}</Text>
+                  <Text style={{ fontSize: 12, color: C.secondary, marginTop: 2 }}>{prod.desc}</Text>
+                </View>
+                <IconSymbol name="chevron.right" size={14} color={C.muted} />
+              </Pressable>
+            ))}
+          </View>
+
+          {/* TESTIMONIALS */}
+          <View style={{ paddingHorizontal: 16, marginBottom: 28 }}>
+            <Text style={{ fontSize: 11, fontWeight: '700', color: C.secondary, letterSpacing: 0.8, textTransform: 'uppercase', marginBottom: 12 }}>Testimonials</Text>
+            {[
+              { quote: 'KaNeXT transformed how we manage our program.', name: 'Coach Davis', title: 'LU Basketball' },
+              { quote: "The analytics suite is unlike anything we've seen.", name: 'Dr. Marcus', title: 'Lincoln University' },
+            ].map(t => (
+              <View key={t.name} style={{ backgroundColor: C.surface, borderRadius: 12, paddingHorizontal: 14, paddingVertical: 14, marginBottom: 8 }}>
+                <Text style={{ fontSize: 14, color: C.label, lineHeight: 20, fontStyle: 'italic', marginBottom: 10 }}>"{t.quote}"</Text>
+                <Text style={{ fontSize: 13, fontWeight: '700', color: C.label }}>{t.name}</Text>
+                <Text style={{ fontSize: 12, color: C.secondary }}>{t.title}</Text>
+              </View>
+            ))}
+          </View>
+
+          {/* CONTACT */}
+          <View style={{ paddingHorizontal: 16, marginBottom: 28 }}>
+            <Text style={{ fontSize: 11, fontWeight: '700', color: C.secondary, letterSpacing: 0.8, textTransform: 'uppercase', marginBottom: 12 }}>Contact</Text>
+            {[
+              { icon: 'envelope.fill', title: 'hello@kanext.io', url: 'hello@kanext.io' },
+              { icon: 'phone', title: 'Book a Demo', url: 'kanext.io/demo' },
+              { icon: 'globe', title: 'kanext.io', url: 'kanext.io' },
+            ].map(link => (
+              <Pressable
+                key={link.title}
+                style={({ pressed }) => [{ flexDirection: 'row', alignItems: 'center', backgroundColor: C.surface, borderRadius: 12, paddingHorizontal: 14, paddingVertical: 13, marginBottom: 8, gap: 12 }, pressed && { opacity: 0.75 }]}
+              >
+                <View style={{ width: 36, height: 36, borderRadius: 8, backgroundColor: C.separator, alignItems: 'center', justifyContent: 'center' }}>
+                  <IconSymbol name={link.icon as any} size={16} color={C.label} />
+                </View>
+                <View style={{ flex: 1 }}>
+                  <Text style={{ fontSize: 14, fontWeight: '600', color: C.label }}>{link.title}</Text>
+                  <Text style={{ fontSize: 12, color: C.secondary, marginTop: 1 }}>{link.url}</Text>
+                </View>
+                <IconSymbol name="chevron.right" size={14} color={C.muted} />
+              </Pressable>
+            ))}
+          </View>
+        </>
+      );
+    };
+
+    return (
+      <ScrollView
+        onScroll={handleScroll}
+        scrollEventThrottle={scrollEventThrottle}
+        showsVerticalScrollIndicator={false}
+        contentContainerStyle={{ paddingTop: 0, paddingBottom: 120 }}
+      >
+        {/* ── 1. Cover + Avatar ── */}
+        <View style={{ position: 'relative', marginBottom: AVATAR_OVERLAP + 12 }}>
+          {/* Cover image */}
+          <View style={{ height: COVER_H, backgroundColor: C.bg, overflow: 'hidden' }}>
+            <Image
+              source={{ uri: `https://picsum.photos/seed/${profileData.coverSeed}/900/500` }}
+              style={{ width: '100%', height: '100%' }}
+              resizeMode="cover"
+            />
+            {isAdmin && (
+              <View style={{ position: 'absolute', bottom: 10, right: 12, backgroundColor: 'rgba(0,0,0,0.50)', borderRadius: 8, paddingHorizontal: 10, paddingVertical: 5, flexDirection: 'row', alignItems: 'center', gap: 5 }}>
+                <IconSymbol name="camera.fill" size={12} color="#fff" />
+                <Text style={{ fontSize: 11, fontWeight: '600', color: '#fff' }}>Edit Cover</Text>
+              </View>
+            )}
+          </View>
+          {/* Avatar — initials circle, overlapping */}
+          <View style={{ position: 'absolute', bottom: -AVATAR_OVERLAP, left: 20 }}>
+            <View style={{ width: AVATAR_SIZE, height: AVATAR_SIZE, borderRadius: AVATAR_SIZE / 2, backgroundColor: `hsl(${profileData.avatarHue},42%,28%)`, alignItems: 'center', justifyContent: 'center', borderWidth: 3, borderColor: C.bg }}>
+              <Text style={{ fontSize: 22, fontWeight: '800', color: '#fff' }}>{profileData.avatarInitials}</Text>
+            </View>
+          </View>
+        </View>
+
+        {/* ── 2. Identity ── */}
+        <View style={{ paddingHorizontal: 20, marginBottom: 14 }}>
+          <Text style={{ fontSize: 20, fontWeight: '700', color: C.label, marginBottom: 2 }}>{profileData.name}</Text>
+          <Text style={{ fontSize: 14, color: C.secondary, marginBottom: 8 }}>{profileData.subtitle}</Text>
+        </View>
+
+        {/* ── 3. Followers + action row ── */}
+        <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', paddingHorizontal: 20, marginBottom: 18 }}>
+          <Text style={{ fontSize: 14, color: C.secondary }}>
+            <Text style={{ fontWeight: '700', color: C.label }}>{profileData.followersLabel.split(' ')[0]}</Text>
+            {' ' + profileData.followersLabel.split(' ').slice(1).join(' ')}
+          </Text>
+          {isAdmin ? (
+            <Pressable style={{ paddingHorizontal: 20, paddingVertical: 8, borderRadius: 20, borderWidth: 1.5, borderColor: C.separator }}>
+              <Text style={{ fontSize: 13, fontWeight: '600', color: C.label }}>{profileData.adminActionLabel}</Text>
+            </Pressable>
+          ) : (
+            <Pressable style={{ paddingHorizontal: 20, paddingVertical: 8, borderRadius: 20, backgroundColor: C.activePill }}>
+              <Text style={{ fontSize: 13, fontWeight: '600', color: C.activePillText }}>{profileData.visitorActionLabel}</Text>
+            </Pressable>
+          )}
+        </View>
+
+        {/* ── 4. Social icons row ── */}
+        <View style={{ flexDirection: 'row', justifyContent: 'flex-start', gap: 12, paddingHorizontal: 20, paddingVertical: 14, borderTopWidth: StyleSheet.hairlineWidth, borderBottomWidth: StyleSheet.hairlineWidth, borderColor: C.separator, marginBottom: 28 }}>
+          {SOCIAL_PLATFORMS.map(platform => (
+            <Pressable key={platform.name} onPress={() => Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light)}>
+              <View style={{ width: 40, height: 40, borderRadius: 20, backgroundColor: C.surface, alignItems: 'center', justifyContent: 'center' }}>
+                <FontAwesome6 name={platform.fa as any} size={18} color={C.label} iconStyle="brands" />
+              </View>
+            </Pressable>
+          ))}
+        </View>
+
+        {/* ── 5. Mode-specific sections ── */}
+        {renderModeSections()}
+      </ScrollView>
+    );
+  };
+
   // ── Render ───────────────────────────────────────────────────────────────────
 
   const renderContent = () => {
     // Non-personal modes get their own tab-based rendering
     if (mode === 'business') {
-      if (bizTab === 'Overview')   return renderOwnerDashboard();
+      if (bizTab === 'Overview')   return renderModeProfile(isBizAdmin);
       return renderNonPersonalTab(bizTab);
     }
     if (mode === 'education') {
-      if (eduTab === 'Overview')   return renderOwnerDashboard();
+      if (eduTab === 'Overview')   return renderModeProfile(isEduAdmin);
       return renderNonPersonalTab(eduTab);
     }
     if (mode === 'community') {
-      if (comTab === 'Overview')   return renderOwnerDashboard();
+      if (comTab === 'Overview')   return renderModeProfile(isComAdmin);
       return renderNonPersonalTab(comTab);
     }
     if (mode === 'sports') {
@@ -1745,182 +2145,102 @@ export default function HubScreen() {
   return (
     <View style={[s.screen, { backgroundColor: C.bg }]}>
 
-      {mode === 'personal' && activeTab === 'Profile' ? (
-        <>{renderContent()}</>
-      ) : (
-        <>
-          {renderContent()}
-          {/* ── Fixed Top Bar (all modes except personal Profile) ── */}
-          <View style={[s.topBarWrap, { paddingTop: insets.top, backgroundColor: C.bg }]}>
-        <View style={s.topBar}>
+      {/* Content */}
+      {renderContent()}
 
-          {/* ── Business Mode ── */}
-          {mode === 'business' && (<>
-            <View style={s.topBarSide}>
-              <Pressable
-                onPress={() => { Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light); if (isBizAdmin) openSidePanel(); }}
-                hitSlop={12}
-              >
-                <KMenuButton />
-              </Pressable>
-            </View>
-            <View style={{ flex: 1, alignItems: 'center', marginHorizontal: 8 }}>
-              <View style={{ flexDirection: 'row', backgroundColor: C.surface, borderRadius: 20, padding: 3, gap: 2 }}>
-                {(isBizAdmin
-                  ? (['Overview', 'Projects', 'Documents'] as const)
-                  : (['Overview', 'Projects'] as const)
-                ).map(t => {
-                  const active = bizTab === t;
-                  return (
-                    <Pressable
-                      key={t}
-                      onPress={() => { Haptics.selectionAsync(); setBizTab(t as any); }}
-                      style={{ paddingHorizontal: 14, paddingVertical: 6, borderRadius: 17, backgroundColor: active ? C.activePill : 'transparent' }}
-                    >
-                      <Text style={{ fontSize: 13, fontWeight: '600', color: active ? C.activePillText : C.secondary }}>{t}</Text>
-                    </Pressable>
-                  );
-                })}
+      {/* Universal fixed overlay top bar — hides on scroll down, returns on scroll up */}
+      <Animated.View style={[s.topBarWrap, { paddingTop: insets.top, opacity: topBarAnim }]} pointerEvents="box-none">
+        <View style={s.topBar} pointerEvents="box-none">
+          {/* K button — pill style */}
+          <View style={s.topBarSide} pointerEvents="auto">
+            <Pressable
+              onPress={() => {
+                Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+                openSidePanel();
+              }}
+              hitSlop={12}
+            >
+              <Text style={{ fontSize: 20, fontWeight: '800', letterSpacing: -0.5, color: C.label }}>K</Text>
+            </Pressable>
+          </View>
+
+          {/* Center: current tab label for personal mode */}
+          <View style={{ flex: 1, alignItems: 'center' }} pointerEvents="none">
+            {mode === 'personal' && activeTab !== 'Profile' && (
+              <View style={{ paddingHorizontal: 12, paddingVertical: 5, borderRadius: 14, borderWidth: 1, borderColor: C.separator, backgroundColor: C.surface }}>
+                <Text style={{ fontSize: 12, fontWeight: '600', letterSpacing: 0.3, color: C.label }}>{activeTab}</Text>
               </View>
-            </View>
-            <View style={[s.topBarSide, { alignItems: 'flex-end' }]}>
-              <RolePill role={bizRole} onPress={bizCycleRole} isPrimary={isBizAdmin} />
-            </View>
-          </>)}
+            )}
+          </View>
 
-          {/* ── Education Mode ── */}
-          {mode === 'education' && (<>
-            <View style={s.topBarSide}>
-              <Pressable
-                onPress={() => { Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light); if (isEduAdmin) openSidePanel(); }}
-                hitSlop={12}
-              >
-                <KMenuButton />
-              </Pressable>
-            </View>
-            <View style={{ flex: 1, alignItems: 'center', marginHorizontal: 8 }}>
-              <View style={{ flexDirection: 'row', backgroundColor: C.surface, borderRadius: 20, padding: 3, gap: 2 }}>
-                {(['Overview', 'Courses', 'Student Life'] as const).map(t => {
-                  const active = eduTab === t;
-                  return (
-                    <Pressable
-                      key={t}
-                      onPress={() => { Haptics.selectionAsync(); setEduTab(t as any); }}
-                      style={{ paddingHorizontal: 14, paddingVertical: 6, borderRadius: 17, backgroundColor: active ? C.activePill : 'transparent' }}
-                    >
-                      <Text style={{ fontSize: 13, fontWeight: '600', color: active ? C.activePillText : C.secondary }}>{t}</Text>
-                    </Pressable>
-                  );
-                })}
-              </View>
-            </View>
-            <View style={[s.topBarSide, { alignItems: 'flex-end' }]}>
-              <RolePill role={eduRole} onPress={eduCycleRole} isPrimary={isEduAdmin} />
-            </View>
-          </>)}
-
-          {/* ── Community Mode ── */}
-          {mode === 'community' && (<>
-            <View style={s.topBarSide}>
-              <Pressable
-                onPress={() => { Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light); if (isComAdmin) openSidePanel(); }}
-                hitSlop={12}
-              >
-                <KMenuButton />
-              </Pressable>
-            </View>
-            <View style={{ flex: 1, alignItems: 'center', marginHorizontal: 8 }}>
-              <View style={{ flexDirection: 'row', backgroundColor: C.surface, borderRadius: 20, padding: 3, gap: 2 }}>
-                {(isComAdmin
-                  ? (['Overview', 'Services', 'Groups'] as const)
-                  : (['Overview', 'Services'] as const)
-                ).map(t => {
-                  const active = comTab === t;
-                  return (
-                    <Pressable
-                      key={t}
-                      onPress={() => { Haptics.selectionAsync(); setComTab(t as any); }}
-                      style={{ paddingHorizontal: 14, paddingVertical: 6, borderRadius: 17, backgroundColor: active ? C.activePill : 'transparent' }}
-                    >
-                      <Text style={{ fontSize: 13, fontWeight: '600', color: active ? C.activePillText : C.secondary }}>{t}</Text>
-                    </Pressable>
-                  );
-                })}
-              </View>
-            </View>
-            <View style={[s.topBarSide, { alignItems: 'flex-end' }]}>
-              <RolePill role={comRole} onPress={comCycleRole} isPrimary={isComAdmin} />
-            </View>
-          </>)}
-
-          {/* ── Sports Mode ── */}
-          {mode === 'sports' && (<>
-            <View style={s.topBarSide}>
-              <Pressable
-                onPress={() => { Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light); if (isSportsAdmin) openSidePanel(); }}
-                hitSlop={12}
-              >
-                <KMenuButton />
-              </Pressable>
-            </View>
-            <View style={{ flex: 1, alignItems: 'center', marginHorizontal: 8 }}>
-              <View style={{ flexDirection: 'row', backgroundColor: C.surface, borderRadius: 20, padding: 3, gap: 2 }}>
-                {(isSportsAdmin
-                  ? (['Overview', 'Film Room', 'Scouting', 'Game Day'] as const)
-                  : (['Overview', 'Film Room'] as const)
-                ).map(t => {
-                  const active = sportsTab === t;
-                  return (
-                    <Pressable
-                      key={t}
-                      onPress={() => { Haptics.selectionAsync(); setSportsTab(t as any); }}
-                      style={{ paddingHorizontal: 10, paddingVertical: 6, borderRadius: 17, backgroundColor: active ? C.activePill : 'transparent' }}
-                    >
-                      <Text style={{ fontSize: 12, fontWeight: '600', color: active ? C.activePillText : C.secondary }}>{t}</Text>
-                    </Pressable>
-                  );
-                })}
-              </View>
-            </View>
-            <View style={[s.topBarSide, { alignItems: 'flex-end' }]}>
-              <RolePill role={sportsRole} onPress={sportsCycleRole} isPrimary={isSportsAdmin} />
-            </View>
-          </>)}
-
-          {/* ── Personal Mode ── */}
-          {mode === 'personal' && (<>
-            {/* Left: K button */}
-            <View style={s.topBarSide}>
-              <Pressable
-                onPress={() => { Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light); if (isOwner) openSidePanel(); }}
-                hitSlop={12}
-              >
-                <Text style={{ fontSize: 20, fontWeight: '800', letterSpacing: -0.5, color: activeTab === 'Profile' ? '#fff' : C.label }}>K</Text>
-              </Pressable>
-            </View>
-
-            {/* Center: handle on Profile, cream pill on Content/Analytics */}
-            <View style={{ flex: 1, alignItems: 'center', marginHorizontal: 8 }}>
-              {activeTab === 'Profile' ? (
-                <Text style={{ fontSize: 15, fontWeight: '700', color: '#fff' }}>@sammyk</Text>
-              ) : (
-                <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center', height: 32, borderRadius: 16, borderWidth: 1, borderColor: C.separator, backgroundColor: C.surface, marginHorizontal: 2 }}>
-                  <Text style={{ fontSize: 14, fontWeight: '700', color: C.label }}>{activeTab}</Text>
-                </View>
-              )}
-            </View>
-
-            {/* Right: RolePill */}
-            <View style={[s.topBarSide, { alignItems: 'flex-end' }]}>
-              <RolePill role={role} onPress={cycleRole} isPrimary={isOwner} />
-            </View>
-          </>)}
-
+          {/* Right: role pill */}
+          <View style={[s.topBarSide, { alignItems: 'flex-end' }]} pointerEvents="auto">
+            {mode === 'personal' && <RolePill role={role} onPress={cycleRole} isPrimary={isOwner} />}
+            {mode === 'business' && <RolePill role={bizRole} onPress={bizCycleRole} isPrimary={isBizAdmin} />}
+            {mode === 'education' && <RolePill role={eduRole} onPress={eduCycleRole} isPrimary={isEduAdmin} />}
+            {mode === 'community' && <RolePill role={comRole} onPress={comCycleRole} isPrimary={isComAdmin} />}
+            {mode === 'sports' && <RolePill role={sportsRole} onPress={sportsCycleRole} isPrimary={isSportsAdmin} />}
+          </View>
         </View>
-      </View>
-        </>
-      )}
+      </Animated.View>
 
+      {/* Sticky tab pills — only for non-personal modes (or personal non-Profile tabs) */}
+      {mode !== 'personal' && (
+        <View style={{ position: 'absolute', top: insets.top + 44, left: 0, right: 0, backgroundColor: C.bg, paddingHorizontal: 16, paddingVertical: 6, zIndex: 9 }} pointerEvents="box-none">
+          {mode === 'business' && (
+            <View style={{ flexDirection: 'row', gap: 6 }} pointerEvents="auto">
+              {(isBizAdmin ? (['Overview', 'Projects', 'Documents'] as const) : (['Overview', 'Projects'] as const)).map(t => {
+                const active = bizTab === t;
+                return (
+                  <Pressable key={t} onPress={() => { Haptics.selectionAsync(); setBizTab(t as any); }}
+                    style={{ paddingHorizontal: 14, paddingVertical: 6, borderRadius: 17, backgroundColor: active ? C.activePill : C.surface }}>
+                    <Text style={{ fontSize: 13, fontWeight: '600', color: active ? C.activePillText : C.secondary }}>{t}</Text>
+                  </Pressable>
+                );
+              })}
+            </View>
+          )}
+          {mode === 'education' && (
+            <View style={{ flexDirection: 'row', gap: 6 }} pointerEvents="auto">
+              {(['Overview', 'Courses', 'Student Life'] as const).map(t => {
+                const active = eduTab === t;
+                return (
+                  <Pressable key={t} onPress={() => { Haptics.selectionAsync(); setEduTab(t as any); }}
+                    style={{ paddingHorizontal: 14, paddingVertical: 6, borderRadius: 17, backgroundColor: active ? C.activePill : C.surface }}>
+                    <Text style={{ fontSize: 13, fontWeight: '600', color: active ? C.activePillText : C.secondary }}>{t}</Text>
+                  </Pressable>
+                );
+              })}
+            </View>
+          )}
+          {mode === 'community' && (
+            <View style={{ flexDirection: 'row', gap: 6 }} pointerEvents="auto">
+              {(isComAdmin ? (['Overview', 'Services', 'Groups'] as const) : (['Overview', 'Services'] as const)).map(t => {
+                const active = comTab === t;
+                return (
+                  <Pressable key={t} onPress={() => { Haptics.selectionAsync(); setComTab(t as any); }}
+                    style={{ paddingHorizontal: 14, paddingVertical: 6, borderRadius: 17, backgroundColor: active ? C.activePill : C.surface }}>
+                    <Text style={{ fontSize: 13, fontWeight: '600', color: active ? C.activePillText : C.secondary }}>{t}</Text>
+                  </Pressable>
+                );
+              })}
+            </View>
+          )}
+          {mode === 'sports' && (
+            <View style={{ flexDirection: 'row', gap: 6 }} pointerEvents="auto">
+              {(isSportsAdmin ? (['Overview', 'Film Room', 'Scouting', 'Game Day'] as const) : (['Overview', 'Film Room'] as const)).map(t => {
+                const active = sportsTab === t;
+                return (
+                  <Pressable key={t} onPress={() => { Haptics.selectionAsync(); setSportsTab(t as any); }}
+                    style={{ paddingHorizontal: 10, paddingVertical: 6, borderRadius: 17, backgroundColor: active ? C.activePill : C.surface }}>
+                    <Text style={{ fontSize: 12, fontWeight: '600', color: active ? C.activePillText : C.secondary }}>{t}</Text>
+                  </Pressable>
+                );
+              })}
+            </View>
+          )}
+        </View>
+      )}
 
       {/* ── Content Composer ── */}
       <BottomSheet visible={showComposer} onClose={() => setShowComposer(false)}>

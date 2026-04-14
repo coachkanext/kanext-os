@@ -7,7 +7,7 @@
 
 import React, { useState, useMemo, useCallback } from 'react';
 import {
-  View, Text, Pressable, ScrollView, Alert, StyleSheet,
+  View, Text, Pressable, ScrollView, Alert, StyleSheet, Animated,
 } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useFocusEffect, useRouter } from 'expo-router';
@@ -20,6 +20,7 @@ import { useColors, type ComponentColors } from '@/hooks/use-colors';
 import { openSidePanel } from '@/utils/global-side-panel';
 import { resetFooter } from '@/utils/global-footer-hide';
 import { useDemoRole } from '@/utils/demo-role-store';
+import { useScrollHeader } from '@/hooks/use-scroll-header';
 
 // ── Types ─────────────────────────────────────────────────────────────────────
 
@@ -61,6 +62,7 @@ export default function PostingPolicyPage() {
   const router  = useRouter();
   const s       = useMemo(() => makeStyles(C), [C]);
 
+  const { opacity, onScroll, scrollEventThrottle } = useScrollHeader();
   const [role, cycleRole, roleCycles] = useDemoRole('community:social');
   const isPastor = role === roleCycles[0];
 
@@ -78,33 +80,36 @@ export default function PostingPolicyPage() {
     Alert.alert('Policy Saved', `Posting policy set to: ${POLICIES.find(p => p.key === policy)?.label ?? policy}.`);
   };
 
-  const topBarH = insets.top + 52;
-
   return (
     <View style={{ flex: 1, backgroundColor: C.bg }}>
 
       {/* ── Top Bar ───────────────────────────────────────────────────────── */}
-      <View style={[s.topBar, { height: topBarH, paddingTop: insets.top, backgroundColor: C.bg }]}>
-        <Pressable
-          onPress={() => { Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light); openSidePanel(); }}
-          style={s.kBtn}
-        >
-          <KMenuButton />
-        </Pressable>
-        <View style={s.titleWrap}>
-          <View style={[s.titlePill, { backgroundColor: C.surface, borderColor: C.separator }]}>
-            <Text style={[s.titleText, { color: C.label }]}>Posting Policy</Text>
+      <Animated.View style={[s.topBarOuter, { paddingTop: insets.top, backgroundColor: C.bg, borderBottomColor: C.separator, borderBottomWidth: StyleSheet.hairlineWidth, opacity }]}>
+        <View style={s.topBar}>
+          <Pressable
+            onPress={() => { Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light); openSidePanel(); }}
+            style={s.kBtn}
+          >
+            <KMenuButton />
+          </Pressable>
+          <View style={s.titleWrap}>
+            <View style={[s.titlePill, { backgroundColor: C.surface, borderColor: C.separator }]}>
+              <Text style={[s.titleText, { color: C.label }]}>Posting Policy</Text>
+            </View>
+          </View>
+          <View style={s.rolePillWrap}>
+            <RolePill role={role} onPress={cycleRole} isPrimary={isPastor} />
           </View>
         </View>
-        <View style={s.rolePillWrap}>
-          <RolePill role={role} onPress={cycleRole} isPrimary={isPastor} />
-        </View>
-      </View>
+      </Animated.View>
 
       <ScrollView
-        contentContainerStyle={{ paddingTop: topBarH + 20, paddingBottom: insets.bottom + 100, paddingHorizontal: 16 }}
+        contentContainerStyle={{ paddingTop: insets.top + 52 + 8, paddingBottom: insets.bottom + 100, paddingHorizontal: 16 }}
         showsVerticalScrollIndicator={false}
+        onScroll={onScroll}
+        scrollEventThrottle={scrollEventThrottle}
       >
+        <View style={{ height: 20 }} />
 
         {/* ── Policy Options ── */}
         <View style={{ gap: 10, marginBottom: 20 }}>
@@ -159,9 +164,9 @@ export default function PostingPolicyPage() {
 
 function makeStyles(C: ComponentColors) {
   return StyleSheet.create({
+    topBarOuter: { position: 'absolute', top: 0, left: 0, right: 0, zIndex: 10 },
     topBar: {
-      position: 'absolute', top: 0, left: 0, right: 0,
-      zIndex: 10, flexDirection: 'row', alignItems: 'center', paddingHorizontal: 16,
+      height: 52, flexDirection: 'row', alignItems: 'center', paddingHorizontal: 16,
     },
     kBtn:        { width: 40, alignItems: 'center' },
     titleWrap:   { flex: 1, alignItems: 'center' },

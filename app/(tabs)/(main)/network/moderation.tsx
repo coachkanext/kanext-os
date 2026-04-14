@@ -11,6 +11,7 @@ import {
   ScrollView,
   Alert,
   StyleSheet,
+  Animated,
 } from 'react-native';
 import * as Haptics from 'expo-haptics';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
@@ -19,6 +20,7 @@ import { IconSymbol } from '@/components/ui/icon-symbol';
 import { RolePill } from '@/components/ui/role-pill';
 import { KMenuButton } from '@/components/ui/k-menu-button';
 import { useColors } from '@/hooks/use-colors';
+import { useScrollHeader } from '@/hooks/use-scroll-header';
 import { openSidePanel } from '@/utils/global-side-panel';
 import { useDemoRole } from '@/utils/demo-role-store';
 import { resetFooter } from '@/utils/global-footer-hide';
@@ -306,9 +308,13 @@ const es = StyleSheet.create({
 
 // ─── Screen ───────────────────────────────────────────────────────────────────
 
+const TOP_BAR_H = 52;
+
 export default function ModerationScreen() {
   const insets = useSafeAreaInsets();
+  const topBarH = insets.top + TOP_BAR_H;
   const C = useColors();
+  const { opacity, onScroll, scrollEventThrottle } = useScrollHeader();
   const [role, cycleRole, roleCycles] = useDemoRole('personal:network');
   const isOwner = role === roleCycles[0];
   const guardedCycle = useOwnerGuard(role, roleCycles, cycleRole, '/(tabs)/(main)/network');
@@ -328,62 +334,75 @@ export default function ModerationScreen() {
     return false;
   });
 
+  const filterRow = (
+    <ScrollView
+      horizontal
+      showsHorizontalScrollIndicator={false}
+      style={[s.filterRow, { borderBottomColor: C.separator }]}
+      contentContainerStyle={s.filterContent}
+    >
+      {FILTERS.map(f => {
+        const active = activeFilter === f.id;
+        return (
+          <Pressable
+            key={f.id}
+            onPress={() => setActiveFilter(f.id)}
+            style={[
+              s.filterPill,
+              active
+                ? { backgroundColor: C.label }
+                : { borderWidth: StyleSheet.hairlineWidth, borderColor: C.separator },
+            ]}
+          >
+            <Text style={[s.filterPillText, { color: active ? C.bg : C.label }]}>{f.label}</Text>
+          </Pressable>
+        );
+      })}
+    </ScrollView>
+  );
+
   return (
     <View style={[s.root, { backgroundColor: C.bg }]}>
-      {/* Top Bar */}
-      <View style={[s.topBar, { paddingTop: insets.top + 8, borderBottomColor: C.separator, backgroundColor: C.bg }]}>
-        <Pressable onPress={() => openSidePanel()} hitSlop={8}>
-          <KMenuButton />
-        </Pressable>
+      {/* Top Bar — absolute, animated */}
+      <Animated.View style={[s.topBarOuter, { paddingTop: insets.top + 8, borderBottomColor: C.separator, backgroundColor: C.bg, position: 'absolute', top: 0, left: 0, right: 0, zIndex: 10, opacity }]}>
+        <View style={s.topBar}>
+          <Pressable onPress={() => openSidePanel()} hitSlop={8}>
+            <KMenuButton />
+          </Pressable>
 
-        <View style={[s.titlePill, { backgroundColor: C.surface, borderColor: C.separator }]}>
-          <Text style={[s.titleText, { color: C.label }]}>Moderation</Text>
+          <View style={[s.titlePill, { backgroundColor: C.surface, borderColor: C.separator }]}>
+            <Text style={[s.titleText, { color: C.label }]}>Moderation</Text>
+          </View>
+
+          <RolePill role={role} onPress={guardedCycle} isPrimary={isOwner} />
         </View>
+      </Animated.View>
 
-        <RolePill role={role} onPress={guardedCycle} isPrimary={isOwner} />
-      </View>
-
-      {/* Filter Pills */}
-      <ScrollView
-        horizontal
-        showsHorizontalScrollIndicator={false}
-        style={[s.filterRow, { borderBottomColor: C.separator }]}
-        contentContainerStyle={s.filterContent}
-      >
-        {FILTERS.map(f => {
-          const active = activeFilter === f.id;
-          return (
-            <Pressable
-              key={f.id}
-              onPress={() => setActiveFilter(f.id)}
-              style={[
-                s.filterPill,
-                active
-                  ? { backgroundColor: C.label }
-                  : { borderWidth: StyleSheet.hairlineWidth, borderColor: C.separator },
-              ]}
-            >
-              <Text style={[s.filterPillText, { color: active ? C.bg : C.label }]}>{f.label}</Text>
-            </Pressable>
-          );
-        })}
-      </ScrollView>
-
-      {/* Content */}
       {filteredItems.length === 0 ? (
-        <EmptyState />
+        <>
+          <View style={{ marginTop: topBarH }}>
+            {filterRow}
+          </View>
+          <EmptyState />
+        </>
       ) : (
         <ScrollView
           style={{ flex: 1 }}
-          contentContainerStyle={{ paddingTop: 12, paddingBottom: 49 + insets.bottom + 24 }}
+          contentContainerStyle={{ paddingTop: topBarH, paddingBottom: 49 + insets.bottom + 24 }}
           showsVerticalScrollIndicator={false}
+          onScroll={onScroll}
+          scrollEventThrottle={scrollEventThrottle}
         >
-          {filteredItems.map(item => {
-            if (item.itemType === 'flagged') {
-              return <FlaggedPostCard key={item.id} item={item as FlaggedItem} onResolve={handleResolve} />;
-            }
-            return <ReportedMemberCard key={item.id} item={item as ReportedItem} onResolve={handleResolve} />;
-          })}
+          {filterRow}
+
+          <View style={{ paddingTop: 12 }}>
+            {filteredItems.map(item => {
+              if (item.itemType === 'flagged') {
+                return <FlaggedPostCard key={item.id} item={item as FlaggedItem} onResolve={handleResolve} />;
+              }
+              return <ReportedMemberCard key={item.id} item={item as ReportedItem} onResolve={handleResolve} />;
+            })}
+          </View>
         </ScrollView>
       )}
     </View>
@@ -392,9 +411,10 @@ export default function ModerationScreen() {
 
 const s = StyleSheet.create({
   root:           { flex: 1 },
-  topBar:         { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', paddingHorizontal: 16, paddingBottom: 10, borderBottomWidth: StyleSheet.hairlineWidth },
-  titlePill:      { paddingHorizontal: 16, paddingVertical: 6, borderRadius: 20, borderWidth: StyleSheet.hairlineWidth },
-  titleText:      { fontSize: 15, fontWeight: '600' },
+  topBarOuter:    { borderBottomWidth: StyleSheet.hairlineWidth, zIndex: 10 },
+  topBar:         { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', paddingHorizontal: 16, paddingBottom: 10, height: TOP_BAR_H },
+  titlePill:      { paddingHorizontal: 12, paddingVertical: 5, borderRadius: 14, borderWidth: 1 },
+  titleText:      { fontSize: 12, fontWeight: '600', letterSpacing: 0.3 },
   filterRow:      { flexGrow: 0, borderBottomWidth: StyleSheet.hairlineWidth },
   filterContent:  { paddingHorizontal: 16, paddingVertical: 10, gap: 8, flexDirection: 'row' },
   filterPill:     { borderRadius: 16, paddingHorizontal: 14, paddingVertical: 6 },

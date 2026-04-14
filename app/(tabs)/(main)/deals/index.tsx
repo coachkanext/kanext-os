@@ -20,6 +20,7 @@ import { RolePill } from '@/components/ui/role-pill';
 import { useDemoRole } from '@/utils/demo-role-store';
 import { useDataMode } from '@/utils/global-demo-mode';
 import { useColors } from '@/hooks/use-colors';
+import { useScrollHeader } from '@/hooks/use-scroll-header';
 import { openSidePanel } from '@/utils/global-side-panel';
 import { hideFooter, showFooter, resetFooter } from '@/utils/global-footer-hide';
 import { KMenuButton } from '@/components/ui/k-menu-button';
@@ -1423,6 +1424,7 @@ export default function DealsScreen() {
   const C = useColors();
   const insets = useSafeAreaInsets();
   const topBarH = insets.top + TOP_BAR_H;
+  const { opacity, onScroll: scrollHeaderOnScroll, scrollEventThrottle } = useScrollHeader(topBarH);
 
   const dataMode = useDataMode();
 
@@ -1469,7 +1471,8 @@ export default function DealsScreen() {
 
   const handleScroll = useCallback((e: NativeSyntheticEvent<NativeScrollEvent>) => {
     e.nativeEvent.contentOffset.y > 20 ? hideFooter() : showFooter();
-  }, []);
+    scrollHeaderOnScroll(e);
+  }, [scrollHeaderOnScroll]);
 
   const togglePills = () => {
     const next = !showPills;
@@ -1520,20 +1523,22 @@ export default function DealsScreen() {
   if (!isOwner) {
     return (
       <View style={{ flex: 1, backgroundColor: C.bg }}>
-        <View style={[styles.topBar, { height: topBarH, paddingTop: insets.top, backgroundColor: C.bg }]}>
-          <Pressable
-            onPress={() => { Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light); }}
-            style={styles.topBtn}
-          >
-            <KMenuButton />
-          </Pressable>
-          <View style={{ flex: 1, alignItems: 'center' }}>
-            <View style={[styles.staticPill, { backgroundColor: C.surface, borderColor: C.separator }]}>
-              <Text style={{ fontSize: 13, fontWeight: '700', color: C.label }}>Collaborate</Text>
+        <Animated.View style={[styles.topBarOuter, { paddingTop: insets.top, backgroundColor: C.bg, opacity }]}>
+          <View style={styles.topBar}>
+            <Pressable
+              onPress={() => { Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light); }}
+              style={styles.topBtn}
+            >
+              <KMenuButton />
+            </Pressable>
+            <View style={{ flex: 1, alignItems: 'center' }}>
+              <View style={[styles.staticPill, { backgroundColor: C.surface, borderColor: C.separator }]}>
+                <Text style={{ fontSize: 13, fontWeight: '700', color: C.label }}>Collaborate</Text>
+              </View>
             </View>
+            <RolePill role={role} onPress={cycleRole} isPrimary={false} />
           </View>
-          <RolePill role={role} onPress={cycleRole} isPrimary={false} />
-        </View>
+        </Animated.View>
 
         <CollaborateView C={C} topBarH={topBarH} />
       </View>
@@ -1545,21 +1550,23 @@ export default function DealsScreen() {
     <View style={{ flex: 1, backgroundColor: C.bg }}>
 
       {/* Top Bar */}
-      <View style={[styles.topBar, { height: topBarH, paddingTop: insets.top, backgroundColor: C.bg }]}>
-        <Pressable onPress={() => { Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light); openSidePanel(); }} style={styles.topBtn}>
-          <KMenuButton />
-        </Pressable>
-        <View style={{ flex: 1, alignItems: 'center' }}>
-          <View style={{ backgroundColor: C.label, borderRadius: 18, paddingHorizontal: 14, paddingVertical: 5 }}>
-            <Text style={{ fontSize: 14, fontWeight: '700', color: C.bg }}>{tab}</Text>
+      <Animated.View style={[styles.topBarOuter, { paddingTop: insets.top, backgroundColor: C.bg, opacity }]}>
+        <View style={styles.topBar}>
+          <Pressable onPress={() => { Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light); openSidePanel(); }} style={styles.topBtn}>
+            <KMenuButton />
+          </Pressable>
+          <View style={{ flex: 1, alignItems: 'center' }}>
+            <View style={{ backgroundColor: C.label, borderRadius: 18, paddingHorizontal: 14, paddingVertical: 5 }}>
+              <Text style={{ fontSize: 14, fontWeight: '700', color: C.bg }}>{tab}</Text>
+            </View>
           </View>
+          <RolePill role={role} onPress={cycleRole} isPrimary={isOwner} />
         </View>
-        <RolePill role={role} onPress={cycleRole} isPrimary={isOwner} />
-      </View>
+      </Animated.View>
 
 
       {/* Filter Pills (Pipeline / Insights only) */}
-      <Animated.View style={[styles.pillRow, { height: pillRowH, top: topBarH, backgroundColor: C.bg }]}>
+      <View style={[styles.pillRow, { height: pillRowH, top: topBarH, backgroundColor: C.bg }]}>
         <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.pillScroll}>
           {pills.map(pill => (
             <Pressable
@@ -1574,7 +1581,7 @@ export default function DealsScreen() {
             </Pressable>
           ))}
         </ScrollView>
-      </Animated.View>
+      </View>
 
 
       {/* Content */}
@@ -1701,10 +1708,13 @@ export default function DealsScreen() {
 // ── Styles ─────────────────────────────────────────────────────────────────────
 
 const styles = StyleSheet.create({
-  topBar: {
+  topBarOuter: {
     position: 'absolute', top: 0, left: 0, right: 0, zIndex: 10,
+  },
+  topBar: {
     flexDirection: 'row', alignItems: 'flex-end',
     paddingHorizontal: 16, paddingBottom: 8,
+    height: 52,
   },
   topBtn: { width: 40, height: 36, alignItems: 'center', justifyContent: 'center' },
   staticPill: {

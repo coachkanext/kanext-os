@@ -10,7 +10,7 @@
 import React, { useState, useMemo, useCallback } from 'react';
 import {
   View, Text, Pressable, ScrollView, StyleSheet,
-  Animated, Alert,
+  Animated, Alert, Image,
 } from 'react-native';
 import * as Haptics from 'expo-haptics';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
@@ -52,24 +52,6 @@ const getAuthorMeta = (name: string) => AUTHOR_META[name] ?? { bg: '#333333' };
 
 // ── Per-post media themes (brand-appropriate color "photos") ──────────────────
 
-type MediaTheme = {
-  bg: string;
-  stripe: string;    // lighter tone for upper zone
-  watermark: string; // big faint text
-  tag: 'PHOTO' | 'VIDEO';
-};
-
-const POST_MEDIA: Record<string, MediaTheme> = {
-  '2':  { bg: '#0A0A0A', stripe: '#1C1C1C', watermark: 'NIKE',    tag: 'PHOTO' },
-  '4':  { bg: '#1A3225', stripe: '#243D2E', watermark: '50K',     tag: 'VIDEO' },
-  '5':  { bg: '#0E2018', stripe: '#172C21', watermark: 'v2.0',   tag: 'PHOTO' },
-  '10': { bg: '#1C1410', stripe: '#2A1E16', watermark: 'GROW',   tag: 'VIDEO' },
-  '12': { bg: '#2A0808', stripe: '#3A0E0E', watermark: 'RBK',    tag: 'PHOTO' },
-  '14': { bg: '#0A0A14', stripe: '#10101E', watermark: 'YT',     tag: 'VIDEO' },
-  '17': { bg: '#0A1420', stripe: '#101C2C', watermark: 'LIFT',   tag: 'VIDEO' },
-  '20': { bg: '#1E1420', stripe: '#2A1A2C', watermark: 'LIFE',   tag: 'PHOTO' },
-  '22': { bg: '#0C1808', stripe: '#141E0E', watermark: 'GROW',   tag: 'PHOTO' },
-};
 
 // ── Types ─────────────────────────────────────────────────────────────────────
 
@@ -90,7 +72,8 @@ type Post = {
   comments: number;
   shares: number;
   views: number;
-  image?: boolean;
+  imageUri?: string;
+  mediaTag?: 'PHOTO' | 'VIDEO';
   repost?: boolean;
 };
 
@@ -112,7 +95,8 @@ const POSTS: Post[] = [
     content: "Summer campaign applications are open. We're looking for creators who move culture — not just followers. DM us your media kit.",
     timestamp: '4h ago',
     visibility: 'Public',
-    image: true,
+    imageUri: 'https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=800&h=450&fit=crop&q=80',
+    mediaTag: 'PHOTO',
     likes: 8420, comments: 312, shares: 1840, views: 94300,
   },
   {
@@ -129,7 +113,8 @@ const POSTS: Post[] = [
     content: 'Just crossed 50K subscribers. Here\'s what I actually learned:\n\n1. Your first 1K is the hardest\n2. Consistency > quality early on\n3. The algorithm rewards completion rate\n4. Comments are your best research tool\n5. Burnout is real — build rest into your schedule',
     timestamp: '1d ago',
     visibility: 'Public',
-    image: true,
+    imageUri: 'https://images.unsplash.com/photo-1611162616305-c69b3fa7fbe0?w=800&h=450&fit=crop&q=80',
+    mediaTag: 'VIDEO',
     likes: 2140, comments: 418, shares: 673, views: 31200,
   },
   {
@@ -138,7 +123,8 @@ const POSTS: Post[] = [
     content: 'v2.0 is live. The operating system for creators, teams, and institutions. One platform. Every mode.',
     timestamp: '2d ago',
     visibility: 'Public',
-    image: true,
+    imageUri: 'https://images.unsplash.com/photo-1512941937669-90a1b58e7e9c?w=800&h=450&fit=crop&q=80',
+    mediaTag: 'PHOTO',
     likes: 1870, comments: 203, shares: 891, views: 28400,
   },
   {
@@ -234,7 +220,8 @@ const POSTS: Post[] = [
     content: "How I research a YouTube video before I write a single word:\n\n1. Search the topic + sort by Views\n2. Note the 3 highest-performing thumbnails\n3. Read the top 20 comments on each\n4. Find the question nobody answered\n5. That's your angle\n\nThe best videos answer questions people didn't know they had.",
     timestamp: '7h ago',
     visibility: 'Public',
-    image: true,
+    imageUri: 'https://images.unsplash.com/photo-1560472354-b33ff0c44a43?w=800&h=450&fit=crop&q=80',
+    mediaTag: 'VIDEO',
     likes: 3240, comments: 521, shares: 1140, views: 42800,
   },
   {
@@ -243,7 +230,8 @@ const POSTS: Post[] = [
     content: "We're partnering with 10 independent creators for the Classic Leather relaunch. No agency middlemen. Direct contracts. Full creative control.\n\nApplications open to this community first. Link in bio.",
     timestamp: '10h ago',
     visibility: 'Public',
-    image: true,
+    imageUri: 'https://images.unsplash.com/photo-1600185365926-3a2ce3cdb9eb?w=800&h=450&fit=crop&q=80',
+    mediaTag: 'PHOTO',
     likes: 4120, comments: 608, shares: 2310, views: 61400,
   },
   {
@@ -252,7 +240,8 @@ const POSTS: Post[] = [
     content: "YouTube changed the algorithm again. Here's what actually changed (and what didn't):\n\nChanged: Click-through rate matters less than watch time in the first 30 seconds\nChanged: Shorts now feed long-form if you cross-post intelligently\nDidn't change: Consistency still beats everything\n\nFull breakdown in the video ↓",
     timestamp: '14h ago',
     visibility: 'Public',
-    image: true,
+    imageUri: 'https://images.unsplash.com/photo-1598550476439-6847785fcea6?w=800&h=450&fit=crop&q=80',
+    mediaTag: 'VIDEO',
     likes: 1870, comments: 342, shares: 891, views: 28100,
   },
   {
@@ -269,7 +258,8 @@ const POSTS: Post[] = [
     content: "12-week transformation challenge starts Monday. Open to everyone in this community.\n\n• Daily check-in thread in #general\n• Weekly live session every Sunday 7pm ET\n• Accountability partners matched in week 1\n\nComment 'IN' to be added to the list.",
     timestamp: '22h ago',
     visibility: 'Public',
-    image: true,
+    imageUri: 'https://images.unsplash.com/photo-1534438327276-14e5300c3a48?w=800&h=450&fit=crop&q=80',
+    mediaTag: 'VIDEO',
     likes: 2910, comments: 1240, shares: 673, views: 34800,
   },
   {
@@ -278,7 +268,8 @@ const POSTS: Post[] = [
     content: "The creator I study most isn't in tech or business. It's Virgil Abloh.\n\nHe treated everything as a draft — '3% rule': change any existing thing by just 3% and it becomes yours.\n\nEvery piece of content I make, I ask: what's my 3%?",
     timestamp: '2d ago',
     visibility: 'Public',
-    image: true,
+    imageUri: 'https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=800&h=450&fit=crop&q=80',
+    mediaTag: 'PHOTO',
     likes: 4380, comments: 612, shares: 1820, views: 57300,
   },
   {
@@ -287,7 +278,8 @@ const POSTS: Post[] = [
     content: "I turned my newsletter into a $140K/year business. Here's the full breakdown:\n\n• 14,200 subscribers (free: 12,800 / paid: 1,400)\n• $9.99/month paid tier\n• 3 sponsored issues/month @ $3,500 each\n• 1 annual cohort course @ $2,400\n\nRevenue = subscriptions ($16.8K) + sponsors ($126K) + course (~$14.4K) = $157K gross",
     timestamp: '2d ago',
     visibility: 'Public',
-    image: true,
+    imageUri: 'https://images.unsplash.com/photo-1586339949916-3e9457bef6d3?w=800&h=450&fit=crop&q=80',
+    mediaTag: 'PHOTO',
     likes: 9140, comments: 1830, shares: 4210, views: 128000,
   },
   {
@@ -316,7 +308,7 @@ const POSTS: Post[] = [
   },
 ];
 
-// ── Main Component ────────────────────────────────────────────────────────────
+// ── Main Component ────────────────────────────────────────────────────────────────
 
 export default function SocialScreen() {
   const C       = useColors();
@@ -347,309 +339,232 @@ export default function SocialScreen() {
     return String(n);
   };
 
-  // ── Composer ────────────────────────────────────────────────────────────────
+  // ── Composer (X-style) ────────────────────────────────────────────────────────────
 
   const renderComposer = () => (
-    <Pressable
-      style={[s.composerCard, { backgroundColor: C.surface, borderColor: C.separator }]}
-      onPress={() => Alert.alert('Composer', 'Full composer coming soon')}
-    >
-      {/* Top row: avatar + prompt + visibility toggle */}
-      <View style={s.composerTop}>
+    <View style={[s.composerWrap, { borderBottomColor: C.separator }]}>
+      <View style={s.composerRow}>
         <View style={[s.avatar, { backgroundColor: '#1A1714' }]}>
           <Text style={s.avatarText}>S</Text>
         </View>
-        <View style={{ flex: 1 }}>
-          <Text style={[s.composerPrompt, { color: C.secondary }]}>
+        <Pressable
+          style={s.composerInput}
+          onPress={() => Alert.alert('Composer', 'Full composer coming soon')}
+        >
+          <Text style={[s.composerPlaceholder, { color: C.secondary }]}>
             What's on your mind?
           </Text>
           <View style={s.composerVisRow}>
             {(['Public', 'Subscribers Only'] as const).map(v => {
-              const isActive  = composerVisibility === v;
-              const accent    = v === 'Public' ? GAIN : CAUTION;
+              const isActive = composerVisibility === v;
+              const accent   = v === 'Public' ? GAIN : CAUTION;
               return (
                 <Pressable
                   key={v}
                   style={[
                     s.composerVisPill,
-                    isActive
-                      ? { backgroundColor: accent, borderColor: accent }
-                      : { backgroundColor: 'transparent', borderColor: accent },
+                    { borderColor: accent, backgroundColor: isActive ? accent : 'transparent' },
                   ]}
                   onPress={() => { Haptics.selectionAsync(); setComposerVisibility(v); }}
                 >
                   <Text style={[s.composerVisPillText, { color: isActive ? '#FFFFFF' : accent }]}>
-                    {v}
+                    {v === 'Subscribers Only' ? 'Subs Only' : v}
                   </Text>
                 </Pressable>
               );
             })}
           </View>
-        </View>
+        </Pressable>
       </View>
 
-      {/* Bottom: media icons + Post button */}
-      <View style={[s.composerBottom, { borderTopColor: C.separator }]}>
-        <View style={s.composerMediaIcons}>
-          <IconSymbol name="photo"     size={20} color={C.secondary} />
+      <View style={[s.composerToolbar, { borderTopColor: C.separator }]}>
+        <View style={s.composerIcons}>
+          <IconSymbol name="photo"     size={20} color={GAIN} />
           <IconSymbol name="video"     size={20} color={C.secondary} />
           <IconSymbol name="link"      size={20} color={C.secondary} />
           <IconSymbol name="checklist" size={20} color={C.secondary} />
         </View>
-        <View style={[s.postBtn, { backgroundColor: C.label }]}>
+        <Pressable
+          style={[s.postBtn, { backgroundColor: C.label }]}
+          onPress={() => Alert.alert('Composer', 'Full composer coming soon')}
+        >
           <Text style={[s.postBtnText, { color: C.bg }]}>Post</Text>
-        </View>
+        </Pressable>
       </View>
-    </Pressable>
+    </View>
   );
 
-  // ── Post card ────────────────────────────────────────────────────────────────
+  // ── Post card (X-style) ───────────────────────────────────────────────────────────
 
   const renderPostCard = (post: Post) => {
-    const isLocked = !isOwner && post.visibility === 'Subscribers Only';
-    const isPinned = !!post.pinned;
-    const meta     = getAuthorMeta(post.author);
-
-    // Color tokens
-    const cardBg   = isPinned ? C.label : C.surface;
-    const cardTxt  = isPinned ? C.bg    : C.label;
-    const cardSec  = isPinned ? C.bg    : C.secondary;
-    const cardSep  = C.separator;
-    const avatarBg = isPinned ? C.bg    : meta.bg;
-    const avatarTxtColor = isPinned ? C.label : '#FFFFFF';
-
-    // Role badge
+    const isLocked   = !isOwner && post.visibility === 'Subscribers Only';
+    const isPinned   = !!post.pinned;
+    const meta       = getAuthorMeta(post.author);
     const isOwnerPost = post.kind === 'owner';
-    const roleBg     = (isPinned && isOwnerPost) ? C.bg    : isOwnerPost ? C.label   : 'transparent';
-    const roleTxt    = (isPinned && isOwnerPost) ? C.label : isOwnerPost ? C.bg      :
-                       post.kind === 'brand' ? GAIN : cardSec;
-    const roleBorder = (isPinned && isOwnerPost) ? C.bg    : isOwnerPost ? C.label   :
-                       post.kind === 'brand' ? GAIN : cardSec;
-    const roleLabel  = ({ owner: 'You', creator: 'Creator', brand: 'Brand', company: 'Company' } as const)[post.kind];
 
     return (
       <View
         key={post.id}
-        style={[
-          s.postCard,
-          { backgroundColor: cardBg, borderColor: isPinned ? 'transparent' : C.separator },
-          post.scheduled && { opacity: 0.65 },
-        ]}
+        style={[s.post, { borderBottomColor: C.separator }, post.scheduled && { opacity: 0.65 }]}
       >
-        {/* Repost attribution */}
-        {post.repost && (
-          <View style={s.metaRow}>
-            <IconSymbol name="arrow.2.squarepath" size={12} color={cardSec} />
-            <Text style={[s.metaText, { color: cardSec }]}>Reposted</Text>
-          </View>
-        )}
-
-        {/* Pinned indicator */}
-        {isPinned && (
-          <View style={s.metaRow}>
-            <IconSymbol name="pin.fill" size={11} color={EMBER} />
-            <Text style={[s.metaText, { color: EMBER, fontWeight: '700', letterSpacing: 0.5 }]}>
-              PINNED POST
+        {/* Pinned / Repost meta banner */}
+        {(isPinned || post.repost) && (
+          <View style={s.metaBanner}>
+            <View style={s.metaBannerSpacer} />
+            <IconSymbol
+              name={isPinned ? 'pin.fill' : 'arrow.2.squarepath'}
+              size={13}
+              color={isPinned ? EMBER : C.secondary}
+            />
+            <Text style={[s.metaBannerText, { color: isPinned ? EMBER : C.secondary }]}>
+              {isPinned ? 'Pinned post' : 'Reposted'}
             </Text>
           </View>
         )}
 
-        {/* Scheduled indicator */}
-        {post.scheduled && (
-          <View style={s.metaRow}>
-            <IconSymbol name="calendar.badge.clock" size={12} color={cardSec} />
-            <Text style={[s.metaText, { color: cardSec }]}>Scheduled · {post.scheduledTime}</Text>
-          </View>
-        )}
+        {/* Two-column layout */}
+        <View style={s.postRow}>
 
-        {/* ── Post header ── */}
-        <View style={s.postHeader}>
-          <View style={[s.avatar, { backgroundColor: avatarBg }]}>
-            <Text style={[s.avatarText, { color: avatarTxtColor }]}>
-              {post.author.charAt(0).toUpperCase()}
-            </Text>
+          {/* Avatar column */}
+          <View style={s.avatarCol}>
+            <View style={[s.avatar, { backgroundColor: meta.bg }]}>
+              <Text style={s.avatarText}>{post.author.charAt(0).toUpperCase()}</Text>
+            </View>
           </View>
 
-          <View style={s.authorCol}>
-            <View style={s.authorNameRow}>
-              <Text style={[s.authorName, { color: cardTxt }]} numberOfLines={1}>
+          {/* Content column */}
+          <View style={s.contentCol}>
+
+            {/* Author row */}
+            <View style={s.authorRow}>
+              <Text style={[s.authorName, { color: C.label }]} numberOfLines={1}>
                 {post.author}
               </Text>
-              <View style={[s.roleBadge, { backgroundColor: roleBg, borderColor: roleBorder }]}>
-                <Text style={[s.roleBadgeText, { color: roleTxt }]}>{roleLabel}</Text>
-              </View>
-            </View>
-            <Text style={[s.authorMeta, { color: cardSec }]}>
-              {post.handle} · {post.timestamp}
-            </Text>
-          </View>
-
-          <View style={s.postHeaderRight}>
-            {/* Visibility — filled pill */}
-            <View style={[
-              s.visBadge,
-              post.visibility === 'Public'
-                ? { backgroundColor: GAIN,    borderColor: GAIN    }
-                : { backgroundColor: CAUTION, borderColor: CAUTION },
-            ]}>
-              <Text style={s.visBadgeText}>
-                {post.visibility === 'Public' ? 'Public' : 'Sub Only'}
-              </Text>
-            </View>
-
-            {isOwner && (
-              <Pressable
-                hitSlop={10}
-                onPress={() => Alert.alert('Post Options', '', [
-                  { text: 'Edit',    onPress: () => {} },
-                  { text: 'Pin',     onPress: () => {} },
-                  { text: 'Delete',  style: 'destructive', onPress: () => {} },
-                  { text: 'Cancel',  style: 'cancel' },
-                ])}
-              >
-                <IconSymbol name="ellipsis" size={16} color={cardSec} />
-              </Pressable>
-            )}
-          </View>
-        </View>
-
-        {/* ── Post body ── */}
-        {isLocked ? (
-          <View style={s.lockedBlock}>
-            {/* Blurred preview */}
-            <Text style={[s.postBody, { color: C.label, opacity: 0.18 }]} numberOfLines={3}>
-              {post.content}
-            </Text>
-            {/* Lock card */}
-            <View style={[s.lockedCard, { borderColor: C.separator, backgroundColor: C.bg }]}>
-              <View style={[s.lockedIconCircle, { backgroundColor: C.surface }]}>
-                <IconSymbol name="lock.fill" size={20} color={CAUTION} />
-              </View>
-              <Text style={[s.lockedTitle, { color: C.label }]}>Subscribers Only</Text>
-              <Text style={[s.lockedSub, { color: C.secondary }]}>
-                Subscribe to unlock this post and all subscriber content
-              </Text>
-              <Pressable
-                style={[s.subscribeBtn, { backgroundColor: C.label }]}
-                onPress={() => Alert.alert('Subscribe')}
-              >
-                <Text style={[s.subscribeBtnText, { color: C.bg }]}>Subscribe · $9/mo</Text>
-              </Pressable>
-            </View>
-          </View>
-        ) : (
-          <Text style={[s.postBody, { color: cardTxt }]}>{post.content}</Text>
-        )}
-
-        {/* ── Media ── */}
-        {post.image && !isLocked && (() => {
-          const theme = POST_MEDIA[post.id];
-          if (!theme) return null;
-          return (
-            <Pressable
-              style={[s.mediaBlock, { backgroundColor: theme.bg }]}
-              onPress={() => Alert.alert(theme.tag === 'VIDEO' ? 'Play video' : 'View photo')}
-            >
-              {/* Upper lighter zone — simulates sky / background */}
-              <View
-                style={[
-                  StyleSheet.absoluteFill,
-                  { bottom: '45%', backgroundColor: theme.stripe },
-                ]}
-              />
-
-              {/* Big faint brand watermark */}
-              <Text style={s.mediaWatermark}>{theme.watermark}</Text>
-
-              {/* Top-right tag */}
-              <View style={s.mediaTag}>
-                <IconSymbol
-                  name={theme.tag === 'VIDEO' ? 'play.fill' : 'camera.fill'}
-                  size={10}
-                  color="#FFFFFF"
-                />
-                <Text style={s.mediaTagText}>{theme.tag}</Text>
-              </View>
-
-              {/* Centre play button for video */}
-              {theme.tag === 'VIDEO' && (
-                <View style={s.playBtn}>
-                  <IconSymbol name="play.fill" size={22} color="#FFFFFF" />
+              {isOwnerPost && (
+                <View style={[s.youBadge, { borderColor: C.separator }]}>
+                  <Text style={[s.youBadgeText, { color: C.secondary }]}>you</Text>
                 </View>
               )}
-            </Pressable>
-          );
-        })()}
-
-        {/* ── Engagement bar ── */}
-        {!isLocked && (
-          <>
-            <View style={[s.engDivider, { backgroundColor: cardSep }]} />
-            <View style={s.engBar}>
-              <Pressable style={s.engItem} onPress={() => Haptics.selectionAsync()}>
-                <IconSymbol name="heart" size={17} color={cardSec} />
-                <Text style={[s.engCount, { color: cardSec }]}>{fmtCount(post.likes)}</Text>
-              </Pressable>
-              <Pressable style={s.engItem} onPress={() => Haptics.selectionAsync()}>
-                <IconSymbol name="bubble.left" size={17} color={cardSec} />
-                <Text style={[s.engCount, { color: cardSec }]}>{fmtCount(post.comments)}</Text>
-              </Pressable>
-              <Pressable style={s.engItem} onPress={() => Haptics.selectionAsync()}>
-                <IconSymbol name="arrowshape.turn.up.right" size={17} color={cardSec} />
-                <Text style={[s.engCount, { color: cardSec }]}>{fmtCount(post.shares)}</Text>
-              </Pressable>
-
+              <Text style={[s.authorSub, { color: C.secondary }]} numberOfLines={1}>
+                {' '}· {post.handle} · {post.timestamp}
+              </Text>
               <View style={{ flex: 1 }} />
-
-              <View style={s.engItem}>
-                <IconSymbol name="eye" size={14} color={cardSec} />
-                <Text style={[s.engCount, { color: cardSec }]}>{fmtCount(post.views)}</Text>
-              </View>
-              <Pressable style={s.engItem} onPress={() => Haptics.selectionAsync()}>
-                <IconSymbol name="bookmark" size={17} color={cardSec} />
-              </Pressable>
+              {post.visibility === 'Subscribers Only' && (
+                <View style={{ marginRight: 8 }}>
+                  <IconSymbol name="lock.fill" size={11} color={CAUTION} />
+                </View>
+              )}
+              {isOwner && (
+                <Pressable
+                  hitSlop={10}
+                  onPress={() => Alert.alert('Post Options', '', [
+                    { text: 'Edit',   onPress: () => {} },
+                    { text: 'Pin',    onPress: () => {} },
+                    { text: 'Delete', style: 'destructive', onPress: () => {} },
+                    { text: 'Cancel', style: 'cancel' },
+                  ])}
+                >
+                  <IconSymbol name="ellipsis" size={16} color={C.secondary} />
+                </Pressable>
+              )}
             </View>
-          </>
-        )}
+
+            {/* Body */}
+            {isLocked ? (
+              <View style={s.lockedBlock}>
+                <Text style={[s.postBody, { color: C.label, opacity: 0.18 }]} numberOfLines={3}>
+                  {post.content}
+                </Text>
+                <View style={[s.lockedCard, { borderColor: C.separator, backgroundColor: C.surface }]}>
+                  <View style={[s.lockedIconCircle, { backgroundColor: C.bg }]}>
+                    <IconSymbol name="lock.fill" size={20} color={CAUTION} />
+                  </View>
+                  <Text style={[s.lockedTitle, { color: C.label }]}>Subscribers Only</Text>
+                  <Text style={[s.lockedSub, { color: C.secondary }]}>
+                    Subscribe to unlock this post and all subscriber content
+                  </Text>
+                  <Pressable
+                    style={[s.subscribeBtn, { backgroundColor: C.label }]}
+                    onPress={() => Alert.alert('Subscribe')}
+                  >
+                    <Text style={[s.subscribeBtnText, { color: C.bg }]}>Subscribe · $9/mo</Text>
+                  </Pressable>
+                </View>
+              </View>
+            ) : (
+              <Text style={[s.postBody, { color: C.label }]}>{post.content}</Text>
+            )}
+
+            {/* Media */}
+            {post.imageUri && !isLocked && (
+              <Pressable
+                style={s.mediaBlock}
+                onPress={() => Alert.alert(post.mediaTag === 'VIDEO' ? 'Play video' : 'View photo')}
+              >
+                <Image
+                  source={{ uri: post.imageUri }}
+                  style={StyleSheet.absoluteFill}
+                  resizeMode="cover"
+                />
+                {post.mediaTag === 'VIDEO' && (
+                  <View style={s.playBtn}>
+                    <IconSymbol name="play.fill" size={22} color="#FFFFFF" />
+                  </View>
+                )}
+              </Pressable>
+            )}
+
+            {/* Engagement */}
+            {!isLocked && (
+              <View style={s.engBar}>
+                <Pressable style={s.engItem} onPress={() => Haptics.selectionAsync()}>
+                  <IconSymbol name="bubble.left" size={17} color={C.secondary} />
+                  <Text style={[s.engCount, { color: C.secondary }]}>{fmtCount(post.comments)}</Text>
+                </Pressable>
+                <Pressable style={s.engItem} onPress={() => Haptics.selectionAsync()}>
+                  <IconSymbol name="arrow.2.squarepath" size={17} color={C.secondary} />
+                  <Text style={[s.engCount, { color: C.secondary }]}>{fmtCount(post.shares)}</Text>
+                </Pressable>
+                <Pressable style={s.engItem} onPress={() => Haptics.selectionAsync()}>
+                  <IconSymbol name="heart" size={17} color={C.secondary} />
+                  <Text style={[s.engCount, { color: C.secondary }]}>{fmtCount(post.likes)}</Text>
+                </Pressable>
+                <Pressable style={s.engItem} onPress={() => Haptics.selectionAsync()}>
+                  <IconSymbol name="eye" size={15} color={C.secondary} />
+                  <Text style={[s.engCount, { color: C.secondary }]}>{fmtCount(post.views)}</Text>
+                </Pressable>
+                <View style={{ flex: 1 }} />
+                <Pressable style={s.engItem} onPress={() => Haptics.selectionAsync()}>
+                  <IconSymbol name="bookmark" size={17} color={C.secondary} />
+                </Pressable>
+              </View>
+            )}
+
+          </View>
+        </View>
       </View>
     );
   };
 
-  // ── Feed ─────────────────────────────────────────────────────────────────────
+  // ── Feed ─────────────────────────────────────────────────────────────────────────
 
   const renderFeed = () => (
     <View>
+      {/* Filter tab bar — Owner only */}
       {isOwner && (
-        <View style={s.filterRow}>
+        <View style={[s.filterTabBar, { borderBottomColor: C.separator }]}>
           {(['All', 'Public', 'Subscribers Only'] as const).map(f => {
             const isActive = activeFilter === f;
-            const accentBg =
-              f === 'Public'           ? GAIN    :
-              f === 'Subscribers Only' ? CAUTION :
-              C.label;
             return (
               <Pressable
                 key={f}
-                style={[
-                  s.filterChip,
-                  isActive
-                    ? { backgroundColor: accentBg, borderColor: accentBg }
-                    : { backgroundColor: 'transparent', borderColor: C.separator },
-                ]}
+                style={s.filterTab}
                 onPress={() => { Haptics.selectionAsync(); setActiveFilter(f); }}
               >
-                {f === 'Public' && (
-                  <IconSymbol name="globe" size={10} color={isActive ? '#FFFFFF' : C.secondary} />
-                )}
-                {f === 'Subscribers Only' && (
-                  <IconSymbol name="lock.fill" size={10} color={isActive ? '#FFFFFF' : C.secondary} />
-                )}
-                <Text style={[
-                  s.filterChipText,
-                  { color: isActive ? '#FFFFFF' : C.secondary },
-                ]}>
+                <Text style={[s.filterTabText, { color: isActive ? C.label : C.secondary }]}>
                   {f === 'Subscribers Only' ? 'Subs Only' : f}
                 </Text>
+                {isActive && <View style={[s.filterTabUnderline, { backgroundColor: C.label }]} />}
               </Pressable>
             );
           })}
@@ -662,7 +577,7 @@ export default function SocialScreen() {
     </View>
   );
 
-  // ── Render ────────────────────────────────────────────────────────────────────
+  // ── Render ─────────────────────────────────────────────────────────────────────────
 
   return (
     <View style={[s.root, { backgroundColor: C.bg }]}>
@@ -700,7 +615,7 @@ export default function SocialScreen() {
         style={{ flex: 1 }}
         contentContainerStyle={[
           s.scrollContent,
-          { paddingTop: insets.top + 52 + 8, paddingBottom: insets.bottom + 80 },
+          { paddingTop: insets.top + 52, paddingBottom: insets.bottom + 80 },
         ]}
         showsVerticalScrollIndicator={false}
         onScroll={onScroll}
@@ -712,12 +627,12 @@ export default function SocialScreen() {
   );
 }
 
-// ── Styles ────────────────────────────────────────────────────────────────────
+// ── Styles ─────────────────────────────────────────────────────────────────────────
 
 const makeStyles = (C: ComponentColors) => StyleSheet.create({
   root: { flex: 1 },
 
-  // ── Top bar ────────────────────────────────────────────────────────────────
+  // ── Top bar ──────────────────────────────────────────────────────────────────
   topBarOuter: {
     position: 'absolute', top: 0, left: 0, right: 0, zIndex: 10,
     borderBottomWidth: StyleSheet.hairlineWidth,
@@ -725,125 +640,123 @@ const makeStyles = (C: ComponentColors) => StyleSheet.create({
   topBar: {
     height: 52, flexDirection: 'row', alignItems: 'center', paddingHorizontal: 12,
   },
-  kBtn:        { width: 44, height: 44, alignItems: 'flex-start', justifyContent: 'center' },
-  centerPill:  { flex: 1, alignItems: 'center' },
-  titlePill:   { paddingHorizontal: 12, paddingVertical: 5, borderRadius: 14, borderWidth: 1 },
+  kBtn:          { width: 44, height: 44, alignItems: 'flex-start', justifyContent: 'center' },
+  centerPill:    { flex: 1, alignItems: 'center' },
+  titlePill:     { paddingHorizontal: 12, paddingVertical: 5, borderRadius: 14, borderWidth: 1 },
   titlePillText: { fontSize: 12, fontWeight: '600', letterSpacing: 0.3 },
   rolePillWrap:  { width: 80, alignItems: 'flex-end' },
 
-  // ── Scroll ─────────────────────────────────────────────────────────────────
-  scrollContent: { paddingHorizontal: 16 },
+  // ── Scroll ───────────────────────────────────────────────────────────────────
+  scrollContent: {},
 
-  // ── Filter chips ───────────────────────────────────────────────────────────
-  filterRow: { flexDirection: 'row', gap: 7, paddingBottom: 14 },
-  filterChip: {
+  // ── Filter tab bar (X-style) ──────────────────────────────────────────────────
+  filterTabBar: {
     flexDirection: 'row',
-    alignItems: 'center',
-    gap: 5,
-    paddingHorizontal: 11,
-    paddingVertical: 5,
-    borderRadius: 20,
-    borderWidth: 1,
+    borderBottomWidth: StyleSheet.hairlineWidth,
   },
-  filterChipText: { fontSize: 12, fontWeight: '500' },
+  filterTab: {
+    flex: 1, alignItems: 'center', paddingVertical: 14,
+  },
+  filterTabText:      { fontSize: 15, fontWeight: '600' },
+  filterTabUnderline: {
+    position: 'absolute', bottom: 0, left: '20%', right: '20%',
+    height: 3, borderRadius: 2,
+  },
 
-  // ── Composer ───────────────────────────────────────────────────────────────
-  composerCard: {
-    borderRadius: 16, borderWidth: 1, marginBottom: 14, overflow: 'hidden',
+  // ── Composer (X-style) ─────────────────────────────────────────────────────
+  composerWrap: {
+    borderBottomWidth: StyleSheet.hairlineWidth,
+    paddingTop: 12,
   },
-  composerTop: {
-    flexDirection: 'row', alignItems: 'flex-start', gap: 12, padding: 14,
+  composerRow: {
+    flexDirection: 'row', gap: 12,
+    paddingHorizontal: 16, paddingBottom: 10,
   },
-  composerPrompt: { fontSize: 15, marginBottom: 10 },
-  composerVisRow: { flexDirection: 'row', gap: 8 },
-  composerVisPill: { paddingHorizontal: 10, paddingVertical: 4, borderRadius: 10, borderWidth: 1 },
+  composerInput:       { flex: 1 },
+  composerPlaceholder: { fontSize: 18, marginBottom: 10 },
+  composerVisRow:      { flexDirection: 'row', gap: 8 },
+  composerVisPill: {
+    paddingHorizontal: 10, paddingVertical: 4, borderRadius: 10, borderWidth: 1,
+  },
   composerVisPillText: { fontSize: 11, fontWeight: '600' },
-  composerBottom: {
+  composerToolbar: {
     flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between',
-    paddingHorizontal: 14, paddingVertical: 10, borderTopWidth: StyleSheet.hairlineWidth,
+    paddingHorizontal: 16, paddingVertical: 10,
+    borderTopWidth: StyleSheet.hairlineWidth,
   },
-  composerMediaIcons: { flexDirection: 'row', gap: 18 },
-  postBtn:     { paddingHorizontal: 16, paddingVertical: 6, borderRadius: 12 },
-  postBtnText: { fontSize: 13, fontWeight: '700' },
+  composerIcons: { flexDirection: 'row', gap: 18 },
+  postBtn:       { paddingHorizontal: 18, paddingVertical: 7, borderRadius: 20 },
+  postBtnText:   { fontSize: 14, fontWeight: '700' },
 
-  // ── Avatar ─────────────────────────────────────────────────────────────────
+  // ── Avatar ─────────────────────────────────────────────────────────────────────
   avatar: {
-    width: 42, height: 42, borderRadius: 21,
+    width: 44, height: 44, borderRadius: 22,
     alignItems: 'center', justifyContent: 'center', flexShrink: 0,
   },
   avatarText: { fontSize: 17, fontWeight: '700', color: '#FFFFFF' },
 
-  // ── Post card ──────────────────────────────────────────────────────────────
-  postCard: {
-    borderRadius: 16, borderWidth: 1, marginBottom: 12, padding: 14, overflow: 'hidden',
+  // ── Post ───────────────────────────────────────────────────────────────────────
+  post: { borderBottomWidth: StyleSheet.hairlineWidth },
+
+  metaBanner: {
+    flexDirection: 'row', alignItems: 'center', gap: 6,
+    paddingHorizontal: 16, paddingTop: 10, paddingBottom: 2,
   },
+  metaBannerSpacer: { width: 56 },  // avatar (44) + gap (12)
+  metaBannerText:   { fontSize: 13, fontWeight: '500' },
 
-  // Meta rows (repost / pinned / scheduled)
-  metaRow: { flexDirection: 'row', alignItems: 'center', gap: 5, marginBottom: 10 },
-  metaText: { fontSize: 12, fontWeight: '600' },
-
-  // Post header
-  postHeader: {
-    flexDirection: 'row', alignItems: 'flex-start', gap: 10, marginBottom: 10,
+  postRow: {
+    flexDirection: 'row', gap: 12,
+    paddingHorizontal: 16, paddingTop: 12, paddingBottom: 4,
   },
-  authorCol:     { flex: 1, minWidth: 0, paddingTop: 1 },
-  authorNameRow: { flexDirection: 'row', alignItems: 'center', gap: 6, flexWrap: 'nowrap' },
-  authorName:    { fontSize: 15, fontWeight: '700', flexShrink: 1 },
-  roleBadge: {
-    paddingHorizontal: 6, paddingVertical: 2, borderRadius: 5, borderWidth: 1, flexShrink: 0,
+  avatarCol:  { width: 44, flexShrink: 0 },
+  contentCol: { flex: 1, paddingBottom: 10 },
+
+  // ── Author ────────────────────────────────────────────────────────────────────
+  authorRow: {
+    flexDirection: 'row', alignItems: 'center',
+    marginBottom: 4, flexWrap: 'nowrap',
   },
-  roleBadgeText: { fontSize: 10, fontWeight: '700', letterSpacing: 0.2 },
-  authorMeta:    { fontSize: 13, marginTop: 2 },
-  postHeaderRight: { flexDirection: 'row', alignItems: 'center', gap: 8, flexShrink: 0 },
+  authorName: { fontSize: 15, fontWeight: '700', flexShrink: 0, maxWidth: '45%' },
+  youBadge: {
+    paddingHorizontal: 5, paddingVertical: 1, borderRadius: 4, borderWidth: 1,
+    marginLeft: 5, flexShrink: 0,
+  },
+  youBadgeText: { fontSize: 10, fontWeight: '500' },
+  authorSub:    { fontSize: 14, flexShrink: 1 },
 
-  // Visibility badge
-  visBadge: { paddingHorizontal: 7, paddingVertical: 3, borderRadius: 8, borderWidth: 1 },
-  visBadgeText: { fontSize: 10, fontWeight: '700', color: '#FFFFFF' },
+  // ── Body ──────────────────────────────────────────────────────────────────────
+  postBody: { fontSize: 15, lineHeight: 22, marginBottom: 10 },
 
-  // Post body
-  postBody: { fontSize: 15, lineHeight: 22 },
-
-  // Locked
-  lockedBlock: {},
+  // ── Locked ─────────────────────────────────────────────────────────────────────
+  lockedBlock: { marginBottom: 10 },
   lockedCard: {
     marginTop: 14, borderRadius: 14, borderWidth: 1,
     padding: 20, alignItems: 'center', gap: 8,
   },
   lockedIconCircle: {
-    width: 48, height: 48, borderRadius: 24, alignItems: 'center', justifyContent: 'center',
+    width: 48, height: 48, borderRadius: 24,
+    alignItems: 'center', justifyContent: 'center',
   },
-  lockedTitle:   { fontSize: 16, fontWeight: '700', marginTop: 2 },
-  lockedSub:     { fontSize: 13, textAlign: 'center', lineHeight: 18 },
-  subscribeBtn:  { marginTop: 6, paddingHorizontal: 22, paddingVertical: 11, borderRadius: 12 },
+  lockedTitle:      { fontSize: 16, fontWeight: '700', marginTop: 2 },
+  lockedSub:        { fontSize: 13, textAlign: 'center', lineHeight: 18 },
+  subscribeBtn:     { marginTop: 6, paddingHorizontal: 22, paddingVertical: 11, borderRadius: 12 },
   subscribeBtnText: { fontSize: 14, fontWeight: '700' },
 
-  // Media
+  // ── Media ──────────────────────────────────────────────────────────────────────
   mediaBlock: {
-    height: 220, borderRadius: 12, marginTop: 10,
+    height: 220, borderRadius: 14, marginBottom: 10,
     overflow: 'hidden', alignItems: 'center', justifyContent: 'center',
   },
-  mediaWatermark: {
-    fontSize: 96, fontWeight: '900', color: '#FFFFFF',
-    opacity: 0.06, letterSpacing: -4, position: 'absolute',
-  },
-  mediaTag: {
-    position: 'absolute', top: 12, right: 12,
-    flexDirection: 'row', alignItems: 'center', gap: 4,
-    backgroundColor: 'rgba(0,0,0,0.55)',
-    paddingHorizontal: 8, paddingVertical: 4, borderRadius: 8,
-  },
-  mediaTagText: { color: '#FFFFFF', fontSize: 10, fontWeight: '700', letterSpacing: 0.5 },
   playBtn: {
     width: 52, height: 52, borderRadius: 26,
     backgroundColor: 'rgba(0,0,0,0.5)',
     alignItems: 'center', justifyContent: 'center',
-    paddingLeft: 3,  // optical center for play icon
+    paddingLeft: 3,
   },
 
-  // Engagement
-  engDivider: { height: StyleSheet.hairlineWidth, marginVertical: 10 },
-  engBar:     { flexDirection: 'row', alignItems: 'center' },
-  engItem:    { flexDirection: 'row', alignItems: 'center', gap: 5, paddingVertical: 4, paddingHorizontal: 6 },
-  engCount:   { fontSize: 13, fontWeight: '500' },
-
+  // ── Engagement ───────────────────────────────────────────────────────────────
+  engBar:   { flexDirection: 'row', alignItems: 'center', marginTop: 6, marginLeft: -6 },
+  engItem:  { flexDirection: 'row', alignItems: 'center', gap: 5, paddingVertical: 4, paddingHorizontal: 6, marginRight: 10 },
+  engCount: { fontSize: 13 },
 });

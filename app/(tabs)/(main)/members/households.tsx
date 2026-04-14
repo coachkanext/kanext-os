@@ -6,7 +6,7 @@
 import React, { useState, useCallback, useMemo } from 'react';
 import {
   View, Text, StyleSheet, Pressable, ScrollView,
-  TextInput, Alert,
+  TextInput, Alert, Animated,
 } from 'react-native';
 import * as Haptics from 'expo-haptics';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
@@ -16,6 +16,7 @@ import { IconSymbol } from '@/components/ui/icon-symbol';
 import { KMenuButton } from '@/components/ui/k-menu-button';
 import { RolePill } from '@/components/ui/role-pill';
 import { useColors, type ComponentColors } from '@/hooks/use-colors';
+import { useScrollHeader } from '@/hooks/use-scroll-header';
 import { openSidePanel } from '@/utils/global-side-panel';
 import { resetFooter } from '@/utils/global-footer-hide';
 import { useDemoRole } from '@/utils/demo-role-store';
@@ -85,6 +86,8 @@ export default function HouseholdsScreen() {
   const insets = useSafeAreaInsets();
   const router = useRouter();
 
+  const { opacity, onScroll, scrollEventThrottle } = useScrollHeader();
+
   const [role, cycleRole, roleCycles] = useDemoRole('community:members');
   const isPastor = role === roleCycles[0];
 
@@ -106,15 +109,32 @@ export default function HouseholdsScreen() {
     );
   }, [search]);
 
-  const topBarH = insets.top + TOP_BAR_H;
-
   if (!isPastor) return null;
 
   return (
     <View style={[s.screen, { backgroundColor: C.bg }]}>
+      <Animated.View style={[s.topBarOuter, { paddingTop: insets.top, backgroundColor: C.bg, borderBottomColor: C.separator, borderBottomWidth: StyleSheet.hairlineWidth, opacity }]}>
+        <View style={s.topBar}>
+          <View style={s.topBarSide}>
+            <Pressable onPress={() => { Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light); openSidePanel(); }} hitSlop={12}>
+              <KMenuButton />
+            </Pressable>
+          </View>
+          <View style={{ flex: 1, alignItems: 'center' }}>
+            <View style={[s.titlePill, { backgroundColor: C.surface, borderColor: C.separator }]}>
+              <Text style={[s.titleText, { color: C.label }]}>Households</Text>
+            </View>
+          </View>
+          <View style={[s.topBarSide, { alignItems: 'flex-end' }]}>
+            <RolePill role={role} onPress={cycleRole} isPrimary={isPastor} />
+          </View>
+        </View>
+      </Animated.View>
       <ScrollView
+        onScroll={onScroll}
+        scrollEventThrottle={scrollEventThrottle}
         style={{ flex: 1 }}
-        contentContainerStyle={{ paddingTop: topBarH + 12, paddingHorizontal: 16, paddingBottom: 120 }}
+        contentContainerStyle={{ paddingHorizontal: 16, paddingTop: insets.top + TOP_BAR_H + 8, paddingBottom: 120 }}
         showsVerticalScrollIndicator={false}
         keyboardShouldPersistTaps="handled"
       >
@@ -183,25 +203,6 @@ export default function HouseholdsScreen() {
         <View style={{ height: 100 }} />
       </ScrollView>
 
-      {/* Top bar */}
-      <View style={[s.topBarWrap, { paddingTop: insets.top, backgroundColor: C.bg }]}>
-        <View style={s.topBar}>
-          <View style={s.topBarSide}>
-            <Pressable onPress={() => { Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light); openSidePanel(); }} hitSlop={12}>
-              <KMenuButton />
-            </Pressable>
-          </View>
-          <View style={{ flex: 1, alignItems: 'center' }}>
-            <View style={[s.titlePill, { backgroundColor: C.surface, borderColor: C.separator }]}>
-              <Text style={[s.titleText, { color: C.label }]}>Households</Text>
-            </View>
-          </View>
-          <View style={[s.topBarSide, { alignItems: 'flex-end' }]}>
-            <RolePill role={role} onPress={cycleRole} isPrimary={isPastor} />
-          </View>
-        </View>
-      </View>
-
       {/* + Create Household FAB */}
       <Pressable
         style={[s.fab, { backgroundColor: C.label, bottom: insets.bottom + 70 }]}
@@ -215,7 +216,7 @@ export default function HouseholdsScreen() {
 
 const makeStyles = (C: ComponentColors) => StyleSheet.create({
   screen:      { flex: 1 },
-  topBarWrap:  { position: 'absolute', top: 0, left: 0, right: 0, zIndex: 10 },
+  topBarOuter: { position: 'absolute', top: 0, left: 0, right: 0, zIndex: 10, borderBottomWidth: StyleSheet.hairlineWidth },
   topBar:      { height: TOP_BAR_H, flexDirection: 'row', alignItems: 'center', paddingHorizontal: 16 },
   topBarSide:  { width: 80, justifyContent: 'center' },
   titlePill:   { borderRadius: 18, paddingHorizontal: 14, paddingVertical: 6, borderWidth: 1 },

@@ -5,7 +5,7 @@
 
 import React, { useCallback, useMemo, useRef } from 'react';
 import {
-  View, Text, Pressable, FlatList, StyleSheet, useWindowDimensions,
+  View, Text, Pressable, FlatList, StyleSheet, useWindowDimensions, Animated,
 } from 'react-native';
 import * as Haptics from 'expo-haptics';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
@@ -13,6 +13,7 @@ import { useLocalSearchParams, useRouter } from 'expo-router';
 
 import { IconSymbol } from '@/components/ui/icon-symbol';
 import { useColors, type ComponentColors } from '@/hooks/use-colors';
+import { useScrollHeader } from '@/hooks/use-scroll-header';
 import { useAppContext } from '@/context/app-context';
 import { hideFooter, showFooter } from '@/utils/global-footer-hide';
 import {
@@ -82,7 +83,7 @@ export default function KayTVSeeAllScreen() {
   const row = useMemo(() => getExploreRows(mode).find(r => r.id === rowId), [mode, rowId]);
 
   const topBarH = insets.top + TOP_BAR_H;
-
+  const { opacity, onScroll: onScrollHeader, scrollEventThrottle } = useScrollHeader();
   const handleScroll = useCallback((e: any) => {
     const y = e.nativeEvent.contentOffset.y;
     if (y > lastScrollY.current + 10) hideFooter();
@@ -93,8 +94,8 @@ export default function KayTVSeeAllScreen() {
 
   return (
     <View style={[styles.screen, { backgroundColor: C.bg }]}>
-      {/* Top bar */}
-      <View style={[styles.topBarWrap, { paddingTop: insets.top, backgroundColor: C.bg }]}>
+      {/* Absolute animated top bar */}
+      <Animated.View style={[styles.topBarWrap, { paddingTop: insets.top, backgroundColor: C.bg, borderBottomColor: C.separator, position: 'absolute', top: 0, left: 0, right: 0, zIndex: 10, opacity }]}>
         <View style={styles.topBar}>
           <Pressable onPress={() => router.back()} hitSlop={10} style={styles.backBtn}>
             <IconSymbol name="chevron.left" size={20} color={C.label} />
@@ -104,7 +105,7 @@ export default function KayTVSeeAllScreen() {
           </Text>
           <View style={{ width: 36 }} />
         </View>
-      </View>
+      </Animated.View>
 
       {/* Content */}
       {!row ? (
@@ -116,8 +117,8 @@ export default function KayTVSeeAllScreen() {
         <FlatList
           data={row.items}
           keyExtractor={item => item.id}
-          onScroll={handleScroll}
-          scrollEventThrottle={16}
+          onScroll={(e) => { handleScroll(e); onScrollHeader(e); }}
+          scrollEventThrottle={scrollEventThrottle}
           showsVerticalScrollIndicator={false}
           contentContainerStyle={{ paddingTop: topBarH, paddingBottom: 120 }}
           ItemSeparatorComponent={() => (
@@ -148,8 +149,7 @@ const styles = StyleSheet.create({
   screen: { flex: 1 },
 
   topBarWrap: {
-    position: 'absolute',
-    top: 0, left: 0, right: 0,
+    borderBottomWidth: StyleSheet.hairlineWidth,
     zIndex: 10,
   },
   topBar: {

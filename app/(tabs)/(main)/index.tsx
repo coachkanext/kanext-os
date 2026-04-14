@@ -81,13 +81,13 @@ export default function HomeScreen() {
       {/* Org context pill — tap → org drawer */}
       <View style={styles.orgPillWrap}>
         <Pressable
-          style={styles.orgPill}
+          style={[styles.orgPill, { backgroundColor: C.surface }]}
           onPress={() => {
             Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
             openOrgDrawer();
           }}
         >
-          <Text style={styles.orgPillText} numberOfLines={1}>
+          <Text style={[styles.orgPillText, { color: C.label }]} numberOfLines={1}>
             {orgLabel}
           </Text>
         </Pressable>
@@ -115,7 +115,6 @@ const styles = StyleSheet.create({
     paddingHorizontal: 18,
     paddingVertical: 8,
     borderRadius: 20,
-    backgroundColor: '#FFFFFF',
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 1 },
     shadowOpacity: 0.07,
@@ -124,7 +123,6 @@ const styles = StyleSheet.create({
   orgPillText: {
     fontSize: 15,
     fontWeight: '500',
-    color: '#111111',
     textAlign: 'center',
   },
   gridWrapper: {

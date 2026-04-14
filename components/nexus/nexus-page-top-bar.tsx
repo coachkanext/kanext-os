@@ -8,7 +8,7 @@
  * Inline dropdown (home/chat): Change project · Star · Rename · ─── · Delete (red)
  */
 
-import React, { useState, useMemo } from 'react';
+import React, { useState, useRef, useMemo } from 'react';
 import {
   View,
   Text,
@@ -38,6 +38,8 @@ export interface NexusPageTopBarProps {
   onNewChat?: () => void;
   onFilter?: () => void;
   onDropdownAction?: (action: 'change-project' | 'star' | 'rename' | 'delete') => void;
+  /** Double-tap the Dipson pill to open the half-sheet */
+  onDoubleTap?: () => void;
   /** Legacy: kept for backward compat — same as onNewChat */
   onPlusPress?: () => void;
 }
@@ -55,11 +57,27 @@ export function NexusPageTopBar({
   onNewChat,
   onFilter,
   onDropdownAction,
+  onDoubleTap,
   onPlusPress,
 }: NexusPageTopBarProps) {
   const C = useColors();
   const styles = useMemo(() => makeStyles(C), [C]);
   const [dropdownOpen, setDropdownOpen] = useState(false);
+  const lastTapRef = useRef<number>(0);
+
+  const handlePillPress = () => {
+    const now = Date.now();
+    if (now - lastTapRef.current < 300) {
+      // Double-tap: open half-sheet
+      lastTapRef.current = 0;
+      setDropdownOpen(false);
+      Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
+      onDoubleTap?.();
+    } else {
+      lastTapRef.current = now;
+      setDropdownOpen((v) => !v);
+    }
+  };
 
   const handleLeftPress = () => {
     Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
@@ -102,7 +120,7 @@ export function NexusPageTopBar({
               styles.nexusPill,
               { backgroundColor: pressed ? C.separator : C.surface },
             ]}
-            onPress={() => setDropdownOpen((v) => !v)}
+            onPress={handlePillPress}
             accessibilityLabel="Dipson options"
           >
             <Image

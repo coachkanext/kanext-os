@@ -3,7 +3,7 @@
  * Featured hero card for top item + individual cards for the rest.
  */
 import React, { useCallback, useMemo } from 'react';
-import { View, Text, Pressable, ScrollView, StyleSheet, Animated, useColorScheme } from 'react-native';
+import { View, Text, Pressable, ScrollView, StyleSheet, Animated, useColorScheme, Image } from 'react-native';
 import * as Haptics from 'expo-haptics';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useFocusEffect } from 'expo-router';
@@ -115,6 +115,11 @@ function FeaturedCard({ item, C, s, SURF2 }: { item: PortfolioPress; C: Componen
         style={[s.featuredBanner, { backgroundColor: C.label }]}
         onPress={() => Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light)}
       >
+        {item.bannerUri && (
+          <Image source={{ uri: item.bannerUri }} style={StyleSheet.absoluteFill} resizeMode="cover" />
+        )}
+        {/* Dark overlay so text stays readable over any photo */}
+        <View style={[StyleSheet.absoluteFill, { backgroundColor: 'rgba(0,0,0,0.48)' }]} />
         {/* Top row: pub name + arrow */}
         <View style={s.bannerTopRow}>
           <View style={s.bannerPubGroup}>
@@ -149,9 +154,13 @@ function PressCard({ item, C, s, SURF2 }: { item: PortfolioPress; C: ComponentCo
         style={({ pressed }) => [s.pressRow, pressed && { opacity: 0.75 }]}
         onPress={() => Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light)}
       >
-        {/* Icon circle */}
-        <View style={[s.iconCircle, { backgroundColor: SURF2 }]}>
-          <Text style={[s.iconText, { color: C.label }]}>{item.initials}</Text>
+        {/* Icon circle — image when available, initials fallback */}
+        <View style={[s.iconCircle, { backgroundColor: SURF2, overflow: 'hidden' }]}>
+          {item.thumbUri ? (
+            <Image source={{ uri: item.thumbUri }} style={StyleSheet.absoluteFill} resizeMode="cover" />
+          ) : (
+            <Text style={[s.iconText, { color: C.label }]}>{item.initials}</Text>
+          )}
         </View>
 
         {/* Body */}

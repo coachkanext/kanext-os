@@ -4,7 +4,7 @@
  */
 
 import React, { useState, useMemo, useCallback, useRef } from 'react';
-import { View, Text, ScrollView, Pressable, StyleSheet, Alert } from 'react-native';
+import { View, Text, ScrollView, Pressable, StyleSheet, Alert, Animated } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useFocusEffect } from 'expo-router';
 import * as Haptics from 'expo-haptics';
@@ -17,6 +17,7 @@ import { useColors, type ComponentColors } from '@/hooks/use-colors';
 import { openSidePanel } from '@/utils/global-side-panel';
 import { resetFooter } from '@/utils/global-footer-hide';
 import { useDemoRole } from '@/utils/demo-role-store';
+import { useScrollHeader } from '@/hooks/use-scroll-header';
 
 // ── Module-level semantic colors (data values and status badges only) ──────────
 
@@ -205,7 +206,6 @@ function ContentRow({ item, isOwner, styles, C }: ContentRowProps) {
 export default function MyContentPage() {
   const C       = useColors();
   const insets  = useSafeAreaInsets();
-  const topBarH = insets.top + 52;
 
   const [role, cycleRole, roleCycles] = useDemoRole('personal:kaystudios');
   const isOwner = role === roleCycles[0];
@@ -213,6 +213,8 @@ export default function MyContentPage() {
   const [filter, setFilter] = useState<FilterOption>('All');
 
   const scrollRef = useRef<ScrollView>(null);
+
+  const { opacity, onScroll, scrollEventThrottle } = useScrollHeader();
 
   useFocusEffect(useCallback(() => { resetFooter(); }, []));
 
@@ -234,32 +236,36 @@ export default function MyContentPage() {
   return (
     <View style={{ flex: 1, backgroundColor: C.bg }}>
 
-      {/* ── Top Bar ─────────────────────────────────────────────────────────── */}
-      <View style={[styles.topBar, { height: topBarH, paddingTop: insets.top, backgroundColor: C.bg }]}>
-        <Pressable
-          onPress={() => { Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light); openSidePanel(); }}
-          style={styles.topBarLeft}
-        >
-          <KMenuButton />
-        </Pressable>
+      {/* ── Animated Top Bar ────────────────────────────────────────────────── */}
+      <Animated.View style={[styles.topBarOuter, { paddingTop: insets.top, backgroundColor: C.bg, borderBottomColor: C.separator, borderBottomWidth: StyleSheet.hairlineWidth, opacity }]}>
+        <View style={styles.topBar}>
+          <Pressable
+            onPress={() => { Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light); openSidePanel(); }}
+            style={styles.topBarLeft}
+          >
+            <KMenuButton />
+          </Pressable>
 
-        <View style={{ flex: 1, alignItems: 'center' }}>
-          <View style={[styles.staticPill, { backgroundColor: C.surface, borderColor: C.separator }]}>
-            <Text style={[styles.staticPillText, { color: C.label }]}>My Content</Text>
+          <View style={{ flex: 1, alignItems: 'center' }}>
+            <View style={[styles.staticPill, { backgroundColor: C.surface, borderColor: C.separator }]}>
+              <Text style={[styles.staticPillText, { color: C.label }]}>My Content</Text>
+            </View>
+          </View>
+
+          <View style={styles.topBarRight}>
+            <RolePill role={role} onPress={cycleRole} isPrimary={isOwner} />
           </View>
         </View>
-
-        <View style={styles.topBarRight}>
-          <RolePill role={role} onPress={cycleRole} isPrimary={isOwner} />
-        </View>
-      </View>
+      </Animated.View>
 
       {/* ── Scroll Content ──────────────────────────────────────────────────── */}
       <ScrollView
         ref={scrollRef}
+        onScroll={onScroll}
+        scrollEventThrottle={scrollEventThrottle}
         contentContainerStyle={{
-          paddingTop: topBarH + 16,
           paddingHorizontal: 16,
+          paddingTop: insets.top + 52 + 8,
           paddingBottom: insets.bottom + 100,
         }}
         showsVerticalScrollIndicator={false}
@@ -369,14 +375,17 @@ export default function MyContentPage() {
 function makeStyles(C: ComponentColors) {
   return StyleSheet.create({
     // Top bar
-    topBar: {
+    topBarOuter: {
       position: 'absolute',
       top: 0, left: 0, right: 0,
       zIndex: 10,
+      borderBottomWidth: StyleSheet.hairlineWidth,
+    },
+    topBar: {
       flexDirection: 'row',
-      alignItems: 'flex-end',
+      alignItems: 'center',
       paddingHorizontal: 16,
-      paddingBottom: 8,
+      height: 52,
     },
     topBarLeft: {
       width: 40,

@@ -7,7 +7,7 @@
 import React, { useState, useMemo, useCallback, useEffect } from 'react';
 import {
   View, Text, Pressable, ScrollView, TextInput,
-  StyleSheet, Alert,
+  StyleSheet, Alert, Animated,
 } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useFocusEffect, useLocalSearchParams, useRouter } from 'expo-router';
@@ -17,14 +17,16 @@ import { IconSymbol } from '@/components/ui/icon-symbol';
 import { KMenuButton } from '@/components/ui/k-menu-button';
 import { RolePill } from '@/components/ui/role-pill';
 import { useColors, type ComponentColors } from '@/hooks/use-colors';
+import { useScrollHeader } from '@/hooks/use-scroll-header';
 import { openSidePanel } from '@/utils/global-side-panel';
 import { resetFooter } from '@/utils/global-footer-hide';
 import { useDemoRole } from '@/utils/demo-role-store';
 
 // ── Semantic colors ────────────────────────────────────────────────────────────
-const GAIN    = '#5A8A6E';
-const HEAT    = '#B85C5C';
-const CAUTION = '#B8943E';
+const GAIN      = '#5A8A6E';
+const HEAT      = '#B85C5C';
+const CAUTION   = '#B8943E';
+const TOP_BAR_H = 52;
 
 // ── Types ─────────────────────────────────────────────────────────────────────
 type VideoStatus = 'Published' | 'Scheduled' | 'Draft' | 'Processing';
@@ -91,6 +93,8 @@ export default function ManageVideosPage() {
   const [search, setSearch] = useState('');
   const [menuOpen, setMenuOpen] = useState<string | null>(null);
 
+  const { opacity, onScroll, scrollEventThrottle } = useScrollHeader();
+
   useFocusEffect(useCallback(() => {
     resetFooter();
     if (filterParam && FILTER_TABS.includes(filterParam as FilterTab)) {
@@ -134,33 +138,34 @@ export default function ManageVideosPage() {
     }
   };
 
-  const topBarH = insets.top + 52;
-
   return (
     <View style={{ flex: 1, backgroundColor: C.bg }}>
 
       {/* ── Top Bar ───────────────────────────────────────────────────────── */}
-      <View style={{ position: 'absolute', top: 0, left: 0, right: 0, zIndex: 10, height: topBarH, paddingTop: insets.top, flexDirection: 'row', alignItems: 'center', paddingHorizontal: 16, backgroundColor: C.bg }}>
-        <Pressable onPress={() => { Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light); openSidePanel(); }} style={{ width: 40, alignItems: 'center' }}>
-          <KMenuButton />
-        </Pressable>
-        <View style={{ flex: 1, alignItems: 'center' }}>
-          <View style={{ backgroundColor: C.surface, borderRadius: 18, paddingHorizontal: 14, paddingVertical: 6, borderWidth: 1, borderColor: C.separator }}>
-            <Text style={{ fontSize: 13, fontWeight: '700', color: C.label }}>Manage Videos</Text>
+      <Animated.View style={{ position: 'absolute', top: 0, left: 0, right: 0, zIndex: 10, paddingTop: insets.top, backgroundColor: C.bg, borderBottomWidth: StyleSheet.hairlineWidth, borderBottomColor: C.separator, opacity }}>
+        <View style={{ height: TOP_BAR_H, flexDirection: 'row', alignItems: 'center', paddingHorizontal: 16 }}>
+          <Pressable onPress={() => { Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light); openSidePanel(); }} style={{ width: 40, alignItems: 'center' }}>
+            <KMenuButton />
+          </Pressable>
+          <View style={{ flex: 1, alignItems: 'center' }}>
+            <View style={{ backgroundColor: C.surface, borderRadius: 18, paddingHorizontal: 14, paddingVertical: 6, borderWidth: 1, borderColor: C.separator }}>
+              <Text style={{ fontSize: 13, fontWeight: '700', color: C.label }}>Manage Videos</Text>
+            </View>
+          </View>
+          <View style={{ alignItems: 'flex-end' }}>
+            <RolePill role={role} onPress={cycleRole} isPrimary={isOwner} />
           </View>
         </View>
-        <View style={{ alignItems: 'flex-end' }}>
-          <RolePill role={role} onPress={cycleRole} isPrimary={isOwner} />
-        </View>
-      </View>
+      </Animated.View>
 
       <ScrollView
-        contentContainerStyle={{ paddingTop: topBarH + 16, paddingBottom: insets.bottom + 100 }}
+        onScroll={onScroll}
+        scrollEventThrottle={scrollEventThrottle}
+        contentContainerStyle={{ paddingTop: insets.top + TOP_BAR_H + 8, paddingBottom: insets.bottom + 100 }}
         showsVerticalScrollIndicator={false}
         keyboardShouldPersistTaps="handled"
         onStartShouldSetResponder={() => { if (menuOpen) { setMenuOpen(null); return true; } return false; }}
       >
-
         {/* ── Stat Cards ──────────────────────────────────────────────────── */}
         <View style={{ flexDirection: 'row', gap: 10, paddingHorizontal: 16, marginBottom: 16 }}>
           {[

@@ -4,7 +4,7 @@
 
 import React, { useCallback, useMemo } from 'react';
 import {
-  View, Text, StyleSheet, Pressable, ScrollView, Alert,
+  View, Text, StyleSheet, Pressable, ScrollView, Alert, Animated,
 } from 'react-native';
 import * as Haptics from 'expo-haptics';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
@@ -14,6 +14,7 @@ import { IconSymbol } from '@/components/ui/icon-symbol';
 import { KMenuButton } from '@/components/ui/k-menu-button';
 import { RolePill } from '@/components/ui/role-pill';
 import { useColors, type ComponentColors } from '@/hooks/use-colors';
+import { useScrollHeader } from '@/hooks/use-scroll-header';
 import { openSidePanel } from '@/utils/global-side-panel';
 import { resetFooter } from '@/utils/global-footer-hide';
 import { useDemoRole } from '@/utils/demo-role-store';
@@ -26,6 +27,8 @@ export default function ImportExportScreen() {
   const insets = useSafeAreaInsets();
   const router = useRouter();
 
+  const { opacity, onScroll, scrollEventThrottle } = useScrollHeader();
+
   const [role, cycleRole, roleCycles] = useDemoRole('community:members');
   const isPastor = role === roleCycles[0];
 
@@ -36,15 +39,28 @@ export default function ImportExportScreen() {
     }
   }, [isPastor, router]));
 
-  const topBarH = insets.top + TOP_BAR_H;
-
   if (!isPastor) return null;
 
   return (
     <View style={[s.screen, { backgroundColor: C.bg }]}>
+      <Animated.View style={[s.topBarOuter, { paddingTop: insets.top, backgroundColor: C.bg, borderBottomColor: C.separator, borderBottomWidth: StyleSheet.hairlineWidth, opacity }]}>
+        <View style={s.topBar}>
+          <View style={s.topBarSide}>
+            <Pressable onPress={() => { Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light); openSidePanel(); }} hitSlop={12}>
+              <KMenuButton />
+            </Pressable>
+          </View>
+          <Text style={[s.topBarTitle, { color: C.label }]}>Import/Export</Text>
+          <View style={[s.topBarSide, { alignItems: 'flex-end' }]}>
+            <RolePill role={role} onPress={cycleRole} accentColor={C.label} isPrimary={isPastor} />
+          </View>
+        </View>
+      </Animated.View>
       <ScrollView
+        onScroll={onScroll}
+        scrollEventThrottle={scrollEventThrottle}
         style={{ flex: 1 }}
-        contentContainerStyle={{ paddingTop: topBarH + 20, paddingHorizontal: 16, paddingBottom: 120 }}
+        contentContainerStyle={{ paddingHorizontal: 16, paddingTop: insets.top + TOP_BAR_H + 8, paddingBottom: 120 }}
         showsVerticalScrollIndicator={false}
       >
         {/* Import Card */}
@@ -98,28 +114,13 @@ export default function ImportExportScreen() {
           <Text style={[s.infoSub, { color: C.secondary }]}>12 records imported · 2 updated · 0 errors</Text>
         </View>
       </ScrollView>
-
-      {/* Top bar */}
-      <View style={[s.topBarWrap, { paddingTop: insets.top, backgroundColor: C.bg }]}>
-        <View style={s.topBar}>
-          <View style={s.topBarSide}>
-            <Pressable onPress={() => { Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light); openSidePanel(); }} hitSlop={12}>
-              <KMenuButton />
-            </Pressable>
-          </View>
-          <Text style={[s.topBarTitle, { color: C.label }]}>Import/Export</Text>
-          <View style={[s.topBarSide, { alignItems: 'flex-end' }]}>
-            <RolePill role={role} onPress={cycleRole} accentColor={C.label} isPrimary={isPastor} />
-          </View>
-        </View>
-      </View>
     </View>
   );
 }
 
 const makeStyles = (C: ComponentColors) => StyleSheet.create({
   screen:      { flex: 1 },
-  topBarWrap:  { position: 'absolute', top: 0, left: 0, right: 0, zIndex: 10 },
+  topBarOuter: { position: 'absolute', top: 0, left: 0, right: 0, zIndex: 10, borderBottomWidth: StyleSheet.hairlineWidth },
   topBar:      { height: TOP_BAR_H, flexDirection: 'row', alignItems: 'center', paddingHorizontal: 16 },
   topBarSide:  { width: 80, justifyContent: 'center' },
   topBarTitle: { flex: 1, fontSize: 17, fontWeight: '700', textAlign: 'center' },

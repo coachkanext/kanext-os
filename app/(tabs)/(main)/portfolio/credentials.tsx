@@ -3,7 +3,7 @@
  * Each credential gets its own surface-1 card. Icon in surface-2 circle.
  */
 import React, { useCallback, useMemo } from 'react';
-import { View, Text, Pressable, ScrollView, StyleSheet, Animated, useColorScheme } from 'react-native';
+import { View, Text, Pressable, ScrollView, StyleSheet, Animated, useColorScheme, Image } from 'react-native';
 import * as Haptics from 'expo-haptics';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useFocusEffect } from 'expo-router';
@@ -93,18 +93,30 @@ export default function CredentialsScreen() {
         {/* Individual cards */}
         {PORTFOLIO_CREDENTIALS.map(cred => (
           <GlassView key={cred.id} tier={1} style={[s.credCard, { marginBottom: 14 }]}>
-            <View style={s.credRow}>
-              {/* Icon in surface-2 circle */}
-              <View style={[s.credIconCircle, { backgroundColor: SURF2 }]}>
-                <IconSymbol name={cred.icon as any} size={18} color={C.label} />
+            {/* Cover image */}
+            {cred.coverUri && (
+              <View style={s.credCover}>
+                <Image source={{ uri: cred.coverUri }} style={StyleSheet.absoluteFill} resizeMode="cover" />
+                <View style={[StyleSheet.absoluteFill, { backgroundColor: 'rgba(0,0,0,0.38)' }]} />
+                {/* Year badge top-right */}
+                <View style={s.credYearBadge}>
+                  <Text style={s.credYearBadgeText}>{cred.year}</Text>
+                </View>
+                {/* Icon circle bottom-left */}
+                <View style={[s.credIconCircle, { backgroundColor: 'rgba(255,255,255,0.18)' }]}>
+                  <IconSymbol name={cred.icon as any} size={18} color="rgba(255,255,255,0.95)" />
+                </View>
               </View>
-              {/* Text */}
+            )}
+            {/* Text row */}
+            <View style={s.credRow}>
               <View style={{ flex: 1 }}>
                 <Text style={[s.credTitle, { color: C.label }]}>{cred.title}</Text>
                 <Text style={[s.credSub, { color: C.secondary }]}>{cred.issuer}</Text>
               </View>
-              {/* Year */}
-              <Text style={[s.credYear, { color: C.secondary }]}>{cred.year}</Text>
+              {!cred.coverUri && (
+                <Text style={[s.credYear, { color: C.secondary }]}>{cred.year}</Text>
+              )}
             </View>
           </GlassView>
         ))}
@@ -128,10 +140,13 @@ const makeStyles = (C: ComponentColors) => StyleSheet.create({
   addBtn:           { flexDirection: 'row', alignItems: 'center', gap: 4 },
   addBtnText:       { fontSize: 13, fontWeight: '500' },
 
-  credCard: { borderRadius: 14, overflow: 'hidden' },
-  credRow:  { flexDirection: 'row', alignItems: 'center', paddingHorizontal: 14, paddingVertical: 14, gap: 12 },
+  credCard:  { borderRadius: 14, overflow: 'hidden' },
+  credCover: { width: '100%', aspectRatio: 16 / 7, overflow: 'hidden', justifyContent: 'flex-end', padding: 12 },
+  credRow:   { flexDirection: 'row', alignItems: 'center', paddingHorizontal: 14, paddingVertical: 14, gap: 12 },
 
-  credIconCircle: { width: 40, height: 40, borderRadius: 12, alignItems: 'center', justifyContent: 'center', flexShrink: 0 },
+  credIconCircle:      { width: 40, height: 40, borderRadius: 12, alignItems: 'center', justifyContent: 'center', flexShrink: 0 },
+  credYearBadge:       { position: 'absolute', top: 10, right: 10, backgroundColor: 'rgba(0,0,0,0.45)', borderRadius: 8, paddingHorizontal: 8, paddingVertical: 3 },
+  credYearBadgeText:   { fontSize: 11, fontWeight: '700', color: 'rgba(255,255,255,0.90)', letterSpacing: 0.3 },
 
   credTitle: { fontSize: 14, fontWeight: '600', marginBottom: 2 },
   credSub:   { fontSize: 12 },

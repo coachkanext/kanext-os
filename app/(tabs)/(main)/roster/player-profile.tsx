@@ -1,5 +1,5 @@
 import React, { useState, useMemo, useCallback } from 'react';
-import { View, Text, StyleSheet, Pressable, ScrollView } from 'react-native';
+import { View, Text, StyleSheet, Pressable, ScrollView, Animated } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import * as Haptics from 'expo-haptics';
 import { useFocusEffect, useRouter } from 'expo-router';
@@ -7,6 +7,7 @@ import { IconSymbol } from '@/components/ui/icon-symbol';
 import { useColors, type ComponentColors } from '@/hooks/use-colors';
 import { resetFooter } from '@/utils/global-footer-hide';
 import { useScrollFooter } from '@/hooks/use-scroll-footer';
+import { useScrollHeader } from '@/hooks/use-scroll-header';
 
 // ---------------------------------------------------------------------------
 // Types
@@ -466,6 +467,9 @@ export default function PlayerProfileScreen() {
   const [activeTab, setActiveTab] = useState<TabId>('hero');
   const s = useMemo(() => makeStyles(C), [C]);
   const scrollFooter = useScrollFooter();
+  const TOP_BAR_H = 52;
+  const topBarH = insets.top + TOP_BAR_H;
+  const { opacity } = useScrollHeader(topBarH);
 
   useFocusEffect(useCallback(() => { resetFooter(); }, []));
 
@@ -490,21 +494,25 @@ export default function PlayerProfileScreen() {
   }
 
   return (
-    <View style={[s.root, { paddingTop: insets.top, backgroundColor: C.bg }]}>
-      <View style={[s.topBar, { borderBottomColor: C.separator }]}>
-        <Pressable onPress={() => router.back()} hitSlop={8} style={s.topBarSide}>
-          <IconSymbol name="chevron.left" size={20} color={C.label} />
-        </Pressable>
-        <View style={[s.titlePill, { backgroundColor: C.surface, borderColor: C.separator }]}>
-          <Text style={[s.titlePillText, { color: C.label }]} numberOfLines={1}>{PLAYER.name}</Text>
+    <View style={[s.root, { backgroundColor: C.bg }]}>
+      <Animated.View style={[s.topBarOuter, { paddingTop: insets.top, backgroundColor: C.bg, borderBottomColor: C.separator, opacity }]}>
+        <View style={s.topBar}>
+          <Pressable onPress={() => router.back()} hitSlop={8} style={s.topBarSide}>
+            <IconSymbol name="chevron.left" size={20} color={C.label} />
+          </Pressable>
+          <View style={{ flex: 1, alignItems: 'center' }}>
+            <View style={[s.titlePill, { backgroundColor: C.surface, borderColor: C.separator }]}>
+              <Text style={[s.titlePillText, { color: C.label }]} numberOfLines={1}>{PLAYER.name}</Text>
+            </View>
+          </View>
+          <View style={s.topBarSide} />
         </View>
-        <View style={s.topBarSide} />
-      </View>
+      </Animated.View>
 
       <ScrollView
         horizontal
         showsHorizontalScrollIndicator={false}
-        style={[s.tabBar, { borderBottomColor: C.separator }]}
+        style={[s.tabBar, { borderBottomColor: C.separator, marginTop: topBarH }]}
         contentContainerStyle={s.tabBarContent}
       >
         {TABS.map(tab => {
@@ -534,10 +542,11 @@ export default function PlayerProfileScreen() {
 function makeStyles(C: ComponentColors) {
   return StyleSheet.create({
     root: { flex: 1 },
-    topBar: { flexDirection: 'row', alignItems: 'center', paddingHorizontal: 16, paddingVertical: 10, borderBottomWidth: StyleSheet.hairlineWidth },
+    topBarOuter: { position: 'absolute', top: 0, left: 0, right: 0, zIndex: 10, borderBottomWidth: StyleSheet.hairlineWidth },
+    topBar: { flexDirection: 'row', alignItems: 'center', paddingHorizontal: 16, paddingBottom: 10 },
     topBarSide: { width: 40, alignItems: 'flex-start', justifyContent: 'center' },
-    titlePill: { flex: 1, alignItems: 'center', justifyContent: 'center', paddingHorizontal: 12, paddingVertical: 6, borderRadius: 20, borderWidth: StyleSheet.hairlineWidth, marginHorizontal: 8 },
-    titlePillText: { fontSize: 15, fontWeight: '600' },
+    titlePill: { paddingHorizontal: 12, paddingVertical: 5, borderRadius: 14, borderWidth: StyleSheet.hairlineWidth },
+    titlePillText: { fontSize: 12, fontWeight: '600', letterSpacing: 0.3 },
     tabBar: { maxHeight: 48, borderBottomWidth: StyleSheet.hairlineWidth },
     tabBarContent: { paddingHorizontal: 12, alignItems: 'center', gap: 6, paddingVertical: 8 },
     tabPill: { paddingHorizontal: 14, paddingVertical: 5, borderRadius: 16 },

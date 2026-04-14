@@ -12,6 +12,7 @@ import {
   StyleSheet,
   TextInput,
   Share,
+  Animated,
 } from 'react-native';
 import * as Haptics from 'expo-haptics';
 import { useRouter, useFocusEffect } from 'expo-router';
@@ -20,6 +21,7 @@ import { IconSymbol } from '@/components/ui/icon-symbol';
 import { BottomSheet } from '@/components/ui/bottom-sheet';
 import { useColors } from '@/hooks/use-colors';
 import { resetFooter } from '@/utils/global-footer-hide';
+import { useScrollHeader } from '@/hooks/use-scroll-header';
 
 // ── Types ─────────────────────────────────────────────────────────────────────
 
@@ -158,6 +160,7 @@ export default function RateCardScreen() {
   const insets = useSafeAreaInsets();
   const router = useRouter();
   const topBarH = insets.top + 52;
+  const { opacity, onScroll, scrollEventThrottle } = useScrollHeader(topBarH);
 
   const [isEditing, setIsEditing] = useState(false);
   const [categories, setCategories] = useState<Category[]>(INITIAL_CATEGORIES);
@@ -238,21 +241,23 @@ export default function RateCardScreen() {
     <View style={{ flex: 1, backgroundColor: C.bg }}>
 
       {/* Top Bar */}
-      <View style={{ position: 'absolute', top: 0, left: 0, right: 0, zIndex: 20, height: topBarH, paddingTop: insets.top, flexDirection: 'row', alignItems: 'center', paddingHorizontal: 16, borderBottomWidth: StyleSheet.hairlineWidth, borderBottomColor: C.separator, backgroundColor: C.bg }}>
-        <Pressable onPress={() => { Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light); router.back(); }} hitSlop={8} style={{ width: 44, alignItems: 'flex-start' }}>
-          <IconSymbol name="chevron.left" size={20} color={C.label} />
-        </Pressable>
-        <View style={{ flex: 1, alignItems: 'center' }}>
-          <View style={{ backgroundColor: C.label, borderRadius: 18, paddingHorizontal: 14, paddingVertical: 5 }}>
-            <Text style={{ fontSize: 14, fontWeight: '700', color: C.bg }}>Rate Card</Text>
+      <Animated.View style={{ position: 'absolute', top: 0, left: 0, right: 0, zIndex: 20, paddingTop: insets.top, borderBottomWidth: StyleSheet.hairlineWidth, borderBottomColor: C.separator, backgroundColor: C.bg, opacity }}>
+        <View style={{ height: 52, flexDirection: 'row', alignItems: 'center', paddingHorizontal: 16 }}>
+          <Pressable onPress={() => { Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light); router.back(); }} hitSlop={8} style={{ width: 44, alignItems: 'flex-start' }}>
+            <IconSymbol name="chevron.left" size={20} color={C.label} />
+          </Pressable>
+          <View style={{ flex: 1, alignItems: 'center' }}>
+            <View style={{ backgroundColor: C.label, borderRadius: 18, paddingHorizontal: 14, paddingVertical: 5 }}>
+              <Text style={{ fontSize: 14, fontWeight: '700', color: C.bg }}>Rate Card</Text>
+            </View>
           </View>
+          <Pressable onPress={() => { Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light); setIsEditing(v => !v); }} hitSlop={8} style={{ width: 44, alignItems: 'flex-end' }}>
+            <Text style={{ fontSize: 14, fontWeight: '600', color: C.label }}>{isEditing ? 'Done' : 'Edit'}</Text>
+          </Pressable>
         </View>
-        <Pressable onPress={() => { Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light); setIsEditing(v => !v); }} hitSlop={8} style={{ width: 44, alignItems: 'flex-end' }}>
-          <Text style={{ fontSize: 14, fontWeight: '600', color: C.label }}>{isEditing ? 'Done' : 'Edit'}</Text>
-        </Pressable>
-      </View>
+      </Animated.View>
 
-      <ScrollView contentContainerStyle={{ paddingTop: topBarH + 8, paddingBottom: insets.bottom + 80 }} showsVerticalScrollIndicator={false} keyboardShouldPersistTaps="handled">
+      <ScrollView contentContainerStyle={{ paddingTop: topBarH + 8, paddingBottom: insets.bottom + 80 }} showsVerticalScrollIndicator={false} keyboardShouldPersistTaps="handled" onScroll={onScroll} scrollEventThrottle={scrollEventThrottle}>
 
         {/* Creator Profile Card */}
         <View style={{ backgroundColor: C.surface, borderRadius: 16, padding: 20, marginHorizontal: 16, marginBottom: 4, marginTop: 8, borderWidth: StyleSheet.hairlineWidth, borderColor: C.separator }}>

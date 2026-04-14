@@ -27,6 +27,7 @@ import { openSidePanel } from '@/utils/global-side-panel';
 import { useDemoRole } from '@/utils/demo-role-store';
 import { resetFooter } from '@/utils/global-footer-hide';
 import { useOwnerGuard } from '@/hooks/use-owner-guard';
+import { useScrollHeader } from '@/hooks/use-scroll-header';
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
@@ -346,6 +347,7 @@ export default function ScheduledScreen() {
   const [role, cycleRole, roleCycles] = useDemoRole('personal:social');
   const isOwner = role === roleCycles[0];
   const guardedCycle = useOwnerGuard(role, roleCycles, cycleRole, '/(tabs)/(main)/social');
+  const { opacity, onScroll, scrollEventThrottle } = useScrollHeader();
   const [posts, setPosts] = useState<ScheduledPost[]>(INITIAL_POSTS);
   const [activeFilter, setActiveFilter] = useState<FilterId>('all');
 
@@ -369,23 +371,25 @@ export default function ScheduledScreen() {
   return (
     <View style={[s.root, { backgroundColor: C.bg }]}>
       {/* Top Bar */}
-      <View style={[s.topBar, { paddingTop: insets.top + 8, borderBottomColor: C.separator, backgroundColor: C.bg }]}>
-        <Pressable onPress={() => openSidePanel()} hitSlop={8}>
-          <KMenuButton />
-        </Pressable>
+      <Animated.View style={[s.topBarOuter, { paddingTop: insets.top + 8, borderBottomColor: C.separator, backgroundColor: C.bg, borderBottomWidth: StyleSheet.hairlineWidth, opacity }]}>
+        <View style={s.topBar}>
+          <Pressable onPress={() => openSidePanel()} hitSlop={8}>
+            <KMenuButton />
+          </Pressable>
 
-        <View style={[s.titlePill, { backgroundColor: C.surface, borderColor: C.separator }]}>
-          <Text style={[s.titleText, { color: C.label }]}>Scheduled</Text>
+          <View style={[s.titlePill, { backgroundColor: C.surface, borderColor: C.separator }]}>
+            <Text style={[s.titleText, { color: C.label }]}>Scheduled</Text>
+          </View>
+
+          <RolePill role={role} onPress={guardedCycle} isPrimary={isOwner} />
         </View>
-
-        <RolePill role={role} onPress={guardedCycle} isPrimary={isOwner} />
-      </View>
+      </Animated.View>
 
       {/* Platform Filter Pills */}
       <ScrollView
         horizontal
         showsHorizontalScrollIndicator={false}
-        style={[s.filterRow, { borderBottomColor: C.separator }]}
+        style={[s.filterRow, { borderBottomColor: C.separator, marginTop: insets.top + 8 + 52 }]}
         contentContainerStyle={s.filterContent}
       >
         {FILTERS.map(f => {
@@ -415,6 +419,8 @@ export default function ScheduledScreen() {
           style={{ flex: 1 }}
           contentContainerStyle={{ paddingTop: 12, paddingBottom: 49 + insets.bottom + 24 }}
           showsVerticalScrollIndicator={false}
+          onScroll={onScroll}
+          scrollEventThrottle={scrollEventThrottle}
         >
           {DAY_ORDER.filter(d => grouped[d]).map(day => (
             <DayGroup
@@ -433,9 +439,10 @@ export default function ScheduledScreen() {
 
 const s = StyleSheet.create({
   root:           { flex: 1 },
-  topBar:         { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', paddingHorizontal: 16, paddingBottom: 10, borderBottomWidth: StyleSheet.hairlineWidth },
-  titlePill:      { paddingHorizontal: 16, paddingVertical: 6, borderRadius: 20, borderWidth: StyleSheet.hairlineWidth },
-  titleText:      { fontSize: 15, fontWeight: '600' },
+  topBarOuter:    { position: 'absolute', top: 0, left: 0, right: 0, zIndex: 10 },
+  topBar:         { height: 52, flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', paddingHorizontal: 16 },
+  titlePill:      { paddingHorizontal: 12, paddingVertical: 5, borderRadius: 14, borderWidth: 1 },
+  titleText:      { fontSize: 12, fontWeight: '600', letterSpacing: 0.3 },
   filterRow:      { flexGrow: 0, borderBottomWidth: StyleSheet.hairlineWidth },
   filterContent:  { paddingHorizontal: 16, paddingVertical: 10, gap: 8, flexDirection: 'row' },
   filterPill:     { borderRadius: 16, paddingHorizontal: 14, paddingVertical: 6 },

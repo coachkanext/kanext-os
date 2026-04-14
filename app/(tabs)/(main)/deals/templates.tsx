@@ -6,7 +6,7 @@
 import React, { useState, useMemo, useCallback } from 'react';
 import {
   View, Text, ScrollView, Pressable, StyleSheet, Alert,
-  TextInput, Modal, KeyboardAvoidingView, Platform,
+  TextInput, Modal, KeyboardAvoidingView, Platform, Animated,
 } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useFocusEffect } from 'expo-router';
@@ -18,6 +18,7 @@ import { RolePill } from '@/components/ui/role-pill';
 import { useColors } from '@/hooks/use-colors';
 import { openSidePanel } from '@/utils/global-side-panel';
 import { resetFooter } from '@/utils/global-footer-hide';
+import { useScrollHeader } from '@/hooks/use-scroll-header';
 import { useDemoRole } from '@/utils/demo-role-store';
 
 // ── Types & Data ──────────────────────────────────────────────────────────────
@@ -352,6 +353,7 @@ export default function TemplatesScreen() {
   const insets = useSafeAreaInsets();
   const topBarH = insets.top + 52;
   const PILL_ROW_H = 52;
+  const { opacity, onScroll, scrollEventThrottle } = useScrollHeader(topBarH);
 
   const [role, cycleRole, roleCycles] = useDemoRole('personal:deals');
   const isOwner = role === roleCycles[0];
@@ -406,29 +408,30 @@ export default function TemplatesScreen() {
   return (
     <View style={{ flex: 1, backgroundColor: C.bg }}>
       {/* Top Bar */}
-      <View style={{
+      <Animated.View style={{
         position: 'absolute', top: 0, left: 0, right: 0, zIndex: 10,
-        height: topBarH, paddingTop: insets.top,
-        flexDirection: 'row', alignItems: 'flex-end',
-        paddingHorizontal: 16, paddingBottom: 8,
+        paddingTop: insets.top,
         backgroundColor: C.bg,
+        opacity,
       }}>
-        <Pressable
-          onPress={() => { Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light); openSidePanel(); }}
-          style={{ width: 40, height: 36, alignItems: 'center', justifyContent: 'center' }}
-        >
-          <KMenuButton />
-        </Pressable>
-        <View style={{ flex: 1, alignItems: 'center' }}>
-          <View style={{
-            paddingHorizontal: 14, paddingVertical: 6, borderRadius: 18,
-            backgroundColor: C.surface, borderWidth: 1.5, borderColor: C.separator,
-          }}>
-            <Text style={{ fontSize: 13, fontWeight: '700', color: C.label }}>Templates</Text>
+        <View style={{ height: 52, flexDirection: 'row', alignItems: 'flex-end', paddingHorizontal: 16, paddingBottom: 8 }}>
+          <Pressable
+            onPress={() => { Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light); openSidePanel(); }}
+            style={{ width: 40, height: 36, alignItems: 'center', justifyContent: 'center' }}
+          >
+            <KMenuButton />
+          </Pressable>
+          <View style={{ flex: 1, alignItems: 'center' }}>
+            <View style={{
+              paddingHorizontal: 14, paddingVertical: 6, borderRadius: 18,
+              backgroundColor: C.surface, borderWidth: 1.5, borderColor: C.separator,
+            }}>
+              <Text style={{ fontSize: 13, fontWeight: '700', color: C.label }}>Templates</Text>
+            </View>
           </View>
+          <RolePill role={role} onPress={cycleRole} isPrimary={isOwner} />
         </View>
-        <RolePill role={role} onPress={cycleRole} isPrimary={isOwner} />
-      </View>
+      </Animated.View>
 
       {/* Filter pills row */}
       <View style={{
@@ -461,6 +464,8 @@ export default function TemplatesScreen() {
       <ScrollView
         contentContainerStyle={{ paddingTop: topBarH + PILL_ROW_H, paddingHorizontal: 16, paddingBottom: insets.bottom + 80 }}
         showsVerticalScrollIndicator={false}
+        onScroll={onScroll}
+        scrollEventThrottle={scrollEventThrottle}
       >
         {filtered.length === 0 ? (
           <View style={{ alignItems: 'center', paddingTop: 60, gap: 8 }}>

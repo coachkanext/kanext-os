@@ -11,6 +11,7 @@ import {
   ScrollView,
   TextInput,
   StyleSheet,
+  Animated,
 } from 'react-native';
 import * as Haptics from 'expo-haptics';
 import { useRouter, useFocusEffect } from 'expo-router';
@@ -19,6 +20,7 @@ import { IconSymbol } from '@/components/ui/icon-symbol';
 import { BottomSheet } from '@/components/ui/bottom-sheet';
 import { useColors } from '@/hooks/use-colors';
 import { resetFooter } from '@/utils/global-footer-hide';
+import { useScrollHeader } from '@/hooks/use-scroll-header';
 import {
   PERSONAL_DEALS,
   CRM_CONTACTS,
@@ -275,6 +277,7 @@ export default function ContactsScreen() {
   const insets = useSafeAreaInsets();
   const router = useRouter();
   const topBarH = insets.top + 52;
+  const { opacity, onScroll, scrollEventThrottle } = useScrollHeader(topBarH);
 
   const [activeFilter, setActiveFilter] = useState<FilterPill>('All');
   const [searchQuery, setSearchQuery] = useState('');
@@ -305,28 +308,32 @@ export default function ContactsScreen() {
     <View style={{ flex: 1, backgroundColor: C.bg }}>
 
       {/* Top Bar */}
-      <View style={{
+      <Animated.View style={{
         position: 'absolute', top: 0, left: 0, right: 0, zIndex: 20,
-        height: topBarH, paddingTop: insets.top,
-        flexDirection: 'row', alignItems: 'center', paddingHorizontal: 16,
+        paddingTop: insets.top,
         borderBottomWidth: StyleSheet.hairlineWidth, borderBottomColor: C.separator,
         backgroundColor: C.bg,
+        opacity,
       }}>
-        <Pressable onPress={() => { Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light); router.back(); }} style={{ width: 36, height: 36, alignItems: 'center', justifyContent: 'center' }}>
-          <IconSymbol name="chevron.left" size={20} color={C.label} />
-        </Pressable>
-        <View style={{ flex: 1, alignItems: 'center' }}>
-          <View style={{ backgroundColor: C.label, borderRadius: 18, paddingHorizontal: 14, paddingVertical: 5 }}>
-            <Text style={{ fontSize: 14, fontWeight: '700', color: C.bg }}>Contacts</Text>
+        <View style={{ height: 52, flexDirection: 'row', alignItems: 'center', paddingHorizontal: 16 }}>
+          <Pressable onPress={() => { Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light); router.back(); }} style={{ width: 36, height: 36, alignItems: 'center', justifyContent: 'center' }}>
+            <IconSymbol name="chevron.left" size={20} color={C.label} />
+          </Pressable>
+          <View style={{ flex: 1, alignItems: 'center' }}>
+            <View style={{ backgroundColor: C.label, borderRadius: 18, paddingHorizontal: 14, paddingVertical: 5 }}>
+              <Text style={{ fontSize: 14, fontWeight: '700', color: C.bg }}>Contacts</Text>
+            </View>
           </View>
+          <View style={{ width: 36 }} />
         </View>
-        <View style={{ width: 36 }} />
-      </View>
+      </Animated.View>
 
       <ScrollView
         keyboardShouldPersistTaps="handled"
         contentContainerStyle={{ paddingTop: topBarH + 12, paddingBottom: insets.bottom + 80 }}
         showsVerticalScrollIndicator={false}
+        onScroll={onScroll}
+        scrollEventThrottle={scrollEventThrottle}
       >
         {/* Search Bar */}
         <View style={{ flexDirection: 'row', alignItems: 'center', marginHorizontal: 16, borderRadius: 12, borderWidth: StyleSheet.hairlineWidth, borderColor: C.separator, backgroundColor: C.surface, paddingHorizontal: 12, paddingVertical: 10, gap: 8, marginBottom: 12 }}>

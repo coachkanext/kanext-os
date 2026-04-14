@@ -10,6 +10,7 @@ import {
   Switch,
   ScrollView,
   StyleSheet,
+  Animated,
 } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import * as Haptics from 'expo-haptics';
@@ -17,6 +18,7 @@ import * as Haptics from 'expo-haptics';
 import { IconSymbol } from '@/components/ui/icon-symbol';
 import { useAccentColor } from '@/hooks/use-accent-color';
 import { useColors, type ComponentColors } from '@/hooks/use-colors';
+import { useScrollHeader } from '@/hooks/use-scroll-header';
 import { useMode } from '@/context/app-context';
 import { getRooms } from '@/data/mock-messages-v3';
 
@@ -26,6 +28,9 @@ export default function ChannelManagementScreen() {
   const mode = useMode();
   const C = useColors();
   const styles = useMemo(() => makeStyles(C), [C]);
+
+  const TOP_BAR_H = insets.top + 54;
+  const { opacity, onScroll, scrollEventThrottle } = useScrollHeader(TOP_BAR_H);
 
   const channels = useMemo(() => getRooms(mode), [mode]);
   const [mutedIds, setMutedIds] = useState<Set<string>>(new Set());
@@ -43,12 +48,17 @@ export default function ChannelManagementScreen() {
   const archivedChannels = channels.filter((ch) => archivedIds.has(ch.id));
 
   return (
-    <View style={[styles.container, { paddingTop: insets.top }]}>
-      <View style={styles.header}>
-        <Text style={styles.title}>Rooms</Text>
-      </View>
+    <View style={styles.container}>
+      <Animated.View style={[styles.topBar, { paddingTop: insets.top, opacity }]}>
+        <View style={styles.header}>
+          <Text style={styles.title}>Rooms</Text>
+        </View>
+      </Animated.View>
 
-      <ScrollView style={styles.list} contentContainerStyle={{ paddingBottom: 100 }} showsVerticalScrollIndicator={false}>
+      <ScrollView style={styles.list} contentContainerStyle={{ paddingTop: TOP_BAR_H, paddingBottom: 100 }}
+        showsVerticalScrollIndicator={false}
+        onScroll={onScroll}
+        scrollEventThrottle={scrollEventThrottle}>
         {/* Create channel button */}
         <Pressable
           style={styles.createRow}
@@ -124,6 +134,7 @@ export default function ChannelManagementScreen() {
 
 const makeStyles = (C: ComponentColors) => StyleSheet.create({
   container: { flex: 1, backgroundColor: C.bg },
+  topBar: { position: 'absolute', top: 0, left: 0, right: 0, zIndex: 10, backgroundColor: C.bg },
   header: { paddingHorizontal: 20, paddingTop: 8, paddingBottom: 12 },
   title: { fontSize: 28, fontWeight: '700', color: C.label },
   list: { flex: 1 },

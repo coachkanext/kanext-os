@@ -1,5 +1,5 @@
 import React, { useState, useMemo, useCallback } from 'react';
-import { View, Text, StyleSheet, Pressable, ScrollView, TextInput, Alert } from 'react-native';
+import { View, Text, StyleSheet, Pressable, ScrollView, TextInput, Alert, Animated } from 'react-native';
 import * as Haptics from 'expo-haptics';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useFocusEffect } from 'expo-router';
@@ -10,6 +10,7 @@ import { useColors, type ComponentColors } from '@/hooks/use-colors';
 import { openSidePanel } from '@/utils/global-side-panel';
 import { resetFooter } from '@/utils/global-footer-hide';
 import { useDemoRole } from '@/utils/demo-role-store';
+import { useScrollHeader } from '@/hooks/use-scroll-header';
 
 const GAIN = '#5A8A6E';
 const HEAT = '#B85C5C';
@@ -56,11 +57,7 @@ function makeStyles(C: ComponentColors) {
   return StyleSheet.create({
     root: { flex: 1 },
     topBarOuter: {
-      position: 'absolute',
-      top: 0,
-      left: 0,
-      right: 0,
-      zIndex: 100,
+      position: 'absolute', top: 0, left: 0, right: 0, zIndex: 10,
       borderBottomWidth: StyleSheet.hairlineWidth,
     },
     topBar: {
@@ -191,6 +188,8 @@ export default function LibraryScreen() {
   const { role, cycleRole, isOwner } = useDemoRole('kaystudios');
   const tap = useCallback(() => Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light), []);
 
+  const { opacity, onScroll, scrollEventThrottle } = useScrollHeader();
+
   const [search, setSearch] = useState('');
   const [filterPill, setFilterPill] = useState<FilterPill>('All');
 
@@ -219,8 +218,7 @@ export default function LibraryScreen() {
 
   return (
     <View style={[s.root, { backgroundColor: C.bg }]}>
-      {/* Top bar */}
-      <View style={[s.topBarOuter, { backgroundColor: C.bg, borderBottomColor: C.separator, paddingTop: insets.top }]}>
+      <Animated.View style={[s.topBarOuter, { paddingTop: insets.top, backgroundColor: C.bg, borderBottomColor: C.separator, borderBottomWidth: StyleSheet.hairlineWidth, opacity }]}>
         <View style={s.topBar}>
           <Pressable onPress={() => { tap(); openSidePanel(); }} style={{ width: 40, alignItems: 'center' }}>
             <KMenuButton />
@@ -230,12 +228,13 @@ export default function LibraryScreen() {
           </View>
           <RolePill role={role} onPress={cycleRole} accentColor={C.label} isPrimary={isOwner} />
         </View>
-      </View>
-
+      </Animated.View>
       <ScrollView
+        onScroll={onScroll}
+        scrollEventThrottle={scrollEventThrottle}
         showsVerticalScrollIndicator={false}
         contentContainerStyle={{
-          paddingTop: insets.top + TOP_BAR_H + 12,
+          paddingTop: insets.top + TOP_BAR_H + 8,
           paddingBottom: insets.bottom + 80,
         }}
       >

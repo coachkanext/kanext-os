@@ -24,6 +24,7 @@ import { Swipeable } from 'react-native-gesture-handler';
 import { IconSymbol } from '@/components/ui/icon-symbol';
 import { BottomSheet } from '@/components/ui/bottom-sheet';
 import { useColors, type ComponentColors } from '@/hooks/use-colors';
+import { useScrollHeader } from '@/hooks/use-scroll-header';
 import { useMode } from '@/context/app-context';
 import { hideFooter, showFooter } from '@/utils/global-footer-hide';
 import { getInboxThreads, getRooms, getEmails, formatMessageTime } from '@/data/mock-messages-v3';
@@ -87,7 +88,7 @@ function TypingDots({ C }: { C: ComponentColors }) {
   return (
     <View style={{ flexDirection: 'row', alignItems: 'center', paddingVertical: 2 }}>
       {[dot1, dot2, dot3].map((dot, i) => (
-        <Animated.View
+        <View
           key={i}
           style={{
             width: 6, height: 6, borderRadius: 3,
@@ -893,6 +894,7 @@ export default function MessagesScreen() {
 
   const lastScrollYRef = useRef(0);
   const handleScroll = useCallback((e: any) => {
+    onScrollHeader(e);
     const y = e.nativeEvent.contentOffset.y;
     const dy = y - lastScrollYRef.current;
     lastScrollYRef.current = y;
@@ -1037,6 +1039,7 @@ export default function MessagesScreen() {
   const fabBottom = insets.bottom + FOOTER_HEIGHT + 16;
   const searchBarBottom = insets.bottom + FOOTER_HEIGHT;
   const headerHeight = insets.top + 14 + 50;
+  const { opacity, onScroll: onScrollHeader } = useScrollHeader(headerHeight);
 
   const pills: readonly string[] =
     activeTab === 'Chats' ? CHAT_PILLS
@@ -1057,7 +1060,8 @@ export default function MessagesScreen() {
         pointerEvents={searchActive ? 'none' : 'auto'}
       >
         {/* Header */}
-        <View style={[styles.header, { paddingTop: insets.top + 14 }]}>
+        <Animated.View style={[{ position: 'absolute', top: 0, left: 0, right: 0, zIndex: 10, backgroundColor: C.bg }, { paddingTop: insets.top + 14, opacity }]}>
+        <View style={styles.header}>
           {/* Left */}
           {editPinsMode ? (
             <Pressable
@@ -1136,6 +1140,7 @@ export default function MessagesScreen() {
             </Pressable>
           )}
         </View>
+        </Animated.View>
 
         {/* Sub-filter pills — slides in when filter icon is tapped */}
         <Animated.View style={{
@@ -1192,7 +1197,7 @@ export default function MessagesScreen() {
           showsVerticalScrollIndicator={false}
           onScroll={handleScroll}
           scrollEventThrottle={16}
-          contentContainerStyle={{ paddingBottom: insets.bottom + FOOTER_HEIGHT + 150 }}
+          contentContainerStyle={{ paddingTop: headerHeight, paddingBottom: insets.bottom + FOOTER_HEIGHT + 150 }}
           keyboardShouldPersistTaps="handled"
           onScrollBeginDrag={() => {
             setFilterDropdownVisible(false);
@@ -1360,7 +1365,7 @@ export default function MessagesScreen() {
       </Animated.View>
 
       {/* ── Search results overlay ── */}
-      <Animated.View
+      <View
         style={[StyleSheet.absoluteFill, { opacity: resultsOpacity, backgroundColor: C.bg }]}
         pointerEvents={searchActive ? 'auto' : 'none'}
       >
@@ -1376,7 +1381,7 @@ export default function MessagesScreen() {
           onOpenThread={(t) => router.push(`/(tabs)/(main)/messages/${t.id}` as any)}
           bottomPad={insets.bottom + FOOTER_HEIGHT + SEARCH_BAR_HEIGHT + 8}
         />
-      </Animated.View>
+      </View>
 
       {/* ── Search bar ── */}
       {searchActive && (

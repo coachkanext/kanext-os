@@ -7,7 +7,7 @@
 
 import React, { useState, useMemo, useCallback } from 'react';
 import {
-  View, Text, Pressable, ScrollView, Image, StyleSheet, Alert,
+  View, Text, Pressable, ScrollView, Image, StyleSheet, Alert, Animated,
 } from 'react-native';
 import * as Haptics from 'expo-haptics';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
@@ -17,10 +17,12 @@ import FontAwesome5 from '@expo/vector-icons/FontAwesome5';
 import { IconSymbol } from '@/components/ui/icon-symbol';
 import { GlassView } from '@/components/ui/glass-view';
 import { useColors, type ComponentColors } from '@/hooks/use-colors';
+
 import { openSidePanel } from '@/utils/global-side-panel';
 import { resetFooter } from '@/utils/global-footer-hide';
 import { useDemoRole } from '@/utils/demo-role-store';
 import { KMenuButton } from '@/components/ui/k-menu-button';
+import { useScrollHeader } from '@/hooks/use-scroll-header';
 import {
   HUB_PROFILE, HUB_LINKS, HUB_PORTFOLIO, HUB_FEATURED, CONTENT_ITEMS,
   type HubLink, type PortfolioItem, type ContentType,
@@ -108,6 +110,7 @@ export default function MyPageScreen() {
   const router = useRouter();
 
   const topBarH = insets.top + TOP_BAR_H;
+  const { opacity, onScroll, scrollEventThrottle } = useScrollHeader();
 
   const [role, cycleRole] = useDemoRole('personal:hub');
   const isOwner = role === 'Owner';
@@ -119,7 +122,6 @@ export default function MyPageScreen() {
 
   const showEdit        = isOwner && !previewMode;
   const showVisitorView = !showEdit;
-  const contentPaddingTop = topBarH + 8;
 
   useFocusEffect(useCallback(() => { resetFooter(); }, []));
 
@@ -447,8 +449,19 @@ export default function MyPageScreen() {
 
   return (
     <View style={[s.root, { backgroundColor: C.bg }]}>
+      {/* Preview Back Button */}
+      {previewMode && (
+        <Pressable
+          style={[s.previewBackBtn, { top: topBarH + 12, backgroundColor: C.label }]}
+          onPress={() => { haptic(); setPreviewMode(false); }}
+        >
+          <IconSymbol name="arrow.left" size={13} color={C.bg} />
+          <Text style={[s.previewBackText, { color: C.bg }]}>Back to Edit</Text>
+        </Pressable>
+      )}
+
       {/* Top Bar — no filter icon on follower pages */}
-      <View style={[s.topBarOuter, { backgroundColor: C.bg, borderBottomColor: C.separator, paddingTop: insets.top }]}>
+      <Animated.View style={[s.topBarOuter, { paddingTop: insets.top, backgroundColor: C.bg, borderBottomColor: C.separator, borderBottomWidth: StyleSheet.hairlineWidth, opacity }]}>
         <View style={s.topBar}>
           <Pressable
             onPress={() => { haptic(); openSidePanel(); }}
@@ -457,8 +470,10 @@ export default function MyPageScreen() {
           >
             <KMenuButton />
           </Pressable>
-          <View style={[s.centerPill, { backgroundColor: C.surface, borderColor: C.separator }]}>
-            <Text style={[s.centerPillText, { color: C.label }]}>Profile</Text>
+          <View style={{ flex: 1, alignItems: 'center' }}>
+            <View style={[s.centerPill, { backgroundColor: C.surface, borderColor: C.separator }]}>
+              <Text style={[s.centerPillText, { color: C.label }]}>Profile</Text>
+            </View>
           </View>
           <Pressable
             onPress={() => { Haptics.selectionAsync(); cycleRole(); setPreviewMode(false); }}
@@ -472,24 +487,15 @@ export default function MyPageScreen() {
             <Text style={[s.rolePillText, { color: isOwner ? C.bg : C.label }]}>{role}</Text>
           </Pressable>
         </View>
-      </View>
-
-      {/* Preview Back Button */}
-      {previewMode && (
-        <Pressable
-          style={[s.previewBackBtn, { top: topBarH + 12, backgroundColor: C.label }]}
-          onPress={() => { haptic(); setPreviewMode(false); }}
-        >
-          <IconSymbol name="arrow.left" size={13} color={C.bg} />
-          <Text style={[s.previewBackText, { color: C.bg }]}>Back to Edit</Text>
-        </Pressable>
-      )}
+      </Animated.View>
 
       {/* Content */}
       <ScrollView
+        onScroll={onScroll}
+        scrollEventThrottle={scrollEventThrottle}
         style={{ flex: 1 }}
         contentContainerStyle={{
-          paddingTop: contentPaddingTop,
+          paddingTop: insets.top + TOP_BAR_H + 8,
           paddingBottom: showEdit ? 0 : insets.bottom + 80,
         }}
         showsVerticalScrollIndicator={false}
@@ -540,19 +546,13 @@ const makeStyles = (C: ComponentColors) => StyleSheet.create({
   root: { flex: 1 },
 
   // Top bar
-  topBarOuter: {
-    position: 'absolute', top: 0, left: 0, right: 0, zIndex: 100,
-    borderBottomWidth: StyleSheet.hairlineWidth,
-  },
+  topBarOuter: { position: 'absolute', top: 0, left: 0, right: 0, zIndex: 10, borderBottomWidth: StyleSheet.hairlineWidth },
   topBar: {
     height: TOP_BAR_H, flexDirection: 'row', alignItems: 'center', paddingHorizontal: 16,
   },
   iconBtn:       { width: 36, height: 36, alignItems: 'center', justifyContent: 'center' },
-  centerPill: {
-    flex: 1, marginHorizontal: 10, height: 32, borderRadius: 16, borderWidth: 1,
-    alignItems: 'center', justifyContent: 'center',
-  },
-  centerPillText: { fontSize: 14, fontWeight: '700' },
+  centerPill: { paddingHorizontal: 12, paddingVertical: 5, borderRadius: 14, borderWidth: 1 },
+  centerPillText: { fontSize: 12, fontWeight: '600', letterSpacing: 0.3 },
   rolePill: {
     paddingHorizontal: 12, height: 28, borderRadius: 14, borderWidth: 1,
     alignItems: 'center', justifyContent: 'center',

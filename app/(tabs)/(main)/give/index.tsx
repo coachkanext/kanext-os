@@ -6,11 +6,12 @@
 
 import React, { useState, useCallback, useMemo } from 'react';
 import {
-  View, Text, StyleSheet, Pressable, ScrollView, Alert,
+  View, Text, StyleSheet, Pressable, ScrollView, Alert, Animated,
 } from 'react-native';
 import * as Haptics from 'expo-haptics';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useFocusEffect } from 'expo-router';
+import { useScrollHeader } from '@/hooks/use-scroll-header';
 
 import { IconSymbol } from '@/components/ui/icon-symbol';
 import { RolePill } from '@/components/ui/role-pill';
@@ -345,28 +346,32 @@ export default function CommunityGiveScreen() {
   const [role, cycleRole, roleCycles] = useDemoRole('community:give');
   const isPastor = role === roleCycles[0];
 
+  const { opacity, onScroll, scrollEventThrottle } = useScrollHeader();
+
   useFocusEffect(useCallback(() => { resetFooter(); }, []));
 
   return (
     <View style={[s.root, { backgroundColor: C.bg }]}>
-      {/* Top Bar */}
-      <View style={[s.topBar, { paddingTop: insets.top, backgroundColor: C.bg }]}>
-        <Pressable style={s.kBtn} onPress={() => { Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light); openSidePanel(); }} hitSlop={8}>
-          <KMenuButton />
-        </Pressable>
-        <View style={{ flex: 1, alignItems: 'center' }}>
-          <View style={[s.titlePill, { backgroundColor: C.surface, borderColor: C.separator }]}>
-            <Text style={[s.titleText, { color: C.label }]}>{isPastor ? 'Giving Dashboard' : 'Give'}</Text>
+      <Animated.View style={[s.topBarOuter, { paddingTop: insets.top, backgroundColor: C.bg, borderBottomColor: C.separator, borderBottomWidth: StyleSheet.hairlineWidth, opacity }]}>
+        <View style={s.topBar}>
+          <Pressable style={s.kBtn} onPress={() => { Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light); openSidePanel(); }} hitSlop={8}>
+            <KMenuButton />
+          </Pressable>
+          <View style={{ flex: 1, alignItems: 'center' }}>
+            <View style={[s.titlePill, { backgroundColor: C.surface, borderColor: C.separator }]}>
+              <Text style={[s.titleText, { color: C.label }]}>{isPastor ? 'Giving Dashboard' : 'Give'}</Text>
+            </View>
+          </View>
+          <View style={s.rolePillWrap}>
+            <RolePill role={role} onPress={cycleRole} isPrimary={isPastor} />
           </View>
         </View>
-        <View style={s.rolePillWrap}>
-          <RolePill role={role} onPress={cycleRole} isPrimary={isPastor} />
-        </View>
-      </View>
-
+      </Animated.View>
       <ScrollView
+        onScroll={onScroll}
+        scrollEventThrottle={scrollEventThrottle}
         style={{ flex: 1 }}
-        contentContainerStyle={{ paddingTop: insets.top + TOP_BAR_H + 8, paddingHorizontal: 16, paddingBottom: insets.bottom + 80, gap: 12 }}
+        contentContainerStyle={{ paddingHorizontal: 16, paddingTop: insets.top + TOP_BAR_H + 8, paddingBottom: insets.bottom + 80, gap: 12 }}
         showsVerticalScrollIndicator={false}
       >
         {isPastor
@@ -383,14 +388,14 @@ export default function CommunityGiveScreen() {
 function makeStyles(C: ComponentColors) {
   return StyleSheet.create({
     root:    { flex: 1 },
-    topBar: {
-      position: 'absolute', top: 0, left: 0, right: 0, zIndex: 100,
-      height: undefined,
-      flexDirection: 'row', alignItems: 'flex-end',
-      paddingBottom: 10, paddingHorizontal: 16,
-      minHeight: 52,
+    topBarOuter: {
+      position: 'absolute', top: 0, left: 0, right: 0, zIndex: 10,
       borderBottomWidth: StyleSheet.hairlineWidth,
-      borderBottomColor: C.separator,
+    },
+    topBar: {
+      height: TOP_BAR_H,
+      flexDirection: 'row', alignItems: 'center',
+      paddingHorizontal: 16,
     },
     kBtn:        { width: 44, height: 36, justifyContent: 'center' },
     titlePill:   { borderRadius: 18, paddingHorizontal: 14, paddingVertical: 6, borderWidth: 1 },

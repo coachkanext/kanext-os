@@ -4,7 +4,7 @@
  */
 
 import React, { useCallback, useMemo } from 'react';
-import { View, Text, StyleSheet, Pressable, ScrollView } from 'react-native';
+import { View, Text, StyleSheet, Pressable, ScrollView, Animated } from 'react-native';
 import * as Haptics from 'expo-haptics';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useFocusEffect, useRouter } from 'expo-router';
@@ -12,6 +12,7 @@ import { IconSymbol } from '@/components/ui/icon-symbol';
 import { KMenuButton } from '@/components/ui/k-menu-button';
 import { RolePill } from '@/components/ui/role-pill';
 import { useColors, type ComponentColors } from '@/hooks/use-colors';
+import { useScrollHeader } from '@/hooks/use-scroll-header';
 import { openSidePanel } from '@/utils/global-side-panel';
 import { resetFooter } from '@/utils/global-footer-hide';
 import { useDemoRole } from '@/utils/demo-role-store';
@@ -60,6 +61,7 @@ export default function SourceTrackingScreen() {
   }, [isPastor, router]));
 
   const topBarH = insets.top + TOP_BAR_H;
+  const { opacity, onScroll, scrollEventThrottle } = useScrollHeader(topBarH);
 
   if (!isPastor) return null;
 
@@ -80,6 +82,8 @@ export default function SourceTrackingScreen() {
           paddingBottom: 120,
         }}
         showsVerticalScrollIndicator={false}
+        onScroll={onScroll}
+        scrollEventThrottle={scrollEventThrottle}
       >
         {/* Stats row */}
         <View style={s.statsRow}>
@@ -159,7 +163,7 @@ export default function SourceTrackingScreen() {
       </ScrollView>
 
       {/* Top bar — position absolute */}
-      <View style={[s.topBarWrap, { paddingTop: insets.top, height: topBarH, backgroundColor: C.bg }]}>
+      <Animated.View style={[s.topBarWrap, { paddingTop: insets.top, backgroundColor: C.bg, opacity }]}>
         <View style={s.topBar}>
           <View style={s.topBarSide}>
             <Pressable
@@ -179,7 +183,7 @@ export default function SourceTrackingScreen() {
             <RolePill role={role} onPress={cycleRole} accentColor={C.label} isPrimary={isPastor} />
           </View>
         </View>
-      </View>
+      </Animated.View>
     </View>
   );
 }
@@ -189,7 +193,7 @@ export default function SourceTrackingScreen() {
 const makeStyles = (C: ComponentColors) => StyleSheet.create({
   screen:     { flex: 1 },
   topBarWrap: { position: 'absolute', top: 0, left: 0, right: 0, zIndex: 10 },
-  topBar:     { flex: 1, flexDirection: 'row', alignItems: 'center', paddingHorizontal: 16 },
+  topBar:     { height: TOP_BAR_H, flexDirection: 'row', alignItems: 'center', paddingHorizontal: 16 },
   topBarSide: { width: 80, justifyContent: 'center' },
   titlePill: {
     flex: 1,

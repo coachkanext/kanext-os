@@ -6,7 +6,7 @@
 import React, { useState, useMemo, useCallback } from 'react';
 import {
   View, Text, StyleSheet, Pressable, ScrollView,
-  TextInput, Alert,
+  TextInput, Alert, Animated,
 } from 'react-native';
 import * as Haptics from 'expo-haptics';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
@@ -19,11 +19,10 @@ import { useColors, type ComponentColors } from '@/hooks/use-colors';
 import { openSidePanel } from '@/utils/global-side-panel';
 import { resetFooter } from '@/utils/global-footer-hide';
 import { useDemoRole } from '@/utils/demo-role-store';
+import { useScrollHeader } from '@/hooks/use-scroll-header';
 
 const GAIN    = '#5A8A6E';
 const HEAT    = '#B85C5C';
-const TOP_BAR_H = 52;
-
 const BALANCE = 2340.50;
 function formatCurrency(n: number) {
   return '$' + n.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ',');
@@ -61,6 +60,9 @@ export default function PayScreen() {
   const [role, cycleRole, roleCycles] = useDemoRole('personal:kaypay');
   const isOwner = role === roleCycles[0];
 
+  const TOP_BAR_H = insets.top + 54;
+  const { opacity, onScroll, scrollEventThrottle } = useScrollHeader(TOP_BAR_H);
+
   const [search,     setSearch]     = useState('');
   const [recipient,  setRecipient]  = useState('');
   const [amount,     setAmount]     = useState('');
@@ -68,8 +70,6 @@ export default function PayScreen() {
   const [method,     setMethod]     = useState<'kpay' | 'card'>('kpay');
 
   useFocusEffect(useCallback(() => { resetFooter(); }, []));
-
-  const topBarH = insets.top + TOP_BAR_H;
 
   const handleSend = () => {
     if (!recipient || !amount) {
@@ -89,7 +89,7 @@ export default function PayScreen() {
     <View style={[s.root, { backgroundColor: C.bg }]}>
 
       {/* ── Top Bar ── */}
-      <View style={[s.topBarOuter, { backgroundColor: C.bg, borderBottomColor: C.separator, paddingTop: insets.top }]}>
+      <Animated.View style={[s.topBarOuter, { backgroundColor: C.bg, borderBottomColor: C.separator, paddingTop: insets.top, opacity }]}>
         <View style={s.topBar}>
           <Pressable onPress={() => { Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light); openSidePanel(); }} style={s.kBtn}>
             <KMenuButton />
@@ -99,11 +99,13 @@ export default function PayScreen() {
           </View>
           <RolePill role={role} onPress={cycleRole} accentColor={C.label} isPrimary={isOwner} />
         </View>
-      </View>
+      </Animated.View>
 
       <ScrollView
         showsVerticalScrollIndicator={false}
-        contentContainerStyle={{ paddingTop: topBarH + 16, paddingBottom: insets.bottom + 100 }}
+        contentContainerStyle={{ paddingTop: TOP_BAR_H + 16, paddingBottom: insets.bottom + 100 }}
+        onScroll={onScroll}
+        scrollEventThrottle={scrollEventThrottle}
         keyboardShouldPersistTaps="handled"
       >
 
@@ -258,7 +260,7 @@ export default function PayScreen() {
 
 const makeStyles = (C: ComponentColors) => StyleSheet.create({
   root:        { flex: 1 },
-  topBarOuter: { position: 'absolute', top: 0, left: 0, right: 0, zIndex: 100, borderBottomWidth: StyleSheet.hairlineWidth },
+  topBarOuter: { position: 'absolute', top: 0, left: 0, right: 0, zIndex: 10, borderBottomWidth: StyleSheet.hairlineWidth },
   topBar:      { height: TOP_BAR_H, flexDirection: 'row', alignItems: 'center', paddingHorizontal: 4 },
   kBtn:        { width: 40, alignItems: 'center' },
   titleWrap:   { flex: 1, alignItems: 'center' },

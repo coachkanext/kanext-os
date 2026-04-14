@@ -6,7 +6,7 @@
  */
 
 import React, { useState, useMemo, useCallback } from 'react';
-import { View, Text, Pressable, ScrollView, StyleSheet, TextInput } from 'react-native';
+import { View, Text, Pressable, ScrollView, StyleSheet, TextInput, Animated } from 'react-native';
 import * as Haptics from 'expo-haptics';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useFocusEffect } from 'expo-router';
@@ -14,6 +14,7 @@ import { useFocusEffect } from 'expo-router';
 import { IconSymbol } from '@/components/ui/icon-symbol';
 import { GlassView } from '@/components/ui/glass-view';
 import { useColors, type ComponentColors } from '@/hooks/use-colors';
+import { useScrollHeader } from '@/hooks/use-scroll-header';
 import { openSidePanel } from '@/utils/global-side-panel';
 import { resetFooter } from '@/utils/global-footer-hide';
 import { KMenuButton } from '@/components/ui/k-menu-button';
@@ -139,6 +140,7 @@ export default function SubscribersScreen() {
 
   const topBarH           = insets.top + TOP_BAR_H;
   const contentPaddingTop = topBarH + 8;
+  const { opacity, onScroll, scrollEventThrottle } = useScrollHeader(insets.top + TOP_BAR_H + 6);
 
   const [selectedSub,    setSelectedSub]    = useState<Subscriber | null>(null);
   const [expandedTierId, setExpandedTierId] = useState<string | null>(null);
@@ -363,6 +365,8 @@ export default function SubscribersScreen() {
         style={{ flex: 1 }}
         contentContainerStyle={{ paddingTop: contentPaddingTop, paddingBottom: insets.bottom + 80 }}
         showsVerticalScrollIndicator={false}
+        onScroll={onScroll}
+        scrollEventThrottle={scrollEventThrottle}
       >
         {/* Profile Header */}
         <View style={{ alignItems: 'center', paddingTop: 20, paddingBottom: 4, paddingHorizontal: 16 }}>
@@ -475,23 +479,25 @@ export default function SubscribersScreen() {
   return (
     <View style={[s.root, { backgroundColor: C.bg }]}>
       {/* Top Bar */}
-      <View style={[s.topBar, { height: topBarH, paddingTop: insets.top, backgroundColor: C.bg, borderBottomColor: C.separator }]}>
-        {selectedSub ? (
-          <Pressable onPress={() => { haptic(); setSelectedSub(null); }} hitSlop={8} style={s.topBarBtn}>
-            <IconSymbol name="chevron.left" size={20} color={C.label} />
-          </Pressable>
-        ) : (
-          <Pressable onPress={() => { haptic(); openSidePanel(); }} hitSlop={8} style={s.topBarBtn}>
-            <KMenuButton />
-          </Pressable>
-        )}
-        <View style={[s.titlePill, { backgroundColor: C.surface, borderColor: C.separator }]}>
-          <Text style={[{ fontSize: 14, fontWeight: '700', color: C.label }]} numberOfLines={1}>
-            {selectedSub ? selectedSub.name : 'Subscribers'}
-          </Text>
+      <Animated.View style={[s.topBarOuter, { paddingTop: insets.top, backgroundColor: C.bg, borderBottomColor: C.separator, opacity }]}>
+        <View style={s.topBar}>
+          {selectedSub ? (
+            <Pressable onPress={() => { haptic(); setSelectedSub(null); }} hitSlop={8} style={s.topBarBtn}>
+              <IconSymbol name="chevron.left" size={20} color={C.label} />
+            </Pressable>
+          ) : (
+            <Pressable onPress={() => { haptic(); openSidePanel(); }} hitSlop={8} style={s.topBarBtn}>
+              <KMenuButton />
+            </Pressable>
+          )}
+          <View style={[s.titlePill, { backgroundColor: C.surface, borderColor: C.separator }]}>
+            <Text style={[{ fontSize: 14, fontWeight: '700', color: C.label }]} numberOfLines={1}>
+              {selectedSub ? selectedSub.name : 'Subscribers'}
+            </Text>
+          </View>
+          <View style={s.topBarBtn} />
         </View>
-        <View style={s.topBarBtn} />
-      </View>
+      </Animated.View>
 
       {/* List — always mounted so scroll position is preserved on back */}
       <View
@@ -503,6 +509,8 @@ export default function SubscribersScreen() {
           contentContainerStyle={{ paddingTop: contentPaddingTop, paddingBottom: insets.bottom + 80 }}
           showsVerticalScrollIndicator={false}
           keyboardShouldPersistTaps="handled"
+          onScroll={onScroll}
+          scrollEventThrottle={scrollEventThrottle}
         >
           {/* 1. MRR Card */}
           <GlassView tier={1} style={s.mrrCard}>
@@ -670,11 +678,13 @@ export default function SubscribersScreen() {
 function makeStyles(C: ComponentColors) {
   return StyleSheet.create({
     root:        { flex: 1 },
-    topBar: {
+    topBarOuter: {
       position: 'absolute', top: 0, left: 0, right: 0, zIndex: 100,
+      borderBottomWidth: StyleSheet.hairlineWidth,
+    },
+    topBar: {
       flexDirection: 'row', alignItems: 'flex-end',
       paddingHorizontal: 12, paddingBottom: 6,
-      borderBottomWidth: StyleSheet.hairlineWidth,
     },
     topBarBtn:    { width: 40, height: 32, alignItems: 'center', justifyContent: 'center' },
     titlePill:    { flex: 1, alignItems: 'center', justifyContent: 'center', height: 32, borderRadius: 16, borderWidth: 1, marginHorizontal: 10 },

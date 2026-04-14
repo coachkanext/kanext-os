@@ -3,7 +3,7 @@
  * Head Coach view only — NBA 2K-style Roster Needs Assessment
  */
 
-import { View, Text, StyleSheet, Pressable, ScrollView } from 'react-native';
+import { View, Text, StyleSheet, Pressable, ScrollView, Animated } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import * as Haptics from 'expo-haptics';
 import { useFocusEffect, useRouter } from 'expo-router';
@@ -13,6 +13,7 @@ import { openSidePanel } from '@/utils/global-side-panel';
 import { KMenuButton } from '@/components/ui/k-menu-button';
 import { resetFooter } from '@/utils/global-footer-hide';
 import { useScrollFooter } from '@/hooks/use-scroll-footer';
+import { useScrollHeader } from '@/hooks/use-scroll-header';
 
 // ---------------------------------------------------------------------------
 // Constants
@@ -296,6 +297,8 @@ export default function GapAnalysisScreen() {
   const insets = useSafeAreaInsets();
   const router = useRouter();
   const scrollFooter = useScrollFooter();
+  const topBarH = insets.top + TOP_BAR_H;
+  const { opacity, onScroll, scrollEventThrottle } = useScrollHeader(topBarH);
   const s = useMemo(() => makeStyles(C), [C]);
 
   useFocusEffect(useCallback(() => { resetFooter(); }, []));
@@ -315,22 +318,25 @@ export default function GapAnalysisScreen() {
   return (
     <View style={[s.screen, { backgroundColor: C.bg }]}>
       {/* Fixed top bar */}
-      <View style={[s.topBarWrap, { paddingTop: insets.top, backgroundColor: C.bg }]}>
+      <Animated.View style={[s.topBarWrap, { paddingTop: insets.top, backgroundColor: C.bg, opacity }]}>
         <View style={s.topBar}>
           <Pressable onPress={() => openSidePanel()} hitSlop={8} style={s.topBarSide}>
             <KMenuButton />
           </Pressable>
-          <View style={[s.titlePill, { backgroundColor: C.surface, borderColor: C.separator }]}>
-            <Text style={[s.titlePillText, { color: C.label }]}>Gap Analysis</Text>
+          <View style={{ flex: 1, alignItems: 'center' }}>
+            <View style={[s.titlePill, { backgroundColor: C.surface, borderColor: C.separator }]}>
+              <Text style={[s.titlePillText, { color: C.label }]}>Gap Analysis</Text>
+            </View>
           </View>
           <View style={{ width: 44 }} />
         </View>
-      </View>
+      </Animated.View>
 
       <ScrollView
         {...scrollFooter}
-        scrollEventThrottle={16}
         showsVerticalScrollIndicator={false}
+        onScroll={onScroll}
+        scrollEventThrottle={scrollEventThrottle}
         contentContainerStyle={[s.scrollContent, { paddingTop: insets.top + TOP_BAR_H + 12, paddingBottom: insets.bottom + 24 }]}
       >
         {/* Position Coverage */}
@@ -381,8 +387,8 @@ function makeStyles(C: ComponentColors) {
     topBarWrap:           { position: 'absolute', top: 0, left: 0, right: 0, zIndex: 10 },
     topBar:               { height: TOP_BAR_H, flexDirection: 'row', alignItems: 'center', paddingHorizontal: 16 },
     topBarSide:           { width: 44, alignItems: 'flex-start', justifyContent: 'center' },
-    titlePill:            { flex: 1, alignItems: 'center', marginHorizontal: 8, paddingVertical: 6, borderRadius: 20, borderWidth: 1 },
-    titlePillText:        { fontSize: 14, fontWeight: '700' },
+    titlePill:            { paddingHorizontal: 12, paddingVertical: 5, borderRadius: 14, borderWidth: 1 },
+    titlePillText:        { fontSize: 12, fontWeight: '600', letterSpacing: 0.3 },
     scrollContent:        { paddingHorizontal: 14 },
     sectionSpacing:       { height: 24 },
     emptyState:           { borderRadius: 12, padding: 16, alignItems: 'center' },

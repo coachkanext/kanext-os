@@ -6,6 +6,7 @@ import {
   ScrollView,
   Switch,
   StyleSheet,
+  Animated,
 } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import * as Haptics from 'expo-haptics';
@@ -21,6 +22,7 @@ import { useMode } from '@/context/app-context';
 import { resetFooter } from '@/utils/global-footer-hide';
 import { useScrollFooter } from '@/hooks/use-scroll-footer';
 import { useOwnerGuard } from '@/hooks/use-owner-guard';
+import { useScrollHeader } from '@/hooks/use-scroll-header';
 
 // ---------------------------------------------------------------------------
 // Types
@@ -189,6 +191,7 @@ export default function AvailabilityScreen() {
   useFocusEffect(useCallback(() => { resetFooter(); }, []));
 
   const scrollFooter = useScrollFooter();
+  const { opacity, onScroll, scrollEventThrottle } = useScrollHeader();
 
   // ── Schedule helpers ──────────────────────────────────────────────────────
 
@@ -269,25 +272,29 @@ export default function AvailabilityScreen() {
 
   return (
     <View style={[styles.root, { backgroundColor: C.bg }]}>
-      {/* Top bar */}
-      <View style={[styles.topBar, { paddingTop: insets.top + 8 }]}>
-        <Pressable onPress={() => openSidePanel()} hitSlop={8} style={styles.topBarSide}>
-          <KMenuButton />
-        </Pressable>
-        <View style={[styles.titlePill, { backgroundColor: C.surface, borderColor: C.separator }]}>
-          <Text style={[styles.titleText, { color: C.label }]}>Availability</Text>
+      <Animated.View style={[styles.topBarOuter, { paddingTop: insets.top + 8, backgroundColor: C.bg, borderBottomColor: C.separator, borderBottomWidth: StyleSheet.hairlineWidth, opacity }]}>
+        <View style={styles.topBar}>
+          <Pressable onPress={() => openSidePanel()} hitSlop={8} style={styles.topBarSide}>
+            <KMenuButton />
+          </Pressable>
+          <View style={{ flex: 1, alignItems: 'center' }}>
+            <View style={[styles.titlePill, { backgroundColor: C.surface, borderColor: C.separator }]}>
+              <Text style={[styles.titleText, { color: C.label }]}>Availability</Text>
+            </View>
+          </View>
+          <View style={{ minWidth: 44, alignItems: 'flex-end', justifyContent: 'center' }}>
+            <RolePill role={role} onPress={guardedCycle} isPrimary={isOwner} />
+          </View>
         </View>
-        <View style={{ minWidth: 44, alignItems: 'flex-end', justifyContent: 'center' }}>
-          <RolePill role={role} onPress={guardedCycle} isPrimary={isOwner} />
-        </View>
-      </View>
-
+      </Animated.View>
       {/* Body */}
       <ScrollView
         {...scrollFooter}
         style={styles.scroll}
-        contentContainerStyle={{ paddingTop: 0, paddingBottom: 49 + insets.bottom + 24 }}
+        contentContainerStyle={{ paddingTop: insets.top + 8 + 52 + 8, paddingBottom: 49 + insets.bottom + 24 }}
         showsVerticalScrollIndicator={false}
+        onScroll={onScroll}
+        scrollEventThrottle={scrollEventThrottle}
       >
         {/* Weekly Schedule */}
         <Text style={[styles.sectionLabel, { color: C.secondary, marginTop: 8 }]}>WEEKLY SCHEDULE</Text>
@@ -533,11 +540,12 @@ export default function AvailabilityScreen() {
 const styles = StyleSheet.create({
   root: { flex: 1 },
 
+  topBarOuter: { position: 'absolute', top: 0, left: 0, right: 0, zIndex: 10 },
   topBar: {
+    height: 52,
     flexDirection: 'row',
     alignItems: 'center',
     paddingHorizontal: 12,
-    paddingBottom: 10,
   },
   topBarSide: {
     width: 44,
@@ -545,15 +553,12 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   titlePill: {
-    flex: 1,
-    marginHorizontal: 10,
-    height: 32,
-    borderRadius: 16,
-    borderWidth: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
+    paddingHorizontal: 12,
+    paddingVertical:    5,
+    borderRadius:      14,
+    borderWidth:        1,
   },
-  titleText: { fontSize: 14, fontWeight: '700' },
+  titleText: { fontSize: 12, fontWeight: '600', letterSpacing: 0.3 },
 
   scroll: { flex: 1 },
 

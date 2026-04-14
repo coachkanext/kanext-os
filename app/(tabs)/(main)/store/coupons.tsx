@@ -6,7 +6,7 @@
 import React, { useState, useMemo, useCallback, useEffect } from 'react';
 import {
   View, Text, Pressable, ScrollView, StyleSheet, TextInput,
-  Switch, ActionSheetIOS, Platform, Alert,
+  Switch, ActionSheetIOS, Platform, Alert, Animated,
 } from 'react-native';
 import * as Haptics from 'expo-haptics';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
@@ -17,6 +17,7 @@ import { BottomSheet } from '@/components/ui/bottom-sheet';
 import { KMenuButton } from '@/components/ui/k-menu-button';
 import { RolePill } from '@/components/ui/role-pill';
 import { useColors, type ComponentColors } from '@/hooks/use-colors';
+import { useScrollHeader } from '@/hooks/use-scroll-header';
 import { openSidePanel } from '@/utils/global-side-panel';
 import { resetFooter } from '@/utils/global-footer-hide';
 import { useDemoRole } from '@/utils/demo-role-store';
@@ -111,6 +112,8 @@ export default function CouponsScreen() {
   const router = useRouter();
   const [demoRole, cycleRole, roleCycles] = useDemoRole('personal:store');
   const isOwner = demoRole === roleCycles[0];
+
+  const { opacity, onScroll, scrollEventThrottle } = useScrollHeader(insets.top + TOP_BAR_H);
 
   useEffect(() => {
     if (!isOwner) router.replace('/(tabs)/(main)/store' as any);
@@ -312,7 +315,7 @@ export default function CouponsScreen() {
   return (
     <View style={[s.root, { backgroundColor: C.bg }]}>
       {/* Top Bar */}
-      <View style={[s.topBarOuter, { backgroundColor: C.bg, borderBottomColor: C.separator, paddingTop: insets.top }]}>
+      <Animated.View style={[s.topBarOuter, { backgroundColor: C.bg, borderBottomColor: C.separator, paddingTop: insets.top, opacity }]}>
         <View style={s.topBar}>
           <Pressable onPress={() => { Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light); openSidePanel(); }} style={{ width: 40, alignItems: 'center' }}>
             <KMenuButton />
@@ -322,7 +325,7 @@ export default function CouponsScreen() {
           </View>
           <RolePill role={demoRole} onPress={cycleRole} accentColor="#1A1714" isPrimary={isOwner} />
         </View>
-      </View>
+      </Animated.View>
 
       {/* List */}
       <ScrollView
@@ -333,6 +336,8 @@ export default function CouponsScreen() {
           gap:               12,
         }}
         showsVerticalScrollIndicator={false}
+        onScroll={onScroll}
+        scrollEventThrottle={scrollEventThrottle}
       >
         {/* Empty state */}
         {isEmpty && (

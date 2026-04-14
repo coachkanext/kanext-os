@@ -13,6 +13,7 @@ import {
   TextInput,
   Alert,
   StyleSheet,
+  Animated,
 } from 'react-native';
 import * as Haptics from 'expo-haptics';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
@@ -21,6 +22,7 @@ import { IconSymbol } from '@/components/ui/icon-symbol';
 import { RolePill } from '@/components/ui/role-pill';
 import { KMenuButton } from '@/components/ui/k-menu-button';
 import { useColors } from '@/hooks/use-colors';
+import { useScrollHeader } from '@/hooks/use-scroll-header';
 import { openSidePanel } from '@/utils/global-side-panel';
 import { useDemoRole } from '@/utils/demo-role-store';
 import { resetFooter } from '@/utils/global-footer-hide';
@@ -345,8 +347,11 @@ const pp = StyleSheet.create({
 
 // ─── Screen ───────────────────────────────────────────────────────────────────
 
+const TOP_BAR_H = 52;
+
 export default function WeeklyPromptScreen() {
   const insets = useSafeAreaInsets();
+  const topBarH = insets.top + TOP_BAR_H;
   const C = useColors();
   const [role, cycleRole, roleCycles] = useDemoRole('personal:network');
   const isOwner = role === roleCycles[0];
@@ -354,29 +359,34 @@ export default function WeeklyPromptScreen() {
   const [hasActivePrompt, setHasActivePrompt] = useState(true);
   const [fillText, setFillText] = useState('');
 
+  const { opacity, onScroll, scrollEventThrottle } = useScrollHeader();
+
   useFocusEffect(useCallback(() => { resetFooter(); }, []));
 
   if (!isOwner) return null;
 
   return (
     <View style={[s.root, { backgroundColor: C.bg }]}>
-      {/* Top Bar */}
-      <View style={[s.topBar, { paddingTop: insets.top + 8, borderBottomColor: C.separator, backgroundColor: C.bg }]}>
-        <Pressable onPress={() => openSidePanel()} hitSlop={8}>
-          <KMenuButton />
-        </Pressable>
+      {/* Top Bar — absolute, animated */}
+      <Animated.View style={[s.topBarOuter, { paddingTop: insets.top + 8, borderBottomColor: C.separator, backgroundColor: C.bg, height: topBarH, position: 'absolute', top: 0, left: 0, right: 0, zIndex: 10, opacity }]}>
+        <View style={s.topBar}>
+          <Pressable onPress={() => openSidePanel()} hitSlop={8}>
+            <KMenuButton />
+          </Pressable>
 
-        <View style={[s.titlePill, { backgroundColor: C.surface, borderColor: C.separator }]}>
-          <Text style={[s.titleText, { color: C.label }]}>Weekly Prompt</Text>
+          <View style={[s.titlePill, { backgroundColor: C.surface, borderColor: C.separator }]}>
+            <Text style={[s.titleText, { color: C.label }]}>Weekly Prompt</Text>
+          </View>
+
+          <RolePill role={role} onPress={guardedCycle} isPrimary={isOwner} />
         </View>
-
-        <RolePill role={role} onPress={guardedCycle} isPrimary={isOwner} />
-      </View>
-
+      </Animated.View>
       <ScrollView
         style={{ flex: 1 }}
-        contentContainerStyle={{ paddingTop: 16, paddingBottom: 49 + insets.bottom + 24, gap: 20 }}
+        contentContainerStyle={{ paddingTop: topBarH + 8, paddingBottom: 49 + insets.bottom + 24, gap: 20 }}
         showsVerticalScrollIndicator={false}
+        onScroll={onScroll}
+        scrollEventThrottle={scrollEventThrottle}
       >
         {/* Active Prompt */}
         {hasActivePrompt
@@ -400,8 +410,9 @@ export default function WeeklyPromptScreen() {
 
 const s = StyleSheet.create({
   root:      { flex: 1 },
-  topBar:    { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', paddingHorizontal: 16, paddingBottom: 10, borderBottomWidth: StyleSheet.hairlineWidth },
-  titlePill: { paddingHorizontal: 16, paddingVertical: 6, borderRadius: 20, borderWidth: StyleSheet.hairlineWidth },
-  titleText: { fontSize: 15, fontWeight: '600' },
+  topBarOuter: { borderBottomWidth: StyleSheet.hairlineWidth },
+  topBar:    { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', paddingHorizontal: 16, paddingBottom: 10 },
+  titlePill: { paddingHorizontal: 12, paddingVertical: 5, borderRadius: 14, borderWidth: 1 },
+  titleText: { fontSize: 12, fontWeight: '600', letterSpacing: 0.3 },
   divider:   { height: StyleSheet.hairlineWidth },
 });

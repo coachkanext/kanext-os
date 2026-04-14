@@ -4,7 +4,7 @@
 
 import React, { useState } from 'react';
 import {
-  View, Text, Pressable, ScrollView, StyleSheet,
+  View, Text, Pressable, ScrollView, StyleSheet, Animated,
 } from 'react-native';
 import * as Haptics from 'expo-haptics';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
@@ -12,6 +12,7 @@ import { useRouter } from 'expo-router';
 
 import { IconSymbol } from '@/components/ui/icon-symbol';
 import { useColors } from '@/hooks/use-colors';
+import { useScrollHeader } from '@/hooks/use-scroll-header';
 
 // ── Mock following data ────────────────────────────────────────────────────────
 
@@ -51,6 +52,8 @@ export default function FollowingScreen() {
   const [filter, setFilter] = useState<'all' | 'people' | 'brands'>('all');
   const [unfollowed, setUnfollowed] = useState<Set<string>>(new Set());
 
+  const { opacity, onScroll, scrollEventThrottle } = useScrollHeader();
+
   const filtered = FOLLOWING.filter(f => {
     if (filter === 'people') return f.type === 'person';
     if (filter === 'brands') return f.type === 'brand';
@@ -65,19 +68,21 @@ export default function FollowingScreen() {
   return (
     <View style={[s.screen, { backgroundColor: C.bg }]}>
       {/* Header */}
-      <View style={[s.header, { paddingTop: insets.top + 8, borderBottomColor: C.separator }]}>
-        <Pressable
-          style={s.backBtn}
-          onPress={() => { Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light); router.back(); }}
-        >
-          <IconSymbol name="chevron.left" size={20} color={C.label} />
-        </Pressable>
-        <Text style={[s.title, { color: C.label }]}>Following</Text>
-        <View style={s.backBtn} />
-      </View>
+      <Animated.View style={[s.topBarOuter, { paddingTop: insets.top + 8, borderBottomColor: C.separator, backgroundColor: C.bg, borderBottomWidth: StyleSheet.hairlineWidth, opacity }]}>
+        <View style={s.header}>
+          <Pressable
+            style={s.backBtn}
+            onPress={() => { Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light); router.back(); }}
+          >
+            <IconSymbol name="chevron.left" size={20} color={C.label} />
+          </Pressable>
+          <Text style={[s.title, { color: C.label }]}>Following</Text>
+          <View style={s.backBtn} />
+        </View>
+      </Animated.View>
 
       {/* Filter pills */}
-      <View style={[s.filterRow, { borderBottomColor: C.separator }]}>
+      <View style={[s.filterRow, { borderBottomColor: C.separator, marginTop: insets.top + 8 + 52 }]}>
         {(['all', 'people', 'brands'] as const).map(f => (
           <Pressable
             key={f}
@@ -92,7 +97,7 @@ export default function FollowingScreen() {
         <Text style={[s.countText, { color: C.muted }]}>{filtered.length}</Text>
       </View>
 
-      <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={{ paddingBottom: insets.bottom + 80 }}>
+      <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={{ paddingBottom: insets.bottom + 80 }} onScroll={onScroll} scrollEventThrottle={scrollEventThrottle}>
         {filtered.map((entry, i) => {
           const modeColor = MODE_COLORS[entry.mode] ?? C.accent;
           const isLast = i === filtered.length - 1;
@@ -165,7 +170,8 @@ export default function FollowingScreen() {
 
 const s = StyleSheet.create({
   screen:       { flex: 1 },
-  header:       { flexDirection: 'row', alignItems: 'center', paddingHorizontal: 16, paddingBottom: 12, borderBottomWidth: StyleSheet.hairlineWidth },
+  topBarOuter:  { position: 'absolute', top: 0, left: 0, right: 0, zIndex: 10 },
+  header:       { height: 52, flexDirection: 'row', alignItems: 'center', paddingHorizontal: 16 },
   backBtn:      { width: 40, alignItems: 'flex-start', justifyContent: 'center' },
   title:        { flex: 1, fontSize: 17, fontWeight: '700', textAlign: 'center' },
   filterRow:    { flexDirection: 'row', alignItems: 'center', gap: 8, paddingHorizontal: 16, paddingVertical: 10, borderBottomWidth: StyleSheet.hairlineWidth },

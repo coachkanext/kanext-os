@@ -4,7 +4,7 @@
  */
 
 import React, { useState, useMemo, useCallback } from 'react';
-import { View, Text, ScrollView, Pressable, StyleSheet } from 'react-native';
+import { View, Text, ScrollView, Pressable, StyleSheet, Animated } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useFocusEffect } from 'expo-router';
 import * as Haptics from 'expo-haptics';
@@ -15,6 +15,7 @@ import { RolePill } from '@/components/ui/role-pill';
 import { useColors, type ComponentColors } from '@/hooks/use-colors';
 import { openSidePanel } from '@/utils/global-side-panel';
 import { resetFooter } from '@/utils/global-footer-hide';
+import { useScrollHeader } from '@/hooks/use-scroll-header';
 import { useDemoRole } from '@/utils/demo-role-store';
 
 // ── Content type definitions ───────────────────────────────────────────────────
@@ -60,6 +61,7 @@ export default function CreatePage() {
   const C      = useColors();
   const insets = useSafeAreaInsets();
   const topBarH = insets.top + 52;
+  const { opacity, onScroll, scrollEventThrottle } = useScrollHeader(topBarH);
 
   const [role, cycleRole, roleCycles] = useDemoRole('personal:kaystudios');
   const isOwner = role === roleCycles[0];
@@ -76,25 +78,29 @@ export default function CreatePage() {
     <View style={{ flex: 1, backgroundColor: C.bg }}>
 
       {/* ── Top Bar ─────────────────────────────────────────────────────────── */}
-      <View style={[styles.topBar, { height: topBarH, paddingTop: insets.top, backgroundColor: C.bg }]}>
-        <Pressable
-          onPress={() => { Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light); openSidePanel(); }}
-          style={styles.topBarLeft}
-        >
-          <KMenuButton />
-        </Pressable>
+      <Animated.View style={[styles.topBarOuter, { paddingTop: insets.top, backgroundColor: C.bg, opacity }]}>
+        <View style={styles.topBar}>
+          <Pressable
+            onPress={() => { Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light); openSidePanel(); }}
+            style={styles.topBarLeft}
+          >
+            <KMenuButton />
+          </Pressable>
 
-        <View style={{ flex: 1, alignItems: 'center' }}>
-          <Text style={[styles.topBarTitle, { color: C.label }]}>Create</Text>
-        </View>
+          <View style={{ flex: 1, alignItems: 'center' }}>
+            <Text style={[styles.topBarTitle, { color: C.label }]}>Create</Text>
+          </View>
 
-        <View style={styles.topBarRight}>
-          <RolePill role={role} onPress={cycleRole} isPrimary={isOwner} />
+          <View style={styles.topBarRight}>
+            <RolePill role={role} onPress={cycleRole} isPrimary={isOwner} />
+          </View>
         </View>
-      </View>
+      </Animated.View>
 
       {/* ── Scroll Content ──────────────────────────────────────────────────── */}
       <ScrollView
+        onScroll={onScroll}
+        scrollEventThrottle={scrollEventThrottle}
         contentContainerStyle={{ paddingTop: topBarH, paddingBottom: 120 }}
         showsVerticalScrollIndicator={false}
         keyboardShouldPersistTaps="handled"
@@ -207,14 +213,17 @@ export default function CreatePage() {
 function makeStyles(C: ComponentColors) {
   return StyleSheet.create({
     // Top bar
-    topBar: {
+    topBarOuter: {
       position: 'absolute',
       top: 0, left: 0, right: 0,
       zIndex: 10,
+    },
+    topBar: {
       flexDirection: 'row',
       alignItems: 'flex-end',
       paddingHorizontal: 16,
       paddingBottom: 8,
+      height: 52,
     },
     topBarLeft: {
       width: 40,

@@ -22,6 +22,7 @@ import { IconSymbol } from '@/components/ui/icon-symbol';
 import { BottomSheet } from '@/components/ui/bottom-sheet';
 import { RolePill } from '@/components/ui/role-pill';
 import { useColors, type ComponentColors } from '@/hooks/use-colors';
+import { useScrollHeader } from '@/hooks/use-scroll-header';
 import { useDataMode } from '@/utils/global-demo-mode';
 import { useDemoRole } from '@/utils/demo-role-store';
 import { openSidePanel } from '@/utils/global-side-panel';
@@ -199,6 +200,7 @@ export default function BoosterScreen() {
   const dataMode = useDataMode();
 
   const topBarH = insets.top + TOP_BAR_H;
+  const { opacity, onScroll, scrollEventThrottle } = useScrollHeader(topBarH);
 
   // ── RBAC demo role ──
   const [demoRole, cycleDemoRole] = useDemoRole('sports:booster');
@@ -2222,13 +2224,14 @@ export default function BoosterScreen() {
     <View style={[s.root, { backgroundColor: C.bg }]}>
 
       {/* ── Fixed top bar ───────────────────────────────────────────────── */}
-      <View
+      <Animated.View
         style={[
           s.topBarOuter,
           {
             paddingTop:      insets.top,
             backgroundColor: C.bg,
             borderBottomColor: C.separator as string,
+            opacity,
           },
         ]}
       >
@@ -2337,13 +2340,15 @@ export default function BoosterScreen() {
             </ScrollView>
           </Animated.View>
         )}
-      </View>
+      </Animated.View>
 
       {/* ── Main scroll content ──────────────────────────────────────────── */}
       <ScrollView
         contentContainerStyle={[s.scrollContent, { paddingTop: contentPaddingTop }]}
         showsVerticalScrollIndicator={false}
         keyboardShouldPersistTaps="handled"
+        onScroll={onScroll}
+        scrollEventThrottle={scrollEventThrottle}
       >
         {activeTab === 'Give'            && renderSupportTab()}
         {activeTab === 'NIL Marketplace' && renderNILTab()}

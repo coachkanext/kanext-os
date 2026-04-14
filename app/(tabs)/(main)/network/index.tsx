@@ -22,6 +22,7 @@ import { IconSymbol } from '@/components/ui/icon-symbol';
 import { BottomSheet } from '@/components/ui/bottom-sheet';
 import { RolePill } from '@/components/ui/role-pill';
 import { useColors, type ComponentColors } from '@/hooks/use-colors';
+import { useScrollHeader } from '@/hooks/use-scroll-header';
 import { resetFooter, hideFooter, showFooter } from '@/utils/global-footer-hide';
 import { openSidePanel } from '@/utils/global-side-panel';
 import { useDemoRole } from '@/utils/demo-role-store';
@@ -1856,6 +1857,7 @@ export default function NetworkScreen() {
   const styles = useMemo(() => makeStyles(C), [C]);
 
   const topBarH    = insets.top + TOP_BAR_H;
+  const { opacity: translateYHeader, onScroll: onScrollHeader, scrollEventThrottle: scrollThrottleHeader } = useScrollHeader(topBarH);
 
   const { tab: tabParam } = useLocalSearchParams<{ tab?: Tab }>();
   const [tab, setTab]                 = useState<Tab>('Feed');
@@ -1964,7 +1966,8 @@ export default function NetworkScreen() {
     else if (y < lastScrollY.current - 12) showFooter();
     lastScrollY.current = y;
     if (y <= 0) showFooter();
-  }, []);
+    onScrollHeader(e);
+  }, [onScrollHeader]);
 
   const handleMemberPress = useCallback((m: CommunityMember) => {
     Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
@@ -3074,37 +3077,39 @@ export default function NetworkScreen() {
     <View style={[styles.screen, { backgroundColor: C.bg }]}>
 
       {/* Fixed top bar */}
-      <View style={[styles.topBar, { paddingTop: insets.top, height: topBarH, borderBottomColor: C.separator }]}>
-        {/* Left: K menu button */}
-        <View style={styles.topBarSide}>
-          <Pressable onPress={() => { Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light); if (mode !== 'personal' || isPersonalOwner) openSidePanel(); }}>
-            <KMenuButton />
-          </Pressable>
-        </View>
+      <Animated.View style={[styles.topBar, { paddingTop: insets.top, height: topBarH, borderBottomColor: C.separator, opacity: translateYHeader }]}>
+        <View style={styles.topBarInner}>
+          {/* Left: K menu button */}
+          <View style={styles.topBarSide}>
+            <Pressable onPress={() => { Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light); if (mode !== 'personal' || isPersonalOwner) openSidePanel(); }}>
+              <KMenuButton />
+            </Pressable>
+          </View>
 
-        {/* Center: "Community" title pill */}
-        {mode === 'personal' ? (
-          <View style={{ flex: 1, alignItems: 'center' }}>
-            <View style={{ backgroundColor: C.label, borderRadius: 18, paddingHorizontal: 14, paddingVertical: 5 }}>
-              <Text style={{ fontSize: 14, fontWeight: '700', color: C.bg }}>Community</Text>
+          {/* Center: "Community" title pill */}
+          {mode === 'personal' ? (
+            <View style={{ flex: 1, alignItems: 'center' }}>
+              <View style={{ backgroundColor: C.label, borderRadius: 18, paddingHorizontal: 14, paddingVertical: 5 }}>
+                <Text style={{ fontSize: 14, fontWeight: '700', color: C.bg }}>Community</Text>
+              </View>
             </View>
-          </View>
-        ) : (
-          <View style={[styles.staticPill, { backgroundColor: C.surface, borderColor: C.separator }]}>
-            <Text style={styles.staticPillText}>{tab}</Text>
-          </View>
-        )}
+          ) : (
+            <View style={[styles.staticPill, { backgroundColor: C.surface, borderColor: C.separator }]}>
+              <Text style={styles.staticPillText}>{tab}</Text>
+            </View>
+          )}
 
-        {/* Right: RolePill */}
-        <View style={[styles.topBarSide, { flexDirection: 'row', justifyContent: 'flex-end', alignItems: 'center' }]}>
-          <RolePill
-            role={demoRole}
-            onPress={cycleRoleDemo}
-            accentColor={C.label}
-            isPrimary={isPersonalOwner}
-          />
+          {/* Right: RolePill */}
+          <View style={[styles.topBarSide, { flexDirection: 'row', justifyContent: 'flex-end', alignItems: 'center' }]}>
+            <RolePill
+              role={demoRole}
+              onPress={cycleRoleDemo}
+              accentColor={C.label}
+              isPrimary={isPersonalOwner}
+            />
+          </View>
         </View>
-      </View>
+      </Animated.View>
 
       {/* Filter pills — shown only when activePills is non-empty */}
       {activePills.length > 0 && (
@@ -3279,17 +3284,19 @@ const makeStyles = (C: ComponentColors) => StyleSheet.create({
 
   topBar: {
     position: 'absolute', top: 0, left: 0, right: 0, zIndex: 30,
-    flexDirection: 'row', alignItems: 'flex-end', paddingHorizontal: 16, paddingBottom: 10,
     borderBottomWidth: StyleSheet.hairlineWidth, backgroundColor: C.bg,
+  },
+  topBarInner: {
+    flex: 1, flexDirection: 'row', alignItems: 'flex-end', paddingHorizontal: 16, paddingBottom: 10,
   },
   topBarSide: { flex: 1, justifyContent: 'center' },
 
   staticPill: {
     alignItems: 'center', justifyContent: 'center',
-    backgroundColor: C.surface, borderRadius: 18, paddingHorizontal: 16, paddingVertical: 6,
-    borderWidth: StyleSheet.hairlineWidth,
+    backgroundColor: C.surface, borderRadius: 14, paddingHorizontal: 12, paddingVertical: 5,
+    borderWidth: 1,
   },
-  staticPillText: { fontSize: 15, fontWeight: '600', color: C.label },
+  staticPillText: { fontSize: 12, fontWeight: '600', letterSpacing: 0.3, color: C.label },
 
   pillsRow: {
     position: 'absolute', left: 0, right: 0, zIndex: 29,

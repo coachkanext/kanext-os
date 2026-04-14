@@ -1,5 +1,5 @@
 import React, { useState, useMemo, useCallback } from 'react';
-import { View, Text, Pressable, ScrollView, StyleSheet } from 'react-native';
+import { View, Text, Pressable, ScrollView, StyleSheet, Animated } from 'react-native';
 import * as Haptics from 'expo-haptics';
 import { useFocusEffect } from 'expo-router';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
@@ -7,6 +7,7 @@ import { IconSymbol } from '@/components/ui/icon-symbol';
 import { useColors } from '@/hooks/use-colors';
 import { KMenuButton } from '@/components/ui/k-menu-button';
 import { resetFooter } from '@/utils/global-footer-hide';
+import { useScrollHeader } from '@/hooks/use-scroll-header';
 import { openSidePanel } from '@/utils/global-side-panel';
 import {
   MONTHLY_REVENUE, CRM_STAGES,
@@ -64,6 +65,7 @@ export default function InsightsScreen() {
   const C = useColors();
   const insets = useSafeAreaInsets();
   const topBarH = insets.top + 52;
+  const { opacity, onScroll, scrollEventThrottle } = useScrollHeader(topBarH);
 
   const [activeRange, setActiveRange] = useState<TimeRange>('This Month');
 
@@ -78,25 +80,29 @@ export default function InsightsScreen() {
     <View style={{ flex: 1, backgroundColor: C.bg }}>
 
       {/* Top Bar */}
-      <View style={{
+      <Animated.View style={{
         position: 'absolute', top: 0, left: 0, right: 0, zIndex: 20,
-        height: topBarH, paddingTop: insets.top,
-        flexDirection: 'row', alignItems: 'center', paddingHorizontal: 16,
+        paddingTop: insets.top,
         borderBottomWidth: StyleSheet.hairlineWidth, borderBottomColor: C.separator,
         backgroundColor: C.bg,
+        opacity,
       }}>
-        <KMenuButton onPress={openSidePanel} />
-        <View style={{ flex: 1, alignItems: 'center' }}>
-          <View style={{ backgroundColor: C.label, borderRadius: 18, paddingHorizontal: 14, paddingVertical: 5 }}>
-            <Text style={{ fontSize: 14, fontWeight: '700', color: C.bg }}>Insights</Text>
+        <View style={{ height: 52, flexDirection: 'row', alignItems: 'center', paddingHorizontal: 16 }}>
+          <KMenuButton onPress={openSidePanel} />
+          <View style={{ flex: 1, alignItems: 'center' }}>
+            <View style={{ backgroundColor: C.label, borderRadius: 18, paddingHorizontal: 14, paddingVertical: 5 }}>
+              <Text style={{ fontSize: 14, fontWeight: '700', color: C.bg }}>Insights</Text>
+            </View>
           </View>
+          <View style={{ width: 36 }} />
         </View>
-        <View style={{ width: 36 }} />
-      </View>
+      </Animated.View>
 
       <ScrollView
         contentContainerStyle={{ paddingTop: topBarH + 8, paddingBottom: insets.bottom + 80 }}
         showsVerticalScrollIndicator={false}
+        onScroll={onScroll}
+        scrollEventThrottle={scrollEventThrottle}
       >
         {/* Time Range Pills */}
         <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={{ paddingHorizontal: 16, gap: 8, marginBottom: 12 }} style={{ marginBottom: 12 }}>

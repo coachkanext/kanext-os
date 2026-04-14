@@ -11,6 +11,7 @@ import { openSidePanel } from '@/utils/global-side-panel';
 import { resetFooter } from '@/utils/global-footer-hide';
 import { useDemoRole } from '@/utils/demo-role-store';
 
+
 const GAIN = '#5A8A6E';
 const HEAT = '#B85C5C';
 const CAUTION = '#B8943E';
@@ -30,7 +31,6 @@ export default function SportsPlayerDashboard() {
   const [role, cycleRole, roleCycles] = useDemoRole('sports:hub');
   const isHeadCoach = role === roleCycles[0];
   const s = useMemo(() => makeStyles(C), [C]);
-  const topBarHeight = insets.top + 56;
 
   useFocusEffect(
     useCallback(() => {
@@ -43,29 +43,28 @@ export default function SportsPlayerDashboard() {
 
   return (
     <View style={[s.root, { backgroundColor: C.bg }]}>
-      <View style={[s.topBar, { paddingTop: insets.top, backgroundColor: C.bg, borderBottomColor: C.separator }]}>
-        <Pressable
-          style={s.kBtn}
-          onPress={() => { Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light); openSidePanel(); }}
-          hitSlop={8}
-        >
-          <KMenuButton />
-        </Pressable>
-        <View style={{ flex: 1, alignItems: 'center' }}>
-          <View style={[s.titlePill, { backgroundColor: C.surface, borderColor: C.separator }]}>
-            <Text style={[s.titleText, { color: C.label }]}>MY DASHBOARD</Text>
-          </View>
-        </View>
-        <View style={s.rolePillWrap}>
-          <RolePill role={role} onPress={cycleRole} isPrimary={isHeadCoach} />
-        </View>
-      </View>
-
       <ScrollView
         style={{ flex: 1 }}
-        contentContainerStyle={{ paddingTop: topBarHeight + 16, paddingBottom: insets.bottom + 80 }}
+        contentContainerStyle={{ paddingBottom: insets.bottom + 80 }}
         showsVerticalScrollIndicator={false}
       >
+        <View style={[s.topBar, { paddingTop: insets.top, backgroundColor: C.bg, borderBottomColor: C.separator, borderBottomWidth: StyleSheet.hairlineWidth }]}>
+          <Pressable
+            style={s.kBtn}
+            onPress={() => { Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light); openSidePanel(); }}
+            hitSlop={8}
+          >
+            <KMenuButton />
+          </Pressable>
+          <View style={{ flex: 1, alignItems: 'center' }}>
+            <View style={[s.titlePill, { backgroundColor: C.surface, borderColor: C.separator }]}>
+              <Text style={[s.titleText, { color: C.label }]}>MY DASHBOARD</Text>
+            </View>
+          </View>
+          <View style={s.rolePillWrap}>
+            <RolePill role={role} onPress={cycleRole} isPrimary={isHeadCoach} />
+          </View>
+        </View>
         {/* Player Hero Card */}
         <View style={s.heroCard}>
           <View style={s.heroTop}>
@@ -248,10 +247,8 @@ function makeStyles(C: ComponentColors) {
   return StyleSheet.create({
     root: { flex: 1 },
     topBar: {
-      position: 'absolute', top: 0, left: 0, right: 0, zIndex: 100,
       flexDirection: 'row', alignItems: 'flex-end',
       paddingBottom: 10, paddingHorizontal: 16,
-      borderBottomWidth: StyleSheet.hairlineWidth,
     },
     kBtn: { width: 44, height: 36, justifyContent: 'center' },
     titlePill: { borderRadius: 18, paddingHorizontal: 14, paddingVertical: 6, borderWidth: 1 },

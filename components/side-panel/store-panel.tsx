@@ -1,99 +1,115 @@
 /**
- * Store Side Panel — Personal Mode (Creator's product store).
- * Owner:    Home · Subscriptions · MANAGE (Coupons · Settings)
- * Follower: no panel (Follower sees no side panel on Store)
+ * Store Side Panel — Personal Mode.
+ * Owner:    All Products · Orders · Customers · Coupons · Analytics + Dipson/Settings/Help
+ * Follower: Store · My Purchases
  */
 
-import React, { useMemo } from 'react';
+import React, { useCallback, useMemo } from 'react';
 import { View, Text, Pressable, StyleSheet } from 'react-native';
 import * as Haptics from 'expo-haptics';
 import { useRouter } from 'expo-router';
 import { IconSymbol } from '@/components/ui/icon-symbol';
 import { closeSidePanel } from '@/utils/global-side-panel';
+import { openDipsonSheet } from '@/utils/global-dipson-sheet';
 import { useColors, type ComponentColors } from '@/hooks/use-colors';
 import { useDemoRole } from '@/utils/demo-role-store';
 
 // ── Data ──────────────────────────────────────────────────────────────────────
 
-type NavItem = { icon: string; label: string; route: string };
+type NavItem = {
+  icon: string;
+  label: string;
+  route?: string;
+  isDipson?: boolean;
+};
 
-const NAV_ITEMS: NavItem[] = [
-  { icon: 'rectangle.stack.badge.person.crop', label: 'Subscriptions', route: '/(tabs)/(main)/store/subscriptions' },
+const OWNER_NAV: NavItem[] = [
+  { icon: 'square.grid.2x2.fill',    label: 'All Products', route: '/(tabs)/(main)/store' },
+  { icon: 'shippingbox.fill',         label: 'Orders',       route: '/(tabs)/(main)/store' },
+  { icon: 'person.2.fill',            label: 'Customers',    route: '/(tabs)/(main)/store' },
+  { icon: 'tag.fill',                 label: 'Coupons',      route: '/(tabs)/(main)/store' },
+  { icon: 'chart.bar.fill',           label: 'Analytics',    route: '/(tabs)/(main)/store' },
 ];
 
-const MANAGE_ITEMS: NavItem[] = [
-  { icon: 'tag.fill',      label: 'Coupons',  route: '/(tabs)/(main)/store/coupons'  },
-  { icon: 'gearshape.fill', label: 'Settings', route: '/(tabs)/(main)/store/settings' },
+const BOTTOM_ITEMS: NavItem[] = [
+  { icon: 'sparkles',            label: 'Dipson',   isDipson: true },
+  { icon: 'gearshape',           label: 'Settings', route: '/(tabs)/(main)/store/settings' },
+  { icon: 'questionmark.circle', label: 'Help',     route: '/(tabs)/(main)/store/help' },
+];
+
+const FOLLOWER_NAV: NavItem[] = [
+  { icon: 'bag.fill',               label: 'Store',        route: '/(tabs)/(main)/store' },
+  { icon: 'clock.arrow.circlepath', label: 'My Purchases', route: '/(tabs)/(main)/store' },
 ];
 
 // ── Component ─────────────────────────────────────────────────────────────────
 
 export function StorePanel() {
-  const C      = useColors();
-  const s      = useMemo(() => makeStyles(C), [C]);
+  const C = useColors();
+  const s = useMemo(() => makeStyles(C), [C]);
   const router = useRouter();
-
   const [role, , roleCycles] = useDemoRole('personal:store');
   const isOwner = role === roleCycles[0];
 
-  const goPage = (route: string) => {
+  const go = useCallback((item: NavItem) => {
     Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+    if (item.isDipson) {
+      closeSidePanel();
+      setTimeout(() => openDipsonSheet('Store'), 300);
+      return;
+    }
     closeSidePanel();
-    setTimeout(() => { router.navigate(route as any); }, 80);
-  };
+    setTimeout(() => {
+      if (item.route) router.navigate(item.route as any);
+    }, 80);
+  }, [router]);
 
-  if (!isOwner) return null;
+  const navItems = isOwner ? OWNER_NAV : FOLLOWER_NAV;
 
   return (
-    <View style={[s.root, { backgroundColor: C.surface }]}>
+    <View style={s.root}>
 
-      {/* ── Home ── */}
-      <Pressable
-        style={({ pressed }) => [s.row, s.rowBorder, { borderBottomColor: C.separator }, pressed && { backgroundColor: C.bg }]}
-        onPress={() => {
-          Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
-          closeSidePanel();
-          setTimeout(() => router.navigate('/(tabs)/(main)/store' as any), 80);
-        }}
-      >
-        <IconSymbol name="bag.fill" size={18} color={C.label} />
-        <Text style={[s.rowLabel, { color: C.label }]}>Products</Text>
-      </Pressable>
+      {/* ── Identity header ── */}
+      <View style={s.header}>
+        <View style={[s.avatar, { backgroundColor: C.separator }]}>
+          <IconSymbol name="bag.fill" size={18} color={C.secondary} />
+        </View>
+        <Text style={[s.name, { color: C.label }]}>Sammy Kalejaiye</Text>
+        <Text style={[s.handle, { color: C.secondary }]}>Creator Store</Text>
+      </View>
 
-      <View style={[s.divider, { backgroundColor: C.separator }]} />
+      {/* ── Nav items ── */}
+      <View style={s.nav}>
+        {navItems.map(item => (
+          <Pressable
+            key={item.label}
+            style={({ pressed }) => [s.navRow, pressed && { backgroundColor: C.bg }]}
+            onPress={() => go(item)}
+          >
+            <IconSymbol name={item.icon as any} size={22} color={C.label} />
+            <Text style={[s.navLabel, { color: C.label }]}>{item.label}</Text>
+          </Pressable>
+        ))}
+      </View>
 
-      {NAV_ITEMS.map((item, idx) => (
-        <Pressable
-          key={item.label}
-          style={({ pressed }) => [
-            s.row,
-            pressed && { backgroundColor: C.bg },
-            idx < NAV_ITEMS.length - 1 && [s.rowBorder, { borderBottomColor: C.separator }],
-          ]}
-          onPress={() => goPage(item.route)}
-        >
-          <IconSymbol name={item.icon as any} size={18} color={C.secondary} />
-          <Text style={[s.rowLabel, { color: C.label }]}>{item.label}</Text>
-        </Pressable>
-      ))}
-
-      <View style={[s.divider, { backgroundColor: C.separator }]} />
-
-      <Text style={[s.sectionLabel, { color: C.secondary }]}>Manage</Text>
-      {MANAGE_ITEMS.map((item, idx) => (
-        <Pressable
-          key={item.label}
-          style={({ pressed }) => [
-            s.row,
-            pressed && { backgroundColor: C.bg },
-            idx < MANAGE_ITEMS.length - 1 && [s.rowBorder, { borderBottomColor: C.separator }],
-          ]}
-          onPress={() => goPage(item.route)}
-        >
-          <IconSymbol name={item.icon as any} size={18} color={C.secondary} />
-          <Text style={[s.rowLabel, { color: C.label }]}>{item.label}</Text>
-        </Pressable>
-      ))}
+      {/* ── Bottom utilities (Owner only) ── */}
+      {isOwner && (
+        <>
+          <View style={[s.divider, { backgroundColor: C.separator }]} />
+          <View style={s.nav}>
+            {BOTTOM_ITEMS.map(item => (
+              <Pressable
+                key={item.label}
+                style={({ pressed }) => [s.navRow, pressed && { backgroundColor: C.bg }]}
+                onPress={() => go(item)}
+              >
+                <IconSymbol name={item.icon as any} size={22} color={C.label} />
+                <Text style={[s.navLabel, { color: C.label }]}>{item.label}</Text>
+              </Pressable>
+            ))}
+          </View>
+        </>
+      )}
 
     </View>
   );
@@ -104,20 +120,17 @@ export function StorePanel() {
 const makeStyles = (C: ComponentColors) => StyleSheet.create({
   root: { flex: 1 },
 
-  divider: { height: StyleSheet.hairlineWidth, marginVertical: 12, marginHorizontal: 16 },
-
-  sectionLabel: {
-    fontSize: 11, fontWeight: '600', letterSpacing: 0.6,
-    textTransform: 'uppercase',
-    paddingHorizontal: 16,
-    marginBottom: 2, marginTop: 4,
+  header: { paddingHorizontal: 20, paddingTop: 8, paddingBottom: 20 },
+  avatar: {
+    width: 40, height: 40, borderRadius: 20,
+    alignItems: 'center', justifyContent: 'center', marginBottom: 10,
   },
+  name:   { fontSize: 17, fontWeight: '700', letterSpacing: -0.3, marginBottom: 2 },
+  handle: { fontSize: 14, fontWeight: '400' },
 
-  row: {
-    flexDirection: 'row', alignItems: 'center', gap: 12,
-    paddingHorizontal: 16, paddingVertical: 13,
-    borderRadius: 8,
-  },
-  rowBorder: { borderBottomWidth: StyleSheet.hairlineWidth },
-  rowLabel:  { flex: 1, fontSize: 15 },
+  nav:     { paddingHorizontal: 8 },
+  navRow:  { flexDirection: 'row', alignItems: 'center', height: 44, gap: 16, paddingHorizontal: 12, borderRadius: 8 },
+  navLabel:{ fontSize: 16, fontWeight: '500' },
+
+  divider: { height: StyleSheet.hairlineWidth, marginVertical: 8, marginHorizontal: 20 },
 });

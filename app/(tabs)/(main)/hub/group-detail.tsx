@@ -4,7 +4,7 @@
  */
 
 import React, { useCallback } from 'react';
-import { View, Text, ScrollView, Pressable, StyleSheet } from 'react-native';
+import { View, Text, ScrollView, Pressable, StyleSheet, Animated } from 'react-native';
 import { useLocalSearchParams, useRouter, useFocusEffect } from 'expo-router';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import * as Haptics from 'expo-haptics';
@@ -15,6 +15,9 @@ import { useColors } from '@/hooks/use-colors';
 import { openSidePanel } from '@/utils/global-side-panel';
 import { COMMUNITY_GROUPS } from '@/data/mock-community-hub';
 import { resetFooter } from '@/utils/global-footer-hide';
+import { useScrollHeader } from '@/hooks/use-scroll-header';
+
+const TOP_BAR_H = 44;
 
 const MOCK_GROUP_MEMBERS: Record<string, { name: string; role: string; initials: string }[]> = {
   grp1: [
@@ -63,6 +66,7 @@ export default function GroupDetailScreen() {
   const C = useColors();
   const insets = useSafeAreaInsets();
   const router = useRouter();
+  const { opacity, onScroll, scrollEventThrottle } = useScrollHeader();
 
   useFocusEffect(useCallback(() => { resetFooter(); }, []));
 
@@ -78,9 +82,20 @@ export default function GroupDetailScreen() {
 
   return (
     <View style={[ds.screen, { backgroundColor: C.bg }]}>
+      <Animated.View style={[ds.topBarOuter, { paddingTop: insets.top, backgroundColor: C.bg, borderBottomColor: C.separator, borderBottomWidth: StyleSheet.hairlineWidth, opacity }]}>
+        <View style={ds.topBar}>
+          <KMenuButton onPress={openSidePanel} />
+          <Text style={[ds.topBarTitle, { color: C.label }]} numberOfLines={1}>
+            {group.name}
+          </Text>
+          <View style={{ width: 44 }} />
+        </View>
+      </Animated.View>
       <ScrollView
+        onScroll={onScroll}
+        scrollEventThrottle={scrollEventThrottle}
         showsVerticalScrollIndicator={false}
-        contentContainerStyle={{ paddingTop: insets.top + 52, paddingHorizontal: 16, paddingBottom: 120 }}
+        contentContainerStyle={{ paddingTop: insets.top + TOP_BAR_H + 8, paddingHorizontal: 16, paddingBottom: 120 }}
       >
         {/* Hero */}
         <View style={ds.hero}>
@@ -206,17 +221,6 @@ export default function GroupDetailScreen() {
           ))}
         </View>
       </ScrollView>
-
-      {/* Top bar */}
-      <View style={[ds.topBar, { paddingTop: insets.top, backgroundColor: C.bg }]}>
-        <View style={ds.topBarInner}>
-          <KMenuButton onPress={openSidePanel} />
-          <Text style={[ds.topBarTitle, { color: C.label }]} numberOfLines={1}>
-            {group.name}
-          </Text>
-          <View style={{ width: 44 }} />
-        </View>
-      </View>
     </View>
   );
 }
@@ -224,8 +228,8 @@ export default function GroupDetailScreen() {
 const ds = StyleSheet.create({
   screen:       { flex: 1 },
 
-  topBar:       { position: 'absolute', top: 0, left: 0, right: 0, zIndex: 10 },
-  topBarInner:  { height: 52, flexDirection: 'row', alignItems: 'center', paddingHorizontal: 16 },
+  topBarOuter:  { position: 'absolute', top: 0, left: 0, right: 0, zIndex: 10, borderBottomWidth: StyleSheet.hairlineWidth },
+  topBar:       { height: TOP_BAR_H, flexDirection: 'row', alignItems: 'center', paddingHorizontal: 16 },
   backBtn:      { width: 44, alignItems: 'flex-start', justifyContent: 'center' },
   topBarTitle:  { flex: 1, textAlign: 'center', fontSize: 17, fontWeight: '700' },
 

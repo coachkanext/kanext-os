@@ -20,6 +20,7 @@ import { useFocusEffect, useRouter } from 'expo-router';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { useColors, type ComponentColors } from '@/hooks/use-colors';
+import { useScrollHeader } from '@/hooks/use-scroll-header';
 import { useDataMode } from '@/utils/global-demo-mode';
 import { GlassView } from '@/components/ui/glass-view';
 import { IconSymbol } from '@/components/ui/icon-symbol';
@@ -682,6 +683,7 @@ export default function RecruitsScreen() {
 
   // ── Computed ──
   const topBarH           = insets.top + TOP_BAR_H;
+  const { opacity, onScroll, scrollEventThrottle } = useScrollHeader(topBarH);
   const contentPaddingTop = topBarH + PILL_ROW_H + 8;
 
   const stageCounts = useMemo(() => getStageCounts(), []);
@@ -707,10 +709,10 @@ export default function RecruitsScreen() {
 
   // ── Top Bar ──
   const renderTopBar = () => (
-    <View
+    <Animated.View
       style={[
         s.topBarOuter,
-        { paddingTop: insets.top, backgroundColor: C.bg },
+        { paddingTop: insets.top, backgroundColor: C.bg, opacity },
       ]}
     >
       {/* Title row */}
@@ -875,7 +877,7 @@ export default function RecruitsScreen() {
           </ScrollView>
         )}
       </View>
-    </View>
+    </Animated.View>
   );
 
   // ── Board Tab ──
@@ -2026,6 +2028,8 @@ export default function RecruitsScreen() {
           paddingBottom: 100,
         }}
         showsVerticalScrollIndicator={false}
+        onScroll={onScroll}
+        scrollEventThrottle={scrollEventThrottle}
       >
         {activeTab === 'Board'  && renderBoard()}
         {activeTab === 'Search' && (!isCoachRole ? renderPoolRecruit() : renderPoolCoach())}
@@ -2049,7 +2053,7 @@ export default function RecruitsScreen() {
 
       {/* Toast */}
       {toastMsg && (
-        <Animated.View
+        <View
           style={[
             s.toast,
             { backgroundColor: C.label, bottom: insets.bottom + 96 },
@@ -2070,7 +2074,7 @@ export default function RecruitsScreen() {
           >
             {toastMsg}
           </Text>
-        </Animated.View>
+        </View>
       )}
 
       {/* Recruit detail sheet */}
