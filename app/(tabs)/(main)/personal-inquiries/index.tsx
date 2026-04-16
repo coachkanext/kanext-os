@@ -12,7 +12,7 @@ import {
 } from 'react-native';
 import * as Haptics from 'expo-haptics';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { useFocusEffect, useLocalSearchParams } from 'expo-router';
+import { useFocusEffect, useLocalSearchParams, useRouter } from 'expo-router';
 
 import { IconSymbol } from '@/components/ui/icon-symbol';
 import { GlassView } from '@/components/ui/glass-view';
@@ -78,6 +78,12 @@ export default function PersonalInquiriesScreen() {
 
   const [role, cycleRole, roleCycles] = useDemoRole('personal:inquiries');
   const isOwner = role === roleCycles[0];
+  const router  = useRouter();
+
+  // Follower lands on Collaborate screen instead of the Owner pipeline
+  useEffect(() => {
+    if (!isOwner) router.replace('/(tabs)/(main)/personal-inquiries/collaborate' as any);
+  }, [isOwner]);
 
   const { opacity, onScroll, scrollEventThrottle } = useScrollHeader();
   const { status: initStatus } = useLocalSearchParams<{ status?: FilterStatus }>();
@@ -475,20 +481,7 @@ export default function PersonalInquiriesScreen() {
       ? selectedInquiry.title
       : 'Inquiries';
 
-  const rightEl = !isOwner
-    ? <RolePill role={role} onPress={cycleRole} accentColor={C.label} isPrimary={false} />
-    : selectedInquiry
-      ? (() => {
-          const sp = statusPillStyle(selectedInquiry.status);
-          return (
-            <View style={[s.statusPillInBar, { backgroundColor: sp.bg }]}>
-              <Text style={[s.statusPillInBarText, { color: sp.text }]}>
-                {selectedInquiry.status}
-              </Text>
-            </View>
-          );
-        })()
-      : <RolePill role={role} onPress={cycleRole} accentColor={C.label} isPrimary={isOwner} />;
+  const rightEl = <RolePill role={role} onPress={cycleRole} isPrimary={isOwner} />;
 
   // ── Bottom actions (Owner detail view) ─────────────────────────────────────
 
@@ -586,42 +579,37 @@ function InquiryCard({
     <Pressable
       style={({ pressed }) => [
         s.inqCard,
-        {
-          backgroundColor: pressed ? C.surfacePressed : C.surface,
-          borderColor: C.separator,
-          shadowColor: '#000',
-        },
+        { backgroundColor: pressed ? C.separator : C.surface, borderColor: C.separator },
       ]}
       onPress={onPress}
     >
       {/* Avatar */}
-      <View style={[s.inqAvatar, { backgroundColor: avatarColorFromInitials(inq.initials), overflow: 'hidden' }]}>
+      <View style={[s.inqAvatar, { backgroundColor: C.label, overflow: 'hidden' }]}>
         {inq.avatarUri ? (
           <Image source={{ uri: inq.avatarUri }} style={StyleSheet.absoluteFill} resizeMode="cover" />
         ) : (
-          <Text style={s.inqAvatarText}>{inq.initials}</Text>
+          <Text style={[s.inqAvatarText, { color: C.bg }]}>{inq.initials}</Text>
         )}
       </View>
 
       {/* Body */}
-      <View style={{ flex: 1 }}>
-        {/* Title row */}
-        <View style={s.inqTitleRow}>
-          <Text style={[s.inqTitle, { color: C.label }]} numberOfLines={2}>{inq.title}</Text>
-          {/* Status pill right-aligned */}
-          <View style={[s.statusPill, { backgroundColor: sp.bg, borderColor: 'transparent' }]}>
+      <View style={{ flex: 1, minWidth: 0 }}>
+        {/* Sender + status pill */}
+        <View style={s.inqTopRow}>
+          <Text style={[s.inqSender, { color: C.secondary }]} numberOfLines={1}>
+            {inq.senderName}, {inq.senderCompany}
+          </Text>
+          <View style={[s.statusPill, { backgroundColor: sp.bg }]}>
             <Text style={[s.statusPillText, { color: sp.text }]}>{inq.status}</Text>
           </View>
         </View>
 
-        {/* Sender */}
-        <Text style={[s.inqSender, { color: C.secondary }]} numberOfLines={1}>
-          {inq.senderName}, {inq.senderCompany}
-        </Text>
+        {/* Title — full width, 2 lines */}
+        <Text style={[s.inqTitle, { color: C.label }]} numberOfLines={2}>{inq.title}</Text>
 
-        {/* Type badge + date row */}
+        {/* Type badge + date */}
         <View style={s.inqMetaRow}>
-          <View style={[s.typeBadge, { backgroundColor: C.surface2, borderColor: 'transparent' }]}>
+          <View style={[s.typeBadge, { backgroundColor: C.surface2 }]}>
             <Text style={[s.typeBadgeText, { color: C.label }]}>{inq.type}</Text>
           </View>
           <Text style={[s.inqDate, { color: C.secondary }]}>{inq.dateReceived}</Text>
@@ -678,14 +666,11 @@ const makeStyles = (C: ComponentColors) => StyleSheet.create({
 
   // ── Top bar
   topBarOuter: { position: 'absolute', top: 0, left: 0, right: 0, zIndex: 10 },
-  topBar: { height: TOP_BAR_H, flexDirection: 'row', alignItems: 'center', paddingHorizontal: 16 },
-  topBarBtn:   { width: 44, height: TOP_BAR_H, justifyContent: 'center' },
-  topBarRight: { height: TOP_BAR_H, justifyContent: 'center', alignItems: 'flex-end', paddingRight: 4 },
-  topBarPill: { paddingHorizontal: 14, paddingVertical: 6, borderRadius: 16, borderWidth: 1, maxWidth: 200 },
-  topBarPillText: { fontSize: 13, fontWeight: '600', letterSpacing: 0.3 },
-
-  statusPillInBar: { paddingHorizontal: 10, paddingVertical: 4, borderRadius: 10, borderWidth: 1 },
-  statusPillInBarText: { fontSize: 11, fontWeight: '600', letterSpacing: 0.2 },
+  topBar: { height: TOP_BAR_H, flexDirection: 'row', alignItems: 'center', paddingHorizontal: 12 },
+  topBarBtn:   { width: 44, height: 44, alignItems: 'flex-start', justifyContent: 'center' },
+  topBarRight: { width: 80, alignItems: 'flex-end', justifyContent: 'center' },
+  topBarPill: { paddingHorizontal: 12, paddingVertical: 5, borderRadius: 14, borderWidth: 1, maxWidth: 200 },
+  topBarPillText: { fontSize: 12, fontWeight: '600', letterSpacing: 0.3 },
 
   // ── Filter pills row
   pillsRow: {
@@ -703,23 +688,22 @@ const makeStyles = (C: ComponentColors) => StyleSheet.create({
 
   // ── Inquiry cards
   inqCard: {
-    flexDirection: 'row', alignItems: 'center',
+    flexDirection: 'row', alignItems: 'flex-start',
     borderRadius: 14, borderWidth: StyleSheet.hairlineWidth,
     padding: 14, gap: 12, marginBottom: 10,
-    shadowOffset: { width: 0, height: 1 }, shadowOpacity: 0.05, shadowRadius: 3, elevation: 1,
   },
   inqAvatar: { width: 42, height: 42, borderRadius: 21, alignItems: 'center', justifyContent: 'center', flexShrink: 0 },
-  inqAvatarText: { fontSize: 14, fontWeight: '700', color: '#fff' },
-  inqTitleRow: { flexDirection: 'row', alignItems: 'center', gap: 8, marginBottom: 3 },
-  inqTitle: { flex: 1, fontSize: 14, fontWeight: '700', lineHeight: 19 },
-  inqSender: { fontSize: 13, fontWeight: '400', marginBottom: 6 },
+  inqAvatarText: { fontSize: 14, fontWeight: '700' },
+  inqTopRow: { flexDirection: 'row', alignItems: 'center', gap: 8, marginBottom: 4 },
+  inqTitle: { fontSize: 14, fontWeight: '700', lineHeight: 20, marginBottom: 6 },
+  inqSender: { flex: 1, fontSize: 12, fontWeight: '400' },
   inqMetaRow: { flexDirection: 'row', alignItems: 'center', gap: 8 },
   inqDate: { fontSize: 11, fontWeight: '400', marginLeft: 'auto' },
 
   // ── Status & type pills
-  statusPill: { paddingHorizontal: 8, paddingVertical: 3, borderRadius: 8, borderWidth: 1, flexShrink: 0 },
+  statusPill: { paddingHorizontal: 8, paddingVertical: 3, borderRadius: 8, flexShrink: 0 },
   statusPillText: { fontSize: 11, fontWeight: '600', letterSpacing: 0.1 },
-  typeBadge: { paddingHorizontal: 8, paddingVertical: 3, borderRadius: 8, borderWidth: 1 },
+  typeBadge: { paddingHorizontal: 8, paddingVertical: 3, borderRadius: 8 },
   typeBadgeText: { fontSize: 11, fontWeight: '600', letterSpacing: 0.1 },
 
   // ── Empty state

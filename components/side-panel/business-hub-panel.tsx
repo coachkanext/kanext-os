@@ -1,168 +1,130 @@
 /**
- * Business Hub Side Panel — Overview / Projects / Reports nav.
+ * Business Hub Side Panel.
+ * CEO:      Overview · Projects · Documents · Clients · Team · Reports + Dipson/Settings/Help
+ * Customer: Overview · My Projects · Invoices + Dipson/Settings/Help
  */
 
-import React, { useState } from 'react';
+import React, { useCallback, useMemo } from 'react';
 import { View, Text, Pressable, StyleSheet } from 'react-native';
-import { useRouter } from 'expo-router';
 import * as Haptics from 'expo-haptics';
-
+import { useRouter } from 'expo-router';
 import { IconSymbol } from '@/components/ui/icon-symbol';
-import { useColors } from '@/hooks/use-colors';
 import { closeSidePanel } from '@/utils/global-side-panel';
-import {
-  PROJECTS, ACTIVITY_FEED, BIZ_DASHBOARD, DEALS,
-  formatCurrency,
-} from '@/data/mock-business-ops';
+import { openDipsonSheet } from '@/utils/global-dipson-sheet';
+import { useColors, type ComponentColors } from '@/hooks/use-colors';
+import { useDemoRole } from '@/utils/demo-role-store';
+
+type NavItem = {
+  icon: string;
+  label: string;
+  route?: string;
+  isDipson?: boolean;
+};
+
+const CEO_NAV: NavItem[] = [
+  { icon: 'square.grid.2x2.fill',      label: 'Profile',    route: '/(tabs)/(main)/hub/business'      },
+  { icon: 'folder.fill',               label: 'Projects',   route: '/(tabs)/(main)/hub/biz-projects'  },
+  { icon: 'doc.fill',                  label: 'Documents',  route: '/(tabs)/(main)/hub/biz-documents' },
+  { icon: 'person.2.fill',             label: 'Clients',    route: '/(tabs)/(main)/hub/biz-clients'   },
+  { icon: 'person.3.fill',             label: 'Team',       route: '/(tabs)/(main)/hub/biz-team'      },
+  { icon: 'chart.bar.fill',            label: 'Reports',    route: '/(tabs)/(main)/hub/reports'       },
+];
+
+const CUSTOMER_NAV: NavItem[] = [
+  { icon: 'square.grid.2x2.fill',      label: 'Profile',    route: '/(tabs)/(main)/hub/business'      },
+  { icon: 'folder.fill',               label: 'Projects',    route: '/(tabs)/(main)/hub/biz-projects'  },
+  { icon: 'doc.text.fill',             label: 'Invoices',    route: '/(tabs)/(main)/hub/biz-invoices'  },
+];
+
+const BOTTOM_ITEMS: NavItem[] = [
+  { icon: 'sparkles',            label: 'Dipson',   isDipson: true },
+  { icon: 'gearshape',           label: 'Settings', route: '/(tabs)/(main)/hub/biz-settings' },
+  { icon: 'questionmark.circle', label: 'Help',     route: '/(tabs)/(main)/hub/biz-help'     },
+];
 
 export function BusinessHubPanel() {
-  const router = useRouter();
   const C = useColors();
-  const [role, setRole] = useState<'Admin' | 'Employee'>('Admin');
-  const isAdmin = role === 'Admin';
+  const s = useMemo(() => makeStyles(C), [C]);
+  const router = useRouter();
+  const [role, , roleCycles] = useDemoRole('business:hub');
+  const isCEO = role === roleCycles[0];
 
-  const activeProjects = PROJECTS.filter(p => p.status === 'active');
-  const myProjects     = PROJECTS.filter(p => p.teamIds.includes('e01')).slice(0, 3);
-  const pipelineVal    = BIZ_DASHBOARD.pipeline.totalValue;
-  const revenueMonth   = BIZ_DASHBOARD.thisMonth.revenue;
+  const go = useCallback((item: NavItem) => {
+    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+    if (item.isDipson) {
+      closeSidePanel();
+      setTimeout(() => openDipsonSheet('Business'), 300);
+      return;
+    }
+    closeSidePanel();
+    setTimeout(() => {
+      if (item.route) router.navigate(item.route as any);
+    }, 80);
+  }, [router]);
 
-  const myTasks = PROJECTS.flatMap(p =>
-    p.tasks.filter(t => t.assigneeId === 'e01' && t.status !== 'done'),
-  ).slice(0, 3);
-
-  const navRow = (icon: string, label: string, detail?: string) => (
-    <Pressable
-      key={label}
-      style={({ pressed }) => [s.navRow, pressed && { backgroundColor: C.surfacePressed }]}
-      onPress={() => { Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light); closeSidePanel(); }}
-    >
-      <IconSymbol name={icon as any} size={16} color={C.secondary} />
-      <Text style={[s.navLabel, { color: C.label }]}>{label}</Text>
-      {detail && <Text style={[s.navDetail, { color: C.muted }]}>{detail}</Text>}
-      <IconSymbol name="chevron.right" size={12} color={C.muted} />
-    </Pressable>
-  );
+  const navItems = isCEO ? CEO_NAV : CUSTOMER_NAV;
 
   return (
-    <View style={{ gap: 8 }}>
+    <View style={s.root}>
 
-      {/* Role toggle */}
-      <View style={[s.roleRow, { backgroundColor: C.surfacePressed as string }]}>
-        {(['Admin', 'Employee'] as const).map(r => (
-          <Pressable key={r} onPress={() => { Haptics.selectionAsync(); setRole(r); }}
-            style={[s.roleBtn, r === role && { backgroundColor: C.accent }]}>
-            <Text style={[s.roleBtnText, { color: r === role ? '#fff' : C.secondary }]}>{r}</Text>
+      {/* Identity header */}
+      <View style={s.header}>
+        <View style={[s.logo, { backgroundColor: C.label }]}>
+          <Text style={[s.logoK, { color: C.bg }]}>K</Text>
+        </View>
+        <Text style={[s.name, { color: C.label }]}>KaNeXT</Text>
+        <Text style={[s.handle, { color: C.secondary }]}>@kanext</Text>
+      </View>
+
+      {/* Role-specific nav */}
+      <View style={s.nav}>
+        {navItems.map(item => (
+          <Pressable
+            key={item.label}
+            style={({ pressed }) => [s.navRow, pressed && { backgroundColor: C.separator }]}
+            onPress={() => go(item)}
+          >
+            <IconSymbol name={item.icon as any} size={22} color={C.label} />
+            <Text style={[s.navLabel, { color: C.label }]}>{item.label}</Text>
           </Pressable>
         ))}
       </View>
 
-      {isAdmin ? (
-        <>
-          {/* ── Home ── */}
+      <View style={[s.divider, { backgroundColor: C.separator }]} />
+
+      {/* Bottom utilities — all roles */}
+      <View style={s.nav}>
+        {BOTTOM_ITEMS.map(item => (
           <Pressable
-            style={({ pressed }) => [s.navRow, pressed && { backgroundColor: C.surfacePressed }]}
-            onPress={() => {
-              Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
-              closeSidePanel();
-              router.setParams({ manage: undefined });
-            }}
+            key={item.label}
+            style={({ pressed }) => [s.navRow, pressed && { backgroundColor: C.separator }]}
+            onPress={() => go(item)}
           >
-            <IconSymbol name="house.fill" size={18} color={C.secondary} />
-            <Text style={[s.navLabel, { color: C.label }]}>Home</Text>
+            <IconSymbol name={item.icon as any} size={22} color={C.label} />
+            <Text style={[s.navLabel, { color: C.label }]}>{item.label}</Text>
           </Pressable>
+        ))}
+      </View>
 
-          {/* Revenue banner */}
-          <View style={{ backgroundColor: '#1A1714', borderRadius: 12, padding: 14, gap: 4 }}>
-            <Text style={{ fontSize: 10, fontWeight: '600', color: 'rgba(255,255,255,0.55)', textTransform: 'uppercase', letterSpacing: 0.5 }}>This Month</Text>
-            <Text style={{ fontSize: 28, fontWeight: '900', color: '#fff', lineHeight: 32 }}>{formatCurrency(revenueMonth, true)}</Text>
-            <Text style={{ fontSize: 11, color: 'rgba(255,255,255,0.55)' }}>Pipeline: {formatCurrency(pipelineVal, true)} · {BIZ_DASHBOARD.pipeline.dealCount} deals</Text>
-          </View>
-
-          {/* Today's tasks */}
-          <Text style={[s.sectionHeader, { color: C.secondary }]}>Today's Tasks</Text>
-          <View style={{ backgroundColor: C.surface, borderRadius: 12, overflow: 'hidden' }}>
-            {myTasks.length === 0 && (
-              <Text style={[s.navLabel, { color: C.muted, padding: 14 }]}>All clear!</Text>
-            )}
-            {myTasks.map((task, i) => (
-              <Pressable key={task.id} style={({ pressed }) => [
-                s.navRow,
-                i > 0 && { borderTopWidth: StyleSheet.hairlineWidth, borderTopColor: C.separator },
-                pressed && { backgroundColor: C.surfacePressed },
-              ]} onPress={() => { Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light); closeSidePanel(); }}>
-                <View style={{ width: 6, height: 6, borderRadius: 3, backgroundColor: task.priority === 'high' ? C.red : task.priority === 'medium' ? C.accent : C.muted }} />
-                <Text style={[s.navLabel, { color: C.label }]} numberOfLines={1}>{task.title}</Text>
-              </Pressable>
-            ))}
-          </View>
-
-          {/* Activity */}
-          <Text style={[s.sectionHeader, { color: C.secondary }]}>Activity</Text>
-          <View style={{ backgroundColor: C.surface, borderRadius: 12, overflow: 'hidden' }}>
-            {ACTIVITY_FEED.slice(0, 4).map((a, i) => (
-              <Pressable key={a.id} style={({ pressed }) => [
-                s.navRow,
-                i > 0 && { borderTopWidth: StyleSheet.hairlineWidth, borderTopColor: C.separator },
-                pressed && { backgroundColor: C.surfacePressed },
-              ]} onPress={() => { Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light); closeSidePanel(); }}>
-                <Text style={[s.navLabel, { color: C.label }]} numberOfLines={1}>{a.title}</Text>
-                <Text style={[s.navDetail, { color: C.muted }]}>{a.time}</Text>
-              </Pressable>
-            ))}
-          </View>
-
-          {/* Quick actions */}
-          <Text style={[s.sectionHeader, { color: C.secondary }]}>Actions</Text>
-          <View style={{ backgroundColor: C.surface, borderRadius: 12, overflow: 'hidden' }}>
-            {navRow('plus.circle.fill',         'New Project')}
-            {navRow('chart.bar.fill',           'View Reports')}
-            {navRow('square.and.arrow.up.fill', 'Export Data')}
-          </View>
-        </>
-      ) : (
-        <>
-          {/* My tasks */}
-          <Text style={[s.sectionHeader, { color: C.secondary }]}>My Tasks</Text>
-          <View style={{ backgroundColor: C.surface, borderRadius: 12, overflow: 'hidden' }}>
-            {myTasks.map((task, i) => (
-              <Pressable key={task.id} style={({ pressed }) => [
-                s.navRow,
-                i > 0 && { borderTopWidth: StyleSheet.hairlineWidth, borderTopColor: C.separator },
-                pressed && { backgroundColor: C.surfacePressed },
-              ]} onPress={() => { Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light); closeSidePanel(); }}>
-                <View style={{ width: 6, height: 6, borderRadius: 3, backgroundColor: task.priority === 'high' ? C.red : task.priority === 'medium' ? C.accent : C.muted }} />
-                <Text style={[s.navLabel, { color: C.label }]} numberOfLines={1}>{task.title}</Text>
-              </Pressable>
-            ))}
-          </View>
-
-          {/* My projects */}
-          <Text style={[s.sectionHeader, { color: C.secondary }]}>My Projects</Text>
-          <View style={{ backgroundColor: C.surface, borderRadius: 12, overflow: 'hidden' }}>
-            {myProjects.map((p, i) => (
-              <Pressable key={p.id} style={({ pressed }) => [
-                s.navRow,
-                i > 0 && { borderTopWidth: StyleSheet.hairlineWidth, borderTopColor: C.separator },
-                pressed && { backgroundColor: C.surfacePressed },
-              ]} onPress={() => { Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light); closeSidePanel(); }}>
-                <Text style={[s.navLabel, { color: C.label }]} numberOfLines={1}>{p.name}</Text>
-                <Text style={[s.navDetail, { color: C.muted }]}>{p.progress}%</Text>
-                <IconSymbol name="chevron.right" size={12} color={C.muted} />
-              </Pressable>
-            ))}
-          </View>
-        </>
-      )}
     </View>
   );
 }
 
-const s = StyleSheet.create({
-  sectionHeader: { fontSize: 11, fontWeight: '600', letterSpacing: 0.5, textTransform: 'uppercase', paddingVertical: 6 },
-  navRow:        { flexDirection: 'row', alignItems: 'center', paddingHorizontal: 14, paddingVertical: 13, gap: 10 },
-  navLabel:      { flex: 1, fontSize: 14, fontWeight: '500' },
-  navDetail:     { fontSize: 12 },
-  roleRow:       { flexDirection: 'row', borderRadius: 10, padding: 3, gap: 2 },
-  roleBtn:       { flex: 1, height: 30, borderRadius: 8, alignItems: 'center', justifyContent: 'center' },
-  roleBtnText:   { fontSize: 13, fontWeight: '700' },
+const makeStyles = (C: ComponentColors) => StyleSheet.create({
+  root: { flex: 1 },
+
+  header: { paddingHorizontal: 20, paddingTop: 8, paddingBottom: 20 },
+  logo: {
+    width: 44, height: 44, borderRadius: 22,
+    alignItems: 'center', justifyContent: 'center', marginBottom: 10,
+  },
+  logoK:   { fontSize: 20, fontWeight: '900' },
+  name:    { fontSize: 17, fontWeight: '700', letterSpacing: -0.3, marginBottom: 2 },
+  handle:  { fontSize: 14, fontWeight: '400' },
+
+  nav:      { paddingHorizontal: 8 },
+  navRow:   { flexDirection: 'row', alignItems: 'center', height: 44, gap: 16, paddingHorizontal: 12, borderRadius: 8 },
+  navLabel: { fontSize: 16, fontWeight: '500' },
+
+  divider: { height: StyleSheet.hairlineWidth, marginVertical: 8, marginHorizontal: 20 },
 });

@@ -19,15 +19,17 @@ import { useFocusEffect } from 'expo-router';
 
 import { IconSymbol } from '@/components/ui/icon-symbol';
 import { KMenuButton } from '@/components/ui/k-menu-button';
-import { RolePill } from '@/components/ui/role-pill';
 import { useColors, type ComponentColors } from '@/hooks/use-colors';
 import { openSidePanel } from '@/utils/global-side-panel';
 import { resetFooter } from '@/utils/global-footer-hide';
-import { useDemoRole } from '@/utils/demo-role-store';
 import { useScrollHeader } from '@/hooks/use-scroll-header';
+import { RolePill } from '@/components/ui/role-pill';
+import { useDemoRole } from '@/utils/demo-role-store';
+import { useMode } from '@/context/app-context';
 
 // ── Constants ─────────────────────────────────────────────────────────────────
 
+const TOP_BAR_H = 54;
 const GAIN    = '#5A8A6E';
 const HEAT    = '#B85C5C';
 const CAUTION = '#B8943E';
@@ -62,11 +64,13 @@ export default function InvestScreen() {
   const insets = useSafeAreaInsets();
   const s      = useMemo(() => makeStyles(C), [C]);
 
-  const [role, cycleRole, roleCycles] = useDemoRole('personal:kaypay');
-  const isOwner = role === roleCycles[0];
+  const totalTopH = insets.top + TOP_BAR_H;
+  const { opacity, onScroll, scrollEventThrottle } = useScrollHeader(totalTopH);
 
-  const TOP_BAR_H = insets.top + 54;
-  const { opacity, onScroll, scrollEventThrottle } = useScrollHeader(TOP_BAR_H);
+  const mode = useMode();
+  const _rk = mode === 'sports' ? 'sports:agenda' : mode === 'community' ? 'community:kaypay' : mode === 'education' ? 'education' : mode === 'business' ? 'business' : 'personal:kaypay';
+  const [role, cycleRole, roleCycles] = useDemoRole(_rk);
+  const isOwner = role === roleCycles[0];
 
   useFocusEffect(useCallback(() => { resetFooter(); }, []));
 
@@ -74,13 +78,7 @@ export default function InvestScreen() {
     <View style={[s.root, { backgroundColor: C.bg }]}>
 
       {/* ── Top Bar ─────────────────────────────────────────────────────────── */}
-      <Animated.View style={[s.topBarOuter, {
-        paddingTop: insets.top,
-        height: insets.top + TOP_BAR_H,
-        backgroundColor: C.bg,
-        borderBottomColor: C.separator,
-        opacity,
-      }]}>
+      <Animated.View style={[s.topBarOuter, { paddingTop: insets.top, backgroundColor: C.bg, borderBottomColor: C.separator, opacity }]}>
         <View style={s.topBar}>
           <Pressable
             style={s.iconBtn}
@@ -88,11 +86,13 @@ export default function InvestScreen() {
           >
             <KMenuButton />
           </Pressable>
-
-          <Text style={{ fontSize: 17, fontWeight: '700', color: C.label }}>Invest</Text>
-
-          <View style={{ marginRight: 4 }}>
-            <RolePill role={role} onPress={cycleRole} isPrimary={isOwner} accentColor={C.label} />
+          <View style={{ flex: 1, alignItems: 'center' }}>
+            <View style={[s.titlePill, { backgroundColor: C.surface, borderColor: C.separator }]}>
+              <Text style={[s.titlePillText, { color: C.label }]}>Invest</Text>
+            </View>
+          </View>
+          <View style={{ alignItems: 'flex-end' }}>
+            <RolePill role={role} onPress={cycleRole} isPrimary={isOwner} />
           </View>
         </View>
       </Animated.View>
@@ -103,7 +103,7 @@ export default function InvestScreen() {
         scrollEventThrottle={scrollEventThrottle}
         showsVerticalScrollIndicator={false}
         contentContainerStyle={{
-          paddingTop: TOP_BAR_H + 16,
+          paddingTop: totalTopH + 16,
           paddingBottom: insets.bottom + 100,
         }}
       >
@@ -280,14 +280,14 @@ function makeStyles(C: ComponentColors) {
       borderBottomWidth: StyleSheet.hairlineWidth,
     },
     topBar: {
+      height: TOP_BAR_H,
       flexDirection: 'row',
-      alignItems: 'flex-end',
-      justifyContent: 'space-between',
+      alignItems: 'center',
       paddingHorizontal: 12,
-      paddingBottom: 8,
-      flex: 1,
     },
-    iconBtn: { width: 40, alignItems: 'center' },
+    iconBtn:       { width: 44, height: 44, alignItems: 'flex-start', justifyContent: 'center' },
+    titlePill:     { paddingHorizontal: 12, paddingVertical: 5, borderRadius: 14, borderWidth: 1 },
+    titlePillText: { fontSize: 12, fontWeight: '600', letterSpacing: 0.3 },
     row:     { flexDirection: 'row', alignItems: 'center' },
     hero: {
       borderRadius: 20,
@@ -297,13 +297,14 @@ function makeStyles(C: ComponentColors) {
     },
     heroLabel: {
       fontSize: 12,
-      color: 'rgba(255,255,255,0.65)',
+      color: C.bg,
       fontWeight: '500',
+      opacity: 0.65,
     },
     heroAmount: {
       fontSize: 40,
       fontWeight: '800',
-      color: '#FFFFFF',
+      color: C.bg,
     },
     sectionTitle: { fontSize: 17, fontWeight: '700' },
     goalCard:     { borderRadius: 12, padding: 16 },

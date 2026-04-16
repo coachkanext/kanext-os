@@ -1,141 +1,131 @@
 /**
- * Sports Hub Side Panel — Warm linen palette (cream + carbon).
- * Head Coach: Home, Roster, Recruiting, Film Room, Scouting, Game Day, Development + MANAGE section.
- * Player: Home, My Profile, My Film, My Development, My Academics, My NIL.
+ * Sports Hub Side Panel.
+ * Head Coach: Profile · Film Room · Scouting · Game Day · Practice · Recruiting + Dipson/Settings/Help
+ * Player:     Profile · My Film · My Development · My Academics + Dipson/Settings/Help
  */
 
-import React from 'react';
+import React, { useCallback, useMemo } from 'react';
 import { View, Text, Pressable, StyleSheet } from 'react-native';
 import * as Haptics from 'expo-haptics';
 import { useRouter } from 'expo-router';
 import { IconSymbol } from '@/components/ui/icon-symbol';
-import { useColors } from '@/hooks/use-colors';
 import { closeSidePanel } from '@/utils/global-side-panel';
+import { openDipsonSheet } from '@/utils/global-dipson-sheet';
+import { useColors, type ComponentColors } from '@/hooks/use-colors';
 import { useDemoRole } from '@/utils/demo-role-store';
 
-type Dot = { color: string; count?: number } | null;
+type NavItem = {
+  icon: string;
+  label: string;
+  route?: string;
+  isDipson?: boolean;
+};
+
+const COACH_NAV: NavItem[] = [
+  { icon: 'square.grid.2x2.fill',      label: 'Profile',    route: '/(tabs)/(main)/hub/sports-program-overview' },
+  { icon: 'film.fill',                 label: 'Film Room',  route: '/(tabs)/(main)/hub/sports-film-room'        },
+  { icon: 'doc.text.magnifyingglass',  label: 'Scouting',   route: '/(tabs)/(main)/hub/sports-scouting'         },
+  { icon: 'gamecontroller.fill',       label: 'Game Day',   route: '/(tabs)/(main)/hub/sports-game-day'         },
+  { icon: 'list.clipboard.fill',       label: 'Practice',   route: '/(tabs)/(main)/hub/sports-practice'         },
+  { icon: 'figure.run',                label: 'Recruiting', route: '/(tabs)/(main)/hub/sports-recruiting'       },
+];
+
+const PLAYER_NAV: NavItem[] = [
+  { icon: 'square.grid.2x2.fill',      label: 'Profile',        route: '/(tabs)/(main)/hub/sports-program-overview' },
+  { icon: 'film.fill',                 label: 'Film',        route: '/(tabs)/(main)/hub/sports-my-film'           },
+  { icon: 'chart.line.uptrend.xyaxis', label: 'Development', route: '/(tabs)/(main)/hub/sports-my-development'    },
+  { icon: 'graduationcap.fill',        label: 'Academics',   route: '/(tabs)/(main)/hub/sports-my-academics'      },
+];
+
+const BOTTOM_ITEMS: NavItem[] = [
+  { icon: 'sparkles',            label: 'Dipson',   isDipson: true },
+  { icon: 'gearshape',           label: 'Settings', route: '/(tabs)/(main)/hub/sports-settings' },
+  { icon: 'questionmark.circle', label: 'Help',     route: '/(tabs)/(main)/hub/sports-help'     },
+];
 
 export function SportsHubPanel() {
   const C = useColors();
+  const s = useMemo(() => makeStyles(C), [C]);
   const router = useRouter();
   const [role, , roleCycles] = useDemoRole('sports:hub');
-  const isHeadCoach = role === roleCycles[0];
+  const isCoach = role === roleCycles[0];
 
-  const go = (route: string) => {
+  const go = useCallback((item: NavItem) => {
     Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+    if (item.isDipson) {
+      closeSidePanel();
+      setTimeout(() => openDipsonSheet('Athletics'), 300);
+      return;
+    }
     closeSidePanel();
-    setTimeout(() => router.push(route as any), 80);
-  };
+    setTimeout(() => {
+      if (item.route) router.navigate(item.route as any);
+    }, 80);
+  }, [router]);
 
-  const COACH_NAV: { icon: string; label: string; route: string; dot: Dot }[] = [
-    { icon: 'house.fill',                label: 'Home',        route: '/(tabs)/(main)/hub/sports-program-overview',   dot: null },
-    { icon: 'person.3.fill',             label: 'Roster',      route: '/(tabs)/(main)/roster',                        dot: { color: '#D4A843' } },
-    { icon: 'figure.run',                label: 'Recruiting',  route: '/(tabs)/(main)/recruits',                      dot: { color: '#5A8A6E' } },
-    { icon: 'film.fill',                 label: 'Film Room',   route: '/(tabs)/(main)/hub/sports-film-room',           dot: { color: '#B85C5C', count: 2 } },
-    { icon: 'doc.text.magnifyingglass',  label: 'Scouting',    route: '/(tabs)/(main)/hub/sports-scouting',            dot: null },
-    { icon: 'gamecontroller.fill',       label: 'Game Day',    route: '/(tabs)/(main)/hub/sports-game-day',            dot: null },
-    { icon: 'chart.line.uptrend.xyaxis', label: 'Development', route: '/(tabs)/(main)/hub/sports-player-development',  dot: null },
-  ];
-
-  const COACH_MANAGE: { icon: string; label: string; route: string; dot: Dot }[] = [
-    { icon: 'list.clipboard.fill',    label: 'Practice Plans', route: '/(tabs)/(main)/hub/sports-practice-plans', dot: null },
-    { icon: 'checkmark.shield.fill',  label: 'Compliance',     route: '/(tabs)/(main)/hub/sports-compliance',     dot: { color: '#D4A843' } },
-    { icon: 'dollarsign.circle.fill', label: 'Scholarships',   route: '/(tabs)/(main)/hub/sports-scholarships',   dot: null },
-    { icon: 'briefcase.fill',         label: 'NIL',            route: '/(tabs)/(main)/hub/sports-nil',            dot: null },
-    { icon: 'megaphone.fill',         label: 'Booster',        route: '/(tabs)/(main)/hub/sports-booster',        dot: null },
-    { icon: 'person.2.fill',          label: 'Staff',          route: '/(tabs)/(main)/hub/sports-staff',          dot: null },
-  ];
-
-  const PLAYER_NAV = [
-    { icon: 'house.fill',         label: 'Home',           route: '/(tabs)/(main)/hub/sports-player-dashboard'   },
-    { icon: 'person.fill',        label: 'My Profile',     route: '/(tabs)/(main)/hub/sports-player-profile'     },
-    { icon: 'film.fill',          label: 'My Film',        route: '/(tabs)/(main)/hub/sports-player-film'        },
-    { icon: 'figure.run',         label: 'My Development', route: '/(tabs)/(main)/hub/sports-player-development' },
-    { icon: 'graduationcap.fill', label: 'My Academics',   route: '/(tabs)/(main)/hub/sports-player-academics'   },
-    { icon: 'briefcase.fill',     label: 'My NIL',         route: '/(tabs)/(main)/hub/sports-player-nil'         },
-  ];
-
-  const navItems = isHeadCoach ? COACH_NAV : PLAYER_NAV;
+  const navItems = isCoach ? COACH_NAV : PLAYER_NAV;
 
   return (
-    <View style={[s.root, { backgroundColor: C.bg }]}>
+    <View style={s.root}>
 
-      {navItems.map(item => (
-        <Pressable
-          key={item.label}
-          style={({ pressed }) => [s.row, pressed && { backgroundColor: C.surface2 }]}
-          onPress={() => go(item.route)}
-        >
-          <View style={[s.iconWrap, { backgroundColor: C.surface }]}>
-            <IconSymbol name={item.icon as any} size={15} color={C.label} />
-          </View>
-          <Text style={[s.rowLabel, { color: C.label }]}>{item.label}</Text>
-          <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6 }}>
-            {'dot' in item && item.dot && item.dot.count ? (
-              <View style={{ backgroundColor: item.dot.color, borderRadius: 8, paddingHorizontal: 5, paddingVertical: 1, minWidth: 18, alignItems: 'center' }}>
-                <Text style={{ fontSize: 10, fontWeight: '800', color: '#FFFFFF' }}>{item.dot.count}</Text>
-              </View>
-            ) : 'dot' in item && item.dot ? (
-              <View style={{ width: 7, height: 7, borderRadius: 4, backgroundColor: item.dot.color }} />
-            ) : null}
-            <IconSymbol name="chevron.right" size={11} color={C.secondary} />
-          </View>
-        </Pressable>
-      ))}
+      {/* Identity header */}
+      <View style={s.header}>
+        <View style={[s.logo, { backgroundColor: C.label }]}>
+          <Text style={[s.logoText, { color: C.bg }]}>LM</Text>
+        </View>
+        <Text style={[s.name, { color: C.label }]}>Lincoln Men's Basketball</Text>
+        <Text style={[s.handle, { color: C.secondary }]}>@lmbb</Text>
+      </View>
 
-      {isHeadCoach && (
-        <>
-          <View style={[s.divider, { backgroundColor: C.separator }]} />
-          <Text style={[s.sectionLabel, { color: C.secondary }]}>MANAGE</Text>
-          {COACH_MANAGE.map(item => (
-            <Pressable
-              key={item.label}
-              style={({ pressed }) => [s.row, pressed && { backgroundColor: C.surface2 }]}
-              onPress={() => go(item.route)}
-            >
-              <View style={[s.iconWrap, { backgroundColor: C.surface }]}>
-                <IconSymbol name={item.icon as any} size={15} color={C.label} />
-              </View>
-              <Text style={[s.rowLabel, { color: C.label }]}>{item.label}</Text>
-              <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6 }}>
-                {item.dot && item.dot.count ? (
-                  <View style={{ backgroundColor: item.dot.color, borderRadius: 8, paddingHorizontal: 5, paddingVertical: 1, minWidth: 18, alignItems: 'center' }}>
-                    <Text style={{ fontSize: 10, fontWeight: '800', color: '#FFFFFF' }}>{item.dot.count}</Text>
-                  </View>
-                ) : item.dot ? (
-                  <View style={{ width: 7, height: 7, borderRadius: 4, backgroundColor: item.dot.color }} />
-                ) : null}
-                <IconSymbol name="chevron.right" size={11} color={C.secondary} />
-              </View>
-            </Pressable>
-          ))}
-        </>
-      )}
+      {/* Role-specific nav */}
+      <View style={s.nav}>
+        {navItems.map(item => (
+          <Pressable
+            key={item.label}
+            style={({ pressed }) => [s.navRow, pressed && { backgroundColor: C.separator }]}
+            onPress={() => go(item)}
+          >
+            <IconSymbol name={item.icon as any} size={22} color={C.label} />
+            <Text style={[s.navLabel, { color: C.label }]}>{item.label}</Text>
+          </Pressable>
+        ))}
+      </View>
+
+      <View style={[s.divider, { backgroundColor: C.separator }]} />
+
+      {/* Bottom utilities — all roles */}
+      <View style={s.nav}>
+        {BOTTOM_ITEMS.map(item => (
+          <Pressable
+            key={item.label}
+            style={({ pressed }) => [s.navRow, pressed && { backgroundColor: C.separator }]}
+            onPress={() => go(item)}
+          >
+            <IconSymbol name={item.icon as any} size={22} color={C.label} />
+            <Text style={[s.navLabel, { color: C.label }]}>{item.label}</Text>
+          </Pressable>
+        ))}
+      </View>
+
     </View>
   );
 }
 
-const s = StyleSheet.create({
+const makeStyles = (C: ComponentColors) => StyleSheet.create({
   root: { flex: 1 },
 
-  row: {
-    flexDirection: 'row', alignItems: 'center',
-    paddingHorizontal: 16, paddingVertical: 13, gap: 12,
-    borderRadius: 10, marginHorizontal: 8,
+  header: { paddingHorizontal: 20, paddingTop: 8, paddingBottom: 20 },
+  logo: {
+    width: 44, height: 44, borderRadius: 22,
+    alignItems: 'center', justifyContent: 'center', marginBottom: 10,
   },
+  logoText: { fontSize: 16, fontWeight: '900' },
+  name:     { fontSize: 17, fontWeight: '700', letterSpacing: -0.3, marginBottom: 2 },
+  handle:   { fontSize: 14, fontWeight: '400' },
 
-  iconWrap: {
-    width: 32, height: 32, borderRadius: 8,
-    alignItems: 'center', justifyContent: 'center',
-  },
+  nav:      { paddingHorizontal: 8 },
+  navRow:   { flexDirection: 'row', alignItems: 'center', height: 44, gap: 16, paddingHorizontal: 12, borderRadius: 8 },
+  navLabel: { fontSize: 16, fontWeight: '500' },
 
-  rowLabel: { flex: 1, fontSize: 15, fontWeight: '500' },
-
-  divider: { height: StyleSheet.hairlineWidth, marginVertical: 10, marginHorizontal: 16 },
-
-  sectionLabel: {
-    fontSize: 11, fontWeight: '700', letterSpacing: 0.8,
-    textTransform: 'uppercase',
-    paddingHorizontal: 24, paddingBottom: 4, paddingTop: 4,
-  },
+  divider: { height: StyleSheet.hairlineWidth, marginVertical: 8, marginHorizontal: 20 },
 });

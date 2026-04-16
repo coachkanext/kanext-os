@@ -35,7 +35,7 @@ const AVATAR_OVR  = AVATAR_SIZE / 2;
 // ─── Data ─────────────────────────────────────────────────────────────────────
 
 const TEAM = {
-  name:      "LU Men's Basketball",
+  name:      "Lincoln Men's Basketball",
   sub:       'SWS Conference — Laney College',
   bio:       'HC: William Middlebrooks  ·  AC: Sammy Kalejaiye',
   kr:        78,

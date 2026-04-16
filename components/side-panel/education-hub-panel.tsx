@@ -1,143 +1,133 @@
 /**
- * Education Hub Side Panel — admin sees dean tools, student sees quick nav.
- * Content adapts based on isAdmin prop (determined by screen state — passed via
- * a simple export/import of shared state is beyond the panel's scope, so this
- * always renders the admin panel since only admins have sidebar access).
+ * Education Hub Side Panel — matches community-hub-panel.tsx format.
+ * Identity header + nav rows (size 24, height 44, gap 16) + divider + Dipson / Settings / Help.
+ *
+ * President: Profile, Academics, Enrollment, Students, Finance, Faculty
+ * Student:   Profile, My Courses, Registration, Financial Aid
  */
 
-import React, { useMemo } from 'react';
+import React, { useCallback, useMemo } from 'react';
 import { View, Text, Pressable, StyleSheet } from 'react-native';
-import { useRouter } from 'expo-router';
 import * as Haptics from 'expo-haptics';
-
+import { useRouter } from 'expo-router';
 import { IconSymbol } from '@/components/ui/icon-symbol';
 import { closeSidePanel } from '@/utils/global-side-panel';
+import { openDipsonSheet } from '@/utils/global-dipson-sheet';
 import { useColors, type ComponentColors } from '@/hooks/use-colors';
-import { EDUCATION_PROFILE, EDUCATION_ANALYTICS } from '@/data/mock-education-hub';
+import { useDemoRole } from '@/utils/demo-role-store';
 
-const QUICK_ACTIONS = [
-  { icon: 'megaphone.fill',          label: 'Send Announcement' },
-  { icon: 'tray.fill',               label: 'View Applications' },
-  { icon: 'chart.bar.doc.horizontal',label: 'Run Report' },
-] as const;
+// ── Data ──────────────────────────────────────────────────────────────────────
 
-const SETTINGS_ITEMS = [
-  { icon: 'calendar',               label: 'Academic Calendar' },
-  { icon: 'doc.badge.gearshape',    label: 'Grading Policies' },
-  { icon: 'building.columns',       label: 'Department Management' },
-] as const;
+type NavItem = { icon: string; label: string; route?: string; isDipson?: boolean };
+
+const PRESIDENT_NAV: NavItem[] = [
+  { icon: 'person.crop.rectangle.fill', label: 'Profile',    route: '/(tabs)/(main)/hub/education'       },
+  { icon: 'book.fill',                  label: 'Academics',  route: '/(tabs)/(main)/hub/edu-academics'   },
+  { icon: 'tray.fill',                  label: 'Enrollment', route: '/(tabs)/(main)/hub/edu-enrollment'  },
+  { icon: 'person.3.fill',              label: 'Students',   route: '/(tabs)/(main)/hub/edu-students'    },
+  { icon: 'dollarsign.circle.fill',     label: 'Finance',    route: '/(tabs)/(main)/hub/edu-finance'     },
+  { icon: 'person.badge.clock.fill',    label: 'Faculty',    route: '/(tabs)/(main)/hub/edu-faculty'     },
+];
+
+const STUDENT_NAV: NavItem[] = [
+  { icon: 'person.crop.rectangle.fill', label: 'Profile',       route: '/(tabs)/(main)/hub/education'          },
+  { icon: 'book.fill',                  label: 'My Courses',    route: '/(tabs)/(main)/hub/edu-my-courses'     },
+  { icon: 'calendar.badge.plus',        label: 'Registration',  route: '/(tabs)/(main)/hub/edu-registration'   },
+  { icon: 'creditcard.fill',            label: 'Financial Aid', route: '/(tabs)/(main)/hub/edu-financial-aid'  },
+];
+
+const BOTTOM_ITEMS: NavItem[] = [
+  { icon: 'sparkles',            label: 'Dipson',   isDipson: true                            },
+  { icon: 'gearshape',           label: 'Settings', route: '/(tabs)/(main)/hub/edu-settings'  },
+  { icon: 'questionmark.circle', label: 'Help',     route: '/(tabs)/(main)/hub/edu-help'      },
+];
+
+// ── Component ─────────────────────────────────────────────────────────────────
 
 export function EducationHubPanel() {
-  const router = useRouter();
   const C = useColors();
-  const styles = useMemo(() => makeStyles(C), [C]);
-  const a = EDUCATION_ANALYTICS;
+  const s = useMemo(() => makeStyles(C), [C]);
+  const router = useRouter();
+  const [role, , roleCycles] = useDemoRole('education');
+  const isPresident = role === roleCycles[0];
+
+  const go = useCallback((item: NavItem) => {
+    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+    if (item.isDipson) {
+      closeSidePanel();
+      setTimeout(() => openDipsonSheet('Education'), 300);
+      return;
+    }
+    closeSidePanel();
+    setTimeout(() => { if (item.route) router.navigate(item.route as any); }, 80);
+  }, [router]);
+
+  const navItems = isPresident ? PRESIDENT_NAV : STUDENT_NAV;
 
   return (
-    <View style={styles.container}>
-      {/* Header */}
-      <View style={styles.header}>
-        <View style={[styles.avatar, { backgroundColor: `hsl(${EDUCATION_PROFILE.coverHue},55%,30%)` }]}>
-          <Text style={styles.avatarText}>{EDUCATION_PROFILE.avatarInitials}</Text>
+    <View style={s.root}>
+
+      {/* ── Identity header ── */}
+      <View style={s.header}>
+        <View style={[s.avatar, { backgroundColor: C.separator }]}>
+          <Text style={s.avatarEmoji}>🏛️</Text>
         </View>
-        <View style={styles.headerInfo}>
-          <Text style={[styles.headerName, { color: C.label }]}>{EDUCATION_PROFILE.name}</Text>
-          <Text style={[styles.headerSub, { color: C.secondary }]}>{EDUCATION_PROFILE.location}</Text>
-        </View>
+        <Text style={[s.name, { color: C.label }]}>Lincoln University (CA)</Text>
+        <Text style={[s.handle, { color: C.secondary }]}>@lincolnu · Oakland, CA</Text>
+        <Text style={[s.followers, { color: C.secondary }]}>
+          <Text style={{ fontWeight: '600', color: C.label }}>436</Text>{' Students'}
+        </Text>
       </View>
 
-      {/* Quick stats */}
-      <View style={[styles.statsRow, { backgroundColor: C.surfacePressed, borderRadius: 12 }]}>
-        <View style={styles.statItem}>
-          <Text style={[styles.statNum, { color: C.label }]}>{a.totalEnrollment.toLocaleString()}</Text>
-          <Text style={[styles.statLabel, { color: C.secondary }]}>Enrolled</Text>
-        </View>
-        <View style={[styles.statDivider, { backgroundColor: C.separator }]} />
-        <View style={styles.statItem}>
-          <Text style={[styles.statNum, { color: C.label }]}>{a.retentionRate}%</Text>
-          <Text style={[styles.statLabel, { color: C.secondary }]}>Retention</Text>
-        </View>
-        <View style={[styles.statDivider, { backgroundColor: C.separator }]} />
-        <View style={styles.statItem}>
-          <Text style={[styles.statNum, { color: '#1A1714' }]}>{a.applicationsPending}</Text>
-          <Text style={[styles.statLabel, { color: C.secondary }]}>Pending Apps</Text>
-        </View>
+      {/* ── Main nav ── */}
+      <View style={s.nav}>
+        {navItems.map(item => (
+          <Pressable
+            key={item.label}
+            style={({ pressed }) => [s.navRow, pressed && { backgroundColor: C.bg }]}
+            onPress={() => go(item)}
+          >
+            <IconSymbol name={item.icon as any} size={24} color={C.label} />
+            <Text style={[s.navLabel, { color: C.label }]}>{item.label}</Text>
+          </Pressable>
+        ))}
       </View>
 
-      {/* ── Home ── */}
-      <Pressable
-        style={({ pressed }) => [styles.navRow, pressed && { backgroundColor: C.surfacePressed }]}
-        onPress={() => {
-          Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
-          closeSidePanel();
-          router.setParams({ manage: undefined });
-        }}
-      >
-        <IconSymbol name="house.fill" size={18} color={C.secondary} />
-        <Text style={[styles.navLabel, { color: C.label }]}>Home</Text>
-      </Pressable>
+      <View style={[s.divider, { backgroundColor: C.separator }]} />
 
-      <View style={[styles.divider, { backgroundColor: C.separator }]} />
+      {/* ── Bottom utilities ── */}
+      <View style={s.nav}>
+        {BOTTOM_ITEMS.map(item => (
+          <Pressable
+            key={item.label}
+            style={({ pressed }) => [s.navRow, pressed && { backgroundColor: C.bg }]}
+            onPress={() => go(item)}
+          >
+            <IconSymbol name={item.icon as any} size={24} color={C.label} />
+            <Text style={[s.navLabel, { color: C.label }]}>{item.label}</Text>
+          </Pressable>
+        ))}
+      </View>
 
-      {/* Quick Actions */}
-      <Text style={[styles.sectionLabel, { color: C.secondary }]}>Quick Actions</Text>
-      {QUICK_ACTIONS.map((item, idx) => (
-        <Pressable
-          key={item.label}
-          style={({ pressed }) => [
-            styles.navRow,
-            pressed && { backgroundColor: C.surfacePressed },
-            idx < QUICK_ACTIONS.length - 1 && [styles.navRowBorder, { borderBottomColor: C.separator }],
-          ]}
-          onPress={() => {
-            Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
-            if (item.label === 'Send Announcement') {
-              closeSidePanel();
-              setTimeout(() => router.push('/(tabs)/(main)/hub/edu-announcement' as any), 80);
-            } else {
-              closeSidePanel();
-            }
-          }}
-        >
-          <IconSymbol name={item.icon as any} size={18} color={C.accent} />
-          <Text style={[styles.navLabel, { color: C.label }]}>{item.label}</Text>
-        </Pressable>
-      ))}
-
-
-      <View style={{ height: 24 }} />
     </View>
   );
 }
 
+// ── Styles ────────────────────────────────────────────────────────────────────
+
 const makeStyles = (C: ComponentColors) => StyleSheet.create({
-  container: {},
-  header: {
-    flexDirection: 'row', alignItems: 'center', gap: 12,
-    paddingHorizontal: 16, marginBottom: 16,
-  },
-  avatar: {
-    width: 44, height: 44, borderRadius: 12,
-    alignItems: 'center', justifyContent: 'center', flexShrink: 0,
-  },
-  avatarText: { fontSize: 13, fontWeight: '800', color: '#fff' },
-  headerInfo: { flex: 1 },
-  headerName: { fontSize: 16, fontWeight: '700', lineHeight: 21 },
-  headerSub:  { fontSize: 12 },
+  root: { flex: 1 },
 
-  statsRow:    { flexDirection: 'row', marginBottom: 20, padding: 12 },
-  statItem:    { flex: 1, alignItems: 'center' },
-  statNum:     { fontSize: 16, fontWeight: '800' },
-  statLabel:   { fontSize: 10, marginTop: 2 },
-  statDivider: { width: StyleSheet.hairlineWidth, height: 28, alignSelf: 'center' },
+  header:    { paddingHorizontal: 20, paddingTop: 8, paddingBottom: 20 },
+  avatar:    { width: 44, height: 44, borderRadius: 22, alignItems: 'center', justifyContent: 'center', marginBottom: 10 },
+  avatarEmoji: { fontSize: 22 },
+  name:      { fontSize: 17, fontWeight: '700', letterSpacing: -0.3, marginBottom: 2 },
+  handle:    { fontSize: 14, fontWeight: '400', marginBottom: 6 },
+  followers: { fontSize: 14, fontWeight: '400' },
 
-  sectionLabel: {
-    fontSize: 11, fontWeight: '600', letterSpacing: 0.5,
-    textTransform: 'uppercase', paddingHorizontal: 16,
-    marginBottom: 4, marginTop: 4,
-  },
-  divider:      { height: StyleSheet.hairlineWidth, marginVertical: 16 },
-  navRow:       { flexDirection: 'row', alignItems: 'center', gap: 12, paddingHorizontal: 16, paddingVertical: 13, borderRadius: 8 },
-  navRowBorder: { borderBottomWidth: StyleSheet.hairlineWidth },
-  navLabel:     { flex: 1, fontSize: 15 },
+  nav:       { paddingHorizontal: 8 },
+  navRow:    { flexDirection: 'row', alignItems: 'center', height: 44, gap: 16, paddingHorizontal: 12, borderRadius: 8 },
+  navLabel:  { fontSize: 16, fontWeight: '500' },
+
+  divider:   { height: StyleSheet.hairlineWidth, marginVertical: 8, marginHorizontal: 20 },
 });

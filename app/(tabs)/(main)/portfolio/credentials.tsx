@@ -2,11 +2,11 @@
  * Portfolio — Credentials screen.
  * Each credential gets its own surface-1 card. Icon in surface-2 circle.
  */
-import React, { useCallback, useMemo } from 'react';
+import React, { useCallback, useEffect, useMemo } from 'react';
 import { View, Text, Pressable, ScrollView, StyleSheet, Animated, useColorScheme, Image } from 'react-native';
 import * as Haptics from 'expo-haptics';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { useFocusEffect } from 'expo-router';
+import { useFocusEffect, useRouter } from 'expo-router';
 import { IconSymbol } from '@/components/ui/icon-symbol';
 import { GlassView } from '@/components/ui/glass-view';
 import { RolePill } from '@/components/ui/role-pill';
@@ -34,8 +34,14 @@ export default function CredentialsScreen() {
   const dark   = scheme === 'dark';
   const insets = useSafeAreaInsets();
   const s      = useMemo(() => makeStyles(C), [C]);
+  const router  = useRouter();
   const [role, cycleRole, roleCycles] = useDemoRole('personal:portfolio');
   const isOwner = role === roleCycles[0];
+
+  useEffect(() => {
+    router.replace('/(tabs)/(main)/portfolio' as any);
+  }, [isOwner]);
+
   const { opacity, onScroll, scrollEventThrottle } = useScrollHeader();
 
   useFocusEffect(useCallback(() => { resetFooter(); }, []));

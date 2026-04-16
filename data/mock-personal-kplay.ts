@@ -16,7 +16,8 @@ export interface KPGame {
   ratingCount: number;
   price: number;
   access: KPAccess;
-  hue: number;
+  coverBg: string;
+  coverText: string;
   description: string;
   features: string[];
 }
@@ -43,7 +44,8 @@ export interface KPCourse {
   ratingCount: number;
   price: number;
   access: KPAccess;
-  hue: number;
+  coverBg: string;
+  coverText: string;
   description: string;
   modules: KPModule[];
 }
@@ -56,7 +58,8 @@ export interface KPQuiz {
   plays: number;
   avgScore: number;
   access: KPAccess;
-  hue: number;
+  coverBg: string;
+  coverText: string;
   description: string;
   questions: { q: string; choices: string[]; correct: number }[];
 }
@@ -65,7 +68,7 @@ export interface KPCollection {
   id: string;
   title: string;
   itemSummary: string;
-  hues: [number, number, number, number];
+  coverColors: [string, string, string, string];
 }
 
 export interface KPReview {
@@ -83,19 +86,22 @@ export interface KPReview {
 export const KPGAMES: KPGame[] = [
   {
     id: 'g1', type: 'Game', title: 'College Basketball GM', subtitle: 'Build a dynasty from scratch',
-    plays: 2400, rating: 4.8, ratingCount: 312, price: 9.99, access: 'Paid', hue: 210,
+    plays: 2400, rating: 4.8, ratingCount: 312, price: 9.99, access: 'Paid',
+    coverBg: '#132639', coverText: '#F0E8DC',
     description: 'Take over a struggling program and build it into a national contender. Recruit players, design plays, manage budgets, and make every game-day decision.',
     features: ['Dynasty mode (10 seasons)', 'Real recruiting system', 'Play design studio', 'Budget & staff management', 'Tournament bracket mode'],
   },
   {
     id: 'g2', type: 'Simulation', title: 'Brand Deal Simulator', subtitle: 'Negotiate like a pro creator',
-    plays: 1200, rating: 4.6, ratingCount: 189, price: 0, access: 'Free', hue: 320,
+    plays: 1200, rating: 4.6, ratingCount: 189, price: 0, access: 'Free',
+    coverBg: '#1A1714', coverText: '#E8C97A',
     description: 'Practice negotiating brand deals in realistic scenarios. Face different brand personalities, understand usage rights, and build your rate card strategy.',
     features: ['12 brand scenarios', 'Rate card builder', 'Usage rights trainer', 'Counter-offer practice', 'Deal breakdown analysis'],
   },
   {
     id: 'g3', type: 'Challenge', title: 'Content Calendar Challenge', subtitle: '30 days of consistent posting',
-    plays: 890, rating: 4.7, ratingCount: 134, price: 0, access: 'Subscribers Only', hue: 45,
+    plays: 890, rating: 4.7, ratingCount: 134, price: 0, access: 'Subscribers Only',
+    coverBg: '#1C2E24', coverText: '#A8D4BE',
     description: 'A 30-day challenge to build your content creation habit. Daily prompts, streak tracking, and community accountability. Subscribers only.',
     features: ['30 daily prompts', 'Streak tracking', 'Content bank builder', 'Weekly check-ins', 'Completion badge'],
   },
@@ -106,7 +112,8 @@ export const KPGAMES: KPGame[] = [
 export const KPCOURSES: KPCourse[] = [
   {
     id: 'c1', title: 'Creator Masterclass: Zero to 10K', subtitle: '8 modules · 4.2 hours',
-    enrolled: 312, rating: 4.9, ratingCount: 189, price: 149, access: 'Paid', hue: 270,
+    enrolled: 312, rating: 4.9, ratingCount: 189, price: 149, access: 'Paid',
+    coverBg: '#0D0B09', coverText: '#E08B6A',
     description: '8-week curriculum covering audience building, monetization, brand deals, and scaling your creator business from zero to your first 10,000 followers.',
     modules: [
       { id: 'm1', title: 'Foundations', lessons: [
@@ -132,7 +139,8 @@ export const KPCOURSES: KPCourse[] = [
   },
   {
     id: 'c2', title: 'Brand Deal Negotiation', subtitle: '5 modules · 2.1 hours',
-    enrolled: 189, rating: 4.8, ratingCount: 134, price: 0, access: 'Subscribers Only', hue: 30,
+    enrolled: 189, rating: 4.8, ratingCount: 134, price: 0, access: 'Subscribers Only',
+    coverBg: '#261D17', coverText: '#D4C4B0',
     description: 'The complete guide to negotiating brand deals without an agent. Covers rate cards, usage rights, deliverables, and the key clauses to always push back on.',
     modules: [
       { id: 'm5', title: 'Rate Card Basics', lessons: [
@@ -148,7 +156,8 @@ export const KPCOURSES: KPCourse[] = [
   },
   {
     id: 'c3', title: 'Content Strategy Deep Dive', subtitle: '4 modules · 1.8 hours',
-    enrolled: 540, rating: 4.7, ratingCount: 302, price: 0, access: 'Free', hue: 160,
+    enrolled: 540, rating: 4.7, ratingCount: 302, price: 0, access: 'Free',
+    coverBg: '#1E2A20', coverText: '#A8C4A8',
     description: 'The exact content framework I use to plan, create, and distribute content across every platform. Includes the 90-day calendar template.',
     modules: [
       { id: 'm7', title: 'Planning', lessons: [
@@ -168,8 +177,9 @@ export const KPCOURSES: KPCourse[] = [
 export const KPQUIZZES: KPQuiz[] = [
   {
     id: 'q1', title: 'Content Strategy IQ Test', subtitle: 'Test your content knowledge',
-    questionCount: 5, plays: 890, avgScore: 72, access: 'Free', hue: 200,
-    description: '5 questions to test your content strategy knowledge. See how you score against other creators.',
+    questionCount: 20, plays: 890, avgScore: 72, access: 'Free',
+    coverBg: '#1C3828', coverText: '#A8D4BE',
+    description: '20 questions to test your content strategy knowledge. See how you score against other creators.',
     questions: [
       { q: 'What is the ideal posting frequency for building an audience on short-form video?', choices: ['1x per week', '1x per day', '3–5x per week', '2x per month'], correct: 2 },
       { q: 'What does "pillar content" mean?', choices: ['Long-form content you repurpose', 'Content only for top platforms', 'Paid promotional posts', 'Content posted weekly'], correct: 0 },
@@ -180,7 +190,8 @@ export const KPQUIZZES: KPQuiz[] = [
   },
   {
     id: 'q2', title: 'Creator Business Quiz', subtitle: 'Revenue & brand deal knowledge',
-    questionCount: 5, plays: 1200, avgScore: 68, access: 'Free', hue: 320,
+    questionCount: 15, plays: 1200, avgScore: 68, access: 'Free',
+    coverBg: '#2C1818', coverText: '#E8B8B8',
     description: 'How well do you know the business side of being a creator? Test your knowledge on revenue, brand deals, and pricing.',
     questions: [
       { q: 'What is CPM in influencer marketing?', choices: ['Cost Per Message', 'Cost Per Mille (thousand)', 'Content Per Month', 'Creator Pay Metric'], correct: 1 },
@@ -192,8 +203,9 @@ export const KPQUIZZES: KPQuiz[] = [
   },
   {
     id: 'q3', title: 'Basketball IQ Test', subtitle: 'Scheme knowledge for coaches & players',
-    questionCount: 5, plays: 3400, avgScore: 65, access: 'Free', hue: 150,
-    description: '5 questions from Coach Sammy on basketball schemes, player development, and game management.',
+    questionCount: 25, plays: 3400, avgScore: 65, access: 'Free',
+    coverBg: '#142236', coverText: '#9BB8D4',
+    description: '25 questions from Coach Sammy on basketball schemes, player development, and game management.',
     questions: [
       { q: 'What is a "pick and roll" offense designed to create?', choices: ['Three-point shots', 'Mismatches and layups', 'Turnover opportunities', 'Post-up scenarios'], correct: 1 },
       { q: 'What does "system fit" mean in recruiting?', choices: ['Academic fit', 'Player style matching team scheme', 'Uniform size', 'Budget fit'], correct: 1 },
@@ -204,7 +216,8 @@ export const KPQUIZZES: KPQuiz[] = [
   },
   {
     id: 'q4', title: 'Social Media Trends', subtitle: 'Stay ahead of the algorithm',
-    questionCount: 5, plays: 2100, avgScore: 79, access: 'Subscribers Only', hue: 280,
+    questionCount: 10, plays: 2100, avgScore: 79, access: 'Subscribers Only',
+    coverBg: '#1E1530', coverText: '#C4B0E0',
     description: 'Test your knowledge on current social media trends, algorithms, and platform-specific best practices.',
     questions: [
       { q: 'Which format currently has the highest organic reach on most platforms?', choices: ['Static images', 'Short-form video', 'Text posts', 'Carousels'], correct: 1 },
@@ -219,9 +232,84 @@ export const KPQUIZZES: KPQuiz[] = [
 // ── Collections ───────────────────────────────────────────────────────────────
 
 export const KPCOLLECTIONS: KPCollection[] = [
-  { id: 'col1', title: 'Beginner Creator Bundle',   itemSummary: '2 courses · 1 quiz',         hues: [270, 160, 200, 320] },
-  { id: 'col2', title: 'Advanced Monetization Pack', itemSummary: '1 course · 2 games · 1 quiz', hues: [30, 210, 320, 45]  },
-  { id: 'col3', title: 'Sports Intelligence Suite',  itemSummary: '1 game · 2 quizzes',          hues: [150, 210, 200, 280] },
+  { id: 'col1', title: 'Beginner Creator Bundle',    itemSummary: '2 courses · 1 quiz',         coverColors: ['#0D0B09', '#1E2A20', '#1C3828', '#2C1818'] },
+  { id: 'col2', title: 'Advanced Monetization Pack', itemSummary: '1 course · 2 games · 1 quiz', coverColors: ['#261D17', '#132639', '#1A1714', '#2C1818'] },
+  { id: 'col3', title: 'Sports Intelligence Suite',  itemSummary: '1 game · 2 quizzes',          coverColors: ['#132639', '#1C3828', '#142236', '#1E1530'] },
+];
+
+// ── Feed (multi-creator discovery) ───────────────────────────────────────────
+
+export type FeedCreator = {
+  name: string;
+  handle: string;
+  initials: string;
+  isMe: boolean;
+};
+
+export type FeedItem = {
+  id: string;
+  type: KPType;
+  title: string;
+  subtitle: string;
+  creator: FeedCreator;
+  coverBg: string;
+  coverText: string;
+  plays: number;
+  rating: number;
+  ratingCount: number;
+  price: number;
+  access: KPAccess;
+  featured?: boolean;
+};
+
+const ME: FeedCreator       = { name: 'Sammy Kalejaiye', handle: '@sammyk', initials: 'SK', isMe: true };
+const MAYA: FeedCreator     = { name: 'Maya Thompson',   handle: '@mayat',   initials: 'MT', isMe: false };
+const COACH: FeedCreator    = { name: 'Coach D. Williams', handle: '@coachdw', initials: 'DW', isMe: false };
+const PRIYA: FeedCreator    = { name: 'Priya Shah',      handle: '@priyas',  initials: 'PS', isMe: false };
+
+export const FEED_ITEMS: FeedItem[] = [
+  { id: 'f1', type: 'Game',       title: 'College Basketball GM',           subtitle: 'Build a dynasty from scratch',           creator: ME,    coverBg: '#132639', coverText: '#F0E8DC', plays: 2400, rating: 4.8, ratingCount: 312, price: 9.99,  access: 'Paid',             featured: true  },
+  { id: 'f2', type: 'Course',     title: 'Creator Masterclass: Zero to 10K', subtitle: '8 modules · 4.2 hours',                creator: ME,    coverBg: '#0D0B09', coverText: '#E08B6A', plays: 312,  rating: 4.9, ratingCount: 189, price: 149,   access: 'Paid',             featured: true  },
+  { id: 'f3', type: 'Quiz',       title: 'Basketball IQ Test',              subtitle: 'Scheme knowledge for coaches',           creator: ME,    coverBg: '#142236', coverText: '#9BB8D4', plays: 3400, rating: 4.7, ratingCount: 289, price: 0,     access: 'Free',             featured: true  },
+  { id: 'f4', type: 'Course',     title: 'NIL for Athletes: The Full Playbook', subtitle: '6 modules · 3 hours',              creator: MAYA,  coverBg: '#2C1E3A', coverText: '#C4B0E0', plays: 890,  rating: 4.8, ratingCount: 201, price: 79,    access: 'Paid'                              },
+  { id: 'f5', type: 'Simulation', title: 'Athlete Finance Sim',             subtitle: 'Contract and investment decisions',      creator: COACH, coverBg: '#1C2E24', coverText: '#A8D4BE', plays: 1580, rating: 4.6, ratingCount: 143, price: 0,     access: 'Free'                              },
+  { id: 'f6', type: 'Quiz',       title: 'Social Media Trends',             subtitle: 'Stay ahead of the algorithm',            creator: ME,    coverBg: '#1E1530', coverText: '#C4B0E0', plays: 2100, rating: 4.9, ratingCount: 312, price: 0,     access: 'Subscribers Only'                  },
+  { id: 'f7', type: 'Game',       title: 'Startup Pitch Wars',              subtitle: 'Compete to win funding',                 creator: PRIYA, coverBg: '#2A1A0E', coverText: '#E8C97A', plays: 4200, rating: 4.7, ratingCount: 567, price: 14.99, access: 'Paid'                              },
+  { id: 'f8', type: 'Challenge',  title: 'Content Calendar Challenge',      subtitle: '30 days of consistent posting',          creator: ME,    coverBg: '#1C2E24', coverText: '#A8D4BE', plays: 890,  rating: 4.7, ratingCount: 134, price: 0,     access: 'Subscribers Only'                  },
+  { id: 'f9', type: 'Course',     title: 'Brand Deals for Athletes',        subtitle: '5 modules · 2.5 hours',                  creator: MAYA,  coverBg: '#1A1714', coverText: '#E8C97A', plays: 445,  rating: 4.5, ratingCount: 78,  price: 0,     access: 'Free'                              },
+  { id: 'f10', type: 'Quiz',      title: 'Creator Business Quiz',           subtitle: 'Revenue & brand deal knowledge',         creator: ME,    coverBg: '#2C1818', coverText: '#E8B8B8', plays: 1200, rating: 4.8, ratingCount: 167, price: 0,     access: 'Free'                              },
+];
+
+// ── Library ────────────────────────────────────────────────────────────────────
+
+export type LibraryItem = {
+  id: string;
+  title: string;
+  type: KPType;
+  coverBg: string;
+  coverText: string;
+  progress?: number;       // 0–1 for in-progress
+  completedDate?: string;  // for completed
+  score?: number;          // for quizzes
+};
+
+export const LIBRARY_IN_PROGRESS: LibraryItem[] = [
+  { id: 'lp1', title: 'Creator Masterclass',          type: 'Course',     coverBg: '#0D0B09', coverText: '#E08B6A', progress: 0.45 },
+  { id: 'lp2', title: 'NIL for Athletes',             type: 'Course',     coverBg: '#2C1E3A', coverText: '#C4B0E0', progress: 0.20 },
+  { id: 'lp3', title: 'Brand Deals for Athletes',     type: 'Course',     coverBg: '#1A1714', coverText: '#E8C97A', progress: 0.75 },
+];
+
+export const LIBRARY_COMPLETED: LibraryItem[] = [
+  { id: 'lc1', title: 'Basketball IQ Test',       type: 'Quiz',       coverBg: '#142236', coverText: '#9BB8D4', completedDate: 'Apr 10', score: 88  },
+  { id: 'lc2', title: 'Creator Business Quiz',    type: 'Quiz',       coverBg: '#2C1818', coverText: '#E8B8B8', completedDate: 'Apr 8',  score: 72  },
+  { id: 'lc3', title: 'Athlete Finance Sim',      type: 'Simulation', coverBg: '#1C2E24', coverText: '#A8D4BE', completedDate: 'Mar 28'            },
+  { id: 'lc4', title: 'Content Strategy Deep Dive', type: 'Course',   coverBg: '#1E2A20', coverText: '#A8C4A8', completedDate: 'Mar 15'            },
+];
+
+export const LIBRARY_SAVED: LibraryItem[] = [
+  { id: 'ls1', title: 'Startup Pitch Wars',        type: 'Game',   coverBg: '#2A1A0E', coverText: '#E8C97A' },
+  { id: 'ls2', title: 'Brand Deal Simulator',      type: 'Simulation', coverBg: '#1A1714', coverText: '#E8C97A' },
+  { id: 'ls3', title: 'Social Media Trends',       type: 'Quiz',   coverBg: '#1E1530', coverText: '#C4B0E0' },
 ];
 
 // ── Reviews ───────────────────────────────────────────────────────────────────

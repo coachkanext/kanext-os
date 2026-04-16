@@ -4,7 +4,7 @@
  * No real processing — shows success state after 1.5s spinner.
  */
 
-import React, { useState, useCallback } from 'react';
+import React, { useState, useCallback, useEffect } from 'react';
 import {
   View, Text, TextInput, Pressable, ScrollView,
   StyleSheet, ActivityIndicator, Animated,
@@ -30,6 +30,7 @@ export default function KayTVUploadScreen() {
   const mode = state.activeContext.mode as string;
   const [role, , roleCycles] = useDemoRole('personal:kaytv');
   const isOwner = role === roleCycles[0];
+  useEffect(() => { if (!isOwner) router.navigate('/(tabs)/(main)/kaytv' as any); }, [isOwner]);
   // Personal mode: only owners can upload. Other modes: all admins can.
   const canUpload = mode === 'personal' ? isOwner : mode !== 'personal';
 

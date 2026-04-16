@@ -17,6 +17,7 @@ import { useColors, type ComponentColors } from '@/hooks/use-colors';
 import { openSidePanel } from '@/utils/global-side-panel';
 import { resetFooter } from '@/utils/global-footer-hide';
 import { useDemoRole } from '@/utils/demo-role-store';
+import { useMode } from '@/context/app-context';
 import { useScrollHeader } from '@/hooks/use-scroll-header';
 
 // ── Module-level semantic constants ───────────────────────────────────────────
@@ -92,7 +93,9 @@ export default function TransactionsPage() {
   const TOP_BAR_H = insets.top + 54;
   const { opacity, onScroll, scrollEventThrottle } = useScrollHeader(TOP_BAR_H);
 
-  const [role, cycleRole, roleCycles] = useDemoRole('personal:kaypay');
+  const mode = useMode();
+  const _rk = mode === 'sports' ? 'sports:agenda' : mode === 'community' ? 'community:kaypay' : mode === 'education' ? 'education' : mode === 'business' ? 'business' : 'personal:kaypay';
+  const [role, cycleRole, roleCycles] = useDemoRole(_rk);
   const isOwner = role === roleCycles[0];
 
   useFocusEffect(useCallback(() => { resetFooter(); }, []));

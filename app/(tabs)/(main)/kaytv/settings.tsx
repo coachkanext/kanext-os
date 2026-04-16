@@ -266,7 +266,7 @@ function makeStyles(C: ComponentColors) {
     kBtn: { width: 44, height: 44, alignItems: 'flex-start', justifyContent: 'center' },
     titlePill: { paddingHorizontal: 12, paddingVertical: 5, borderRadius: 14, borderWidth: 1 },
     titlePillText: { fontSize: 12, fontWeight: '600', letterSpacing: 0.3 },
-    rolePillWrap: { width: 80, alignItems: 'flex-end', justifyContent: 'center' },
+    rolePillWrap: { alignItems: 'flex-end', justifyContent: 'center' },
 
     scrollContent: { paddingHorizontal: 0 },
 

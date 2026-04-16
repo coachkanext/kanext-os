@@ -433,7 +433,7 @@ function getLiveHubContent(mode: string) {
       };
     case 'education':
       return {
-        name: 'Lincoln University',
+        name: 'Lincoln University (CA)',
         subtitle: 'Oakland, California · Est. 1919',
         description: 'Accredited by WSCUC. Offering undergraduate and graduate programs in business, health sciences, and more.',
         stats: [
@@ -705,10 +705,16 @@ export default function HubScreen() {
         : '/(tabs)/(main)/hub/sports-player-dashboard' as any
       );
     }
+    if (mode === 'community') {
+      router.replace('/(tabs)/(main)/hub/community' as any);
+    }
+    if (mode === 'education') {
+      router.replace('/(tabs)/(main)/hub/education' as any);
+    }
   }, [mode, isSportsAdmin]));
 
-  // ── Sports mode: render nothing while redirect fires ─────────────────────────
-  if (mode === 'sports') return null;
+  // ── Sports / Community / Education: render nothing while redirect fires ────────
+  if (mode === 'sports' || mode === 'community' || mode === 'education') return null;
 
 
 
@@ -1717,7 +1723,7 @@ export default function HubScreen() {
       adminActionLabel: 'Manage',
       visitorActionLabel: 'Follow',
     } : mode === 'education' ? {
-      name: 'Lincoln University',
+      name: 'Lincoln University (CA)',
       subtitle: 'Oakland, California',
       coverSeed: 'lincoln-campus',
       avatarInitials: 'LU',

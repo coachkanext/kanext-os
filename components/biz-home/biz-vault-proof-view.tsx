@@ -24,7 +24,7 @@ const MODE_COLORS: Record<string, string> = {
 };
 
 const MODE_LABELS: Record<string, string> = {
-  sports: 'Sports',
+  sports: 'Athletics',
   church: 'Faith',
   education: 'Education',
   competition: 'Competition',

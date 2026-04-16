@@ -3,10 +3,10 @@
  * Savings balance, APY, round-up / auto-save toggles, savings goal.
  */
 
-import React, { useCallback, useState } from 'react';
+import React, { useEffect, useCallback, useState } from 'react';
 import { View, Text, ScrollView, Pressable, StyleSheet, Animated } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { useFocusEffect } from 'expo-router';
+import { useFocusEffect, useRouter } from 'expo-router';
 import * as Haptics from 'expo-haptics';
 import { IconSymbol } from '@/components/ui/icon-symbol';
 import { KMenuButton } from '@/components/ui/k-menu-button';
@@ -27,6 +27,8 @@ export default function PersonalKPaySavings() {
   const scrollH = useScrollHeader(topBarH);
   const [role, cycleRole, roleCycles] = useDemoRole('personal:kaypay');
   const isOwner = role === roleCycles[0];
+  const router = useRouter();
+  useEffect(() => { if (!isOwner) router.back(); }, [isOwner]);
   const [roundUp,  setRoundUp]  = useState(true);
   const [autoSave, setAutoSave] = useState(false);
 

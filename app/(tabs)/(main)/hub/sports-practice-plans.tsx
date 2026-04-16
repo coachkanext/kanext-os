@@ -175,7 +175,7 @@ function makeStyles(C: ComponentColors) {
     kBtn: { width: 44, height: 36, justifyContent: 'center' },
     titlePill: { borderRadius: 18, paddingHorizontal: 14, paddingVertical: 6, borderWidth: 1 },
     titleText: { fontSize: 13, fontWeight: '700' },
-    rolePillWrap: { width: 80, alignItems: 'flex-end', justifyContent: 'center' },
+    rolePillWrap: { alignItems: 'flex-end' },
     sectionHeader: {
       fontSize: 11, fontWeight: '700', letterSpacing: 0.8,
       marginHorizontal: 16, marginBottom: 10, marginTop: 24,

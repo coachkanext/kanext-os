@@ -2,7 +2,7 @@
  * Favorites — Pinned contacts. Tap = call. Long press = remove.
  */
 
-import React, { useState, useCallback, useMemo } from 'react';
+import React, { useState, useCallback, useMemo, useEffect, useRef } from 'react';
 import {
   View,
   Text,
@@ -14,8 +14,11 @@ import {
 import { useScrollHeader } from '@/hooks/use-scroll-header';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import * as Haptics from 'expo-haptics';
+import { useFocusEffect, useRouter } from 'expo-router';
 
 import { IconSymbol } from '@/components/ui/icon-symbol';
+import { KMenuButton } from '@/components/ui/k-menu-button';
+import { RolePill } from '@/components/ui/role-pill';
 import { useAccentColor } from '@/hooks/use-accent-color';
 import {
   getFavoriteContacts,
@@ -25,8 +28,11 @@ import {
 } from '@/data/mock-phone';
 import { initiateCall } from '@/utils/global-call';
 import { useColors, type ComponentColors } from '@/hooks/use-colors';
+import { openSidePanel } from '@/utils/global-side-panel';
+import { resetFooter } from '@/utils/global-footer-hide';
+import { useDemoRole } from '@/utils/demo-role-store';
 
-const TOP_BAR_H = 56;
+const TOP_BAR_H = 52;
 
 export default function FavoritesScreen() {
   const insets = useSafeAreaInsets();
@@ -34,7 +40,18 @@ export default function FavoritesScreen() {
   const C = useColors();
   const styles = useMemo(() => makeStyles(C), [C]);
   const { opacity, onScroll, scrollEventThrottle } = useScrollHeader();
+  const [role, cycleRole, roleCycles] = useDemoRole('personal:kaytv');
+  const isOwner = role === roleCycles[0];
+  const router = useRouter();
+  const isOwnerRef = useRef(isOwner);
+  useEffect(() => {
+    if (isOwnerRef.current === isOwner) return;
+    isOwnerRef.current = isOwner;
+    router.navigate('/(tabs)/(main)/phone' as any);
+  }, [isOwner]);
   const [favorites] = useState(getFavoriteContacts);
+
+  useFocusEffect(useCallback(() => { resetFooter(); }, []));
 
   const handleCall = useCallback((contact: PhoneContact) => {
     Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
@@ -49,8 +66,18 @@ export default function FavoritesScreen() {
   return (
     <View style={styles.container}>
       <Animated.View style={[styles.topBar, { paddingTop: insets.top, opacity }]}>
-        <View style={styles.header}>
-          <Text style={styles.title}>Favorites</Text>
+        <View style={{ height: TOP_BAR_H, flexDirection: 'row', alignItems: 'center', paddingHorizontal: 16 }}>
+          <Pressable onPress={() => { Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light); openSidePanel(); }} hitSlop={8}>
+            <KMenuButton />
+          </Pressable>
+          <View style={{ flex: 1, alignItems: 'center' }}>
+            <View style={{ backgroundColor: C.surface, borderWidth: 1, borderColor: C.separator, borderRadius: 14, paddingHorizontal: 14, paddingVertical: 5 }}>
+              <Text style={{ fontSize: 13, fontWeight: '700', color: C.label }}>Favorites</Text>
+            </View>
+          </View>
+          <View style={{ width: 80, alignItems: 'flex-end' }}>
+            <RolePill role={role} onPress={cycleRole} isPrimary={isOwner} />
+          </View>
         </View>
       </Animated.View>
       <ScrollView
@@ -121,8 +148,6 @@ export default function FavoritesScreen() {
 const makeStyles = (C: ComponentColors) => StyleSheet.create({
   container: { flex: 1, backgroundColor: C.bg },
   topBar: { position: 'absolute', top: 0, left: 0, right: 0, zIndex: 10, backgroundColor: C.bg },
-  header: { paddingHorizontal: 20, paddingBottom: 12, paddingTop: 8 },
-  title: { fontSize: 28, fontWeight: '700', color: C.label },
   list: { flex: 1 },
   row: { flexDirection: 'row', alignItems: 'center', paddingHorizontal: 20, paddingVertical: 14, gap: 12 },
   avatar: { width: 48, height: 48, borderRadius: 24, backgroundColor: C.surface, alignItems: 'center', justifyContent: 'center' },

@@ -1,8 +1,16 @@
-import React, { useState, useMemo, useCallback } from 'react';
-import { View, Text, StyleSheet, Pressable, ScrollView, TextInput, Alert, Animated } from 'react-native';
+/**
+ * KPlay Library — Personal. All modes, all roles.
+ * In Progress, Completed, Saved. Horizontal scroll per section.
+ */
+
+import React, { useCallback } from 'react';
+import {
+  View, Text, Pressable, ScrollView, StyleSheet, Animated,
+} from 'react-native';
 import * as Haptics from 'expo-haptics';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useFocusEffect } from 'expo-router';
+import { useAppContext } from '@/context/app-context';
 import { IconSymbol } from '@/components/ui/icon-symbol';
 import { KMenuButton } from '@/components/ui/k-menu-button';
 import { RolePill } from '@/components/ui/role-pill';
@@ -11,342 +19,150 @@ import { openSidePanel } from '@/utils/global-side-panel';
 import { resetFooter } from '@/utils/global-footer-hide';
 import { useDemoRole } from '@/utils/demo-role-store';
 import { useScrollHeader } from '@/hooks/use-scroll-header';
+import {
+  LIBRARY_IN_PROGRESS, LIBRARY_COMPLETED, LIBRARY_SAVED, type LibraryItem,
+} from '@/data/mock-personal-kplay';
 
-const GAIN = '#5A8A6E';
-const HEAT = '#B85C5C';
-const CAUTION = '#B8943E';
+// ── Constants ─────────────────────────────────────────────────────────────────
+
 const TOP_BAR_H = 52;
+const GAIN      = '#5A8A6E';
 
-type FilterPill = 'All' | 'In Progress' | 'Completed';
-const FILTER_PILLS: FilterPill[] = ['All', 'In Progress', 'Completed'];
-
-type LibraryCourse = {
-  id: string;
-  emoji: string;
-  title: string;
-  creator: string;
-  mode: string;
-  progress: number;
-  lessonsCompleted: number;
-  totalLessons: number;
+const TYPE_BADGE: Record<string, { bg: string; label: string }> = {
+  Course:     { bg: GAIN,      label: 'Course'    },
+  Quiz:       { bg: '#1A1714', label: 'Quiz'      },
+  Game:       { bg: '#B8943E', label: 'Game'      },
+  Simulation: { bg: '#9C9790', label: 'Sim'       },
+  Challenge:  { bg: '#B85C5C', label: 'Challenge' },
+  Flashcards: { bg: GAIN,      label: 'Cards'     },
 };
 
-const OWNER_LIBRARY: LibraryCourse[] = [
-  { id: 'ol1', emoji: '📈', title: 'Scale Your Brand',        creator: 'Marcus Cole', mode: 'Personal',  progress: 0.42, lessonsCompleted: 5,  totalLessons: 12 },
-  { id: 'ol2', emoji: '🏢', title: 'B2B Sales Fundamentals',  creator: 'Raj Patel',   mode: 'Business',  progress: 0.75, lessonsCompleted: 6,  totalLessons: 8  },
-  { id: 'ol3', emoji: '🎓', title: 'Academic Writing 101',    creator: 'Prof. Kim',   mode: 'Education', progress: 1.0,  lessonsCompleted: 10, totalLessons: 10 },
-  { id: 'ol4', emoji: '🏈', title: 'Strength & Conditioning', creator: 'Coach Davis', mode: 'Athletics', progress: 0.2,  lessonsCompleted: 2,  totalLessons: 10 },
-  { id: 'ol5', emoji: '🌍', title: 'Community Leadership',    creator: 'Maya Evans',  mode: 'Community', progress: 0.0,  lessonsCompleted: 0,  totalLessons: 7  },
-  { id: 'ol6', emoji: '🎙️', title: 'Podcast Mastery',        creator: 'Aria Chen',   mode: 'Personal',  progress: 1.0,  lessonsCompleted: 8,  totalLessons: 8  },
-];
+// ── LibCard ───────────────────────────────────────────────────────────────────
 
-const FOLLOWER_LIBRARY: LibraryCourse[] = [
-  { id: 'fl1', emoji: '🎯', title: 'Creator Business Foundations', creator: 'Sammy Kalejaiye', mode: 'Personal', progress: 0.42, lessonsCompleted: 5,  totalLessons: 12 },
-  { id: 'fl2', emoji: '📱', title: 'Social Media Mastery',         creator: 'Sammy Kalejaiye', mode: 'Personal', progress: 0.75, lessonsCompleted: 6,  totalLessons: 8  },
-];
-
-const MODE_BADGE_COLORS: Record<string, string> = {
-  Personal:  '#5A8A6E',
-  Business:  '#9C9790',
-  Education: '#B8943E',
-  Athletics: '#B85C5C',
-  Community: '#9C9790',
-};
-
-function makeStyles(C: ComponentColors) {
-  return StyleSheet.create({
-    root: { flex: 1 },
-    topBarOuter: {
-      position: 'absolute', top: 0, left: 0, right: 0, zIndex: 10,
-      borderBottomWidth: StyleSheet.hairlineWidth,
-    },
-    topBar: {
-      height: TOP_BAR_H,
-      flexDirection: 'row',
-      alignItems: 'center',
-      paddingHorizontal: 16,
-    },
-    searchRow: {
-      flexDirection: 'row',
-      alignItems: 'center',
-      backgroundColor: C.surface,
-      borderRadius: 12,
-      marginHorizontal: 16,
-      marginBottom: 12,
-      height: 44,
-      paddingHorizontal: 12,
-      gap: 8,
-    },
-    searchInput: {
-      flex: 1,
-      fontSize: 15,
-      color: C.label,
-    },
-    filterPill: {
-      paddingHorizontal: 14,
-      paddingVertical: 7,
-      borderRadius: 20,
-      marginRight: 8,
-    },
-    filterText: {
-      fontSize: 13,
-      fontWeight: '600',
-    },
-    courseCard: {
-      backgroundColor: C.surface,
-      marginHorizontal: 16,
-      borderRadius: 14,
-      padding: 14,
-      marginBottom: 10,
-    },
-    cardRow: {
-      flexDirection: 'row',
-      alignItems: 'center',
-      gap: 12,
-      marginBottom: 10,
-    },
-    emojiCircle: {
-      width: 44,
-      height: 44,
-      borderRadius: 22,
-      backgroundColor: C.separator,
-      alignItems: 'center',
-      justifyContent: 'center',
-    },
-    cardInfo: {
-      flex: 1,
-    },
-    courseTitle: {
-      fontSize: 15,
-      fontWeight: '700',
-      color: C.label,
-      marginBottom: 2,
-    },
-    courseCreator: {
-      fontSize: 12,
-      color: C.secondary,
-      marginBottom: 4,
-    },
-    modeBadge: {
-      flexDirection: 'row',
-      alignItems: 'center',
-      gap: 5,
-      alignSelf: 'flex-start',
-    },
-    modeDot: {
-      width: 6,
-      height: 6,
-      borderRadius: 3,
-    },
-    modeBadgeText: {
-      fontSize: 11,
-      fontWeight: '600',
-    },
-    progressTrack: {
-      height: 4,
-      backgroundColor: C.separator,
-      borderRadius: 2,
-      overflow: 'hidden',
-      marginBottom: 6,
-    },
-    progressFill: {
-      height: 4,
-      borderRadius: 2,
-    },
-    lessonCount: {
-      fontSize: 11,
-      color: C.secondary,
-    },
-    completedRow: {
-      flexDirection: 'row',
-      alignItems: 'center',
-      gap: 6,
-      marginBottom: 6,
-    },
-    completedText: {
-      fontSize: 11,
-      color: GAIN,
-      fontWeight: '600',
-    },
-    emptyState: {
-      flex: 1,
-      alignItems: 'center',
-      justifyContent: 'center',
-      paddingTop: 60,
-    },
-    emptyText: {
-      fontSize: 15,
-      color: C.secondary,
-    },
-  });
-}
-
-export default function LibraryScreen() {
-  const C = useColors();
-  const insets = useSafeAreaInsets();
-  const s = useMemo(() => makeStyles(C), [C]);
-  const { role, cycleRole, isOwner } = useDemoRole('kaystudios');
-  const tap = useCallback(() => Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light), []);
-
-  const { opacity, onScroll, scrollEventThrottle } = useScrollHeader();
-
-  const [search, setSearch] = useState('');
-  const [filterPill, setFilterPill] = useState<FilterPill>('All');
-
-  useFocusEffect(
-    useCallback(() => {
-      resetFooter();
-    }, [])
-  );
-
-  const baseLibrary = isOwner ? OWNER_LIBRARY : FOLLOWER_LIBRARY;
-
-  const filtered = useMemo(() => {
-    return baseLibrary
-      .filter((c) => {
-        if (filterPill === 'All') return true;
-        if (filterPill === 'In Progress') return c.progress > 0 && c.progress < 1.0;
-        if (filterPill === 'Completed') return c.progress === 1.0;
-        return true;
-      })
-      .filter((c) => {
-        if (!search.trim()) return true;
-        const q = search.toLowerCase();
-        return c.title.toLowerCase().includes(q) || c.creator.toLowerCase().includes(q);
-      });
-  }, [baseLibrary, filterPill, search]);
+function LibCard({ item, C }: { item: LibraryItem; C: ComponentColors }) {
+  const badge = TYPE_BADGE[item.type] ?? TYPE_BADGE.Game;
+  const pct   = item.progress !== undefined ? Math.round(item.progress * 100) : 0;
 
   return (
-    <View style={[s.root, { backgroundColor: C.bg }]}>
-      <Animated.View style={[s.topBarOuter, { paddingTop: insets.top, backgroundColor: C.bg, borderBottomColor: C.separator, borderBottomWidth: StyleSheet.hairlineWidth, opacity }]}>
-        <View style={s.topBar}>
-          <Pressable onPress={() => { tap(); openSidePanel(); }} style={{ width: 40, alignItems: 'center' }}>
-            <KMenuButton />
-          </Pressable>
-          <View style={{ flex: 1, alignItems: 'center' }}>
-            <Text style={{ fontSize: 17, fontWeight: '700', color: C.label }}>Library</Text>
+    <Pressable style={({ pressed }) => ({ opacity: pressed ? 0.88 : 1, width: 150, marginRight: 12 })}>
+      <View style={{ width: 150, height: 108, borderRadius: 10, backgroundColor: item.coverBg, overflow: 'hidden', marginBottom: 8, justifyContent: 'flex-end', padding: 8 }}>
+        <View style={{ position: 'absolute', top: 6, left: 6, backgroundColor: badge.bg, borderRadius: 4, paddingHorizontal: 6, paddingVertical: 2 }}>
+          <Text style={{ fontSize: 9, fontWeight: '700', color: '#fff' }}>{badge.label}</Text>
+        </View>
+        <Text style={{ fontSize: 12, fontWeight: '700', color: item.coverText, lineHeight: 16 }} numberOfLines={2}>{item.title}</Text>
+      </View>
+      {item.progress !== undefined ? (
+        <View>
+          <View style={{ height: 3, backgroundColor: C.separator, borderRadius: 2, marginBottom: 5 }}>
+            <View style={{ height: 3, width: `${pct}%` as any, backgroundColor: GAIN, borderRadius: 2 }} />
           </View>
-          <RolePill role={role} onPress={cycleRole} accentColor={C.label} isPrimary={isOwner} />
+          <Text style={{ fontSize: 11, fontWeight: '600', color: GAIN }}>{pct}% · Continue →</Text>
+        </View>
+      ) : item.completedDate ? (
+        <View style={{ flexDirection: 'row', alignItems: 'center', gap: 4 }}>
+          <IconSymbol name="checkmark.circle.fill" size={12} color={GAIN} />
+          <Text style={{ fontSize: 11, color: C.secondary }}>
+            {item.completedDate}{item.score !== undefined ? ` · ${item.score}%` : ''}
+          </Text>
+        </View>
+      ) : (
+        <Text style={{ fontSize: 11, fontWeight: '600', color: C.secondary }}>Saved · Start →</Text>
+      )}
+    </Pressable>
+  );
+}
+
+// ── Screen ────────────────────────────────────────────────────────────────────
+
+export default function KPlayLibraryScreen() {
+  const C       = useColors();
+  const insets  = useSafeAreaInsets();
+  const { state } = useAppContext();
+  const mode    = state.activeContext?.mode ?? state.mode ?? 'personal';
+  const topBarH = insets.top + TOP_BAR_H;
+  const { opacity, onScroll, scrollEventThrottle } = useScrollHeader(topBarH);
+
+  const roleKey = `${mode}:kaystudios` as any;
+  const [role, cycleRole, roleCycles] = useDemoRole(roleKey);
+  const isAdmin = role === roleCycles[0];
+
+  useFocusEffect(useCallback(() => { resetFooter(); }, []));
+
+  return (
+    <View style={{ flex: 1, backgroundColor: C.bg }}>
+
+      {/* ── Top bar ── */}
+      <Animated.View style={{
+        position: 'absolute', top: 0, left: 0, right: 0, zIndex: 20,
+        paddingTop: insets.top, backgroundColor: C.bg, opacity,
+        borderBottomWidth: StyleSheet.hairlineWidth, borderBottomColor: C.separator,
+      }}>
+        <View style={{ height: TOP_BAR_H, flexDirection: 'row', alignItems: 'center', paddingHorizontal: 12 }}>
+          <View style={{ flex: 1 }}>
+            <Pressable onPress={() => { Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light); openSidePanel(); }}>
+              <KMenuButton />
+            </Pressable>
+          </View>
+          <View style={{ backgroundColor: C.surface, borderRadius: 18, paddingHorizontal: 14, paddingVertical: 6, borderWidth: StyleSheet.hairlineWidth, borderColor: C.separator }}>
+            <Text style={{ fontSize: 13, fontWeight: '700', color: C.label }}>Library</Text>
+          </View>
+          <View style={{ flex: 1, flexDirection: 'row', justifyContent: 'flex-end', alignItems: 'center' }}>
+            <RolePill role={role} onPress={cycleRole} isPrimary={isAdmin} />
+          </View>
         </View>
       </Animated.View>
+
+      {/* ── Content ── */}
       <ScrollView
         onScroll={onScroll}
         scrollEventThrottle={scrollEventThrottle}
+        contentContainerStyle={{ paddingTop: topBarH + 20, paddingBottom: insets.bottom + 80 }}
         showsVerticalScrollIndicator={false}
-        contentContainerStyle={{
-          paddingTop: insets.top + TOP_BAR_H + 8,
-          paddingBottom: insets.bottom + 80,
-        }}
       >
-        {/* Search bar */}
-        <View style={s.searchRow}>
-          <IconSymbol name="magnifyingglass" size={16} color={C.secondary} />
-          <TextInput
-            style={s.searchInput}
-            placeholder="Search your library..."
-            placeholderTextColor={C.secondary}
-            value={search}
-            onChangeText={setSearch}
-            returnKeyType="search"
-          />
-          {search.length > 0 && (
-            <Pressable onPress={() => setSearch('')}>
-              <IconSymbol name="xmark.circle.fill" size={16} color={C.secondary} />
-            </Pressable>
-          )}
+
+        <View style={{ paddingHorizontal: 16, marginBottom: 28 }}>
+          <Text style={{ fontSize: 15, fontWeight: '700', color: C.label }}>Your Library</Text>
+          <Text style={{ fontSize: 12, color: C.secondary, marginTop: 2 }}>
+            {LIBRARY_IN_PROGRESS.length} in progress · {LIBRARY_COMPLETED.length} completed · {LIBRARY_SAVED.length} saved
+          </Text>
         </View>
 
-        {/* Filter pills */}
-        <ScrollView
-          horizontal
-          showsHorizontalScrollIndicator={false}
-          contentContainerStyle={{ paddingHorizontal: 16, marginBottom: 16 }}
-        >
-          {FILTER_PILLS.map((pill) => {
-            const isActive = filterPill === pill;
-            return (
-              <Pressable
-                key={pill}
-                style={[
-                  s.filterPill,
-                  { backgroundColor: isActive ? C.label : C.surface },
-                ]}
-                onPress={() => { tap(); setFilterPill(pill); }}
-              >
-                <Text style={[s.filterText, { color: isActive ? C.bg : C.secondary }]}>
-                  {pill}
-                </Text>
-              </Pressable>
-            );
-          })}
-        </ScrollView>
-
-        {/* Course list */}
-        {filtered.length === 0 ? (
-          <View style={s.emptyState}>
-            <Text style={s.emptyText}>No courses yet</Text>
+        {/* In Progress */}
+        {LIBRARY_IN_PROGRESS.length > 0 && (
+          <View style={{ marginBottom: 28 }}>
+            <Text style={{ fontSize: 11, fontWeight: '700', color: C.secondary, textTransform: 'uppercase', letterSpacing: 0.8, paddingHorizontal: 16, marginBottom: 12 }}>
+              In Progress
+            </Text>
+            <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={{ paddingHorizontal: 16 }}>
+              {LIBRARY_IN_PROGRESS.map(item => <LibCard key={item.id} item={item} C={C} />)}
+            </ScrollView>
           </View>
-        ) : (
-          filtered.map((course) => {
-            const isCompleted = course.progress === 1.0;
-            const badgeColor = MODE_BADGE_COLORS[course.mode] ?? C.secondary;
-
-            return (
-              <Pressable
-                key={course.id}
-                style={s.courseCard}
-                onPress={() => { tap(); Alert.alert('Resume Course', course.title); }}
-              >
-                <View style={s.cardRow}>
-                  <View style={s.emojiCircle}>
-                    <Text style={{ fontSize: 22 }}>{course.emoji}</Text>
-                  </View>
-
-                  <View style={s.cardInfo}>
-                    <Text style={s.courseTitle}>{course.title}</Text>
-                    <Text style={s.courseCreator}>{course.creator}</Text>
-                    {isOwner && (
-                      <View style={s.modeBadge}>
-                        <View style={[s.modeDot, { backgroundColor: badgeColor }]} />
-                        <Text style={[s.modeBadgeText, { color: badgeColor }]}>
-                          {course.mode}
-                        </Text>
-                      </View>
-                    )}
-                  </View>
-
-                  <IconSymbol name="chevron.right" size={14} color={C.secondary} />
-                </View>
-
-                {isCompleted ? (
-                  <View style={s.completedRow}>
-                    <IconSymbol name="checkmark.circle.fill" size={14} color={GAIN} />
-                    <Text style={s.completedText}>
-                      Completed · {course.totalLessons} lessons
-                    </Text>
-                  </View>
-                ) : (
-                  <>
-                    <View style={s.progressTrack}>
-                      <View
-                        style={[
-                          s.progressFill,
-                          {
-                            width: `${Math.round(course.progress * 100)}%`,
-                            backgroundColor: GAIN,
-                          },
-                        ]}
-                      />
-                    </View>
-                    <Text style={s.lessonCount}>
-                      {course.lessonsCompleted}/{course.totalLessons} lessons
-                    </Text>
-                  </>
-                )}
-              </Pressable>
-            );
-          })
         )}
+
+        {/* Completed */}
+        {LIBRARY_COMPLETED.length > 0 && (
+          <View style={{ marginBottom: 28 }}>
+            <Text style={{ fontSize: 11, fontWeight: '700', color: C.secondary, textTransform: 'uppercase', letterSpacing: 0.8, paddingHorizontal: 16, marginBottom: 12 }}>
+              Completed
+            </Text>
+            <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={{ paddingHorizontal: 16 }}>
+              {LIBRARY_COMPLETED.map(item => <LibCard key={item.id} item={item} C={C} />)}
+            </ScrollView>
+          </View>
+        )}
+
+        {/* Saved */}
+        {LIBRARY_SAVED.length > 0 && (
+          <View style={{ marginBottom: 28 }}>
+            <Text style={{ fontSize: 11, fontWeight: '700', color: C.secondary, textTransform: 'uppercase', letterSpacing: 0.8, paddingHorizontal: 16, marginBottom: 12 }}>
+              Saved
+            </Text>
+            <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={{ paddingHorizontal: 16 }}>
+              {LIBRARY_SAVED.map(item => <LibCard key={item.id} item={item} C={C} />)}
+            </ScrollView>
+          </View>
+        )}
+
       </ScrollView>
     </View>
   );

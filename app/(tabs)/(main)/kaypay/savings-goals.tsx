@@ -16,6 +16,7 @@ import { useColors, type ComponentColors } from '@/hooks/use-colors';
 import { openSidePanel } from '@/utils/global-side-panel';
 import { resetFooter } from '@/utils/global-footer-hide';
 import { useDemoRole } from '@/utils/demo-role-store';
+import { useMode } from '@/context/app-context';
 import { useScrollHeader } from '@/hooks/use-scroll-header';
 
 // ── Constants ─────────────────────────────────────────────────────────────────
@@ -40,7 +41,9 @@ export default function SavingsGoalsPage() {
   const TOP_BAR_H = insets.top + 54;
   const { opacity, onScroll, scrollEventThrottle } = useScrollHeader(TOP_BAR_H);
 
-  const [role, cycleRole, roleCycles] = useDemoRole('personal:kaypay');
+  const mode = useMode();
+  const _rk = mode === 'sports' ? 'sports:agenda' : mode === 'community' ? 'community:kaypay' : mode === 'education' ? 'education' : mode === 'business' ? 'business' : 'personal:kaypay';
+  const [role, cycleRole, roleCycles] = useDemoRole(_rk);
   const isOwner = role === roleCycles[0];
 
   useFocusEffect(useCallback(() => { resetFooter(); }, []));
@@ -125,7 +128,9 @@ export default function SavingsGoalsPage() {
           </Pressable>
 
           <View style={{ flex: 1, alignItems: 'center' }}>
-            <Text style={[styles.topBarTitle, { color: C.label }]}>Savings Goals</Text>
+            <View style={[styles.titlePill, { backgroundColor: C.surface, borderColor: C.separator }]}>
+              <Text style={[styles.titlePillText, { color: C.label }]}>Savings Goals</Text>
+            </View>
           </View>
 
           <View style={styles.topBarRight}>
@@ -251,9 +256,9 @@ function makeStyles(C: ComponentColors) {
       flex: 1,
     },
     topBarLeft: {
-      width: 40,
-      height: 36,
-      alignItems: 'center',
+      width: 44,
+      height: 44,
+      alignItems: 'flex-start',
       justifyContent: 'center',
     },
     topBarRight: {
@@ -261,10 +266,8 @@ function makeStyles(C: ComponentColors) {
       alignItems: 'center',
       gap: 8,
     },
-    topBarTitle: {
-      fontSize: 17,
-      fontWeight: '700',
-    },
+    titlePill:     { paddingHorizontal: 12, paddingVertical: 5, borderRadius: 14, borderWidth: 1 },
+    titlePillText: { fontSize: 12, fontWeight: '600', letterSpacing: 0.3 },
 
     // Overview card
     overviewCard: {

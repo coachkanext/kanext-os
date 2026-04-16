@@ -53,7 +53,7 @@ const CODE_VIDEO_TITLE: Record<string, string> = {
   'KX-INVESTOR-2026': 'Welcome, Investor',
   'KX-SEED-ROUND':  'Welcome to the Round',
   'KX-PBD-001':     'Welcome to KaNeXT',
-  LU2026:           'Welcome, Lincoln University',
+  LU2026:           'Welcome, Lincoln University (CA)',
   LU2026MBB:        'Welcome, LU Basketball',
   ICCLA2026:        'Welcome, ICCLA',
 };

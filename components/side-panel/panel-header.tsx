@@ -23,7 +23,7 @@ import {
 import type { Mode, ActiveContext } from '@/types';
 
 const MODE_ITEMS: { mode: Mode; label: string; image: any }[] = [
-  { mode: 'sports', label: 'Sports', image: require('@/assets/images/mode-sports.png') },
+  { mode: 'sports', label: 'Athletics', image: require('@/assets/images/mode-sports.png') },
   { mode: 'business', label: 'Business', image: require('@/assets/images/mode-business.png') },
   { mode: 'church', label: 'Faith', image: require('@/assets/images/mode-church.png') },
   { mode: 'education', label: 'Education', image: require('@/assets/images/mode-education.png') },

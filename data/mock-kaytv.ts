@@ -259,7 +259,7 @@ export const CHANNEL_FILTERS = [
   { key: 'all', label: 'All' },
   { key: 'subscribed', label: 'Subscribed' },
   { key: 'recommended', label: 'Recommended' },
-  { key: 'sports', label: 'Sports' },
+  { key: 'sports', label: 'Athletics' },
   { key: 'business', label: 'Business' },
   { key: 'faith', label: 'Faith' },
   { key: 'education', label: 'Education' },

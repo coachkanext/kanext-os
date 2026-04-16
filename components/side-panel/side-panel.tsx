@@ -25,9 +25,14 @@ import { LeadsPanel } from './leads-panel';
 import { AdmissionsPanel } from './admissions-panel';
 import { OutreachPanel } from './outreach-panel';
 import { SocialPanel } from './social-panel';
+import { BusinessSocialPanel } from './business-social-panel';
+import { EducationSocialPanel } from './education-social-panel';
 import { StorePanel } from './store-panel';
 import { GivePanel } from './give-panel';
 import { KayTVPanel } from './kaytv-panel';
+import { BusinessKtvPanel } from './business-ktv-panel';
+import { EducationKtvPanel } from './education-ktv-panel';
+import { SportsKtvPanel } from './sports-ktv-panel';
 import { WalletPanel } from './wallet-panel';
 import { StudiosPanel } from './studios-panel';
 import { KPlayPanel } from './kplay-panel';
@@ -39,14 +44,19 @@ import { CommunityAgendaPanel } from './community-agenda-panel';
 import { CommunityKtvPanel } from './community-ktv-panel';
 import { EducationHubPanel } from './education-hub-panel';
 import { CampusPanel } from './campus-panel';
+import { EducationCampusPanel } from './education-campus-panel';
 import { CommunityMembersPanel } from './community-members-panel';
 import { CommunityOutreachPanel } from './community-outreach-panel';
 import { CommunityGivePanel } from './community-give-panel';
 import { CommunityKplayPanel } from './community-kplay-panel';
-import { CommunityKaypayPanel } from './community-kaypay-panel';
+import { SportsKplayPanel } from './sports-kplay-panel';
+import { BusinessKplayPanel } from './business-kplay-panel';
+import { EducationKplayPanel } from './education-kplay-panel';
 import { EduFundPanel } from './edu-fund-panel';
 import { SportsHubPanel } from './sports-hub-panel';
 import { SportsAgendaPanel } from './sports-agenda-panel';
+import { BusinessAgendaPanel } from './business-agenda-panel';
+import { EducationAgendaPanel } from './education-agenda-panel';
 import { SportsRosterPanel } from './sports-roster-panel';
 import { SportsRecruitsPanel } from './sports-recruits-panel';
 import { SportsBoosterPanel } from './sports-booster-panel';
@@ -57,7 +67,9 @@ import { PersonalInquiriesPanel } from './personal-inquiries-panel';
 import { DefaultPanel } from './default-panel';
 import { BusinessHubPanel } from './business-hub-panel';
 import { TeamPanel } from './team-panel';
+import { WorkforcePanel } from './workforce-panel';
 import { InquiriesPanel } from './inquiries-panel';
+import { BusinessInquiriesPanel } from './business-inquiries-panel';
 import { BusinessStorePanel } from './business-store-panel';
 import { useMode } from '@/context/app-context';
 
@@ -91,13 +103,15 @@ export function SidePanel({ visible, onClose }: SidePanelProps) {
   const isWallet = pathname.includes('wallet') || pathname.includes('kaypay');
   const isStudios = pathname.includes('studios');
   const isAdmissions    = pathname.includes('/admissions');
-  const isHubCommunity  = pathname.includes('hub/community') || pathname.includes('hub/services') || pathname.includes('hub/groups') || pathname.includes('hub/volunteers') || pathname.includes('hub/care-requests') || pathname.includes('hub/check-in') || pathname.includes('hub/announcement-compose') || pathname.includes('hub/care-request');
-  const isHubEducation  = pathname.includes('hub/education') || pathname.includes('hub/edu-announcement');
+  const isHubCommunity  = pathname.includes('hub/community') || pathname.includes('hub/com-') || pathname.includes('hub/services') || pathname.includes('hub/groups') || pathname.includes('hub/volunteers') || pathname.includes('hub/care-requests') || pathname.includes('hub/check-in') || pathname.includes('hub/announcement-compose') || pathname.includes('hub/care-request');
+  const isHubEducation  = pathname.includes('hub/education') || pathname.includes('hub/edu-');
   const isCampus        = pathname.includes('hub/campus');
+  const isCampusTile    = pathname.includes('/campus') && !pathname.includes('hub/campus');
   const isHubSports     = pathname.includes('hub/sports');
   const isBooster       = pathname.includes('/booster');
-  const isHubBusiness  = pathname.includes('hub/business');
-  const isTeam         = pathname.includes('/team') && !pathname.includes('admissions');
+  const isHubBusiness  = pathname.includes('hub/business') || pathname.includes('hub/biz-') || (pathname.includes('hub/reports') && mode === 'business');
+  const isWorkforce    = pathname.includes('/workforce');
+  const isTeam         = pathname.includes('/team') && !pathname.includes('admissions') && !pathname.includes('biz-') && !isWorkforce;
   const isInquiries    = pathname.includes('/inquiries');
   const isHub = pathname.includes('hub') && !isHubCommunity && !isHubEducation && !isCampus && !isHubSports && !isHubBusiness;
   const isDeals     = pathname.includes('deals');
@@ -155,21 +169,31 @@ export function SidePanel({ visible, onClose }: SidePanelProps) {
                 : isNexus
                   ? <NexusPanel />
                   : isSocial
-                    ? (mode === 'community' ? <CommunitySocialPanel /> : mode === 'sports' ? <SportsSocialPanel /> : <SocialPanel />)
+                    ? (mode === 'community' ? <CommunitySocialPanel />
+                       : mode === 'sports'    ? <SportsSocialPanel />
+                       : mode === 'business'  ? <BusinessSocialPanel />
+                       : mode === 'education' ? <EducationSocialPanel />
+                       : <SocialPanel />)
                     : isBusinessStore
                       ? <BusinessStorePanel />
                     : isStore
                       ? (mode === 'community' ? <GivePanel /> : <StorePanel />)
                       : isKayTV
-                        ? (mode === 'community' ? <CommunityKtvPanel /> : <KayTVPanel />)
+                        ? (mode === 'community'  ? <CommunityKtvPanel />
+                           : mode === 'business'  ? <BusinessKtvPanel />
+                           : mode === 'education' ? <EducationKtvPanel />
+                           : mode === 'sports'    ? <SportsKtvPanel />
+                           : <KayTVPanel />)
                         : isWallet
-                          ? (mode === 'community' ? <CommunityKaypayPanel /> : <WalletPanel />)
+                          ? <WalletPanel />
                           : isHubCommunity
                             ? <CommunityHubPanel />
                             : isHubEducation
                             ? <EducationHubPanel />
                             : isCampus
                             ? <CampusPanel />
+                            : isCampusTile
+                            ? <EducationCampusPanel />
                             : isHubSports
                             ? <SportsHubPanel />
                             : isBooster
@@ -178,18 +202,32 @@ export function SidePanel({ visible, onClose }: SidePanelProps) {
                             ? <AdmissionsPanel />
                             : isHubBusiness
                             ? <BusinessHubPanel />
+                            : isWorkforce
+                            ? <WorkforcePanel />
                             : isTeam
                             ? <TeamPanel />
                             : isInquiries
-                            ? <InquiriesPanel />
+                            ? (mode === 'business' ? <BusinessInquiriesPanel /> : <InquiriesPanel />)
                             : isHub
-                            ? <HubPanel />
+                            ? (mode === 'business'  ? <BusinessHubPanel />
+                               : mode === 'sports'    ? <SportsHubPanel />
+                               : mode === 'education' ? <EducationHubPanel />
+                               : mode === 'community' ? <CommunityHubPanel />
+                               : <HubPanel />)
                             : isStudios
-                            ? (mode === 'community' ? <CommunityKplayPanel /> : mode === 'personal' ? <KPlayPanel /> : <StudiosPanel />)
+                            ? (mode === 'community'  ? <CommunityKplayPanel />
+                               : mode === 'sports'   ? <SportsKplayPanel />
+                               : mode === 'business' ? <BusinessKplayPanel />
+                               : mode === 'education'? <EducationKplayPanel />
+                               : <KPlayPanel />)
                             : isMode
                           ? <ModePanel />
                           : isAgenda
-                            ? (mode === 'community' ? <CommunityAgendaPanel /> : mode === 'sports' ? <SportsAgendaPanel /> : <AgendaPanel />)
+                            ? (mode === 'community' ? <CommunityAgendaPanel />
+                              : mode === 'sports'    ? <SportsAgendaPanel />
+                              : mode === 'business'  ? <BusinessAgendaPanel />
+                              : mode === 'education' ? <EducationAgendaPanel />
+                              : <AgendaPanel />)
                             : isSeason
                               ? <SeasonPanel />
                               : isRoster

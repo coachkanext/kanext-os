@@ -5,7 +5,7 @@
  * Subtask support with progress indicator.
  */
 
-import React, { useState, useMemo, useCallback, useRef } from 'react';
+import React, { useState, useMemo, useCallback, useRef, useEffect } from 'react';
 import {
   View,
   Text,
@@ -29,13 +29,12 @@ import { openSidePanel } from '@/utils/global-side-panel';
 import { useDemoRole } from '@/utils/demo-role-store';
 import { useMode } from '@/context/app-context';
 import { resetFooter } from '@/utils/global-footer-hide';
-import { useOwnerGuard } from '@/hooks/use-owner-guard';
 import { useScrollHeader } from '@/hooks/use-scroll-header';
 
 // ── Types ─────────────────────────────────────────────────────────────────────
 
 type Priority = 'Low' | 'Medium' | 'High';
-type Category = 'Content' | 'Business' | 'Personal' | 'Custom';
+type Category = string;
 type FilterKey = 'All' | 'Today' | 'This Week' | 'Completed';
 
 interface Subtask {
@@ -67,79 +66,157 @@ function dn(days: number): Date {
   return d;
 }
 
-const INITIAL_TASKS: Task[] = [
-  {
-    id: 't1',
-    title: 'Review Under Armour contract',
-    due: dn(0),
-    priority: 'High',
-    category: 'Business',
-    completed: false,
-  },
-  {
-    id: 't2',
-    title: 'Film intro for Speed & Agility course',
-    due: dn(1),
-    priority: 'High',
-    category: 'Content',
-    completed: false,
-    subtasks: [
-      { id: 'st1', title: 'Write script', completed: true },
-      { id: 'st2', title: 'Set up lighting', completed: false },
-      { id: 'st3', title: 'Record take', completed: false },
-      { id: 'st4', title: 'Review footage', completed: false },
-    ],
-  },
-  {
-    id: 't3',
-    title: 'Update portfolio with Combine recap',
-    due: dn(2),
-    priority: 'Medium',
-    category: 'Content',
-    completed: false,
-  },
-  {
-    id: 't4',
-    title: 'Research new brand targets',
-    due: dn(4),
-    priority: 'Medium',
-    category: 'Business',
-    completed: false,
-  },
-  {
-    id: 't5',
-    title: 'Order new filming equipment',
-    due: dn(6),
-    priority: 'Low',
-    category: 'Content',
-    completed: false,
-  },
-  {
-    id: 't6',
-    title: 'Set up Q2 content calendar',
-    due: dn(8),
-    priority: 'Medium',
-    category: 'Content',
-    completed: false,
-  },
-  {
-    id: 't7',
-    title: 'Send thank you to event sponsors',
-    due: dn(3),
-    priority: 'Low',
-    category: 'Personal',
-    completed: false,
-  },
-  {
-    id: 't8',
-    title: 'Finalize rate card for speaking',
-    due: dn(-3),
-    priority: 'Medium',
-    category: 'Business',
-    completed: true,
-    completedAt: new Date(_today.getTime() - 1 * 24 * 60 * 60 * 1000),
-  },
-];
+const TASKS_BY_MODE: Record<string, Task[]> = {
+
+  // ── PERSONAL ──────────────────────────────────────────────────────────────
+  'personal:admin': [
+    { id: 't1', title: 'Review Under Armour contract',          due: dn(0),  priority: 'High',   category: 'Business', completed: false },
+    { id: 't2', title: 'Film intro for Speed & Agility course', due: dn(1),  priority: 'High',   category: 'Content',  completed: false,
+      subtasks: [
+        { id: 'st1', title: 'Write script',    completed: true },
+        { id: 'st2', title: 'Set up lighting', completed: false },
+        { id: 'st3', title: 'Record take',     completed: false },
+        { id: 'st4', title: 'Review footage',  completed: false },
+      ],
+    },
+    { id: 't3', title: 'Update portfolio with Combine recap',   due: dn(2),  priority: 'Medium', category: 'Content',  completed: false },
+    { id: 't4', title: 'Research new brand targets',            due: dn(4),  priority: 'Medium', category: 'Business', completed: false },
+    { id: 't5', title: 'Order new filming equipment',           due: dn(6),  priority: 'Low',    category: 'Content',  completed: false },
+    { id: 't6', title: 'Set up Q2 content calendar',            due: dn(8),  priority: 'Medium', category: 'Content',  completed: false },
+    { id: 't7', title: 'Send thank you to event sponsors',      due: dn(3),  priority: 'Low',    category: 'Personal', completed: false },
+    { id: 't8', title: 'Finalize rate card for speaking',       due: dn(-3), priority: 'Medium', category: 'Business', completed: true, completedAt: new Date(_today.getTime() - 86400000) },
+  ],
+  'personal:member': [
+    { id: 't1', title: 'Watch episode 4 of the course',         due: dn(0),  priority: 'Medium', category: 'Content',  completed: false },
+    { id: 't2', title: 'RSVP for April subscriber meetup',      due: dn(0),  priority: 'High',   category: 'Personal', completed: false },
+    { id: 't3', title: 'Download April workout guide from shop', due: dn(1), priority: 'Low',    category: 'Content',  completed: false },
+    { id: 't4', title: 'Renew Inner Circle subscription',        due: dn(4),  priority: 'High',   category: 'Personal', completed: false },
+    { id: 't5', title: 'Submit Q&A question for next session',  due: dn(3),  priority: 'Low',    category: 'Content',  completed: false },
+    { id: 't6', title: 'Attended March Q&A session',            due: dn(-3), priority: 'Low',    category: 'Personal', completed: true, completedAt: new Date(_today.getTime() - 86400000) },
+  ],
+
+  // ── BUSINESS ──────────────────────────────────────────────────────────────
+  'business:admin': [
+    { id: 't1', title: 'Finalize Series A investor deck',            due: dn(0),  priority: 'High',   category: 'Finance',    completed: false },
+    { id: 't2', title: 'Platform roadmap v2 — planning session',     due: dn(1),  priority: 'High',   category: 'Operations', completed: false,
+      subtasks: [
+        { id: 'st1', title: 'Gather eng capacity estimates', completed: true },
+        { id: 'st2', title: 'Draft feature prioritization',  completed: false },
+        { id: 'st3', title: 'Review with CTO',               completed: false },
+      ],
+    },
+    { id: 't3', title: 'Respond to Meridian Group proposal',         due: dn(2),  priority: 'High',   category: 'Operations', completed: false },
+    { id: 't4', title: 'Hire VP of Product — schedule final rounds', due: dn(4),  priority: 'Medium', category: 'People',     completed: false },
+    { id: 't5', title: 'Review Q1 financial statements',             due: dn(3),  priority: 'High',   category: 'Finance',    completed: false },
+    { id: 't6', title: 'Set Q2 OKRs with leadership team',           due: dn(6),  priority: 'Medium', category: 'Operations', completed: false },
+    { id: 't7', title: 'Review partner agreement — LegalZoom draft', due: dn(5),  priority: 'Low',    category: 'Legal',      completed: false },
+    { id: 't8', title: 'Send NDA to Atlas Capital',                  due: dn(-2), priority: 'Medium', category: 'Legal',      completed: true, completedAt: new Date(_today.getTime() - 86400000) },
+  ],
+  'business:member': [
+    { id: 't1', title: 'Review KaNeXT proposal',                     due: dn(0),  priority: 'High',   category: 'Business', completed: false },
+    { id: 't2', title: 'Attend onboarding call — KaNeXT team',       due: dn(0),  priority: 'High',   category: 'Meetings', completed: false },
+    { id: 't3', title: 'Send feedback on platform demo',             due: dn(1),  priority: 'Medium', category: 'Business', completed: false },
+    { id: 't4', title: 'Review service contract terms',              due: dn(2),  priority: 'Medium', category: 'Legal',    completed: false },
+    { id: 't5', title: 'Follow up on support ticket #1492',          due: dn(4),  priority: 'Low',    category: 'Business', completed: false },
+    { id: 't6', title: 'Upgrade from trial before expiration',       due: dn(7),  priority: 'High',   category: 'Finance',  completed: false },
+    { id: 't7', title: 'Signed initial service agreement',           due: dn(-2), priority: 'Low',    category: 'Legal',    completed: true, completedAt: new Date(_today.getTime() - 86400000) },
+  ],
+
+  // ── EDUCATION ─────────────────────────────────────────────────────────────
+  'education:admin': [
+    { id: 't1', title: 'Submit WASC accreditation self-study draft', due: dn(0),  priority: 'High',   category: 'Compliance', completed: false },
+    { id: 't2', title: 'Prepare board of trustees meeting agenda',   due: dn(1),  priority: 'High',   category: 'Meetings',   completed: false,
+      subtasks: [
+        { id: 'st1', title: 'Compile Q1 enrollment data',    completed: true },
+        { id: 'st2', title: 'Draft financial summary',        completed: false },
+        { id: 'st3', title: 'Add facilities capital request', completed: false },
+      ],
+    },
+    { id: 't3', title: 'Sign faculty contract renewals — 3 pending', due: dn(2),  priority: 'High',   category: 'Academic',   completed: false },
+    { id: 't4', title: 'Review spring enrollment yield projections',  due: dn(3),  priority: 'Medium', category: 'Academic',   completed: false },
+    { id: 't5', title: 'Finalize financial aid disbursement plan',    due: dn(4),  priority: 'High',   category: 'Finance',    completed: false },
+    { id: 't6', title: 'Approve new course curriculum proposals',     due: dn(6),  priority: 'Medium', category: 'Academic',   completed: false },
+    { id: 't7', title: 'Commencement speaker outreach',               due: dn(5),  priority: 'Low',    category: 'Meetings',   completed: false },
+    { id: 't8', title: 'Review spring course catalog',                due: dn(-2), priority: 'Medium', category: 'Academic',   completed: true, completedAt: new Date(_today.getTime() - 86400000) },
+  ],
+  'education:member': [
+    { id: 't1', title: 'Submit term paper first draft',              due: dn(0),  priority: 'High',   category: 'Academic', completed: false,
+      subtasks: [
+        { id: 'st1', title: 'Finish literature review', completed: true },
+        { id: 'st2', title: 'Write conclusion section',  completed: false },
+        { id: 'st3', title: 'Run plagiarism check',      completed: false },
+      ],
+    },
+    { id: 't2', title: 'Register for fall semester courses',          due: dn(2),  priority: 'High',   category: 'Academic', completed: false },
+    { id: 't3', title: 'Financial aid appeal submission',             due: dn(0),  priority: 'High',   category: 'Finance',  completed: false },
+    { id: 't4', title: 'Attend study group — exam prep',             due: dn(1),  priority: 'Medium', category: 'Academic', completed: false },
+    { id: 't5', title: 'Meet with academic advisor',                  due: dn(4),  priority: 'Medium', category: 'Academic', completed: false },
+    { id: 't6', title: 'Scholarship application — Lincoln Excellence', due: dn(6), priority: 'High',   category: 'Finance',  completed: false },
+    { id: 't7', title: 'Campus tour guide shift',                     due: dn(3),  priority: 'Low',    category: 'Personal', completed: false },
+    { id: 't8', title: 'Paid spring semester balance',                due: dn(-2), priority: 'Low',    category: 'Finance',  completed: true, completedAt: new Date(_today.getTime() - 86400000) },
+  ],
+
+  // ── COMMUNITY ─────────────────────────────────────────────────────────────
+  'community:admin': [
+    { id: 't1', title: 'Prepare Sunday sermon — Week 17',            due: dn(0),  priority: 'High',   category: 'Ministry', completed: false },
+    { id: 't2', title: 'Plan summer mission trip logistics',          due: dn(2),  priority: 'High',   category: 'Outreach', completed: false,
+      subtasks: [
+        { id: 'st1', title: 'Confirm destination site',  completed: true },
+        { id: 'st2', title: 'Collect deposit payments',  completed: false },
+        { id: 'st3', title: 'Arrange travel insurance',  completed: false },
+      ],
+    },
+    { id: 't3', title: 'Deacon board — quarterly budget review',     due: dn(1),  priority: 'High',   category: 'Finance',  completed: false },
+    { id: 't4', title: 'Review volunteer onboarding applications',   due: dn(3),  priority: 'Medium', category: 'Outreach', completed: false },
+    { id: 't5', title: 'Coordinate community outreach dinner',       due: dn(5),  priority: 'Medium', category: 'Outreach', completed: false },
+    { id: 't6', title: 'Monthly pastoral team one-on-ones',          due: dn(4),  priority: 'Medium', category: 'Ministry', completed: false },
+    { id: 't7', title: 'Small group leader training prep',           due: dn(6),  priority: 'Low',    category: 'Ministry', completed: false },
+    { id: 't8', title: 'Send Easter service thank-you notes',        due: dn(-2), priority: 'Low',    category: 'Pastoral', completed: true, completedAt: new Date(_today.getTime() - 86400000) },
+  ],
+  'community:member': [
+    { id: 't1', title: 'Confirm volunteer shift — kitchen team',      due: dn(0),  priority: 'High',   category: 'Outreach', completed: false },
+    { id: 't2', title: 'Attend small group — bring discussion notes', due: dn(0),  priority: 'Medium', category: 'Ministry', completed: false },
+    { id: 't3', title: 'Pay mission trip deposit',                    due: dn(3),  priority: 'High',   category: 'Finance',  completed: false },
+    { id: 't4', title: 'Register for new member orientation',         due: dn(2),  priority: 'Medium', category: 'Ministry', completed: false },
+    { id: 't5', title: 'Connect call with new member Marcus',         due: dn(1),  priority: 'Low',    category: 'Outreach', completed: false },
+    { id: 't6', title: 'Review small group study guide — Week 5',    due: dn(5),  priority: 'Low',    category: 'Ministry', completed: false },
+    { id: 't7', title: 'Attended Easter Sunday service',              due: dn(-2), priority: 'Low',    category: 'Ministry', completed: true, completedAt: new Date(_today.getTime() - 86400000) },
+  ],
+
+  // ── ATHLETICS ─────────────────────────────────────────────────────────────
+  'sports:admin': [
+    { id: 't1', title: 'Submit NAIA eligibility waivers',                due: dn(0),  priority: 'High',   category: 'Compliance', completed: false },
+    { id: 't2', title: 'Prepare scouting report — Golden State',         due: dn(1),  priority: 'High',   category: 'Film',       completed: false,
+      subtasks: [
+        { id: 'st1', title: 'Pull last 3 game films',     completed: true },
+        { id: 'st2', title: 'Chart offensive tendencies', completed: false },
+        { id: 'st3', title: 'Present to staff',           completed: false },
+      ],
+    },
+    { id: 't3', title: 'Recruiting call — Darius Thompson (SG)',         due: dn(0),  priority: 'High',   category: 'Recruiting', completed: false },
+    { id: 't4', title: 'Plan defensive sets — game-week practice',       due: dn(2),  priority: 'Medium', category: 'Operations', completed: false },
+    { id: 't5', title: 'National tournament travel logistics',           due: dn(4),  priority: 'High',   category: 'Operations', completed: false },
+    { id: 't6', title: 'Player academic check-ins — 4 at-risk',         due: dn(3),  priority: 'Medium', category: 'Compliance', completed: false },
+    { id: 't7', title: 'Year-end recruiting board — Class of 2027',      due: dn(7),  priority: 'Medium', category: 'Recruiting', completed: false },
+    { id: 't8', title: 'Submit game stats — Saturday match',             due: dn(-2), priority: 'Low',    category: 'Compliance', completed: true, completedAt: new Date(_today.getTime() - 86400000) },
+  ],
+  'sports:member': [
+    { id: 't1', title: 'Upload film study notes to team portal',         due: dn(0),  priority: 'High',   category: 'Film',       completed: false },
+    { id: 't2', title: 'Morning weight room session',                    due: dn(0),  priority: 'High',   category: 'Operations', completed: false },
+    { id: 't3', title: 'Review defensive scheme — walk-through prep',    due: dn(1),  priority: 'High',   category: 'Film',       completed: false,
+      subtasks: [
+        { id: 'st1', title: 'Watch opponent film clip',     completed: true },
+        { id: 'st2', title: 'Note assignment breakdowns',   completed: false },
+        { id: 'st3', title: 'Bring questions to walk-through', completed: false },
+      ],
+    },
+    { id: 't4', title: 'Academic advisor check-in',                      due: dn(0),  priority: 'High',   category: 'Compliance', completed: false },
+    { id: 't5', title: 'Sign NAIA eligibility paperwork',                due: dn(4),  priority: 'High',   category: 'Compliance', completed: false },
+    { id: 't6', title: 'Exam prep — two finals next week',               due: dn(3),  priority: 'High',   category: 'Academic',   completed: false },
+    { id: 't7', title: 'Individual skills session with Coach',           due: dn(2),  priority: 'Medium', category: 'Operations', completed: false },
+    { id: 't8', title: 'Signed team code of conduct',                    due: dn(-2), priority: 'Low',    category: 'Compliance', completed: true, completedAt: new Date(_today.getTime() - 86400000) },
+  ],
+};
 
 // ── Helper functions ───────────────────────────────────────────────────────────
 
@@ -647,11 +724,18 @@ export default function TasksScreen() {
   const _rk = mode === 'sports' ? 'sports:agenda' : mode === 'community' ? 'community:agenda' : mode === 'education' ? 'education' : mode === 'business' ? 'business' : 'personal:agenda';
   const [role, cycleRole, roleCycles] = useDemoRole(_rk);
   const isOwner = role === roleCycles[0];
-  const guardedCycle = useOwnerGuard(role, roleCycles, cycleRole, '/(tabs)/(main)/agenda');
+  const guardedCycle = cycleRole;
   const accent = C.label;
 
-  const [tasks, setTasks] = useState<Task[]>(INITIAL_TASKS);
+  const taskDataKey = `${mode}:${isOwner ? 'admin' : 'member'}`;
+  const [tasks, setTasks] = useState<Task[]>(() => TASKS_BY_MODE[taskDataKey] ?? TASKS_BY_MODE['personal:admin']);
   const [filter, setFilter] = useState<FilterKey>('All');
+
+  useEffect(() => {
+    const key = `${mode}:${isOwner ? 'admin' : 'member'}`;
+    setTasks(TASKS_BY_MODE[key] ?? TASKS_BY_MODE['personal:admin']);
+    setFilter('All');
+  }, [mode, isOwner]);
   const [showCreate, setShowCreate] = useState(false);
   const [editTask, setEditTask] = useState<Task | null>(null);
   const [form, setForm] = useState<FormState>(emptyForm());

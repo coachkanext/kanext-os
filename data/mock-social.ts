@@ -910,7 +910,7 @@ const SUGGESTED_ACCOUNTS: SuggestedAccount[] = [
 
 export const EXPLORE_CATEGORIES = [
   { key: 'for_you',   label: 'For You' },
-  { key: 'sports',    label: 'Sports' },
+  { key: 'sports',    label: 'Athletics' },
   { key: 'business',  label: 'Business' },
   { key: 'faith',     label: 'Faith' },
   { key: 'education', label: 'Education' },

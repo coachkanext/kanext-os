@@ -10,6 +10,7 @@ import { useColors, type ComponentColors } from '@/hooks/use-colors';
 import { openSidePanel } from '@/utils/global-side-panel';
 import { resetFooter } from '@/utils/global-footer-hide';
 import { useDemoRole } from '@/utils/demo-role-store';
+import { useAppContext } from '@/context/app-context';
 
 
 const GAIN = '#5A8A6E';
@@ -28,6 +29,8 @@ export default function SportsPlayerDashboard() {
   const C = useColors();
   const insets = useSafeAreaInsets();
   const router = useRouter();
+  const { state } = useAppContext();
+  const mode = state.activeContext?.mode ?? state.mode ?? 'personal';
   const [role, cycleRole, roleCycles] = useDemoRole('sports:hub');
   const isHeadCoach = role === roleCycles[0];
   const s = useMemo(() => makeStyles(C), [C]);
@@ -35,10 +38,14 @@ export default function SportsPlayerDashboard() {
   useFocusEffect(
     useCallback(() => {
       resetFooter();
+      if (mode !== 'sports') {
+        router.replace('/(tabs)/(main)/hub' as any);
+        return;
+      }
       if (isHeadCoach) {
         router.replace('/(tabs)/(main)/hub/sports-program-overview' as any);
       }
-    }, [isHeadCoach])
+    }, [mode, isHeadCoach])
   );
 
   return (
@@ -253,7 +260,7 @@ function makeStyles(C: ComponentColors) {
     kBtn: { width: 44, height: 36, justifyContent: 'center' },
     titlePill: { borderRadius: 18, paddingHorizontal: 14, paddingVertical: 6, borderWidth: 1 },
     titleText: { fontSize: 13, fontWeight: '700' },
-    rolePillWrap: { width: 80, alignItems: 'flex-end', justifyContent: 'center' },
+    rolePillWrap: { alignItems: 'flex-end' },
     sectionHeader: {
       fontSize: 11, fontWeight: '700', letterSpacing: 0.8,
       marginHorizontal: 16, marginBottom: 8, marginTop: 20,

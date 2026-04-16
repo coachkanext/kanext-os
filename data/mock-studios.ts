@@ -297,7 +297,7 @@ export const GAMING_FRIENDS: GamingFriend[] = [
 
 export const LIBRARY_FILTERS: readonly { key: LibraryFilterKey; label: string }[] = [
   { key: 'all', label: 'All' },
-  { key: 'sports', label: 'Sports' },
+  { key: 'sports', label: 'Athletics' },
   { key: 'education', label: 'Education' },
   { key: 'faith', label: 'Faith' },
   { key: 'business', label: 'Business' },
@@ -374,7 +374,7 @@ export const CATEGORY_COLORS: Record<GameCategory, string> = {
 };
 
 export const CATEGORY_LABELS: Record<GameCategory, string> = {
-  sports: 'Sports',
+  sports: 'Athletics',
   education: 'Education',
   faith: 'Faith',
   business: 'Business',

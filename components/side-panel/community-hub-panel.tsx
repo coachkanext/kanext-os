@@ -1,19 +1,47 @@
 /**
- * Community Hub Side Panel — nav items for community/church screens.
- * Pattern: studios-panel.tsx (simple nav items only, no stats, no brand header).
+ * Community Hub Side Panel — matches hub-panel.tsx format.
+ * Identity header (church logo + name + handle + member count)
+ * + nav rows (size 24, height 44, gap 16) + divider + Dipson / Settings / Help.
  *
- * Pastor: Church Overview, Services, Groups, Volunteers + MANAGE: Care Requests, Check-In
- * Member: Church Overview, Services, Groups (no MANAGE section)
+ * Pastor: Overview, Services, Groups, Volunteers + divider + Dipson, Settings, Help
+ * Member: Overview, Services, Groups + divider + Dipson, Settings, Help
  */
 
-import React, { useMemo } from 'react';
+import React, { useCallback, useMemo } from 'react';
 import { View, Text, Pressable, StyleSheet } from 'react-native';
 import * as Haptics from 'expo-haptics';
 import { useRouter } from 'expo-router';
 import { IconSymbol } from '@/components/ui/icon-symbol';
 import { closeSidePanel } from '@/utils/global-side-panel';
+import { openDipsonSheet } from '@/utils/global-dipson-sheet';
 import { useColors, type ComponentColors } from '@/hooks/use-colors';
 import { useDemoRole } from '@/utils/demo-role-store';
+
+// ── Data ──────────────────────────────────────────────────────────────────────
+
+type NavItem = { icon: string; label: string; route?: string; isDipson?: boolean };
+
+const PASTOR_NAV: NavItem[] = [
+  { icon: 'person.crop.rectangle.fill', label: 'Profile',      route: '/(tabs)/(main)/hub/community'         },
+  { icon: 'music.note.list',            label: 'Services',     route: '/(tabs)/(main)/hub/com-services'      },
+  { icon: 'person.3.fill',              label: 'Congregation', route: '/(tabs)/(main)/hub/com-congregation'  },
+  { icon: 'dollarsign.circle.fill',     label: 'Giving',       route: '/(tabs)/(main)/hub/com-giving'        },
+  { icon: 'rectangle.3.group.fill',     label: 'Ministries',   route: '/(tabs)/(main)/hub/com-ministries'    },
+];
+
+const MEMBER_NAV: NavItem[] = [
+  { icon: 'person.crop.rectangle.fill', label: 'Profile',    route: '/(tabs)/(main)/hub/community'      },
+  { icon: 'music.note.list',            label: 'Services',   route: '/(tabs)/(main)/hub/com-services'   },
+  { icon: 'rectangle.3.group.fill',     label: 'Ministries', route: '/(tabs)/(main)/hub/com-ministries' },
+];
+
+const BOTTOM_ITEMS: NavItem[] = [
+  { icon: 'sparkles',            label: 'Dipson',   isDipson: true                            },
+  { icon: 'gearshape',           label: 'Settings', route: '/(tabs)/(main)/hub/com-settings'  },
+  { icon: 'questionmark.circle', label: 'Help',     route: '/(tabs)/(main)/hub/com-help'      },
+];
+
+// ── Component ─────────────────────────────────────────────────────────────────
 
 export function CommunityHubPanel() {
   const C = useColors();
@@ -22,80 +50,83 @@ export function CommunityHubPanel() {
   const [role, , roleCycles] = useDemoRole('community:hub');
   const isPastor = role === roleCycles[0];
 
-  const go = (route: string) => {
+  const go = useCallback((item: NavItem) => {
     Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+    if (item.isDipson) {
+      closeSidePanel();
+      setTimeout(() => openDipsonSheet('Community'), 300);
+      return;
+    }
     closeSidePanel();
-    setTimeout(() => router.push(route as any), 80);
-  };
+    setTimeout(() => { if (item.route) router.navigate(item.route as any); }, 80);
+  }, [router]);
 
-  const PASTOR_NAV_ITEMS = [
-    { icon: 'chart.bar.fill',    label: 'Church Overview', route: '/(tabs)/(main)/hub/community' },
-    { icon: 'music.note.list',   label: 'Services',        route: '/(tabs)/(main)/hub/services'  },
-    { icon: 'person.3.fill',     label: 'Groups',          route: '/(tabs)/(main)/hub/groups'    },
-    { icon: 'hand.raised.fill',  label: 'Volunteers',      route: '/(tabs)/(main)/hub/volunteers' },
-  ];
-
-  const MEMBER_NAV_ITEMS = [
-    { icon: 'chart.bar.fill',  label: 'Church Overview', route: '/(tabs)/(main)/hub/community' },
-    { icon: 'music.note.list', label: 'Services',        route: '/(tabs)/(main)/hub/services'  },
-    { icon: 'person.3.fill',   label: 'Groups',          route: '/(tabs)/(main)/hub/groups'    },
-  ];
-
-  const MANAGE_ITEMS = [
-    { icon: 'heart.text.square.fill',  label: 'Care Requests', route: '/(tabs)/(main)/hub/care-requests' },
-    { icon: 'checkmark.circle.fill',   label: 'Check-In',      route: '/(tabs)/(main)/hub/check-in'      },
-  ];
-
-  const NAV_ITEMS = isPastor ? PASTOR_NAV_ITEMS : MEMBER_NAV_ITEMS;
+  const navItems = isPastor ? PASTOR_NAV : MEMBER_NAV;
 
   return (
-    <View style={[s.root, { backgroundColor: C.surface }]}>
-      {NAV_ITEMS.map((item, idx) => (
-        <Pressable
-          key={item.label}
-          style={({ pressed }) => [
-            s.row,
-            pressed && { backgroundColor: C.bg },
-            idx < NAV_ITEMS.length - 1 && [s.rowBorder, { borderBottomColor: C.separator }],
-          ]}
-          onPress={() => go(item.route)}
-        >
-          <IconSymbol name={item.icon as any} size={18} color={C.secondary} />
-          <Text style={[s.rowLabel, { color: C.label }]}>{item.label}</Text>
-        </Pressable>
-      ))}
+    <View style={s.root}>
 
-      {isPastor && (
-        <>
-          <View style={[s.divider, { backgroundColor: C.separator }]} />
-          <Text style={[s.sectionLabel, { color: C.secondary }]}>Manage</Text>
-          {MANAGE_ITEMS.map((item, idx) => (
-            <Pressable
-              key={item.label}
-              style={({ pressed }) => [
-                s.row,
-                pressed && { backgroundColor: C.bg },
-                idx < MANAGE_ITEMS.length - 1 && [s.rowBorder, { borderBottomColor: C.separator }],
-              ]}
-              onPress={() => go(item.route)}
-            >
-              <IconSymbol name={item.icon as any} size={18} color={C.secondary} />
-              <Text style={[s.rowLabel, { color: C.label }]}>{item.label}</Text>
-            </Pressable>
-          ))}
-        </>
-      )}
+      {/* ── Identity header ── */}
+      <View style={s.header}>
+        <View style={[s.avatar, { backgroundColor: C.separator }]}>
+          <Text style={s.avatarEmoji}>✝️</Text>
+        </View>
+        <Text style={[s.name, { color: C.label }]}>ICCLA</Text>
+        <Text style={[s.handle, { color: C.secondary }]}>@iccla · Hawthorne, CA</Text>
+        <Text style={[s.followers, { color: C.secondary }]}>
+          <Text style={{ fontWeight: '600', color: C.label }}>1,247</Text>{' Members'}
+        </Text>
+      </View>
+
+      {/* ── Main nav ── */}
+      <View style={s.nav}>
+        {navItems.map(item => (
+          <Pressable
+            key={item.label}
+            style={({ pressed }) => [s.navRow, pressed && { backgroundColor: C.bg }]}
+            onPress={() => go(item)}
+          >
+            <IconSymbol name={item.icon as any} size={24} color={C.label} />
+            <Text style={[s.navLabel, { color: C.label }]}>{item.label}</Text>
+          </Pressable>
+        ))}
+      </View>
+
+      <View style={[s.divider, { backgroundColor: C.separator }]} />
+
+      {/* ── Bottom utilities ── */}
+      <View style={s.nav}>
+        {BOTTOM_ITEMS.map(item => (
+          <Pressable
+            key={item.label}
+            style={({ pressed }) => [s.navRow, pressed && { backgroundColor: C.bg }]}
+            onPress={() => go(item)}
+          >
+            <IconSymbol name={item.icon as any} size={24} color={C.label} />
+            <Text style={[s.navLabel, { color: C.label }]}>{item.label}</Text>
+          </Pressable>
+        ))}
+      </View>
+
     </View>
   );
 }
 
-function makeStyles(C: ComponentColors) {
-  return StyleSheet.create({
-    root:         { flex: 1 },
-    divider:      { height: StyleSheet.hairlineWidth, marginVertical: 12, marginHorizontal: 16 },
-    sectionLabel: { fontSize: 11, fontWeight: '600', letterSpacing: 0.6, textTransform: 'uppercase', paddingHorizontal: 16, marginBottom: 2, marginTop: 4 },
-    row:          { flexDirection: 'row', alignItems: 'center', gap: 12, paddingHorizontal: 16, paddingVertical: 13, borderRadius: 8 },
-    rowBorder:    { borderBottomWidth: StyleSheet.hairlineWidth },
-    rowLabel:     { flex: 1, fontSize: 15 },
-  });
-}
+// ── Styles ────────────────────────────────────────────────────────────────────
+
+const makeStyles = (C: ComponentColors) => StyleSheet.create({
+  root: { flex: 1 },
+
+  header:    { paddingHorizontal: 20, paddingTop: 8, paddingBottom: 20 },
+  avatar:    { width: 44, height: 44, borderRadius: 22, alignItems: 'center', justifyContent: 'center', marginBottom: 10 },
+  avatarEmoji: { fontSize: 22 },
+  name:      { fontSize: 17, fontWeight: '700', letterSpacing: -0.3, marginBottom: 2 },
+  handle:    { fontSize: 14, fontWeight: '400', marginBottom: 6 },
+  followers: { fontSize: 14, fontWeight: '400' },
+
+  nav:       { paddingHorizontal: 8 },
+  navRow:    { flexDirection: 'row', alignItems: 'center', height: 44, gap: 16, paddingHorizontal: 12, borderRadius: 8 },
+  navLabel:  { fontSize: 16, fontWeight: '500' },
+
+  divider:   { height: StyleSheet.hairlineWidth, marginVertical: 8, marginHorizontal: 20 },
+});

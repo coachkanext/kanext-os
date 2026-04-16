@@ -1,7 +1,8 @@
-import React, { useState, useCallback } from 'react';
+import React, { useState, useCallback, useMemo, useRef } from 'react';
 import {
   View,
   Text,
+  TextInput,
   Pressable,
   ScrollView,
   Switch,
@@ -10,7 +11,7 @@ import {
 } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import * as Haptics from 'expo-haptics';
-import { useFocusEffect } from 'expo-router';
+import { useFocusEffect, useRouter } from 'expo-router';
 import { IconSymbol } from '@/components/ui/icon-symbol';
 import { BottomSheet } from '@/components/ui/bottom-sheet';
 import { RolePill } from '@/components/ui/role-pill';
@@ -47,6 +48,22 @@ interface BlackoutDate {
   start: string;
   end: string | null;
   reason: string;
+}
+
+interface Booking {
+  id: string;
+  date: string;
+  time: string;
+  status: 'pending' | 'confirmed' | 'completed';
+  note: string;
+}
+
+interface TimeSlot {
+  id: string;
+  startHour: number;
+  startMin: number;
+  endHour: number;
+  endMin: number;
 }
 
 // ---------------------------------------------------------------------------
@@ -86,10 +103,64 @@ const INITIAL_BLACKOUTS: BlackoutDate[] = [
   { id: 'bd2', start: 'Apr 22', end: null,     reason: 'Personal' },
 ];
 
+const MOCK_BOOKINGS: Booking[] = [
+  { id: 'bk1', date: 'Mon, Apr 14', time: '9:00 AM – 9:30 AM',   status: 'confirmed', note: 'Quick check-in' },
+  { id: 'bk2', date: 'Thu, Apr 17', time: '2:00 PM – 3:00 PM',   status: 'pending',   note: '' },
+  { id: 'bk3', date: 'Mon, Apr 7',  time: '10:00 AM – 11:00 AM', status: 'completed', note: 'Strategy review' },
+];
+
+const DAY_NAMES   = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+const DAY_SHORT   = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+const MONTH_SHORT = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+
 const BUFFER_OPTIONS  = ['None', '15 min', '30 min', '1 hour'];
 const NOTICE_OPTIONS  = ['1 hour', '24 hours', '48 hours', '1 week'];
 const ADVANCE_OPTIONS = ['1 week', '2 weeks', '1 month', '3 months'];
 const DURATION_OPTIONS = ['30 min', '1 hr', '2 hrs'];
+
+type AppMode = 'personal' | 'business' | 'education' | 'community' | 'sports';
+
+const MEMBER_SLOTS_BY_MODE: Record<AppMode, { day: string; slots: string[] }[]> = {
+  personal: [
+    { day: 'Monday',    slots: ['9:00 AM – 12:00 PM', '2:00 PM – 5:00 PM'] },
+    { day: 'Tuesday',   slots: ['9:00 AM – 5:00 PM'] },
+    { day: 'Wednesday', slots: ['9:00 AM – 12:00 PM'] },
+    { day: 'Thursday',  slots: ['9:00 AM – 5:00 PM'] },
+    { day: 'Friday',    slots: ['10:00 AM – 3:00 PM'] },
+  ],
+  business: [
+    { day: 'Monday',    slots: ['10:00 AM – 12:00 PM'] },
+    { day: 'Tuesday',   slots: ['1:00 PM – 4:00 PM'] },
+    { day: 'Wednesday', slots: ['10:00 AM – 12:00 PM'] },
+    { day: 'Thursday',  slots: ['1:00 PM – 4:00 PM'] },
+    { day: 'Friday',    slots: ['10:00 AM – 12:00 PM'] },
+  ],
+  education: [
+    { day: 'Monday',    slots: ['2:00 PM – 4:00 PM'] },
+    { day: 'Tuesday',   slots: ['10:00 AM – 12:00 PM'] },
+    { day: 'Wednesday', slots: ['2:00 PM – 4:00 PM'] },
+    { day: 'Thursday',  slots: ['10:00 AM – 12:00 PM'] },
+  ],
+  community: [
+    { day: 'Tuesday',   slots: ['10:00 AM – 12:00 PM'] },
+    { day: 'Wednesday', slots: ['6:00 PM – 8:00 PM'] },
+    { day: 'Thursday',  slots: ['10:00 AM – 12:00 PM'] },
+    { day: 'Saturday',  slots: ['10:00 AM – 12:00 PM'] },
+  ],
+  sports: [
+    { day: 'Monday',    slots: ['8:00 AM – 10:00 AM'] },
+    { day: 'Wednesday', slots: ['8:00 AM – 10:00 AM'] },
+    { day: 'Friday',    slots: ['8:00 AM – 10:00 AM'] },
+  ],
+};
+
+const MODE_COPY: Record<AppMode, { title: string; subtitle: string; icon: string }> = {
+  personal:  { title: 'Book a Session',          subtitle: 'Choose from available slots below',          icon: 'calendar.badge.clock' },
+  business:  { title: 'Book a Meeting',           subtitle: 'Schedule time with our team',               icon: 'briefcase.fill' },
+  education: { title: 'Schedule Office Hours',    subtitle: 'Book time with your advisor or faculty',    icon: 'book.fill' },
+  community: { title: 'Book a Pastoral Meeting',  subtitle: 'Schedule time with our pastoral team',      icon: 'person.3.fill' },
+  sports:    { title: 'Schedule Training Time',   subtitle: 'Book individual time with coaching staff',  icon: 'figure.run' },
+};
 
 // Generate time options 6:00 AM – 10:00 PM in 30-min increments
 const TIME_OPTIONS: { hour: number; min: number; label: string }[] = [];
@@ -173,6 +244,7 @@ export default function AvailabilityScreen() {
   const [role, cycleRole, roleCycles] = useDemoRole(_rk);
   const isOwner = role === roleCycles[0];
   const guardedCycle = useOwnerGuard(role, roleCycles, cycleRole, '/(tabs)/(main)/agenda');
+  const router = useRouter();
 
   const [schedule,  setSchedule]  = useState<DaySchedule[]>(INITIAL_SCHEDULE);
   const [editDay,   setEditDay]   = useState<DaySchedule | null>(null);
@@ -270,23 +342,97 @@ export default function AvailabilityScreen() {
 
   // ── Render ────────────────────────────────────────────────────────────────
 
-  return (
-    <View style={[styles.root, { backgroundColor: C.bg }]}>
-      <Animated.View style={[styles.topBarOuter, { paddingTop: insets.top + 8, backgroundColor: C.bg, borderBottomColor: C.separator, borderBottomWidth: StyleSheet.hairlineWidth, opacity }]}>
-        <View style={styles.topBar}>
-          <Pressable onPress={() => openSidePanel()} hitSlop={8} style={styles.topBarSide}>
-            <KMenuButton />
-          </Pressable>
-          <View style={{ flex: 1, alignItems: 'center' }}>
-            <View style={[styles.titlePill, { backgroundColor: C.surface, borderColor: C.separator }]}>
-              <Text style={[styles.titleText, { color: C.label }]}>Availability</Text>
-            </View>
-          </View>
-          <View style={{ minWidth: 44, alignItems: 'flex-end', justifyContent: 'center' }}>
-            <RolePill role={role} onPress={guardedCycle} isPrimary={isOwner} />
+  const topBar = (
+    <Animated.View style={[styles.topBarOuter, { paddingTop: insets.top + 8, backgroundColor: C.bg, borderBottomColor: C.separator, borderBottomWidth: StyleSheet.hairlineWidth, opacity }]}>
+      <View style={styles.topBar}>
+        <Pressable onPress={() => openSidePanel()} hitSlop={8} style={styles.topBarSide}>
+          <KMenuButton />
+        </Pressable>
+        <View style={{ flex: 1, alignItems: 'center' }}>
+          <View style={[styles.titlePill, { backgroundColor: C.surface, borderColor: C.separator }]}>
+            <Text style={[styles.titleText, { color: C.label }]}>Availability</Text>
           </View>
         </View>
-      </Animated.View>
+        <View style={{ minWidth: 44, alignItems: 'flex-end', justifyContent: 'center' }}>
+          <RolePill role={role} onPress={guardedCycle} isPrimary={isOwner} />
+        </View>
+      </View>
+    </Animated.View>
+  );
+
+  // ── Member view ────────────────────────────────────────────────────────────
+  if (!isOwner) {
+    const copy = MODE_COPY[mode as AppMode] ?? MODE_COPY.personal;
+    const memberSlots = MEMBER_SLOTS_BY_MODE[mode as AppMode] ?? MEMBER_SLOTS_BY_MODE.personal;
+    return (
+      <View style={[styles.root, { backgroundColor: C.bg }]}>
+        {topBar}
+        <ScrollView
+          {...scrollFooter}
+          style={styles.scroll}
+          contentContainerStyle={{ paddingTop: insets.top + 8 + 52 + 8, paddingBottom: 49 + insets.bottom + 24 }}
+          showsVerticalScrollIndicator={false}
+          onScroll={onScroll}
+          scrollEventThrottle={scrollEventThrottle}
+        >
+          {/* Hero card */}
+          <View style={[styles.bookCard, { backgroundColor: C.surface }]}>
+            <IconSymbol name={copy.icon as any} size={32} color={C.label} />
+            <Text style={[styles.bookTitle, { color: C.label }]}>{copy.title}</Text>
+            <Text style={[styles.bookSubtitle, { color: C.secondary }]}>{copy.subtitle}</Text>
+            <View style={styles.durationRow}>
+              {durations.map(d => (
+                <View key={d} style={[styles.durationChip, { backgroundColor: C.bg, borderColor: C.separator }]}>
+                  <Text style={[styles.durationChipText, { color: C.secondary }]}>{d}</Text>
+                </View>
+              ))}
+            </View>
+            <Pressable
+              onPress={() => {
+                Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
+                router.push('/(tabs)/(main)/agenda/booking');
+              }}
+              style={[styles.bookBtn, { backgroundColor: C.label }]}
+            >
+              <Text style={[styles.bookBtnText, { color: C.bg }]}>Book Now</Text>
+            </Pressable>
+          </View>
+
+          {/* Available slots */}
+          <Text style={[styles.sectionLabel, { color: C.secondary, marginTop: 20 }]}>AVAILABLE THIS WEEK</Text>
+          {memberSlots.map(({ day, slots }) => (
+            <View key={day} style={[styles.dayCard, { backgroundColor: C.surface }]}>
+              <Text style={[styles.dayName, { color: C.label }]}>{day}</Text>
+              <View style={styles.dayMiddle}>
+                <View style={styles.pillWrap}>
+                  {slots.map(slot => (
+                    <Pressable
+                      key={slot}
+                      onPress={() => {
+                        Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+                        router.push('/(tabs)/(main)/agenda/booking');
+                      }}
+                      style={[styles.timePill, { backgroundColor: 'rgba(90,138,110,0.12)', borderColor: '#5A8A6E' }]}
+                    >
+                      <Text style={[styles.timePillText, { color: '#5A8A6E' }]}>{slot}</Text>
+                    </Pressable>
+                  ))}
+                </View>
+              </View>
+            </View>
+          ))}
+
+          <Text style={[styles.footerNote, { color: C.secondary }]}>
+            Tap a slot to start booking. Final confirmation is subject to approval.
+          </Text>
+        </ScrollView>
+      </View>
+    );
+  }
+
+  return (
+    <View style={[styles.root, { backgroundColor: C.bg }]}>
+      {topBar}
       {/* Body */}
       <ScrollView
         {...scrollFooter}
@@ -663,6 +809,25 @@ const styles = StyleSheet.create({
   },
   timePickerRow: { paddingVertical: 10, paddingHorizontal: 12, marginBottom: 2 },
   timePickerLabel: { fontSize: 15, fontWeight: '500' },
+
+  // Member book card
+  bookCard: {
+    margin: 16,
+    borderRadius: 16,
+    padding: 20,
+    alignItems: 'center',
+    gap: 8,
+  },
+  bookTitle: { fontSize: 18, fontWeight: '700', marginTop: 4 },
+  bookSubtitle: { fontSize: 14, textAlign: 'center', lineHeight: 20 },
+  durationRow: { flexDirection: 'row', gap: 8, marginTop: 4 },
+  durationChip: { borderWidth: 1, borderRadius: 8, paddingHorizontal: 12, paddingVertical: 6 },
+  durationChipText: { fontSize: 13, fontWeight: '500' },
+  bookBtn: {
+    marginTop: 8, borderRadius: 12, paddingVertical: 13, paddingHorizontal: 32,
+    alignItems: 'center', width: '100%',
+  },
+  bookBtnText: { fontSize: 15, fontWeight: '600' },
 
   applyButton: {
     borderWidth: 1,

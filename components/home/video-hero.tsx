@@ -259,6 +259,8 @@ function VideoHeroPlayer({
   const ctrlsTimer    = useRef<ReturnType<typeof setTimeout> | null>(null);
   const ctrlsVisRef   = useRef(false);
   ctrlsVisRef.current = ctrlsVisible;
+  const mountedRef    = useRef(true);
+  useEffect(() => { return () => { mountedRef.current = false; }; }, []);
 
   // Gestures
   const [ripple, setRipple] = useState<'left' | 'right' | null>(null);
@@ -291,10 +293,13 @@ function VideoHeroPlayer({
     const sub = player.addListener('playToEnd', () => {
       Animated.timing(slateOpacity, { toValue: 1, duration: 350, useNativeDriver: true }).start();
       setTimeout(() => {
+        if (!mountedRef.current) return;
         setVideoIndex(prev => {
           const next = (prev + 1) % uris.length;
-          player.replace(uris[next]);
-          setTimeout(() => player.play(), 400);
+          try {
+            player.replace(uris[next]);
+            setTimeout(() => { if (mountedRef.current) player.play(); }, 400);
+          } catch {}
           return next;
         });
         Animated.timing(slateOpacity, { toValue: 0, duration: 500, useNativeDriver: true }).start();

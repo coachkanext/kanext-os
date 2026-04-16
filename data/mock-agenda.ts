@@ -232,7 +232,7 @@ export const ACTIVITY_ITEMS: ActivityItem[] = [
   { id: 'act3', category: 'messages', icon: 'at', title: '@sammy mentioned you in #staff', description: 'Budget approval needed for equipment', timestamp: ago(90), read: true },
 
   // Calls
-  { id: 'act4', category: 'calls', icon: 'phone.arrow.down.left', title: 'Missed call from Marcus Johnson', description: 'Sports', timestamp: ago(15), read: false },
+  { id: 'act4', category: 'calls', icon: 'phone.arrow.down.left', title: 'Missed call from Marcus Johnson', description: 'Athletics', timestamp: ago(15), read: false },
   { id: 'act5', category: 'calls', icon: 'phone.fill', title: 'Voicemail from Athletic Director', description: '0:42 — regarding facility schedule', timestamp: ago(120), read: true },
   { id: 'act6', category: 'calls', icon: 'phone.arrow.down.left', title: 'Missed call from Sarah Williams', description: 'Business', timestamp: ago(180), read: true },
 

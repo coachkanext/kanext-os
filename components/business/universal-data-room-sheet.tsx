@@ -417,7 +417,7 @@ function PitchPackTab({
   ];
 
   const caseStudies = [
-    { name: 'Carroll Athletics', mode: 'Sports', status: 'Active deployment', detail: '13 sports programs, 2,340 app installs, ESPN+ broadcasts' },
+    { name: 'Carroll Athletics', mode: 'Athletics', status: 'Active deployment', detail: '13 sports programs, 2,340 app installs, ESPN+ broadcasts' },
     { name: '2819 Church', mode: 'Faith', status: 'Active deployment', detail: 'Giving rails, connect groups, pastoral care intelligence' },
     { name: 'Valuetainment Media', mode: 'Competition', status: 'Active deployment', detail: 'Race ops, standings, cap enforcement, broadcast integration' },
   ];
@@ -522,7 +522,7 @@ function ProductDemoTab({ colors }: { colors: typeof Colors.light }) {
   ];
 
   const views = [
-    { mode: 'Sports', count: 8, examples: 'Dashboard, Roster, Film Room, Game Day, Stats, Calendar, Recruiting, Development' },
+    { mode: 'Athletics', count: 8, examples: 'Dashboard, Roster, Film Room, Game Day, Stats, Calendar, Recruiting, Development' },
     { mode: 'Faith', count: 4, examples: 'Dashboard, Giving, Ministries, Connect Groups' },
     { mode: 'Competition', count: 4, examples: 'Dashboard, Series, Events, Standings' },
     { mode: 'Business', count: 3, examples: 'Dashboard, Data Room, Deal Workspaces' },

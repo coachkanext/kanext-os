@@ -3,7 +3,7 @@
  * voicemail greeting, Wi-Fi calling, caller ID.
  */
 
-import React, { useState, useMemo } from 'react';
+import React, { useState, useCallback, useMemo, useEffect, useRef } from 'react';
 import {
   View,
   Text,
@@ -11,13 +11,22 @@ import {
   Switch,
   ScrollView,
   StyleSheet,
+  Animated,
 } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import * as Haptics from 'expo-haptics';
+import { useFocusEffect, useRouter } from 'expo-router';
 
 import { IconSymbol } from '@/components/ui/icon-symbol';
+import { KMenuButton } from '@/components/ui/k-menu-button';
+import { RolePill } from '@/components/ui/role-pill';
 import { useAccentColor } from '@/hooks/use-accent-color';
+import { useScrollHeader } from '@/hooks/use-scroll-header';
 import { MODE_BADGE_COLORS, MY_KANEXT_NUMBERS } from '@/data/mock-phone';
 import { useColors, type ComponentColors } from '@/hooks/use-colors';
+import { openSidePanel } from '@/utils/global-side-panel';
+import { resetFooter } from '@/utils/global-footer-hide';
+import { useDemoRole } from '@/utils/demo-role-store';
 
 function Section({ title, children, styles }: { title: string; children: React.ReactNode; styles: ReturnType<typeof makeStyles> }) {
   return (
@@ -47,14 +56,25 @@ function NavRow({ icon, label, C, styles }: { icon: string; label: string; C: Co
   );
 }
 
+const TOP_BAR_H = 52;
+
 export default function PhoneSettingsScreen() {
   const insets = useSafeAreaInsets();
   const accent = useAccentColor();
   const C = useColors();
   const styles = useMemo(() => makeStyles(C), [C]);
+  const { opacity, onScroll, scrollEventThrottle } = useScrollHeader();
+  const [role, cycleRole, roleCycles] = useDemoRole('personal:kaytv');
+  const isOwner = role === roleCycles[0];
+  const router = useRouter();
+  const isOwnerRef = useRef(isOwner);
+  useEffect(() => {
+    if (isOwnerRef.current === isOwner) return;
+    isOwnerRef.current = isOwner;
+    router.navigate('/(tabs)/(main)/phone' as any);
+  }, [isOwner]);
 
-  const TOP_BAR_H = insets.top + 54;
-  const { opacity, onScroll, scrollEventThrottle } = useScrollHeader(TOP_BAR_H);
+  useFocusEffect(useCallback(() => { resetFooter(); }, []));
 
   const [wifiCalling, setWifiCalling] = useState(true);
   const [vibration, setVibration] = useState(true);
@@ -68,12 +88,22 @@ export default function PhoneSettingsScreen() {
   return (
     <View style={styles.container}>
       <Animated.View style={[styles.topBar, { paddingTop: insets.top, opacity }]}>
-        <View style={styles.header}>
-          <Text style={styles.title}>Settings</Text>
+        <View style={{ height: TOP_BAR_H, flexDirection: 'row', alignItems: 'center', paddingHorizontal: 16 }}>
+          <Pressable onPress={() => { Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light); openSidePanel(); }} hitSlop={8}>
+            <KMenuButton />
+          </Pressable>
+          <View style={{ flex: 1, alignItems: 'center' }}>
+            <View style={{ backgroundColor: C.surface, borderWidth: 1, borderColor: C.separator, borderRadius: 14, paddingHorizontal: 14, paddingVertical: 5 }}>
+              <Text style={{ fontSize: 13, fontWeight: '700', color: C.label }}>Settings</Text>
+            </View>
+          </View>
+          <View style={{ width: 80, alignItems: 'flex-end' }}>
+            <RolePill role={role} onPress={cycleRole} isPrimary={isOwner} />
+          </View>
         </View>
       </Animated.View>
 
-      <ScrollView style={styles.list} contentContainerStyle={{ paddingTop: TOP_BAR_H, paddingBottom: 100 }}
+      <ScrollView style={styles.list} contentContainerStyle={{ paddingTop: insets.top + TOP_BAR_H, paddingBottom: 100 }}
         showsVerticalScrollIndicator={false}
         onScroll={onScroll}
         scrollEventThrottle={scrollEventThrottle}>
@@ -182,8 +212,6 @@ export default function PhoneSettingsScreen() {
 const makeStyles = (C: ComponentColors) => StyleSheet.create({
   container: { flex: 1, backgroundColor: C.bg },
   topBar: { position: 'absolute', top: 0, left: 0, right: 0, zIndex: 10, backgroundColor: C.bg },
-  header: { paddingHorizontal: 20, paddingTop: 8, paddingBottom: 12 },
-  title: { fontSize: 28, fontWeight: '700', color: C.label },
   list: { flex: 1 },
   section: { marginBottom: 4 },
   sectionTitle: {

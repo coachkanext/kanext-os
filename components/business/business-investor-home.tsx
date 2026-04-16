@@ -42,7 +42,7 @@ interface DomainItem {
 const ACTIVE_DOMAINS: DomainItem[] = [
   {
     id: 'domain-sports',
-    name: 'Sports',
+    name: 'Athletics',
     icon: 'sportscourt.fill',
     description: 'Athletic program management for universities, clubs, and leagues.',
     status: 'live',

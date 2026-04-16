@@ -112,7 +112,7 @@ function EmptyState({ icon, text, colors: c }: { icon: string; text: string; col
 // =============================================================================
 
 const MODE_LABELS: Record<Mode, string> = {
-  sports: 'Sports',
+  sports: 'Athletics',
   business: 'Business',
   church: 'Faith',
   education: 'Education',

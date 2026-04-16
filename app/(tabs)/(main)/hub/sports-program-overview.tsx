@@ -1,647 +1,602 @@
 /**
- * Sports Program Overview — LU Men's Basketball.
- * Head Coach command center per spec §18.1.
- * Head Coach only (player role redirects to player dashboard).
+ * Sports Hub — Program Overview (Athletics Dashboard).
+ * Follows business.tsx layout: cover → logo overlap → identity → socials → sections.
+ * Head Coach: full management (edit cover, bio, content, roster, staff, links).
+ * Player: read-only program profile + Follow.
  */
 
-import React, { useCallback, useMemo, useState } from 'react';
+import React, { useState, useCallback } from 'react';
 import {
-  View, Text, Pressable, ScrollView, Image, StyleSheet, Animated,
+  View, Text, Pressable, ScrollView, StyleSheet, Animated,
+  TextInput, ActionSheetIOS, Platform, Alert, Image,
 } from 'react-native';
-import { BottomSheetScrollView } from '@gorhom/bottom-sheet';
 import * as Haptics from 'expo-haptics';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { useFocusEffect, useRouter } from 'expo-router';
+import { useFocusEffect } from 'expo-router';
 
 import { IconSymbol } from '@/components/ui/icon-symbol';
+import FontAwesome6 from '@expo/vector-icons/FontAwesome6';
 import { RolePill } from '@/components/ui/role-pill';
 import { KMenuButton } from '@/components/ui/k-menu-button';
-import { useColors, type ComponentColors } from '@/hooks/use-colors';
+import { BottomSheet } from '@/components/ui/bottom-sheet';
+import { useColors } from '@/hooks/use-colors';
+import { useScrollHeader } from '@/hooks/use-scroll-header';
 import { openSidePanel } from '@/utils/global-side-panel';
 import { resetFooter } from '@/utils/global-footer-hide';
 import { useDemoRole } from '@/utils/demo-role-store';
-import { useScrollHeader } from '@/hooks/use-scroll-header';
-import { BottomSheet } from '@/components/ui/bottom-sheet';
 
+const GAIN    = '#5A8A6E';
+const HEAT    = '#B85C5C';
+const CAUTION = '#B8943E';
 
-// ─── Data ─────────────────────────────────────────────────────────────────────
+const TOP_BAR_H   = 52;
+const LOGO_SIZE   = 80;
+const LOGO_OVR    = LOGO_SIZE / 2;
 
-const TEAM = {
-  name:      "LU Men's Basketball",
-  conf:      'SWS (GAAC) · Laney College, Oakland',
-  staff:     'HC: Middlebrooks · AC: Kalejaiye',
-  kr:        72,
-  offKR:     74.2,
-  defKR:     70.8,
-  pace:      98,
-  paceLabel: '98+',
-  sysFit:    53.3,
-  record:    '15-8',
-  d1Record:  '0-6',
-  tier:      'National Title Favorite',
-  offSystem: 'Spread PnR (75%) + Moreyball (25%)',
-  defSystem: 'Pressure Man (80%) + Zone (20%)',
+// ─── Static data ──────────────────────────────────────────────────────────────
+
+const PROGRAM = {
+  name:       "Lincoln Men's Basketball",
+  handle:     '@lmbb',
+  conf:       'GAAC · Laney College, Oakland',
+  followers:  1284,
 };
 
-const ATTENTION: { label: string; detail: string; accent: 'gain' | 'caution' | 'heat' | null; route: string }[] = [
-  { label: 'Williams (#1)', detail: 'Knee — cleared for offseason workouts', accent: 'caution', route: '/(tabs)/(main)/roster' },
-  { label: 'McKesey (#3)', detail: 'Eligibility ended — final season complete', accent: null, route: '/(tabs)/(main)/roster' },
-  { label: 'Transfer portal open', detail: '3 prospects match Spread PnR system (KR 72+)', accent: 'gain', route: '/(tabs)/(main)/recruits' },
+const INITIAL_BIO = '15-8 · SWS Regular Season Champions (Back-to-Back) · GAAC Tournament Champions. Building the standard at Lincoln University.';
+
+const SOCIAL_PLATFORMS = [
+  { name: 'Instagram', fa: 'instagram'  },
+  { name: 'X',         fa: 'x-twitter' },
+  { name: 'TikTok',    fa: 'tiktok'    },
+  { name: 'YouTube',   fa: 'youtube'   },
+] satisfies { name: string; fa: string }[];
+
+type FeaturedType = 'VIDEO' | 'POST' | 'EVENT';
+type FeaturedItem = { id: string; type: FeaturedType; title: string; sub: string };
+
+type GameResult = 'W' | 'L';
+type Game = { id: string; opp: string; result: GameResult; score: string; date: string; level: string };
+
+type RosterPlayer = { id: string; initials: string; name: string; number: string; pos: string; kr: number };
+
+type StaffMember = { id: string; initials: string; name: string; title: string };
+
+type Link = { id: string; icon: string; title: string; sub: string };
+
+const INIT_FEATURED: FeaturedItem[] = [
+  { id: 'f1', type: 'VIDEO', title: 'Season Highlights — 15-8 Championship Run', sub: '4.2K views'  },
+  { id: 'f2', type: 'POST',  title: 'Back-to-Back SWS Regular Season Champions', sub: '892 likes'   },
+  { id: 'f3', type: 'EVENT', title: 'End-of-Season Banquet',                     sub: 'May 3, 2026' },
 ];
 
-type HealthStatus = 'available' | 'limited' | 'out';
-interface Player {
-  initials: string; name: string; firstName: string; number: string;
-  pos: string; ht: string; wt: string; classYear: string;
-  kr: number; archetype: string;
-  status: HealthStatus; statusNote?: string;
-  eligibility: string;
-  stats: { ppg: number; rpg: number; apg: number; fgPct: string };
-}
-
-const STARTERS: Player[] = [
-  { initials: 'LK', name: 'Kalejaiye',  firstName: 'Laolu',        number: '11', pos: 'PG',    ht: "5'10", wt: '180', classYear: 'RS Sophomore', kr: 86, archetype: 'PnR Operator',           status: 'available', eligibility: '2 years',  stats: { ppg: 27.3, rpg: 2.9, apg: 2.9, fgPct: '.395' } },
-  { initials: 'BW', name: 'Williams',   firstName: 'Brandon',      number: '1',  pos: 'SG',    ht: "6'4",  wt: '185', classYear: 'Junior',       kr: 76, archetype: 'Off Wing Scorer',         status: 'limited',   statusNote: 'Knee', eligibility: '1+ years', stats: { ppg: 19.3, rpg: 6.5, apg: 3.2, fgPct: '.606' } },
-  { initials: 'CM', name: 'McKesey',    firstName: 'Claude',       number: '3',  pos: 'SG',    ht: "5'10", wt: '190', classYear: 'Grad Senior',  kr: 71, archetype: 'Combo Guard',             status: 'available', eligibility: '0 (final)', stats: { ppg: 12.4, rpg: 6.3, apg: 4.7, fgPct: '.411' } },
-  { initials: 'NC', name: 'Chatelain',  firstName: 'Nathan',       number: '15', pos: 'C',     ht: "6'7",  wt: '200', classYear: 'Freshman',     kr: 71, archetype: 'Stretch Big',             status: 'available', eligibility: '3 years',  stats: { ppg: 10.5, rpg: 6.6, apg: 1.1, fgPct: '.520' } },
-  { initials: 'AH', name: 'Hernandez',  firstName: 'Adrian',       number: '10', pos: 'SG',    ht: "5'11", wt: '185', classYear: 'RS Senior',    kr: 62, archetype: 'Sit. Shooter (streaky)', status: 'available', eligibility: '1 year',   stats: { ppg: 7.6,  rpg: 2.1, apg: 1.4, fgPct: '.414' } },
+const RECENT_GAMES: Game[] = [
+  { id: 'g1', opp: 'vs. Bishop State',   result: 'W', score: '94–71',  date: 'Mar 8',  level: 'USCAA'  },
+  { id: 'g2', opp: 'vs. Davis & Elkins', result: 'W', score: '101–83', date: 'Mar 5',  level: 'USCAA'  },
+  { id: 'g3', opp: 'vs. Georgetown KY',  result: 'W', score: '88–79',  date: 'Mar 1',  level: 'USCAA'  },
+  { id: 'g4', opp: 'vs. Pacific',        result: 'L', score: '64–112', date: 'Feb 22', level: 'D1'     },
+  { id: 'g5', opp: 'vs. CSUF',           result: 'L', score: '71–109', date: 'Feb 19', level: 'D1'     },
 ];
 
-const BENCH: Player[] = [
-  { initials: 'CP', name: 'Plantey',   firstName: 'Chris',        number: '2',  pos: 'G',     ht: "5'8",  wt: '170', classYear: 'RS Sophomore', kr: 61, archetype: 'Def Specialist',          status: 'available', eligibility: '2 years',  stats: { ppg: 3.2,  rpg: 1.1, apg: 1.5, fgPct: '.314' } },
-  { initials: 'SW', name: 'Wall',      firstName: 'Samuel',       number: '6',  pos: 'G',     ht: "6'0",  wt: '190', classYear: 'Freshman',     kr: 60, archetype: 'Sit. Shooter',            status: 'available', eligibility: '3 years',  stats: { ppg: 5.1,  rpg: 2.1, apg: 1.1, fgPct: '.500' } },
-  { initials: 'PD', name: 'Diomande',  firstName: 'Paul-Ismael',  number: '21', pos: 'PF',    ht: "6'6",  wt: '215', classYear: 'RS Junior',    kr: 55, archetype: 'Developmental',           status: 'available', eligibility: '1 year',   stats: { ppg: 3.2,  rpg: 2.6, apg: 0.2, fgPct: '.395' } },
+const INIT_ROSTER: RosterPlayer[] = [
+  { id: 'r1', initials: 'LK', name: 'Kalejaiye', number: '11', pos: 'PG', kr: 86 },
+  { id: 'r2', initials: 'BW', name: 'Williams',  number: '1',  pos: 'SG', kr: 76 },
+  { id: 'r3', initials: 'CM', name: 'McKesey',   number: '3',  pos: 'SG', kr: 71 },
+  { id: 'r4', initials: 'NC', name: 'Chatelain', number: '15', pos: 'C',  kr: 71 },
+  { id: 'r5', initials: 'AH', name: 'Hernandez', number: '10', pos: 'SG', kr: 62 },
+  { id: 'r6', initials: 'CP', name: 'Plantey',   number: '2',  pos: 'G',  kr: 61 },
+  { id: 'r7', initials: 'SW', name: 'Wall',       number: '6',  pos: 'G',  kr: 60 },
 ];
 
+const INIT_STAFF: StaffMember[] = [
+  { id: 's1', initials: 'WM', name: 'William Middlebrooks', title: 'Head Coach'      },
+  { id: 's2', initials: 'SK', name: 'Sammy Kalejaiye',      title: 'Assistant Coach' },
+];
 
-type PerfTab = 'uscaa' | 'naia' | 'd1';
-type Leader = { name: string; val: number };
-interface LevelStats {
-  record: string; gp: number;
-  ppg: number; oppPpg: number; margin: string;
-  fgPct: string; threePct: string; ftPct: string;
-  rpg: number; apg: number; topg: number;
-  leaders: { pts: Leader[]; reb: Leader[]; ast: Leader[]; stl: Leader[] };
-}
+const INIT_LINKS: Link[] = [
+  { id: 'l1', icon: 'calendar',          title: 'Full Schedule',      sub: 'All 2025–26 games'     },
+  { id: 'l2', icon: 'doc.text.fill',     title: 'Media Guide',        sub: 'Stats, roster, history' },
+  { id: 'l3', icon: 'person.3.fill',     title: 'Roster',             sub: '12 players'             },
+  { id: 'l4', icon: 'chart.bar.fill',    title: 'Statistics',         sub: 'Full season data'       },
+  { id: 'l5', icon: 'tray.fill',         title: 'Recruiting Board',   sub: '8 prospects tracked'    },
+];
 
-const LEVEL_STATS: Record<PerfTab, LevelStats> = {
-  uscaa: {
-    record: '12-0', gp: 12,
-    ppg: 100.2, oppPpg: 75.0, margin: '+25.2',
-    fgPct: '.510', threePct: '.327', ftPct: '.783',
-    rpg: 36.2, apg: 19.4, topg: 13.4,
-    leaders: {
-      pts: [{ name: 'Kalejaiye', val: 27.8 }, { name: 'Williams', val: 22.0 }, { name: 'McKesey', val: 14.2 }, { name: 'Chatelain', val: 11.4 }],
-      reb: [{ name: 'Williams',  val: 10.4 }, { name: 'Chatelain', val: 9.0  }, { name: 'McKesey',  val: 8.2  }, { name: 'Wall',      val: 4.3  }],
-      ast: [{ name: 'McKesey',   val: 6.2  }, { name: 'Kalejaiye', val: 4.0  }, { name: 'Williams', val: 3.2  }],
-      stl: [{ name: 'Kalejaiye', val: 2.8  }, { name: 'Williams',  val: 2.4  }, { name: 'McKesey',  val: 1.8  }],
-    },
-  },
-  naia: {
-    record: '3-2', gp: 5,
-    ppg: 98.0, oppPpg: 96.8, margin: '+1.2',
-    fgPct: '.438', threePct: '.303', ftPct: '.766',
-    rpg: 31.2, apg: 16.2, topg: 13.4,
-    leaders: {
-      pts: [{ name: 'Kalejaiye', val: 31.8 }, { name: 'Williams',  val: 22.0 }, { name: 'McKesey',   val: 15.8 }, { name: 'Hernandez', val: 11.6 }],
-      reb: [{ name: 'Williams',  val: 7.5  }, { name: 'McKesey',   val: 7.2  }, { name: 'Chatelain', val: 6.4  }, { name: 'Kalejaiye', val: 4.0  }],
-      ast: [{ name: 'McKesey',   val: 4.4  }, { name: 'Williams',  val: 3.8  }, { name: 'Kalejaiye', val: 2.6  }],
-      stl: [{ name: 'Williams',  val: 3.5  }, { name: 'McKesey',   val: 1.8  }, { name: 'Hernandez', val: 1.4  }],
-    },
-  },
-  d1: {
-    record: '0-6', gp: 6,
-    ppg: 64.6, oppPpg: 119.2, margin: '-54.6',
-    fgPct: '.370', threePct: '.321', ftPct: '.843',
-    rpg: 19.6, apg: 12.4, topg: 17.8,
-    leaders: {
-      pts: [{ name: 'Kalejaiye', val: 22.4 }, { name: 'Williams',  val: 14.6 }, { name: 'Chatelain', val: 10.2 }, { name: 'McKesey',  val: 7.2 }],
-      reb: [{ name: 'Chatelain', val: 4.4  }, { name: 'McKesey',   val: 3.6  }, { name: 'Kalejaiye', val: 2.2  }, { name: 'Williams', val: 2.0 }],
-      ast: [{ name: 'McKesey',   val: 3.6  }, { name: 'Williams',  val: 2.8  }, { name: 'Kalejaiye', val: 2.0  }],
-      stl: [{ name: 'Williams',  val: 2.0  }, { name: 'McKesey',   val: 1.0  }, { name: 'Kalejaiye', val: 0.4  }],
-    },
-  },
-};
+// ─── Section header ───────────────────────────────────────────────────────────
 
-function healthColor(s: HealthStatus, C: ComponentColors): string {
-  return s === 'available' ? C.gain : s === 'limited' ? C.caution : C.heat;
-}
-function krColor(kr: number, C: ComponentColors): string {
-  return kr >= 80 ? C.accent : kr >= 70 ? C.label : kr >= 60 ? C.secondary : C.heat;
-}
-
-// ─── PlayerCircle ─────────────────────────────────────────────────────────────
-
-function PlayerCircle({ player, onPress }: { player: Player; onPress: (p: Player) => void }) {
-  const C = useColors();
+function SH({ title, C }: { title: string; C: any }) {
   return (
-    <Pressable
-      style={{ alignItems: 'center', gap: 4, width: 64 }}
-      onPress={() => { Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light); onPress(player); }}
-    >
-      <View style={{
-        width: 52, height: 52, borderRadius: 26, borderWidth: 2.5,
-        borderColor: healthColor(player.status, C), backgroundColor: C.bg,
-        alignItems: 'center', justifyContent: 'center',
-      }}>
-        <Text style={{ fontSize: 14, fontWeight: '800', color: C.label }}>{player.initials}</Text>
-        <Text style={{ fontSize: 9, color: C.secondary, marginTop: 1 }}>#{player.number}</Text>
-      </View>
-      <Text style={{ fontSize: 10, fontWeight: '600', color: C.label, textAlign: 'center' }} numberOfLines={1}>
-        {player.name}
-      </Text>
-      <Text style={{ fontSize: 9, color: C.accent, fontWeight: '700' }}>KR {player.kr}</Text>
-    </Pressable>
+    <Text style={{
+      fontSize: 11, fontWeight: '700', letterSpacing: 0.8, textTransform: 'uppercase',
+      color: C.secondary, marginBottom: 12, marginTop: 4,
+    }}>
+      {title}
+    </Text>
   );
 }
 
-// ─── Main ─────────────────────────────────────────────────────────────────────
+// ─── Main screen ──────────────────────────────────────────────────────────────
 
 export default function SportsProgramOverview() {
   const C      = useColors();
   const insets = useSafeAreaInsets();
-  const router = useRouter();
-  const [role, cycleRole, roleCycles] = useDemoRole('sports:hub');
-  const isHeadCoach = role === roleCycles[0];
-  const s = useMemo(() => makeStyles(C), [C]);
-  const TOP_BAR_H = insets.top + 54;
-  const { opacity, onScroll, scrollEventThrottle } = useScrollHeader(TOP_BAR_H);
+  const topBarH = insets.top + TOP_BAR_H;
+  const COVER_H = 220 + topBarH;
 
-  useFocusEffect(useCallback(() => {
-    resetFooter();
-    if (!isHeadCoach) {
-      router.replace('/(tabs)/(main)/hub/sports-player-dashboard' as any);
-    }
-  }, [isHeadCoach]));
+  const [role, toggleRole, roleCycles] = useDemoRole('sports:hub');
+  const isCoach = role === roleCycles[0];
 
-  const go = (route: string) => {
+  const { opacity, onScroll, scrollEventThrottle } = useScrollHeader(topBarH);
+
+  useFocusEffect(useCallback(() => { resetFooter(); }, []));
+
+  // ── Editable state ──────────────────────────────────────────────────────────
+  const [bio,      setBio]      = useState(INITIAL_BIO);
+  const [featured, setFeatured] = useState<FeaturedItem[]>(INIT_FEATURED);
+  const [roster,   setRoster]   = useState<RosterPlayer[]>(INIT_ROSTER);
+  const [staff,    setStaff]    = useState<StaffMember[]>(INIT_STAFF);
+  const [links,    setLinks]    = useState<Link[]>(INIT_LINKS);
+  const [followed, setFollowed] = useState(false);
+
+  // Add-sheets
+  const [addFeatOpen,  setAddFeatOpen]  = useState(false);
+  const [addLinkOpen,  setAddLinkOpen]  = useState(false);
+
+  const [newFeatType,  setNewFeatType]  = useState<FeaturedType>('VIDEO');
+  const [newFeatTitle, setNewFeatTitle] = useState('');
+  const [newFeatSub,   setNewFeatSub]   = useState('');
+  const [newLinkTitle, setNewLinkTitle] = useState('');
+  const [newLinkSub,   setNewLinkSub]   = useState('');
+
+  // ── Coach action helpers ─────────────────────────────────────────────────────
+
+  function featuredMenu(item: FeaturedItem) {
     Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
-    router.push(route as any);
-  };
+    if (Platform.OS === 'ios') {
+      ActionSheetIOS.showActionSheetWithOptions(
+        { options: ['Edit Title', 'Remove', 'Cancel'], cancelButtonIndex: 2, destructiveButtonIndex: 1 },
+        (idx) => {
+          if (idx === 0) {
+            Alert.prompt('Edit Title', '', (t) => {
+              if (t?.trim()) setFeatured(p => p.map(f => f.id === item.id ? { ...f, title: t.trim() } : f));
+            }, 'plain-text', item.title);
+          } else if (idx === 1) {
+            setFeatured(p => p.filter(f => f.id !== item.id));
+          }
+        },
+      );
+    } else {
+      Alert.alert(item.title, '', [
+        { text: 'Remove', style: 'destructive', onPress: () => setFeatured(p => p.filter(f => f.id !== item.id)) },
+        { text: 'Cancel', style: 'cancel' },
+      ]);
+    }
+  }
 
-  const [selectedPlayer, setSelectedPlayer] = useState<Player | null>(null);
-  const [perfSheetVisible, setPerfSheetVisible] = useState(false);
-  const [perfTab, setPerfTab] = useState<PerfTab>('uscaa');
+  function staffMenu(member: StaffMember) {
+    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+    if (Platform.OS === 'ios') {
+      ActionSheetIOS.showActionSheetWithOptions(
+        { options: ['Edit Title', 'Remove', 'Cancel'], cancelButtonIndex: 2, destructiveButtonIndex: 1 },
+        (idx) => {
+          if (idx === 0) {
+            Alert.prompt('Edit Title', '', (t) => {
+              if (t?.trim()) setStaff(p => p.map(s => s.id === member.id ? { ...s, title: t.trim() } : s));
+            }, 'plain-text', member.title);
+          } else if (idx === 1) {
+            setStaff(p => p.filter(s => s.id !== member.id));
+          }
+        },
+      );
+    } else {
+      Alert.alert(member.name, '', [
+        { text: 'Remove', style: 'destructive', onPress: () => setStaff(p => p.filter(s => s.id !== member.id)) },
+        { text: 'Cancel', style: 'cancel' },
+      ]);
+    }
+  }
 
-  const allPlayers = [...STARTERS, ...BENCH];
-  const healthy    = allPlayers.filter(p => p.status === 'available').length;
-  const limited    = allPlayers.filter(p => p.status === 'limited');
-  const out        = allPlayers.filter(p => p.status === 'out').length;
+  function linkMenu(item: Link) {
+    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+    if (Platform.OS === 'ios') {
+      ActionSheetIOS.showActionSheetWithOptions(
+        { options: ['Edit Title', 'Remove', 'Cancel'], cancelButtonIndex: 2, destructiveButtonIndex: 1 },
+        (idx) => {
+          if (idx === 0) {
+            Alert.prompt('Edit Title', '', (t) => {
+              if (t?.trim()) setLinks(p => p.map(l => l.id === item.id ? { ...l, title: t.trim() } : l));
+            }, 'plain-text', item.title);
+          } else if (idx === 1) {
+            setLinks(p => p.filter(l => l.id !== item.id));
+          }
+        },
+      );
+    } else {
+      Alert.alert(item.title, '', [
+        { text: 'Remove', style: 'destructive', onPress: () => setLinks(p => p.filter(l => l.id !== item.id)) },
+        { text: 'Cancel', style: 'cancel' },
+      ]);
+    }
+  }
+
+  function pickFeatType() {
+    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+    const types: FeaturedType[] = ['VIDEO', 'POST', 'EVENT'];
+    if (Platform.OS === 'ios') {
+      ActionSheetIOS.showActionSheetWithOptions(
+        { options: [...types, 'Cancel'], cancelButtonIndex: 3 },
+        (idx) => { if (idx < 3) setNewFeatType(types[idx]); },
+      );
+    }
+  }
+
+  function handleAddFeatured() {
+    if (!newFeatTitle.trim()) return;
+    setFeatured(p => [...p, { id: `f-${Date.now()}`, type: newFeatType, title: newFeatTitle.trim(), sub: newFeatSub.trim() }]);
+    setNewFeatTitle(''); setNewFeatSub(''); setNewFeatType('VIDEO');
+    setAddFeatOpen(false);
+    Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
+  }
+
+  function handleAddLink() {
+    if (!newLinkTitle.trim()) return;
+    setLinks(p => [...p, { id: `l-${Date.now()}`, icon: 'link', title: newLinkTitle.trim(), sub: newLinkSub.trim() }]);
+    setNewLinkTitle(''); setNewLinkSub('');
+    setAddLinkOpen(false);
+    Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
+  }
+
+  // ── Render ──────────────────────────────────────────────────────────────────
 
   return (
-    <View style={[s.root, { backgroundColor: C.bg }]}>
+    <View style={{ flex: 1, backgroundColor: C.bg }}>
 
-      {/* ── Top bar ──────────────────────────────────────────────────────── */}
-      <Animated.View style={[s.topBarOuter, { paddingTop: insets.top, backgroundColor: C.bg, borderBottomColor: C.separator, opacity }]}>
-        <View style={s.topBar}>
-          <Pressable
-            style={s.kBtn}
-            onPress={() => { Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light); openSidePanel(); }}
-            hitSlop={8}
-          >
-            <KMenuButton />
-          </Pressable>
-          <View style={{ flex: 1, alignItems: 'center' }}>
-            <View style={[s.titlePill, { backgroundColor: C.surface, borderColor: C.separator }]}>
-              <Text style={[s.titleText, { color: C.label }]}>{TEAM.name.toUpperCase()}</Text>
-            </View>
+      {/* ── Top bar — transparent overlay, floats over cover ── */}
+      <Animated.View style={{
+        position: 'absolute', top: 0, left: 0, right: 0, zIndex: 20,
+        paddingTop: insets.top, opacity,
+      }} pointerEvents="box-none">
+        <View style={{ height: TOP_BAR_H, flexDirection: 'row', alignItems: 'center', paddingHorizontal: 16 }} pointerEvents="box-none">
+          <View style={{ width: 80, justifyContent: 'center' }} pointerEvents="auto">
+            <Pressable onPress={() => { Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light); openSidePanel(); }}>
+              <KMenuButton />
+            </Pressable>
           </View>
-          <RolePill role={role} onPress={cycleRole} isPrimary={false} />
+          <View style={{ flex: 1 }} pointerEvents="none" />
+          <View style={{ alignItems: 'flex-end' }} pointerEvents="auto">
+            <RolePill role={role} onPress={() => { Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light); toggleRole(); }} isPrimary={isCoach} />
+          </View>
         </View>
       </Animated.View>
 
       <ScrollView
-        showsVerticalScrollIndicator={false}
-        contentContainerStyle={{ paddingTop: TOP_BAR_H + 16, paddingBottom: 120 }}
         onScroll={onScroll}
         scrollEventThrottle={scrollEventThrottle}
+        contentContainerStyle={{ paddingBottom: insets.bottom + 80 }}
+        showsVerticalScrollIndicator={false}
       >
+        {/* ── Cover + logo ── */}
+        <View style={{ position: 'relative', marginBottom: LOGO_OVR + 12 }}>
+          <View style={{ height: COVER_H, overflow: 'hidden' }}>
+            <Image
+              source={{ uri: 'https://picsum.photos/seed/lu-basketball/900/500' }}
+              style={{ width: '100%', height: '100%' }}
+              resizeMode="cover"
+            />
+            {isCoach && (
+              <Pressable
+                onPress={() => Alert.alert('Edit Cover Photo', 'Tap to change cover (demo)')}
+                style={{
+                  position: 'absolute', bottom: 10, right: 12,
+                  backgroundColor: 'rgba(0,0,0,0.50)', borderRadius: 8,
+                  paddingHorizontal: 10, paddingVertical: 5,
+                  flexDirection: 'row', alignItems: 'center', gap: 5,
+                }}
+              >
+                <IconSymbol name="camera.fill" size={12} color="#fff" />
+                <Text style={{ fontSize: 11, fontWeight: '600', color: '#fff' }}>Edit Cover</Text>
+              </Pressable>
+            )}
+          </View>
 
-        {/* ── Card 1: Team KR ──────────────────────────────────────────── */}
-        <View style={s.section}>
-          <Pressable
-            style={({ pressed }) => [s.krCard, { backgroundColor: C.surface, borderWidth: StyleSheet.hairlineWidth, borderColor: C.separator }, pressed && { opacity: 0.85 }]}
-            onPress={() => { Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light); setPerfSheetVisible(true); }}
-          >
-            <View style={s.krCardTop}>
-              {/* KR Ring */}
-              <View style={s.krRingWrap}>
-                <View style={[s.krRing, { borderColor: C.accent }]}>
-                  <Text style={[s.krRingNumber, { color: C.accent }]}>{TEAM.kr}</Text>
-                  <Text style={[s.krRingLabel, { color: C.secondary }]}>TEAM KR</Text>
-                </View>
-              </View>
-              {/* Right side */}
-              <View style={s.krCardRight}>
-                <Text style={[s.krTierLabel, { color: C.accent }]}>{TEAM.tier}</Text>
-                <Text style={[s.krSystemText, { color: C.secondary }]}>(USCAA)</Text>
-              </View>
-            </View>
-            <View style={[s.krCardDivider, { backgroundColor: C.separator }]} />
-            {/* Bottom metric row */}
-            <View style={s.krMetricRow}>
-              {[
-                { label: 'OFF KR',     value: TEAM.offKR, display: String(TEAM.offKR) },
-                { label: 'DEF KR',     value: TEAM.defKR, display: String(TEAM.defKR) },
-                { label: 'CONFIDENCE', value: 60,         display: '60%'              },
-              ].map((m, i, arr) => (
-                <React.Fragment key={m.label}>
-                  <View style={s.krMetricCell}>
-                    <Text style={[s.krMetricValue, { color: krColor(m.value, C) }]}>{m.display}</Text>
-                    <Text style={[s.krMetricLabel, { color: C.secondary }]}>{m.label}</Text>
-                  </View>
-                  {i < arr.length - 1 && <View style={[s.krMetricDivider, { backgroundColor: C.separator }]} />}
-                </React.Fragment>
-              ))}
-            </View>
-            {/* Tap hint */}
-            <View style={{ flexDirection: 'row', justifyContent: 'flex-end', alignItems: 'center', marginTop: 10 }}>
-              <Text style={[{ fontSize: 10, color: C.secondary }]}>Full breakdown</Text>
-              <IconSymbol name="chevron.right" size={10} color={C.secondary} style={{ marginLeft: 3 }} />
-            </View>
-          </Pressable>
-        </View>
-
-        {/* ── Card 2: Season complete (contextual next action) ─────────── */}
-        <View style={s.section}>
-          <Text style={[s.sh, { color: C.secondary }]}>SEASON STATUS</Text>
-          <View style={[s.fightCard, { backgroundColor: C.surface, borderWidth: StyleSheet.hairlineWidth, borderColor: C.separator }]}>
-            {/* Header row */}
-            <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: 14 }}>
-              <Text style={[{ fontSize: 16, fontWeight: '700', color: C.label }]}>Season complete</Text>
-              <View style={[s.levelPill, { backgroundColor: C.bg, borderColor: C.separator }]}>
-                <Text style={[s.levelPillText, { color: C.secondary }]}>Game 23 · Mar 8</Text>
-              </View>
-            </View>
-            {/* Final record row */}
-            <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8, marginBottom: 12 }}>
-              <View style={[s.recordPill, { backgroundColor: C.gainBg, borderColor: C.gain + '44' }]}>
-                <Text style={[s.recordPillText, { color: C.gain }]}>15-8 Final</Text>
-              </View>
-              <View style={[s.recordPill, { backgroundColor: C.gainBg, borderColor: C.gain + '44' }]}>
-                <Text style={[s.recordPillText, { color: C.gain }]}>15-2 Non-D1</Text>
-              </View>
-              <View style={[s.recordPill, { backgroundColor: C.heatBg, borderColor: C.heat + '44' }]}>
-                <Text style={[s.recordPillText, { color: C.heat }]}>0-6 D1</Text>
-              </View>
-            </View>
-            {/* Championship row */}
-            <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: 8, marginBottom: 16 }}>
-              <View style={[s.recordPill, { backgroundColor: C.cautionBg, borderColor: C.caution + '44' }]}>
-                <Text style={[s.recordPillText, { color: C.caution }]}>🏆 SWS Regular Season (Back-to-Back)</Text>
-              </View>
-              <View style={[s.recordPill, { backgroundColor: C.cautionBg, borderColor: C.caution + '44' }]}>
-                <Text style={[s.recordPillText, { color: C.caution }]}>🏆 GAAC Tournament Champions</Text>
-              </View>
-            </View>
-            {/* Offseason link */}
+          {/* Team logo — bottom-left, overlapping */}
+          <View style={{ position: 'absolute', bottom: -LOGO_OVR, left: 20 }}>
             <Pressable
-              style={{ flexDirection: 'row', alignItems: 'center', gap: 6 }}
-              onPress={() => go('/(tabs)/(main)/recruits')}
+              onPress={() => isCoach && Alert.alert('Edit Logo', 'Tap to change logo (demo)')}
+              disabled={!isCoach}
             >
-              <Text style={[{ fontSize: 13, fontWeight: '600', color: C.label }]}>Offseason mode</Text>
-              <Text style={[{ fontSize: 12, color: C.secondary }]}>· Portal & recruiting open</Text>
-              <IconSymbol name="chevron.right" size={11} color={C.secondary} />
+              <View style={{
+                width: LOGO_SIZE, height: LOGO_SIZE, borderRadius: LOGO_SIZE / 2,
+                backgroundColor: C.label, borderWidth: 3, borderColor: C.bg,
+                alignItems: 'center', justifyContent: 'center',
+              }}>
+                <Text style={{ fontSize: 30, fontWeight: '900', color: C.bg }}>LM</Text>
+              </View>
+              {isCoach && (
+                <View style={{
+                  position: 'absolute', bottom: 0, right: 0,
+                  width: 24, height: 24, borderRadius: 12,
+                  backgroundColor: C.label, borderWidth: 2, borderColor: C.bg,
+                  alignItems: 'center', justifyContent: 'center',
+                }}>
+                  <IconSymbol name="camera.fill" size={11} color={C.bg} />
+                </View>
+              )}
             </Pressable>
           </View>
         </View>
 
-        {/* ── Card 3: Roster strip ─────────────────────────────────────── */}
-        <View style={s.section}>
-          <Text style={[s.sh, { color: C.secondary }]}>ROSTER</Text>
-          <View style={[s.card, { backgroundColor: C.surface }]}>
-
-            {/* Horizontal strip — starters | divider | bench */}
-            <ScrollView horizontal showsHorizontalScrollIndicator={false}>
-              <View style={{ flexDirection: 'row', alignItems: 'flex-start', gap: 12 }}>
-                {STARTERS.map(p => (
-                  <PlayerCircle key={p.initials} player={p} onPress={setSelectedPlayer} />
-                ))}
-                {/* Starter / bench divider */}
-                <View style={[{ width: StyleSheet.hairlineWidth, alignSelf: 'stretch', marginHorizontal: 4, backgroundColor: C.separator }]} />
-                {BENCH.map(p => (
-                  <PlayerCircle key={p.initials} player={p} onPress={setSelectedPlayer} />
-                ))}
-              </View>
-            </ScrollView>
-
-            {/* Health summary */}
-            <Text style={[s.healthSummary, { color: C.secondary, marginTop: 12 }]}>
-              {healthy} healthy
-              {limited.length > 0 && ` · ${limited.length} questionable: ${limited.map(p => `${p.name} (#${p.number}) - ${p.statusNote ?? 'limited'}`).join(', ')}`}
-              {out > 0 && ` · ${out} out`}
-            </Text>
-          </View>
-        </View>
-
-        {/* ── Player detail bottom sheet ─────────────────────────────────── */}
-        <BottomSheet
-          visible={selectedPlayer !== null}
-          onClose={() => setSelectedPlayer(null)}
-          useModal
-        >
-          {selectedPlayer && (
-            <BottomSheetScrollView contentContainerStyle={{ padding: 20, paddingBottom: 40 }}>
-              {/* Header */}
-              <View style={{ flexDirection: 'row', alignItems: 'center', gap: 14, marginBottom: 20 }}>
-                <View style={[s.sheetAvatar, { borderColor: healthColor(selectedPlayer.status, C), backgroundColor: C.bg }]}>
-                  <Text style={[{ fontSize: 22, fontWeight: '800', color: C.label }]}>{selectedPlayer.initials}</Text>
-                </View>
-                <View style={{ flex: 1 }}>
-                  <Text style={[{ fontSize: 20, fontWeight: '800', color: C.label }]}>
-                    #{selectedPlayer.number} {selectedPlayer.firstName} {selectedPlayer.name}
-                  </Text>
-                  <Text style={[{ fontSize: 13, color: C.secondary, marginTop: 2 }]}>
-                    {selectedPlayer.pos} · {selectedPlayer.ht} / {selectedPlayer.wt} lbs · {selectedPlayer.classYear}
-                  </Text>
-                </View>
-              </View>
-
-              {/* KR + archetype */}
-              <View style={[s.sheetKrRow, { backgroundColor: C.bg, borderColor: C.separator }]}>
-                <View style={[s.sheetKrRing, { borderColor: C.accent }]}>
-                  <Text style={[{ fontSize: 22, fontWeight: '900', color: C.accent }]}>{selectedPlayer.kr}</Text>
-                  <Text style={[{ fontSize: 8, fontWeight: '700', color: C.secondary, letterSpacing: 0.8 }]}>KR</Text>
-                </View>
-                <View style={{ flex: 1 }}>
-                  <Text style={[{ fontSize: 13, fontWeight: '700', color: C.label }]}>{selectedPlayer.archetype}</Text>
-                  <Text style={[{ fontSize: 11, color: C.secondary, marginTop: 2 }]}>Eligibility: {selectedPlayer.eligibility}</Text>
-                </View>
-                {selectedPlayer.status !== 'available' && (
-                  <View style={[{ borderRadius: 10, paddingHorizontal: 8, paddingVertical: 3, backgroundColor: healthColor(selectedPlayer.status, C) + '22' }]}>
-                    <Text style={[{ fontSize: 11, fontWeight: '700', color: healthColor(selectedPlayer.status, C) }]}>
-                      {selectedPlayer.status === 'limited' ? `Questionable · ${selectedPlayer.statusNote}` : 'Out'}
-                    </Text>
-                  </View>
-                )}
-              </View>
-
-              {/* Stats */}
-              <Text style={[s.sh, { color: C.secondary, marginTop: 16, marginBottom: 10 }]}>SEASON STATS (ALL LEVELS)</Text>
-              <View style={[{ flexDirection: 'row', backgroundColor: C.surface, borderRadius: 12 }]}>
-                {[
-                  { label: 'PPG', value: selectedPlayer.stats.ppg },
-                  { label: 'RPG', value: selectedPlayer.stats.rpg },
-                  { label: 'APG', value: selectedPlayer.stats.apg },
-                  { label: 'FG%', value: selectedPlayer.stats.fgPct },
-                ].map((stat, i, arr) => (
-                  <View
-                    key={stat.label}
-                    style={[
-                      { flex: 1, alignItems: 'center', paddingVertical: 14 },
-                      i < arr.length - 1 && { borderRightWidth: StyleSheet.hairlineWidth, borderRightColor: C.separator },
-                    ]}
-                  >
-                    <Text style={[{ fontSize: 20, fontWeight: '800', color: C.label }]}>{stat.value}</Text>
-                    <Text style={[{ fontSize: 10, fontWeight: '600', color: C.secondary, letterSpacing: 0.5, marginTop: 2 }]}>{stat.label}</Text>
-                  </View>
-                ))}
-              </View>
-
-              {/* View full profile CTA */}
-              <Pressable
-                style={[s.sheetCta, { backgroundColor: C.label }]}
-                onPress={() => {
-                  setSelectedPlayer(null);
-                  go('/(tabs)/(main)/roster');
-                }}
-              >
-                <Text style={[{ fontSize: 15, fontWeight: '700', color: C.bg }]}>View full profile</Text>
-                <IconSymbol name="chevron.right" size={14} color={C.bg} />
-              </Pressable>
-            </BottomSheetScrollView>
+        {/* ── Identity block ── */}
+        <View style={{ paddingHorizontal: 20, marginBottom: 14 }}>
+          <Text style={{ fontSize: 20, fontWeight: '700', color: C.label, marginBottom: 2 }}>{PROGRAM.name}</Text>
+          <Text style={{ fontSize: 14, color: C.secondary, marginBottom: 2 }}>{PROGRAM.handle}</Text>
+          <Text style={{ fontSize: 13, color: C.secondary, marginBottom: 8 }}>{PROGRAM.conf}</Text>
+          {isCoach ? (
+            <TextInput
+              value={bio}
+              onChangeText={(t) => t.length <= 160 && setBio(t)}
+              multiline
+              style={{ fontSize: 14, color: C.label, lineHeight: 20 }}
+              placeholder="Add a bio..."
+              placeholderTextColor={C.secondary}
+            />
+          ) : (
+            <Text style={{ fontSize: 14, color: C.label, lineHeight: 20, opacity: 0.85 }}>{bio}</Text>
           )}
-        </BottomSheet>
-
-        {/* ── Card 4: Attention items ──────────────────────────────────── */}
-        <View style={s.section}>
-          <Text style={[s.sh, { color: C.secondary }]}>NEEDS ATTENTION</Text>
-          <View style={[s.card, { backgroundColor: C.surface }]}>
-            {ATTENTION.map((item, i) => (
-              <Pressable
-                key={item.label}
-                style={[
-                  { flexDirection: 'row', alignItems: 'center', paddingVertical: 11, gap: 10 },
-                  i < ATTENTION.length - 1 && { borderBottomWidth: StyleSheet.hairlineWidth, borderBottomColor: C.separator },
-                ]}
-                onPress={() => go(item.route)}
-              >
-                <View style={[{ width: 6, height: 6, borderRadius: 3, backgroundColor: item.accent ? C[item.accent] : C.secondary, marginLeft: 2 }]} />
-                <View style={{ flex: 1 }}>
-                  <Text style={[{ fontSize: 13, fontWeight: '600', color: C.label }]}>{item.label}</Text>
-                  <Text style={[{ fontSize: 12, color: C.secondary, marginTop: 1 }]}>{item.detail}</Text>
-                </View>
-                <IconSymbol name="chevron.right" size={11} color={C.secondary} />
-              </Pressable>
-            ))}
-          </View>
+          {isCoach && (
+            <Text style={{ fontSize: 11, color: C.secondary, marginTop: 4 }}>{bio.length}/160</Text>
+          )}
         </View>
 
-        {/* ── Season stats bottom sheet (from KR card tap) ──────────── */}
-        <BottomSheet
-          visible={perfSheetVisible}
-          onClose={() => setPerfSheetVisible(false)}
-          useModal
-        >
-          <BottomSheetScrollView contentContainerStyle={{ padding: 20, paddingBottom: 40 }}>
-            <Text style={[{ fontSize: 18, fontWeight: '800', color: C.label, marginBottom: 16 }]}>Season statistics</Text>
+        {/* ── Followers row ── */}
+        <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', paddingHorizontal: 20, marginBottom: 18 }}>
+          <Text style={{ fontSize: 14, color: C.secondary }}>
+            <Text style={{ fontWeight: '700', color: C.label }}>{PROGRAM.followers.toLocaleString()}</Text>{' followers'}
+          </Text>
+          {isCoach ? (
+            <Pressable
+              style={({ pressed }) => ({ paddingHorizontal: 20, paddingVertical: 8, borderRadius: 20, borderWidth: 1.5, borderColor: C.separator, opacity: pressed ? 0.7 : 1 })}
+              onPress={() => Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light)}
+            >
+              <Text style={{ fontSize: 13, fontWeight: '600', color: C.label }}>Edit Profile</Text>
+            </Pressable>
+          ) : (
+            <Pressable
+              style={({ pressed }) => ({ paddingHorizontal: 20, paddingVertical: 8, borderRadius: 20, backgroundColor: followed ? C.surface : C.label, borderWidth: 1.5, borderColor: followed ? C.separator : C.label, opacity: pressed ? 0.7 : 1 })}
+              onPress={() => { Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light); setFollowed(f => !f); }}
+            >
+              <Text style={{ fontSize: 13, fontWeight: '600', color: followed ? C.label : C.bg }}>{followed ? 'Following' : 'Follow'}</Text>
+            </Pressable>
+          )}
+        </View>
 
-            {/* Level tabs */}
-            <View style={[{ flexDirection: 'row', backgroundColor: C.bg, borderRadius: 12, padding: 3, marginBottom: 20, gap: 2 }]}>
-              {([['uscaa', 'USCAA/JC'], ['naia', 'NAIA'], ['d1', 'D1']] as [PerfTab, string][]).map(([key, label]) => (
-                <Pressable
-                  key={key}
-                  style={[{
-                    flex: 1, paddingVertical: 8, borderRadius: 10, alignItems: 'center',
-                    backgroundColor: perfTab === key ? C.label : 'transparent',
-                  }]}
-                  onPress={() => setPerfTab(key)}
-                >
-                  <Text style={[{ fontSize: 12, fontWeight: '700', color: perfTab === key ? C.bg : C.secondary }]}>{label}</Text>
+        {/* ── Socials row ── */}
+        <View style={{
+          flexDirection: 'row', justifyContent: 'flex-start', gap: 12,
+          paddingHorizontal: 20, paddingVertical: 14,
+          borderTopWidth: StyleSheet.hairlineWidth, borderBottomWidth: StyleSheet.hairlineWidth,
+          borderColor: C.separator, marginBottom: 28,
+        }}>
+          {SOCIAL_PLATFORMS.map(platform => (
+            <Pressable key={platform.name} onPress={() => Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light)}>
+              <View style={{ width: 40, height: 40, borderRadius: 20, backgroundColor: C.surface, alignItems: 'center', justifyContent: 'center' }}>
+                <FontAwesome6 name={platform.fa as any} size={18} color={C.label} iconStyle="brands" />
+              </View>
+            </Pressable>
+          ))}
+          {isCoach && (
+            <Pressable
+              onPress={() => Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light)}
+              style={{ paddingHorizontal: 12, paddingVertical: 8, justifyContent: 'center' }}
+            >
+              <Text style={{ fontSize: 13, fontWeight: '600', color: C.secondary }}>Edit Socials</Text>
+            </Pressable>
+          )}
+        </View>
+
+        {/* ── FEATURED ── */}
+        <View style={{ paddingHorizontal: 20, marginBottom: 28 }}>
+          <SH title="Featured" C={C} />
+          {featured.map(item => (
+            <Pressable
+              key={item.id}
+              style={({ pressed }) => ({
+                flexDirection: 'row', alignItems: 'center', gap: 12,
+                backgroundColor: C.surface, borderRadius: 12,
+                paddingHorizontal: 14, paddingVertical: 13, marginBottom: 8,
+                opacity: pressed ? 0.75 : 1,
+              })}
+              onPress={() => Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light)}
+            >
+              <View style={{ backgroundColor: C.separator, borderRadius: 6, paddingHorizontal: 8, paddingVertical: 5 }}>
+                <Text style={{ fontSize: 9, fontWeight: '800', color: C.secondary, letterSpacing: 0.5 }}>{item.type}</Text>
+              </View>
+              <View style={{ flex: 1 }}>
+                <Text style={{ fontSize: 14, fontWeight: '600', color: C.label }} numberOfLines={1}>{item.title}</Text>
+                {!!item.sub && <Text style={{ fontSize: 12, color: C.secondary, marginTop: 1 }}>{item.sub}</Text>}
+              </View>
+              {isCoach ? (
+                <Pressable onPress={() => featuredMenu(item)} hitSlop={8}>
+                  <IconSymbol name="ellipsis" size={15} color={C.secondary} />
                 </Pressable>
-              ))}
-            </View>
+              ) : (
+                <IconSymbol name="chevron.right" size={13} color={C.secondary} />
+              )}
+            </Pressable>
+          ))}
+          {isCoach && (
+            <Pressable
+              onPress={() => { Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light); setAddFeatOpen(true); }}
+              style={({ pressed }) => ({ flexDirection: 'row', alignItems: 'center', gap: 10, paddingVertical: 10, opacity: pressed ? 0.6 : 1 })}
+            >
+              <IconSymbol name="plus.circle" size={18} color={C.secondary} />
+              <Text style={{ fontSize: 14, color: C.secondary }}>Add Featured</Text>
+            </Pressable>
+          )}
+        </View>
 
-            {/* Level stats block */}
-            {(() => {
-              const ls = LEVEL_STATS[perfTab];
-              const marginColor = ls.margin.startsWith('+') ? C.gain : C.heat;
-              return (
-                <>
-                  {/* Record + margin */}
-                  <View style={{ flexDirection: 'row', alignItems: 'center', gap: 10, marginBottom: 16 }}>
-                    <View style={[s.recordPill, { backgroundColor: ls.record.startsWith('0') ? C.heatBg : C.gainBg, borderColor: (ls.record.startsWith('0') ? C.heat : C.gain) + '44' }]}>
-                      <Text style={[s.recordPillText, { color: ls.record.startsWith('0') ? C.heat : C.gain }]}>{ls.record} · {ls.gp} GP</Text>
-                    </View>
-                    <Text style={[{ fontSize: 13, fontWeight: '700', color: marginColor }]}>{ls.margin} margin</Text>
-                  </View>
+        {/* ── COACHING STAFF ── */}
+        <View style={{ paddingHorizontal: 20, marginBottom: 28 }}>
+          <SH title="Coaching Staff" C={C} />
+          {staff.map(member => (
+            <Pressable
+              key={member.id}
+              style={({ pressed }) => ({
+                flexDirection: 'row', alignItems: 'center', gap: 12,
+                backgroundColor: C.surface, borderRadius: 12,
+                paddingHorizontal: 14, paddingVertical: 14, marginBottom: 8,
+                opacity: pressed ? 0.75 : 1,
+              })}
+              onPress={() => Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light)}
+            >
+              <View style={{
+                width: 40, height: 40, borderRadius: 20,
+                backgroundColor: C.separator, alignItems: 'center', justifyContent: 'center',
+              }}>
+                <Text style={{ fontSize: 13, fontWeight: '800', color: C.label }}>{member.initials}</Text>
+              </View>
+              <View style={{ flex: 1 }}>
+                <Text style={{ fontSize: 14, fontWeight: '600', color: C.label }}>{member.name}</Text>
+                <Text style={{ fontSize: 12, color: C.secondary, marginTop: 1 }}>{member.title}</Text>
+              </View>
+              {isCoach ? (
+                <Pressable onPress={() => staffMenu(member)} hitSlop={8}>
+                  <IconSymbol name="ellipsis" size={15} color={C.secondary} />
+                </Pressable>
+              ) : (
+                <IconSymbol name="chevron.right" size={13} color={C.secondary} />
+              )}
+            </Pressable>
+          ))}
+        </View>
 
-                  {/* Team scoring */}
-                  <View style={[{ flexDirection: 'row', backgroundColor: C.surface, borderRadius: 12, marginBottom: 12 }]}>
-                    {[
-                      { label: 'PPG', value: ls.ppg },
-                      { label: 'OPP PPG', value: ls.oppPpg },
-                      { label: 'RPG', value: ls.rpg },
-                    ].map((stat, i, arr) => (
-                      <View key={stat.label} style={[{ flex: 1, alignItems: 'center', paddingVertical: 14 }, i < arr.length - 1 && { borderRightWidth: StyleSheet.hairlineWidth, borderRightColor: C.separator }]}>
-                        <Text style={[{ fontSize: 22, fontWeight: '800', color: C.label }]}>{stat.value}</Text>
-                        <Text style={[{ fontSize: 10, fontWeight: '600', color: C.secondary, letterSpacing: 0.5, marginTop: 2 }]}>{stat.label}</Text>
-                      </View>
-                    ))}
-                  </View>
-
-                  {/* Shooting + misc */}
-                  <View style={[{ flexDirection: 'row', backgroundColor: C.surface, borderRadius: 12, marginBottom: 20 }]}>
-                    {[
-                      { label: 'FG%', value: ls.fgPct },
-                      { label: '3P%', value: ls.threePct },
-                      { label: 'FT%', value: ls.ftPct },
-                      { label: 'TO/G', value: ls.topg },
-                      { label: 'APG', value: ls.apg },
-                    ].map((stat, i, arr) => (
-                      <View key={stat.label} style={[{ flex: 1, alignItems: 'center', paddingVertical: 12 }, i < arr.length - 1 && { borderRightWidth: StyleSheet.hairlineWidth, borderRightColor: C.separator }]}>
-                        <Text style={[{ fontSize: 14, fontWeight: '800', color: C.label }]}>{stat.value}</Text>
-                        <Text style={[{ fontSize: 9, fontWeight: '600', color: C.secondary, letterSpacing: 0.5, marginTop: 2 }]}>{stat.label}</Text>
-                      </View>
-                    ))}
-                  </View>
-
-                  {/* Player leaderboards */}
-                  {([
-                    { key: 'pts' as const, label: 'Scoring' },
-                    { key: 'reb' as const, label: 'Rebounds' },
-                    { key: 'ast' as const, label: 'Assists' },
-                    { key: 'stl' as const, label: 'Steals' },
-                  ]).map(cat => (
-                    <View key={cat.key} style={{ marginBottom: 14 }}>
-                      <Text style={[s.sh, { color: C.secondary, marginBottom: 8 }]}>{cat.label.toUpperCase()}</Text>
-                      {ls.leaders[cat.key].map((p, i) => (
-                        <View key={p.name} style={{ flexDirection: 'row', alignItems: 'center', paddingVertical: 6, borderBottomWidth: i < ls.leaders[cat.key].length - 1 ? StyleSheet.hairlineWidth : 0, borderBottomColor: C.separator }}>
-                          <Text style={[{ fontSize: 13, color: C.secondary, width: 20 }]}>{i + 1}.</Text>
-                          <Text style={[{ fontSize: 13, fontWeight: '600', color: C.label, flex: 1 }]}>{p.name}</Text>
-                          <Text style={[{ fontSize: 14, fontWeight: '800', color: C.label }]}>{p.val}</Text>
-                        </View>
-                      ))}
-                    </View>
-                  ))}
-                </>
-              );
-            })()}
-          </BottomSheetScrollView>
-        </BottomSheet>
-
+        {/* ── LINKS ── */}
+        <View style={{ paddingHorizontal: 20, marginBottom: 28 }}>
+          <SH title="Links" C={C} />
+          {links.filter(item => isCoach || item.id !== 'l5').map(item => (
+            <Pressable
+              key={item.id}
+              style={({ pressed }) => ({
+                flexDirection: 'row', alignItems: 'center', gap: 12,
+                backgroundColor: C.surface, borderRadius: 12,
+                paddingHorizontal: 14, paddingVertical: 14, marginBottom: 8,
+                opacity: pressed ? 0.75 : 1,
+              })}
+              onPress={() => Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light)}
+            >
+              <View style={{
+                width: 36, height: 36, borderRadius: 8,
+                backgroundColor: C.separator, alignItems: 'center', justifyContent: 'center',
+              }}>
+                <IconSymbol name={item.icon as any} size={16} color={C.label} />
+              </View>
+              <View style={{ flex: 1 }}>
+                <Text style={{ fontSize: 14, fontWeight: '600', color: C.label }}>{item.title}</Text>
+                {!!item.sub && <Text style={{ fontSize: 12, color: C.secondary, marginTop: 1 }}>{item.sub}</Text>}
+              </View>
+              {isCoach ? (
+                <Pressable onPress={() => linkMenu(item)} hitSlop={8}>
+                  <IconSymbol name="ellipsis" size={15} color={C.secondary} />
+                </Pressable>
+              ) : (
+                <IconSymbol name="chevron.right" size={13} color={C.secondary} />
+              )}
+            </Pressable>
+          ))}
+          {isCoach && (
+            <Pressable
+              onPress={() => { Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light); setAddLinkOpen(true); }}
+              style={({ pressed }) => ({ flexDirection: 'row', alignItems: 'center', gap: 10, paddingVertical: 10, opacity: pressed ? 0.6 : 1 })}
+            >
+              <IconSymbol name="plus.circle" size={18} color={C.secondary} />
+              <Text style={{ fontSize: 14, color: C.secondary }}>Add Link</Text>
+            </Pressable>
+          )}
+        </View>
 
       </ScrollView>
+
+      {/* ── Add Featured Sheet ── */}
+      <BottomSheet visible={addFeatOpen} onClose={() => setAddFeatOpen(false)} useModal title="Add Featured">
+        <ScrollView contentContainerStyle={{ paddingHorizontal: 20, paddingBottom: 48, gap: 16 }} keyboardShouldPersistTaps="handled">
+          <View style={{ gap: 6 }}>
+            <Text style={sheetLabel}>Type</Text>
+            <Pressable
+              onPress={pickFeatType}
+              style={({ pressed }) => sheetPickerStyle(C, pressed)}
+            >
+              <Text style={{ flex: 1, fontSize: 15, color: C.label }}>{newFeatType}</Text>
+              <IconSymbol name="chevron.down" size={14} color={C.secondary} />
+            </Pressable>
+          </View>
+          <SheetField label="Title" value={newFeatTitle} onChange={setNewFeatTitle} placeholder="e.g. Season Highlights Reel" C={C} />
+          <SheetField label="Subtitle" value={newFeatSub} onChange={setNewFeatSub} placeholder="e.g. 4.2K views" C={C} />
+          <SheetSubmit label="Add" onPress={handleAddFeatured} C={C} />
+        </ScrollView>
+      </BottomSheet>
+
+      {/* ── Add Link Sheet ── */}
+      <BottomSheet visible={addLinkOpen} onClose={() => setAddLinkOpen(false)} useModal title="Add Link">
+        <ScrollView contentContainerStyle={{ paddingHorizontal: 20, paddingBottom: 48, gap: 16 }} keyboardShouldPersistTaps="handled">
+          <SheetField label="Title" value={newLinkTitle} onChange={setNewLinkTitle} placeholder="e.g. Game Film" C={C} />
+          <SheetField label="Subtitle" value={newLinkSub} onChange={setNewLinkSub} placeholder="e.g. Full season footage" C={C} />
+          <SheetSubmit label="Add Link" onPress={handleAddLink} C={C} />
+        </ScrollView>
+      </BottomSheet>
+
     </View>
   );
 }
 
-// ─── Styles ───────────────────────────────────────────────────────────────────
+// ─── Sheet helpers ────────────────────────────────────────────────────────────
 
-function makeStyles(C: ComponentColors) {
-  return StyleSheet.create({
-    root: { flex: 1 },
+const sheetLabel: any = {
+  fontSize: 12, fontWeight: '700', textTransform: 'uppercase',
+  letterSpacing: 0.5, color: '#9C9790',
+};
 
-    topBarOuter: {
-      position: 'absolute', top: 0, left: 0, right: 0, zIndex: 100,
-      borderBottomWidth: StyleSheet.hairlineWidth,
-    },
-    topBar: {
-      flexDirection: 'row', alignItems: 'flex-end',
-      paddingBottom: 10, paddingHorizontal: 16,
-    },
-    kBtn: { width: 44, height: 36, justifyContent: 'center' },
-    titlePill: { borderRadius: 18, paddingHorizontal: 14, paddingVertical: 6, borderWidth: 1 },
-    titleText: { fontSize: 13, fontWeight: '700' },
+function sheetPickerStyle(C: any, pressed: boolean) {
+  return {
+    backgroundColor: C.surface, borderRadius: 12,
+    borderWidth: 1, borderColor: C.separator,
+    padding: 14, flexDirection: 'row' as const, alignItems: 'center' as const,
+    opacity: pressed ? 0.8 : 1,
+  };
+}
 
-    section: { paddingHorizontal: 16, marginBottom: 24 },
-    sh: { fontSize: 11, fontWeight: '700', letterSpacing: 0.8, textTransform: 'uppercase', marginBottom: 10 },
-    card: { borderRadius: 12, padding: 14 },
+function SheetField({ label, value, onChange, placeholder, C, multiline }: {
+  label: string; value: string; onChange: (t: string) => void;
+  placeholder: string; C: any; multiline?: boolean;
+}) {
+  return (
+    <View style={{ gap: 6 }}>
+      <Text style={sheetLabel}>{label}</Text>
+      <TextInput
+        style={{
+          backgroundColor: C.surface, borderRadius: 12,
+          borderWidth: 1, borderColor: C.separator,
+          padding: 14, fontSize: 15, color: C.label,
+          minHeight: multiline ? 90 : undefined,
+          textAlignVertical: multiline ? 'top' : 'center',
+        }}
+        value={value}
+        onChangeText={onChange}
+        placeholder={placeholder}
+        placeholderTextColor={C.secondary}
+        multiline={multiline}
+      />
+    </View>
+  );
+}
 
-    // Program header
-    programHeader: { flexDirection: 'row', alignItems: 'center', gap: 14, marginBottom: 12 },
-    programLogoWrap: { width: 64, height: 64, borderRadius: 32, overflow: 'hidden' },
-    programLogo: { width: '100%', height: '100%' },
-    programName: { fontSize: 18, fontWeight: '700', marginBottom: 2 },
-    programSub: { fontSize: 12, lineHeight: 18 },
-    recordStrip: { flexDirection: 'row', flexWrap: 'wrap', gap: 8 },
-    recordPill: { borderRadius: 20, borderWidth: 1, paddingHorizontal: 10, paddingVertical: 4 },
-    recordPillText: { fontSize: 12, fontWeight: '700' },
-
-    // KR hero card
-    krCard: { borderRadius: 16, padding: 16, overflow: 'hidden' },
-    krCardTop: { flexDirection: 'row', gap: 16, alignItems: 'center', marginBottom: 14 },
-    krRingWrap: { alignItems: 'center', justifyContent: 'center' },
-    krRing: {
-      width: 90, height: 90, borderRadius: 45, borderWidth: 3,
-      alignItems: 'center', justifyContent: 'center',
-    },
-    krRingNumber: { fontSize: 36, fontWeight: '900', lineHeight: 40, letterSpacing: -1 },
-    krRingLabel: { fontSize: 9, fontWeight: '700', letterSpacing: 1, marginTop: 2 },
-    krCardRight: { flex: 1, gap: 4 },
-    krTierLabel: { fontSize: 14, fontWeight: '700' },
-    krSystemText: { fontSize: 12, lineHeight: 17 },
-    krFitRow: { flexDirection: 'row', alignItems: 'center', gap: 6, marginTop: 2 },
-    krFitLabel: { fontSize: 10, fontWeight: '700', letterSpacing: 0.8 },
-    krFitValue: { fontSize: 18, fontWeight: '700' },
-    krCardDivider: { height: StyleSheet.hairlineWidth, marginBottom: 14 },
-    krMetricRow: { flexDirection: 'row' },
-    krMetricCell: { flex: 1, alignItems: 'center', gap: 3 },
-    krMetricValue: { fontSize: 22, fontWeight: '800' },
-    krMetricLabel: { fontSize: 9, fontWeight: '700', letterSpacing: 0.8 },
-    krMetricDivider: { width: StyleSheet.hairlineWidth },
-
-    // Fight poster
-    fightCard: { borderRadius: 14, padding: 14 },
-    fightCardHeader: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: 14 },
-    fightCardLabel: { fontSize: 11, fontWeight: '700', letterSpacing: 0.5 },
-    fightPoster: { flexDirection: 'row', alignItems: 'center', gap: 8, marginBottom: 14 },
-    fightSide: { flex: 1, alignItems: 'flex-start', gap: 6 },
-    fightLogo: { width: 48, height: 48, borderRadius: 24, overflow: 'hidden', alignItems: 'center', justifyContent: 'center' },
-    fightTeamName: { fontSize: 13, fontWeight: '700', lineHeight: 18 },
-    fightKR: { fontSize: 13, fontWeight: '700' },
-    fightCenter: { alignItems: 'center', gap: 3, paddingHorizontal: 4 },
-    fightVS: { fontSize: 16, fontWeight: '900', letterSpacing: 1 },
-    fightMeta: { fontSize: 11, fontWeight: '500' },
-    fightBottom: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' },
-    advPill: { borderRadius: 20, borderWidth: 1, paddingHorizontal: 10, paddingVertical: 4 },
-    advPillText: { fontSize: 12, fontWeight: '700' },
-    h2hText: { fontSize: 12, fontWeight: '600' },
-
-    // Nav grid
-    navGrid: { flexDirection: 'row', flexWrap: 'wrap', gap: 10 },
-    navCard: { borderRadius: 14, padding: 14, width: '47.5%' },
-    navCardHeader: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: 10 },
-    navIconBox: { width: 32, height: 32, borderRadius: 8, alignItems: 'center', justifyContent: 'center' },
-    navBadge: { borderRadius: 10, paddingHorizontal: 6, paddingVertical: 2, minWidth: 18, alignItems: 'center' },
-    navBadgeText: { fontSize: 10, fontWeight: '700', color: '#FFFFFF' },
-    navCardLabel: { fontSize: 14, fontWeight: '700', marginBottom: 4 },
-    navCardContext: { fontSize: 12, lineHeight: 17 },
-
-    // Depth chart
-    healthSummary: { fontSize: 12, lineHeight: 18 },
-
-    // Player sheet
-    sheetAvatar: { width: 64, height: 64, borderRadius: 32, borderWidth: 3, alignItems: 'center', justifyContent: 'center' },
-    sheetKrRow: { flexDirection: 'row', alignItems: 'center', gap: 14, borderRadius: 12, padding: 14, borderWidth: StyleSheet.hairlineWidth },
-    sheetKrRing: { width: 52, height: 52, borderRadius: 26, borderWidth: 2.5, alignItems: 'center', justifyContent: 'center' },
-    sheetCta: { flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 6, borderRadius: 14, paddingVertical: 14, marginTop: 20 },
-
-    // Performance
-    perfGrid: { flexDirection: 'row', flexWrap: 'wrap' },
-    perfCell: { width: '33.33%', alignItems: 'center', paddingVertical: 10 },
-    perfValue: { fontSize: 20, fontWeight: '700', marginBottom: 2 },
-    perfLabel: { fontSize: 10, fontWeight: '600', letterSpacing: 0.5, marginBottom: 2 },
-    perfDelta: { fontSize: 11, fontWeight: '600' },
-    perfRowDivider: { width: '100%', height: StyleSheet.hairlineWidth, marginVertical: 4 },
-
-    // Recent results
-    resultRow: { flexDirection: 'row', alignItems: 'center', gap: 10, paddingVertical: 10 },
-    resultBadge: { borderRadius: 6, paddingHorizontal: 7, paddingVertical: 2, minWidth: 26, alignItems: 'center' },
-    resultBadgeText: { fontSize: 11, fontWeight: '800' },
-    resultOpp: { flex: 1, fontSize: 13, fontWeight: '500' },
-    resultScore: { fontSize: 13, fontWeight: '600' },
-    levelPill: { borderRadius: 8, borderWidth: 1, paddingHorizontal: 6, paddingVertical: 2 },
-    levelPillText: { fontSize: 10, fontWeight: '700' },
-  });
+function SheetSubmit({ label, onPress, C }: { label: string; onPress: () => void; C: any }) {
+  return (
+    <Pressable
+      onPress={onPress}
+      style={({ pressed }) => ({
+        backgroundColor: C.label, borderRadius: 14,
+        paddingVertical: 15, alignItems: 'center' as const, marginTop: 4, opacity: pressed ? 0.85 : 1,
+      })}
+    >
+      <Text style={{ fontSize: 16, fontWeight: '700', color: C.bg }}>{label}</Text>
+    </Pressable>
+  );
 }

@@ -232,7 +232,7 @@ export const DOCUMENTS: Document[] = [
 export const DOMAINS: Domain[] = [
   {
     id: 'domain-sports',
-    name: 'Sports',
+    name: 'Athletics',
     mode: 'sports',
     description: 'Athletic program management for universities, clubs, and leagues',
     status: 'active',

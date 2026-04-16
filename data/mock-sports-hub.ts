@@ -250,23 +250,23 @@ export const TEAM_INFO = {
   name:           'LU Men\'s Basketball',
   school:         'Lincoln University Oakland',
   mascot:         'Oaklanders',
-  record:         '14-11',
-  conferenceRec:  '8-7',
+  record:         '17-8',
+  conferenceRec:  '11-7',
   hue:            0,
   colors:         { primary: '#1A1714', secondary: '#CC0000' },
   conference:     'GAAC',
-  confStanding:   '4th',
+  confStanding:   '1st · Champions',
 };
 
 export const TEAM_KR = {
-  overall:    72.6,
-  offensive:  70.4,
-  defensive:  74.9,
+  overall:    78.0,
+  offensive:  76.8,
+  defensive:  79.8,
   trend:      'up' as const,
-  delta:      1.1,
-  seasonHigh: 76.3,
+  delta:      2.4,
+  seasonHigh: 79.2,
   seasonLow:  64.2,
-  history:    [64.2, 66.8, 68.1, 67.4, 69.7, 70.9, 71.3, 72.0, 72.6],
+  history:    [64.2, 66.8, 69.4, 70.8, 72.6, 74.1, 75.4, 76.7, 78.0],
 };
 
 export const TEAM_SYSTEM = {
@@ -300,26 +300,26 @@ export const NEXT_GAME = {
 export const PLAYERS: Player[] = [
   // ── Starters ──
   {
-    id: 'p01', name: 'Marcus Reed',       initials: 'MR', number: 1,  hue: 0,
-    position: 'PG', classYear: 'Jr', heightFt: '6\'1"',  weight: 178, hometown: 'Oakland, CA',       highSchool: 'Oakland Tech HS',
+    id: 'p01', name: 'Laolu Kalejaiye',   initials: 'LK', number: 11, hue: 35,
+    position: 'SG', classYear: 'Sr', heightFt: '6\'4"',  weight: 196, hometown: 'Oakland, CA',       highSchool: 'Oakland Tech HS',
     isScholarship: true, isRedshirt: false,
-    kr: { overall: 81.4, offensive: 84.2, defensive: 76.8, confidence: 87, tier: 'V2', trend: 'up', delta: 1.9 },
-    archetype: 'PNR Ball Handler',
-    traits: { shooting: 76, finishing: 79, playmaking: 86, defense: 72, athleticism: 81, iq: 84, tools: 74 },
-    badges: ['Primary Creator', 'Clutch Performer', 'PNR Maestro'],
-    stats: { ppg: 15.8, rpg: 3.7, apg: 6.1, spg: 1.3, bpg: 0.2, fgPct: 44.1, fg3Pct: 35.4, ftPct: 80.6, mpg: 32.8, gp: 25 },
-    medical: 'available', eligibility: 'eligible', gpa: 3.0, credits: 74, role: 'Starter',
-    systemFitOff: 93, systemFitDef: 80,
+    kr: { overall: 86.0, offensive: 88.4, defensive: 82.1, confidence: 92, tier: 'V2', trend: 'up', delta: 2.8 },
+    archetype: 'Shot-Creating Wing',
+    traits: { shooting: 90, finishing: 86, playmaking: 76, defense: 79, athleticism: 88, iq: 87, tools: 82 },
+    badges: ['First Team All-Conference', 'Elite Scorer', 'Shot Creator', 'Clutch Performer'],
+    stats: { ppg: 23.4, rpg: 4.2, apg: 3.8, spg: 1.6, bpg: 0.3, fgPct: 46.8, fg3Pct: 37.2, ftPct: 82.4, mpg: 34.6, gp: 25 },
+    medical: 'available', eligibility: 'eligible', gpa: 3.0, credits: 108, role: 'Starter',
+    systemFitOff: 91, systemFitDef: 84,
   },
   {
     id: 'p02', name: 'Claude McKesey',    initials: 'CM', number: 3,  hue: 160,
     position: 'SG', classYear: 'Sr', heightFt: '6\'4"',  weight: 193, hometown: 'Richmond, CA',       highSchool: 'Kennedy HS',
     isScholarship: true, isRedshirt: false,
-    kr: { overall: 78.2, offensive: 80.1, defensive: 75.4, confidence: 91, tier: 'V2', trend: 'flat', delta: 0.3 },
+    kr: { overall: 71.0, offensive: 73.4, defensive: 67.9, confidence: 84, tier: 'V2', trend: 'flat', delta: 0.3 },
     archetype: 'Shot-Creating Wing',
     traits: { shooting: 81, finishing: 76, playmaking: 72, defense: 75, athleticism: 79, iq: 80, tools: 77 },
     badges: ['Elite Shooter', 'Shot Creator', 'Senior Leader'],
-    stats: { ppg: 13.4, rpg: 3.0, apg: 2.6, spg: 1.0, bpg: 0.3, fgPct: 43.8, fg3Pct: 38.7, ftPct: 85.2, mpg: 30.1, gp: 25 },
+    stats: { ppg: 11.8, rpg: 3.0, apg: 2.2, spg: 1.0, bpg: 0.3, fgPct: 43.8, fg3Pct: 38.7, ftPct: 85.2, mpg: 28.6, gp: 25 },
     medical: 'available', eligibility: 'eligible', gpa: 3.3, credits: 108, role: 'Starter',
     systemFitOff: 87, systemFitDef: 78,
   },
@@ -361,16 +361,16 @@ export const PLAYERS: Player[] = [
   },
   // ── Rotation ──
   {
-    id: 'p06', name: 'Devon Carter',      initials: 'DC', number: 11, hue: 195,
-    position: 'PG', classYear: 'So', heightFt: '6\'0"',  weight: 172, hometown: 'Berkeley, CA',        highSchool: 'Berkeley HS',
+    id: 'p06', name: 'Brandon Williams',  initials: 'BW', number: 1,  hue: 190,
+    position: 'PG', classYear: 'Jr', heightFt: '6\'1"',  weight: 178, hometown: 'Berkeley, CA',        highSchool: 'Berkeley HS',
     isScholarship: true, isRedshirt: false,
-    kr: { overall: 67.4, offensive: 69.8, defensive: 63.9, confidence: 77, tier: 'V1+', trend: 'up', delta: 3.6 },
-    archetype: 'Playmaking Guard',
-    traits: { shooting: 64, finishing: 67, playmaking: 72, defense: 60, athleticism: 74, iq: 69, tools: 70 },
-    badges: ['Pass-First Guard', 'Rising Sophomore'],
-    stats: { ppg: 6.8, rpg: 2.0, apg: 4.1, spg: 0.9, bpg: 0.1, fgPct: 40.6, fg3Pct: 33.1, ftPct: 76.4, mpg: 20.8, gp: 24 },
-    medical: 'available', eligibility: 'eligible', gpa: 2.9, credits: 32, role: 'Rotation',
-    systemFitOff: 78, systemFitDef: 67,
+    kr: { overall: 76.0, offensive: 78.2, defensive: 72.4, confidence: 84, tier: 'V2', trend: 'up', delta: 2.1 },
+    archetype: 'PNR Ball Handler',
+    traits: { shooting: 72, finishing: 74, playmaking: 82, defense: 70, athleticism: 79, iq: 80, tools: 75 },
+    badges: ['Primary Creator', 'Floor General', 'PNR Maestro'],
+    stats: { ppg: 9.4, rpg: 2.6, apg: 4.8, spg: 1.1, bpg: 0.1, fgPct: 43.2, fg3Pct: 36.8, ftPct: 79.1, mpg: 22.4, gp: 24 },
+    medical: 'available', eligibility: 'eligible', gpa: 2.9, credits: 64, role: 'Rotation',
+    systemFitOff: 84, systemFitDef: 72,
   },
   {
     id: 'p07', name: 'Chris Plantey',     initials: 'CP', number: 2,  hue: 140,
@@ -385,16 +385,16 @@ export const PLAYERS: Player[] = [
     systemFitOff: 90, systemFitDef: 71,
   },
   {
-    id: 'p08', name: 'Tyler Quinn',       initials: 'TQ', number: 15, hue: 320,
-    position: 'SG', classYear: 'So', heightFt: '6\'3"',  weight: 191, hometown: 'Modesto, CA',         highSchool: 'Downey HS',
+    id: 'p08', name: 'Nathan Chatelain',  initials: 'NC', number: 15, hue: 300,
+    position: 'SF', classYear: 'Jr', heightFt: '6\'5"',  weight: 200, hometown: 'Modesto, CA',         highSchool: 'Downey HS',
     isScholarship: true, isRedshirt: false,
-    kr: { overall: 68.3, offensive: 66.1, defensive: 71.4, confidence: 80, tier: 'V1+', trend: 'up', delta: 2.0 },
-    archetype: 'Defensive Anchor',
-    traits: { shooting: 61, finishing: 70, playmaking: 57, defense: 78, athleticism: 74, iq: 72, tools: 79 },
-    badges: ['Lockdown Defender'],
-    stats: { ppg: 5.4, rpg: 3.9, apg: 0.8, spg: 1.2, bpg: 0.5, fgPct: 43.6, fg3Pct: 27.9, ftPct: 67.1, mpg: 17.6, gp: 22 },
-    medical: 'limited', medicalNote: 'Knee soreness — day-to-day', eligibility: 'eligible', gpa: 2.6, credits: 36, role: 'Rotation',
-    systemFitOff: 64, systemFitDef: 86,
+    kr: { overall: 71.0, offensive: 70.2, defensive: 72.6, confidence: 79, tier: 'V1+', trend: 'up', delta: 1.8 },
+    archetype: 'Two-Way Wing',
+    traits: { shooting: 68, finishing: 72, playmaking: 60, defense: 77, athleticism: 76, iq: 71, tools: 80 },
+    badges: ['Switchable Defender', 'Length Weapon'],
+    stats: { ppg: 7.2, rpg: 4.1, apg: 1.2, spg: 0.9, bpg: 0.7, fgPct: 44.3, fg3Pct: 32.4, ftPct: 71.8, mpg: 19.3, gp: 23 },
+    medical: 'available', eligibility: 'eligible', gpa: 2.6, credits: 64, role: 'Rotation',
+    systemFitOff: 68, systemFitDef: 83,
   },
   {
     id: 'p09', name: 'Nicholas Bansraj',  initials: 'NB', number: 20, hue: 60,
@@ -621,12 +621,12 @@ export const NIL_OPPORTUNITIES: NILOpportunity[] = [
 // ── Active NIL Deals ───────────────────────────────────────────────────────────
 
 export const NIL_DEALS: NILDeal[] = [
-  { id: 'nd1', playerId: 'p01', playerName: 'Marcus Reed',    brand: 'Gatorade',           type: 'ambassador',  amount: 3000, status: 'in-progress', compliance: 'approved', startDate: 'Feb 1',  endDate: 'May 30', deliverables: ['3 social posts', '1 event appearance', 'Brand tag in all game-day content'], completed: 67 },
+  { id: 'nd1', playerId: 'p01', playerName: 'Laolu Kalejaiye', brand: 'Gatorade',           type: 'ambassador',  amount: 3000, status: 'in-progress', compliance: 'approved', startDate: 'Feb 1',  endDate: 'May 30', deliverables: ['3 social posts', '1 event appearance', 'Brand tag in all game-day content'], completed: 67 },
   { id: 'nd2', playerId: 'p02', playerName: 'Claude McKesey', brand: 'East Bay Sports',    type: 'social-post', amount: 900,  status: 'completed',   compliance: 'approved', startDate: 'Jan 15', endDate: 'Mar 31', deliverables: ['4 Instagram posts', '1 Reel'], completed: 100 },
   { id: 'nd3', playerId: 'p05', playerName: 'Paul Diomande',  brand: 'Under Armour Campus', type: 'endorsement', amount: 2400, status: 'in-progress', compliance: 'pending',  startDate: 'Mar 1',  endDate: 'Jun 30', deliverables: ['Photo shoot (complete)', '2 social posts', '1 campus store appearance'], completed: 40 },
   { id: 'nd4', playerId: 'p03', playerName: 'Samuel Manzo',   brand: 'Jordan Brand',       type: 'ambassador',  amount: 4200, status: 'in-progress', compliance: 'approved', startDate: 'Feb 15', endDate: 'Aug 15', deliverables: ['4 social posts', '2 campus store appearances', 'Brand ambassador bio'], completed: 50 },
   { id: 'nd5', playerId: 'p04', playerName: 'Samuel Wall',    brand: 'Nike Campus',        type: 'endorsement', amount: 2800, status: 'in-progress', compliance: 'pending',  startDate: 'Mar 10', endDate: 'Jul 31', deliverables: ['Photo shoot', '3 social posts', '1 campus event'], completed: 25 },
-  { id: 'nd6', playerId: 'p06', playerName: 'Devon Carter',   brand: 'Bay Area Hoops Talk', type: 'social-post', amount: 800, status: 'completed',   compliance: 'approved', startDate: 'Jan 20', endDate: 'Mar 1',  deliverables: ['3 Instagram posts', '1 Twitter thread'], completed: 100 },
+  { id: 'nd6', playerId: 'p06', playerName: 'Brandon Williams', brand: 'Bay Area Hoops Talk', type: 'social-post', amount: 800, status: 'completed',   compliance: 'approved', startDate: 'Jan 20', endDate: 'Mar 1',  deliverables: ['3 Instagram posts', '1 Twitter thread'], completed: 100 },
 ];
 
 // ── Fundraising Campaigns ──────────────────────────────────────────────────────
@@ -648,7 +648,7 @@ export const MERCH_PRODUCTS: MerchProduct[] = [
   { id: 'm06', name: 'LU Logo Backpack',             category: 'Accessories', price: 44.99, colors: ['Maroon'],                 inStock: true,  isFeatured: false, isLimited: false, rating: 4.6, reviews: 19 },
   { id: 'm07', name: 'Game-Worn Paul Diomande #21 Jersey', category: 'Special', price: 249.99, colors: ['Maroon'],             inStock: true,  isFeatured: false, isLimited: true,  rating: 5.0, reviews: 3 },
   { id: 'm08', name: 'Oaklanders Water Bottle',      category: 'Accessories', price: 18.99, colors: ['Maroon', 'White'],       inStock: true,  isFeatured: false, isLimited: false, rating: 4.3, reviews: 38 },
-  { id: 'm09', name: 'Autographed Marcus Reed Ball', category: 'Special',    price: 129.99, colors: ['White'],                 inStock: true,  isFeatured: true,  isLimited: true,  rating: 5.0, reviews: 5 },
+  { id: 'm09', name: 'Autographed Laolu Kalejaiye Ball', category: 'Special', price: 129.99, colors: ['White'],                 inStock: true,  isFeatured: true,  isLimited: true,  rating: 5.0, reviews: 5 },
   { id: 'm10', name: 'LU Oaklanders Car Decal Pack', category: 'Accessories', price: 11.99, colors: ['Maroon'],               inStock: true,  isFeatured: false, isLimited: false, rating: 4.2, reviews: 29 },
 ];
 
@@ -687,7 +687,7 @@ export const FAN_REWARDS: FanReward[] = [
 // ── NIL Activity Feed ─────────────────────────────────────────────────────────
 
 export const NIL_ACTIVITY: NILActivity[] = [
-  { id: 'na1', playerId: 'p01', playerName: 'Marcus Reed',    initials: 'MR', hue: 0,   action: 'Signed 4-month extension',        brand: 'Gatorade',           timestamp: '2h ago',    amount: 3600 },
+  { id: 'na1', playerId: 'p01', playerName: 'Laolu Kalejaiye', initials: 'LK', hue: 35,  action: 'Signed 4-month extension',        brand: 'Gatorade',           timestamp: '2h ago',    amount: 3600 },
   { id: 'na2', playerId: 'p03', playerName: 'Samuel Manzo',   initials: 'SM', hue: 280, action: 'Posted 2 brand reels — 480K views', brand: 'Jordan Brand',      timestamp: '5h ago'               },
   { id: 'na3', playerId: 'p05', playerName: 'Paul Diomande',  initials: 'PD', hue: 20,  action: 'Completed photo shoot',            brand: 'Under Armour Campus', timestamp: 'Yesterday'           },
   { id: 'na4', playerId: 'p02', playerName: 'Claude McKesey', initials: 'CM', hue: 160, action: 'Deal paid out',                    brand: 'East Bay Sports',    timestamp: 'Yesterday', amount: 900 },
@@ -697,7 +697,7 @@ export const NIL_ACTIVITY: NILActivity[] = [
 // ── Fan Experiences ────────────────────────────────────────────────────────────
 
 export const FAN_EXPERIENCES: FanExperience[] = [
-  { id: 'fe1', playerId: 'p01', playerName: 'Marcus Reed',    initials: 'MR', hue: 0,   type: 'shoutout',    title: 'Personalized Shoutout',  description: 'Marcus records a personal video shoutout for you or a friend — delivered in 48 hours.', price: 20, spotsLeft: 5,  isRaffle: false },
+  { id: 'fe1', playerId: 'p01', playerName: 'Laolu Kalejaiye', initials: 'LK', hue: 35,  type: 'shoutout',    title: 'Personalized Shoutout',  description: 'Laolu records a personal video shoutout for you or a friend — delivered in 48 hours.', price: 20, spotsLeft: 5,  isRaffle: false },
   { id: 'fe2', playerId: 'p05', playerName: 'Paul Diomande',  initials: 'PD', hue: 20,  type: 'signed-item', title: 'Signed Jersey #21',       description: 'Authentic game jersey hand-signed by Paul. Includes certificate of authenticity.',      price: 45, spotsLeft: 0,  isRaffle: false },
   { id: 'fe3', playerId: 'p03', playerName: 'Samuel Manzo',   initials: 'SM', hue: 280, type: 'raffle',      title: 'Meet & Greet Raffle',     description: 'Win a 15-min meet & greet with Samuel at Laney College. Monthly drawing.',              price: 10, spotsLeft: 14, isRaffle: true  },
   { id: 'fe4', playerId: 'p02', playerName: 'Claude McKesey', initials: 'CM', hue: 160, type: 'training',    title: '1-on-1 Training Session', description: 'Book a private 45-min shooting session with Claude at Laney College.',                    price: 65, spotsLeft: 3,  isRaffle: false },
@@ -715,7 +715,7 @@ export const TODAY_PRACTICE = {
     { time: '3:45', duration: 20, label: 'Holy Names Film Review',                 category: 'film'         },
     { time: '4:05', duration: 25, label: 'Man-Defense Breakdown — Grant Contain',  category: 'defense'      },
     { time: '4:30', duration: 20, label: 'Transition Offense Reps',                category: 'offense'      },
-    { time: '4:50', duration: 15, label: 'PNR Execution — Marcus/Paul',            category: 'offense'      },
+    { time: '4:50', duration: 15, label: 'PNR Execution — Laolu/Paul',             category: 'offense'      },
     { time: '5:05', duration: 20, label: '5-on-5 Scrimmage (scout defense)',       category: 'scrimmage'    },
     { time: '5:25', duration: 10, label: 'Free Throws + Cooldown',                 category: 'conditioning' },
   ],
@@ -812,10 +812,10 @@ export const SCHOLARSHIP_ALLOCATIONS: { playerId: string; pct: number; tier: 'Co
 ];
 
 export const DEVELOPMENT_PRIORITIES: { playerId: string; priorities: { trait: string; current: number; target: number }[] }[] = [
-  { playerId: 'p01', priorities: [{ trait: '3PT Pull-Up', current: 70, target: 80 }, { trait: 'Defensive IQ', current: 72, target: 78 }, { trait: 'FT Rate', current: 81, target: 86 }] },
+  { playerId: 'p01', priorities: [{ trait: '3PT Off Dribble', current: 82, target: 90 }, { trait: 'On-Ball Defense', current: 76, target: 84 }, { trait: 'Playmaking', current: 76, target: 82 }] },
   { playerId: 'p03', priorities: [{ trait: 'Spot-Up 3PT', current: 60, target: 72 }, { trait: 'Post Moves', current: 55, target: 65 }, { trait: 'FT%', current: 70, target: 77 }] },
   { playerId: 'p05', priorities: [{ trait: 'FT%', current: 63, target: 73 }, { trait: 'Mid-Range', current: 50, target: 60 }, { trait: 'Playmaking', current: 59, target: 66 }] },
-  { playerId: 'p06', priorities: [{ trait: '3PT Volume', current: 64, target: 73 }, { trait: 'On-Ball D', current: 60, target: 69 }, { trait: 'Decision Speed', current: 69, target: 77 }] },
+  { playerId: 'p06', priorities: [{ trait: 'PNR Reads', current: 76, target: 84 }, { trait: '3PT Volume', current: 70, target: 78 }, { trait: 'Transition D', current: 66, target: 74 }] },
 ];
 
 // ── Backward-compat alias ─────────────────────────────────────────────────────

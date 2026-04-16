@@ -13,7 +13,7 @@ import { useColorScheme } from '@/hooks/use-color-scheme';
 import type { Mode } from '@/types';
 
 const MODES: { id: Mode; label: string }[] = [
-  { id: 'sports', label: 'Sports' },
+  { id: 'sports', label: 'Athletics' },
   { id: 'church', label: 'Faith' },
   { id: 'business', label: 'Business' },
   { id: 'education', label: 'Education' },

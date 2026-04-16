@@ -17,6 +17,7 @@ import { useScrollHeader } from '@/hooks/use-scroll-header';
 import { openSidePanel } from '@/utils/global-side-panel';
 import { resetFooter } from '@/utils/global-footer-hide';
 import { useDemoRole } from '@/utils/demo-role-store';
+import { useMode } from '@/context/app-context';
 
 // ── Module-level semantic colors (data values only) ───────────────────────────
 
@@ -120,8 +121,62 @@ const PERIOD_DATA: Record<Period, PeriodData> = {
   },
 };
 
-const AUDIENCE_LOCATIONS = ['US 48%', 'Nigeria 18%', 'UK 12%', 'Canada 9%'];
-const AUDIENCE_DEVICES   = ['Mobile 71%', 'Desktop 22%', 'Tablet 7%'];
+// ── Mode-specific overrides ───────────────────────────────────────────────────
+
+const MODE_SUMMARY_LABELS: Record<string, [string, string, string, string]> = {
+  personal:  ['Total Views', 'Watch Time (hrs)', 'New Subscribers', 'Revenue'],
+  business:  ['Total Views', 'Watch Time (hrs)', 'New Subscribers', 'Revenue'],
+  education: ['Total Views', 'Watch Time (hrs)', 'New Students',    'Revenue'],
+  community: ['Total Views', 'Watch Time (hrs)', 'New Members',     'Donations'],
+  sports:    ['Total Views', 'Watch Time (hrs)', 'New Followers',   'Revenue'],
+};
+
+type TopVideoSeed = { title: string; emoji: string; hue: number };
+const MODE_TOP_VIDEOS: Record<string, [TopVideoSeed, TopVideoSeed, TopVideoSeed]> = {
+  personal:  [
+    { title: 'Day in My Life — Coach & CEO',             emoji: '🌟', hue: 45  },
+    { title: 'How I Use AI to Build Faster',             emoji: '⚡', hue: 280 },
+    { title: 'From Coach to CEO',                        emoji: '🎯', hue: 30  },
+  ],
+  business:  [
+    { title: 'KaNeXT OS v2.0 Full Walkthrough',          emoji: '💼', hue: 200 },
+    { title: 'How We Closed Our First Enterprise Client', emoji: '📈', hue: 45  },
+    { title: 'Q1 Product Update',                        emoji: '🚀', hue: 280 },
+  ],
+  education: [
+    { title: 'BUSN 301 — Strategic Management Lec. 8',   emoji: '📚', hue: 200 },
+    { title: 'Graduation 2025 Highlights',               emoji: '🎓', hue: 45  },
+    { title: 'Medical Imaging Lab Demo — Dr. Patel',     emoji: '🔬', hue: 150 },
+  ],
+  community: [
+    { title: 'Easter Sunday — He Is Risen',              emoji: '✝️',  hue: 30  },
+    { title: 'Hotline to Heaven — Episode 142',          emoji: '🎙️', hue: 280 },
+    { title: 'Good Friday Service 2026',                 emoji: '🙌', hue: 45  },
+  ],
+  sports:    [
+    { title: 'Laolu Kalejaiye — 38pts at Pepperdine',    emoji: '🏀', hue: 45  },
+    { title: 'LU vs Cal Maritime — Full Game',           emoji: '🏆', hue: 30  },
+    { title: 'GAAC Weekly — Championship Preview',       emoji: '🎙️', hue: 200 },
+  ],
+};
+
+const MODE_REVENUE_LABELS: Record<string, [string, string, string]> = {
+  personal:  ['Subscriptions', 'Ad Share',   'Tips'],
+  business:  ['Subscriptions', 'Licensing',  'Sponsorships'],
+  education: ['Subscriptions', 'Licensing',  'Events'],
+  community: ['Donations',     'Tithes',     'Subscriptions'],
+  sports:    ['Subscriptions', 'Sponsorships', 'Licensing'],
+};
+
+const MODE_AUDIENCE_LOCATIONS: Record<string, string[]> = {
+  personal:  ['US 48%', 'Nigeria 18%', 'UK 12%', 'Canada 9%'],
+  business:  ['US 62%', 'Canada 14%',  'UK 11%', 'Australia 8%'],
+  education: ['US 74%', 'Nigeria 8%',  'Ghana 6%', 'UK 5%'],
+  community: ['US 71%', 'Nigeria 12%', 'Ghana 8%', 'UK 5%'],
+  sports:    ['US 81%', 'Canada 7%',   'UK 6%',  'Nigeria 4%'],
+};
+
+const AUDIENCE_DEVICES = ['Mobile 71%', 'Desktop 22%', 'Tablet 7%'];
 
 const periodTotalViews: Record<Period, number> = {
   'Last 7 days': 4200, 'Last 28 days': 14800, 'Last 90 days': 42800, 'All time': 142800,
@@ -139,7 +194,9 @@ export default function KayTVAnalyticsPage() {
   const { opacity, onScroll, scrollEventThrottle } = useScrollHeader();
 
   const router = useRouter();
-  const [role, cycleRole, roleCycles] = useDemoRole('personal:kaytv');
+  const mode   = useMode();
+  const _rk    = mode === 'sports' ? 'sports:agenda' : mode === 'community' ? 'community:kaytv' : mode === 'education' ? 'education' : mode === 'business' ? 'business' : 'personal:kaytv';
+  const [role, cycleRole, roleCycles] = useDemoRole(_rk);
   const isOwner = role === roleCycles[0];
 
   useEffect(() => {
@@ -149,7 +206,25 @@ export default function KayTVAnalyticsPage() {
   const [period, setPeriod] = useState<Period>('Last 28 days');
   const [tappedBar, setTappedBar] = useState<number | null>(null);
 
-  const data = PERIOD_DATA[period];
+  const baseData   = PERIOD_DATA[period];
+  const modeTopVids     = MODE_TOP_VIDEOS[mode]          ?? MODE_TOP_VIDEOS.personal;
+  const modeRevLabels   = MODE_REVENUE_LABELS[mode]      ?? MODE_REVENUE_LABELS.personal;
+  const modeSumLabels   = MODE_SUMMARY_LABELS[mode]      ?? MODE_SUMMARY_LABELS.personal;
+  const modeAudience    = MODE_AUDIENCE_LOCATIONS[mode]  ?? MODE_AUDIENCE_LOCATIONS.personal;
+
+  // Merge mode-specific titles/labels into base numeric data
+  const data = {
+    ...baseData,
+    cards:     baseData.cards.map((c, i) => ({ ...c, label: modeSumLabels[i] ?? c.label })),
+    topVideos: baseData.topVideos.map((v, i) => ({
+      ...v,
+      title: modeTopVids[i]?.title ?? v.title,
+      emoji: modeTopVids[i]?.emoji ?? v.emoji,
+      hue:   modeTopVids[i]?.hue   ?? v.hue,
+    })),
+    revenue: baseData.revenue.map((r, i) => ({ ...r, label: modeRevLabels[i] ?? r.label })),
+  };
+
   const revenueMax = Math.max(...data.revenue.map(r => r.amount));
 
   useEffect(() => {
@@ -356,7 +431,7 @@ export default function KayTVAnalyticsPage() {
           {/* Top Locations */}
           <Text style={[styles.audienceSubLabel, { color: C.secondary }]}>Top Locations</Text>
           <View style={styles.pillRow}>
-            {AUDIENCE_LOCATIONS.map((loc, idx) => (
+            {modeAudience.map((loc, idx) => (
               <View
                 key={idx}
                 style={[
@@ -449,12 +524,12 @@ function makeStyles(C: ComponentColors) {
       height: TOP_BAR_H,
       flexDirection: 'row',
       alignItems: 'center',
-      paddingHorizontal: 16,
+      paddingHorizontal: 12,
     },
     topBarLeft: {
-      width: 40,
-      height: 36,
-      alignItems: 'center',
+      width: 44,
+      height: 44,
+      alignItems: 'flex-start',
       justifyContent: 'center',
     },
     topBarRight: {

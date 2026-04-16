@@ -3,7 +3,7 @@
  * Type to search, results filter in real-time.
  */
 
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useCallback, useEffect, useRef } from 'react';
 import {
   View,
   Text,
@@ -15,6 +15,7 @@ import {
 } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useRouter } from 'expo-router';
+import { useFocusEffect } from 'expo-router';
 import * as Haptics from 'expo-haptics';
 
 import { IconSymbol } from '@/components/ui/icon-symbol';
@@ -23,6 +24,13 @@ import { useColors, type ComponentColors } from '@/hooks/use-colors';
 import { useScrollHeader } from '@/hooks/use-scroll-header';
 import { useMode } from '@/context/app-context';
 import { getRooms, getGlobalDMs } from '@/data/mock-messages-v3';
+import { KMenuButton } from '@/components/ui/k-menu-button';
+import { RolePill } from '@/components/ui/role-pill';
+import { openSidePanel } from '@/utils/global-side-panel';
+import { resetFooter } from '@/utils/global-footer-hide';
+import { useDemoRole } from '@/utils/demo-role-store';
+
+const TOP_BAR_H = 52;
 
 export default function MessagesSearchScreen() {
   const insets = useSafeAreaInsets();
@@ -32,9 +40,19 @@ export default function MessagesSearchScreen() {
   const C = useColors();
   const styles = useMemo(() => makeStyles(C), [C]);
 
-  const TOP_BAR_H = insets.top + 54;
   const { opacity, onScroll, scrollEventThrottle } = useScrollHeader(TOP_BAR_H);
   const [search, setSearch] = useState('');
+
+  const [role, cycleRole, roleCycles] = useDemoRole('personal:kaytv');
+  const isOwner = role === roleCycles[0];
+  const isOwnerRef = useRef(isOwner);
+  useEffect(() => {
+    if (isOwnerRef.current === isOwner) return;
+    isOwnerRef.current = isOwner;
+    router.navigate('/(tabs)/(main)/messages' as any);
+  }, [isOwner]);
+
+  useFocusEffect(useCallback(() => { resetFooter(); }, []));
 
   const channels = useMemo(() => getRooms(mode), [mode]);
   const dms = useMemo(() => getGlobalDMs(), []);
@@ -51,12 +69,22 @@ export default function MessagesSearchScreen() {
   return (
     <View style={styles.container}>
       <Animated.View style={[styles.topBar, { paddingTop: insets.top, opacity }]}>
-        <View style={styles.header}>
-          <Text style={styles.title}>Search</Text>
+        <View style={{ height: TOP_BAR_H, flexDirection: 'row', alignItems: 'center', paddingHorizontal: 16 }}>
+          <Pressable onPress={() => { Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light); openSidePanel(); }} hitSlop={8}>
+            <KMenuButton />
+          </Pressable>
+          <View style={{ flex: 1, alignItems: 'center' }}>
+            <View style={{ backgroundColor: C.surface, borderWidth: 1, borderColor: C.separator, borderRadius: 14, paddingHorizontal: 14, paddingVertical: 5 }}>
+              <Text style={{ fontSize: 13, fontWeight: '700', color: C.label }}>Search</Text>
+            </View>
+          </View>
+          <View style={{ width: 80, alignItems: 'flex-end' }}>
+            <RolePill role={role} onPress={cycleRole} isPrimary={isOwner} />
+          </View>
         </View>
       </Animated.View>
 
-      <View style={{ height: TOP_BAR_H }} />
+      <View style={{ height: insets.top + TOP_BAR_H }} />
       <View style={styles.searchWrap}>
         <IconSymbol name="magnifyingglass" size={16} color={C.secondary} />
         <TextInput
@@ -149,8 +177,6 @@ export default function MessagesSearchScreen() {
 const makeStyles = (C: ComponentColors) => StyleSheet.create({
   container: { flex: 1, backgroundColor: C.bg },
   topBar: { position: 'absolute', top: 0, left: 0, right: 0, zIndex: 10, backgroundColor: C.bg },
-  header: { paddingHorizontal: 20, paddingTop: 8, paddingBottom: 8 },
-  title: { fontSize: 28, fontWeight: '700', color: C.label },
   searchWrap: {
     flexDirection: 'row', alignItems: 'center', backgroundColor: C.surface,
     borderRadius: 10, marginHorizontal: 16, marginBottom: 16, paddingHorizontal: 12, height: 42, gap: 8,

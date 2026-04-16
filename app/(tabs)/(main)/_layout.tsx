@@ -68,6 +68,8 @@ export default function HomeLayout() {
       {/* Phone */}
       <Stack.Screen name="phone/index" />
       <Stack.Screen name="phone/recent" />
+      <Stack.Screen name="phone/calls" />
+      <Stack.Screen name="phone/contacts" />
       <Stack.Screen name="phone/dialpad" />
       <Stack.Screen name="phone/favorites" />
       <Stack.Screen name="phone/voicemail" />
@@ -164,6 +166,8 @@ export default function HomeLayout() {
       <Stack.Screen name="kaytv/help" />
       {/* KayStudios */}
       <Stack.Screen name="kaystudios/index" />
+      <Stack.Screen name="kaystudios/channel" />
+      <Stack.Screen name="kaystudios/manage-channel" />
       <Stack.Screen name="kaystudios/detail" />
       <Stack.Screen name="kaystudios/search" />
       <Stack.Screen name="kaystudios/experience" />
@@ -202,6 +206,9 @@ export default function HomeLayout() {
       <Stack.Screen name="network/moderation" />
       <Stack.Screen name="network/weekly-prompt" />
       {/* Store (Personal) */}
+      <Stack.Screen name="store/orders" />
+      <Stack.Screen name="store/customers" />
+      <Stack.Screen name="store/analytics" />
       <Stack.Screen name="store/subscriptions" />
       <Stack.Screen name="store/coupons" />
       <Stack.Screen name="store/settings" />
@@ -242,10 +249,19 @@ export default function HomeLayout() {
       />
       {/* KayPay */}
       <Stack.Screen name="kaypay/index" />
+      <Stack.Screen name="kaypay/wallet" />
+      <Stack.Screen name="kaypay/earnings" />
+      <Stack.Screen name="kaypay/company-finances" />
+      <Stack.Screen name="kaypay/institutional-finances" />
+      <Stack.Screen name="kaypay/giving" />
+      <Stack.Screen name="kaypay/program-finances" />
+      <Stack.Screen name="kaypay/card" />
       <Stack.Screen name="kaypay/pay" />
       <Stack.Screen name="kaypay/invest" />
       <Stack.Screen name="kaypay/invoices" />
       <Stack.Screen name="kaypay/tax" />
+      <Stack.Screen name="kaypay/savings-goals" />
+      <Stack.Screen name="kaypay/transactions" />
       <Stack.Screen name="kaypay/settings" />
       <Stack.Screen name="kaypay/church-finances" />
       <Stack.Screen name="kaypay/budget" />
@@ -259,15 +275,51 @@ export default function HomeLayout() {
       <Stack.Screen name="kaypay/personal-invoices" />
       <Stack.Screen name="kaypay/personal-savings" />
       <Stack.Screen name="kaypay/help" />
+      {/* Workforce */}
+      <Stack.Screen name="workforce/index" />
+      <Stack.Screen name="workforce/directory" />
+      <Stack.Screen name="workforce/departments" />
+      <Stack.Screen name="workforce/hiring" />
+      <Stack.Screen name="workforce/performance" />
+      <Stack.Screen name="workforce/contact" />
+      <Stack.Screen name="workforce/settings" />
+      <Stack.Screen name="workforce/help" />
       {/* Booster */}
       <Stack.Screen name="booster/index" />
+      <Stack.Screen name="booster/dashboard" />
+      <Stack.Screen name="booster/nil" />
+      <Stack.Screen name="booster/campaigns" />
+      <Stack.Screen name="booster/events" />
+      <Stack.Screen name="booster/my-nil" />
+      <Stack.Screen name="booster/shop" />
       {/* Admissions */}
       <Stack.Screen name="admissions/index" />
+      <Stack.Screen name="admissions/pipeline" />
+      <Stack.Screen name="admissions/applications" />
+      <Stack.Screen name="admissions/campaigns" />
+      <Stack.Screen name="admissions/analytics" />
+      <Stack.Screen name="admissions/my-application" />
+      <Stack.Screen name="admissions/financial-aid" />
       {/* Business Mode Row 2 */}
       <Stack.Screen name="hub/business" />
       <Stack.Screen name="team/index" />
       <Stack.Screen name="inquiries/index" />
+      <Stack.Screen name="inquiries/pipeline" />
+      <Stack.Screen name="inquiries/leads" />
+      <Stack.Screen name="inquiries/contacts" />
+      <Stack.Screen name="inquiries/analytics" />
+      <Stack.Screen name="inquiries/support" />
+      <Stack.Screen name="inquiries/settings" />
+      <Stack.Screen name="inquiries/help" />
       <Stack.Screen name="business-store/index" />
+      <Stack.Screen name="business-store/store" />
+      <Stack.Screen name="business-store/orders" />
+      <Stack.Screen name="business-store/subscriptions" />
+      <Stack.Screen name="business-store/customers" />
+      <Stack.Screen name="business-store/analytics" />
+      <Stack.Screen name="business-store/purchases" />
+      <Stack.Screen name="business-store/settings" />
+      <Stack.Screen name="business-store/help" />
       {/* Portfolio */}
       <Stack.Screen name="portfolio/index" />
       <Stack.Screen name="portfolio/press" />
@@ -278,6 +330,7 @@ export default function HomeLayout() {
       <Stack.Screen name="portfolio/help" />
       <Stack.Screen name="personal-inquiries/settings" />
       <Stack.Screen name="personal-inquiries/help" />
+      <Stack.Screen name="personal-inquiries/archive" options={{ headerShown: false }} />
       {/* Settings */}
       <Stack.Screen name="settings/index" />
       <Stack.Screen name="settings/profile" />

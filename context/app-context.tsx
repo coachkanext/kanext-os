@@ -72,15 +72,15 @@ const DEMO_ORGANIZATIONS: Record<Mode, Organization> = {
   },
   education: {
     id: 'edu_kx',
-    name: 'Lincoln University',
+    name: 'Lincoln University (CA)',
     mode: 'education',
     type: 'university',
     location: 'Oakland, CA',
-    description: 'Lincoln University',
+    description: 'Lincoln University (CA)',
   },
   sports: {
     id: 'sports_kx',
-    name: "LU Men's Basketball",
+    name: "Lincoln Men's Basketball",
     mode: 'sports',
     type: 'college_athletics',
     location: 'Oakland, CA',
@@ -160,9 +160,9 @@ const SPORTS_SEASONS: Record<string, Cycle> = {
 
 // Organizations for sports mode (static for now)
 const SPORTS_ORGANIZATIONS: Record<string, Organization> = {
-  "LU Men's Basketball": {
+  "Lincoln Men's Basketball": {
     id: 'sports_kx',
-    name: "LU Men's Basketball",
+    name: "Lincoln Men's Basketball",
     mode: 'sports',
     type: 'college_athletics',
     location: 'Oakland, CA',

@@ -42,7 +42,7 @@ const FILTER_PILLS: { key: FilterKey; label: string }[] = [
   { key: 'business',  label: 'Business' },
   { key: 'education', label: 'Education' },
   { key: 'community', label: 'Community' },
-  { key: 'sports',    label: 'Sports' },
+  { key: 'sports',    label: 'Athletics' },
 ];
 
 const MODE_COLORS: Record<string, string> = {
@@ -53,8 +53,16 @@ const MODE_COLORS: Record<string, string> = {
   sports:    '#1A1714',
 };
 
+const MODE_DISPLAY: Record<string, string> = {
+  personal:  'Personal',
+  business:  'Business',
+  education: 'Education',
+  community: 'Community',
+  sports:    'Athletics',
+};
+
 function modeLabel(mode: string): string {
-  return mode.charAt(0).toUpperCase() + mode.slice(1);
+  return MODE_DISPLAY[mode] ?? (mode.charAt(0).toUpperCase() + mode.slice(1));
 }
 
 // ── Helpers ───────────────────────────────────────────────────────────────────

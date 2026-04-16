@@ -376,7 +376,7 @@ function EmptyState({ message, colors }: { message: string; colors: typeof Color
 // =============================================================================
 
 const MODE_LABELS: Record<Mode, string> = {
-  sports: 'Sports',
+  sports: 'Athletics',
   education: 'Education',
   church: 'Faith',
   business: 'Business',

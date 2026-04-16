@@ -1,7 +1,7 @@
 /**
  * Store Side Panel — Personal Mode.
- * Owner:    All Products · Orders · Customers · Coupons · Analytics + Dipson/Settings/Help
- * Follower: Store · My Purchases
+ * Owner:    Store · Orders · Customers · Analytics + Dipson/Settings/Help
+ * Follower: Store · Purchases + Dipson/Settings/Help
  */
 
 import React, { useCallback, useMemo } from 'react';
@@ -24,11 +24,10 @@ type NavItem = {
 };
 
 const OWNER_NAV: NavItem[] = [
-  { icon: 'square.grid.2x2.fill',    label: 'All Products', route: '/(tabs)/(main)/store' },
-  { icon: 'shippingbox.fill',         label: 'Orders',       route: '/(tabs)/(main)/store' },
-  { icon: 'person.2.fill',            label: 'Customers',    route: '/(tabs)/(main)/store' },
-  { icon: 'tag.fill',                 label: 'Coupons',      route: '/(tabs)/(main)/store' },
-  { icon: 'chart.bar.fill',           label: 'Analytics',    route: '/(tabs)/(main)/store' },
+  { icon: 'square.grid.2x2.fill', label: 'Store',      route: '/(tabs)/(main)/store' },
+  { icon: 'shippingbox.fill',     label: 'Orders',     route: '/(tabs)/(main)/store/orders' },
+  { icon: 'person.2.fill',        label: 'Customers',  route: '/(tabs)/(main)/store/customers' },
+  { icon: 'chart.bar.fill',       label: 'Analytics',  route: '/(tabs)/(main)/store/analytics' },
 ];
 
 const BOTTOM_ITEMS: NavItem[] = [
@@ -38,8 +37,8 @@ const BOTTOM_ITEMS: NavItem[] = [
 ];
 
 const FOLLOWER_NAV: NavItem[] = [
-  { icon: 'bag.fill',               label: 'Store',        route: '/(tabs)/(main)/store' },
-  { icon: 'clock.arrow.circlepath', label: 'My Purchases', route: '/(tabs)/(main)/store' },
+  { icon: 'bag.fill',               label: 'Store',     route: '/(tabs)/(main)/store' },
+  { icon: 'clock.arrow.circlepath', label: 'Purchases', route: '/(tabs)/(main)/store/purchases' },
 ];
 
 // ── Component ─────────────────────────────────────────────────────────────────
@@ -71,11 +70,11 @@ export function StorePanel() {
 
       {/* ── Identity header ── */}
       <View style={s.header}>
-        <View style={[s.avatar, { backgroundColor: C.separator }]}>
-          <IconSymbol name="bag.fill" size={18} color={C.secondary} />
+        <View style={[s.avatar, { backgroundColor: C.label }]}>
+          <Text style={[s.avatarText, { color: C.bg }]}>SK</Text>
         </View>
         <Text style={[s.name, { color: C.label }]}>Sammy Kalejaiye</Text>
-        <Text style={[s.handle, { color: C.secondary }]}>Creator Store</Text>
+        <Text style={[s.handle, { color: C.secondary }]}>@sammyk</Text>
       </View>
 
       {/* ── Nav items ── */}
@@ -83,7 +82,7 @@ export function StorePanel() {
         {navItems.map(item => (
           <Pressable
             key={item.label}
-            style={({ pressed }) => [s.navRow, pressed && { backgroundColor: C.bg }]}
+            style={({ pressed }) => [s.navRow, pressed && { backgroundColor: C.surface }]}
             onPress={() => go(item)}
           >
             <IconSymbol name={item.icon as any} size={22} color={C.label} />
@@ -92,24 +91,20 @@ export function StorePanel() {
         ))}
       </View>
 
-      {/* ── Bottom utilities (Owner only) ── */}
-      {isOwner && (
-        <>
-          <View style={[s.divider, { backgroundColor: C.separator }]} />
-          <View style={s.nav}>
-            {BOTTOM_ITEMS.map(item => (
-              <Pressable
-                key={item.label}
-                style={({ pressed }) => [s.navRow, pressed && { backgroundColor: C.bg }]}
-                onPress={() => go(item)}
-              >
-                <IconSymbol name={item.icon as any} size={22} color={C.label} />
-                <Text style={[s.navLabel, { color: C.label }]}>{item.label}</Text>
-              </Pressable>
-            ))}
-          </View>
-        </>
-      )}
+      {/* ── Bottom utilities (all roles) ── */}
+      <View style={[s.divider, { backgroundColor: C.separator }]} />
+      <View style={s.nav}>
+        {BOTTOM_ITEMS.map(item => (
+          <Pressable
+            key={item.label}
+            style={({ pressed }) => [s.navRow, pressed && { backgroundColor: C.surface }]}
+            onPress={() => go(item)}
+          >
+            <IconSymbol name={item.icon as any} size={22} color={C.label} />
+            <Text style={[s.navLabel, { color: C.label }]}>{item.label}</Text>
+          </Pressable>
+        ))}
+      </View>
 
     </View>
   );
@@ -122,9 +117,10 @@ const makeStyles = (C: ComponentColors) => StyleSheet.create({
 
   header: { paddingHorizontal: 20, paddingTop: 8, paddingBottom: 20 },
   avatar: {
-    width: 40, height: 40, borderRadius: 20,
+    width: 44, height: 44, borderRadius: 22,
     alignItems: 'center', justifyContent: 'center', marginBottom: 10,
   },
+  avatarText: { fontSize: 15, fontWeight: '700' },
   name:   { fontSize: 17, fontWeight: '700', letterSpacing: -0.3, marginBottom: 2 },
   handle: { fontSize: 14, fontWeight: '400' },
 

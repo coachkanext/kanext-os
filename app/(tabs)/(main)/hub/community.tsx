@@ -1,34 +1,29 @@
 /**
  * Community Hub — ICCLA Church Overview.
- * Matches Personal Hub profile page pattern exactly:
- * photo cover → floating top bar → overlapping avatar → identity → metrics → sections.
- * Senior Leader: full church view (services, ministries, leadership, giving, announcements).
- * Member: member-focused view (next service, my groups, announcements, quick access).
- * K button opens side panel for deeper navigation.
+ * Mirrors the Personal Hub Profile Pattern exactly:
+ *   Cover extends to top of screen → K + role pill overlaid (fade-hides on scroll down)
+ *   Avatar bottom-left overlapping cover → identity left-aligned → social row
+ *   → FEATURED → LEADERSHIP → UPCOMING EVENTS → LINKS
+ * Pastor: edit controls. Member: read-only (Follow + RSVP).
  */
 
 import React, { useCallback } from 'react';
-import {
-  View, Text, Pressable, ScrollView, Image, StyleSheet, Animated,
-} from 'react-native';
+import { View, Text, Pressable, ScrollView, Image, StyleSheet, Animated } from 'react-native';
 import * as Haptics from 'expo-haptics';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useFocusEffect, useRouter } from 'expo-router';
+import FontAwesome6 from '@expo/vector-icons/FontAwesome6';
 
 import { IconSymbol } from '@/components/ui/icon-symbol';
 import { RolePill } from '@/components/ui/role-pill';
-import { KMenuButton } from '@/components/ui/k-menu-button';
-import { useColors } from '@/hooks/use-colors';
+import { useColors, type ComponentColors } from '@/hooks/use-colors';
 import { useScrollHeader } from '@/hooks/use-scroll-header';
 import { openSidePanel } from '@/utils/global-side-panel';
 import { resetFooter } from '@/utils/global-footer-hide';
 import { useDemoRole } from '@/utils/demo-role-store';
+import { useAppContext } from '@/context/app-context';
 
-const GAIN    = '#5A8A6E';
-const HEAT    = '#B85C5C';
-const CAUTION = '#B8943E';
-
-const TOP_BAR_H   = 52;
+const TOP_BAR_H   = 44;
 const AVATAR_SIZE = 80;
 const AVATAR_OVR  = AVATAR_SIZE / 2;
 
@@ -36,60 +31,60 @@ const AVATAR_OVR  = AVATAR_SIZE / 2;
 
 const CHURCH = {
   name:      'ICCLA',
-  location:  'Hawthorne, CA',
-  type:      'Interdenominational · Pentecostal',
-  members:   420,
-  ministries:10,
+  handle:    '@iccla',
+  bio:       'Interdenominational, Pentecostal. Multicultural, grace-centered. Welcome home.',
+  followers: 1247,
 };
 
-const SERVICES = [
-  { icon: 'sun.max.fill',      name: 'Sunday Service',  time: 'Sun 10:00 AM', location: 'Main Sanctuary' },
-  { icon: 'book.fill',         name: 'Bible Study',     time: 'Wed 7:00 PM',  location: 'Fellowship Hall' },
-  { icon: 'hands.sparkles.fill',name: 'Prayer Meeting', time: 'Fri 6:30 AM',  location: 'Prayer Room'    },
+const SOCIALS = [
+  { fa: 'facebook',  label: 'Facebook'  },
+  { fa: 'youtube',   label: 'YouTube'   },
+  { fa: 'instagram', label: 'Instagram' },
+  { fa: 'x-twitter', label: 'X'        },
 ];
 
-const MINISTRIES = [
-  { name: 'Worship Team',        leader: 'Pastor Nony',  members: 24 },
-  { name: 'Youth Ministry',      leader: 'Tobi A.',      members: 48 },
-  { name: "Children's Church",   leader: 'Sister Ada',   members: 36 },
-  { name: "Men's Fellowship",    leader: 'Bro. Emeka',   members: 32 },
-  { name: "Women's Ministry",    leader: 'Sis. Grace',   members: 41 },
-  { name: 'Prayer Ministry',     leader: 'Deacon James', members: 28 },
-  { name: 'Evangelism',          leader: 'Elder Paul',   members: 19 },
-  { name: 'Hospitality',         leader: 'Sis. Ruth',    members: 22 },
-  { name: 'Media & Tech',        leader: 'Bro. David',   members: 12 },
-  { name: 'Missions & Outreach', leader: 'Pastor Dipo',  members: 15 },
-];
-
-const ANNOUNCEMENTS = [
-  { title: 'Easter Sunday Service', date: 'Apr 20', body: 'Special sunrise service at 6:00 AM + main service at 10:00 AM.' },
-  { title: "Women's Conference",    date: 'Apr 26', body: "Annual Women's Conference — register by Apr 18." },
-  { title: 'Building Fund Update',  date: 'Apr 10', body: "We've reached 65% of our $250K building renovation goal!" },
+const FEATURED = [
+  { type: 'VIDEO',  title: 'Easter Sunday Service Replay', subtitle: '3.2K views',  icon: 'play.circle.fill' },
+  { type: 'COURSE', title: 'Rooted: Discover Your Place',  subtitle: '12 enrolled', icon: 'book.fill'        },
+  { type: 'EVENT',  title: 'Summer Block Party',           subtitle: 'Jun 14',      icon: 'calendar'         },
 ];
 
 const LEADERSHIP = [
-  { name: 'Pastor Dipo Kalejaiye', role: 'Senior Pastor'    },
-  { name: 'Pastor Nony Kalejaiye', role: 'Associate Pastor' },
-  { name: 'Elder James Thompson',  role: 'Board Chairman'   },
+  { initials: 'DK', name: 'Dr. Oladipo Kalejaiye',  title: 'Senior Pastor'         },
+  { initials: 'NK', name: 'Dr. Nonyelum Kalejaiye', title: 'Co-Pastor'             },
+  { initials: 'DE', name: 'David Eze',               title: 'Young Adults Director' },
 ];
 
-const GIVING = {
-  monthly: '$18,420',
-  goal:    '$22,000',
-  pct:     84,
-  campaign:'Building Fund: 65% of $250K',
-};
-
-const MY_GROUPS = [
-  { name: "Men's Fellowship", nextMeeting: 'Sat Apr 12, 9:00 AM' },
-  { name: 'Media & Tech',     nextMeeting: 'Mon Apr 14, 6:00 PM' },
+const UPCOMING_EVENTS = [
+  { month: 'APR', day: '20', name: 'Easter Sunday Service', time: '10:00 AM', location: 'Main Sanctuary'  },
+  { month: 'APR', day: '23', name: 'Wednesday Bible Study', time: '7:00 PM',  location: 'Fellowship Hall' },
+  { month: 'APR', day: '25', name: 'Youth Night',           time: '6:00 PM',  location: 'Youth Center'    },
 ];
 
-// ─── Section Header ───────────────────────────────────────────────────────────
+const SERVICES = [
+  { day: 'Sunday Morning',  time: '11:00 AM'           },
+  { day: 'Sunday Evening',  time: '6:00 PM'            },
+  { day: 'Wednesday',       time: 'Bible Study 7:00 PM'},
+];
 
-function SH({ title, C }: { title: string; C: any }) {
+const LINKS = [
+  { icon: 'location.fill',                     label: 'Service Times & Location'  },
+  { icon: 'hands.sparkles.fill',               label: 'Submit a Prayer Request'   },
+  { icon: 'heart.fill',                        label: 'Give'                      },
+  { icon: 'antenna.radiowaves.left.and.right', label: 'Hotline to Heaven Radio'   },
+  { icon: 'globe',                             label: 'Visit Our Website'         },
+];
+
+// ─── Helper ───────────────────────────────────────────────────────────────────
+
+function SH({ title, action, C }: { title: string; action?: React.ReactNode; C: ComponentColors }) {
   return (
-    <Text style={[s.sh, { color: C.secondary }]}>{title}</Text>
+    <View style={{ flexDirection: 'row', alignItems: 'center', marginBottom: 12 }}>
+      <Text style={{ flex: 1, fontSize: 11, fontWeight: '700', color: C.secondary, letterSpacing: 0.8, textTransform: 'uppercase' }}>
+        {title}
+      </Text>
+      {action}
+    </View>
   );
 }
 
@@ -99,13 +94,21 @@ export default function CommunityHub() {
   const C      = useColors();
   const insets = useSafeAreaInsets();
   const router = useRouter();
+  const { state } = useAppContext();
+  const mode = state.activeContext?.mode ?? state.mode ?? 'personal';
   const [role, toggleRole, roleCycles] = useDemoRole('community:hub');
-  const isLeader = role === roleCycles[0];
+  const isPastor = role === roleCycles[0];
+  const { opacity, onScroll, scrollEventThrottle } = useScrollHeader();
 
+  useFocusEffect(useCallback(() => {
+    resetFooter();
+    if (mode !== 'community') {
+      router.replace('/(tabs)/(main)/hub' as any);
+    }
+  }, [mode]));
+
+  // Cover is tall enough to sit behind status bar / dynamic island
   const COVER_H = 220 + insets.top + TOP_BAR_H;
-
-  useFocusEffect(useCallback(() => { resetFooter(); }, []));
-  const { opacity, onScroll, scrollEventThrottle } = useScrollHeader(insets.top + TOP_BAR_H + 10);
 
   const go = (route: string) => {
     Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
@@ -113,301 +116,265 @@ export default function CommunityHub() {
   };
 
   return (
-    <View style={[s.root, { backgroundColor: C.bg }]}>
-
-      {/* ── Floating top bar ─────────────────────────────────────────────── */}
-      <Animated.View style={[s.topBarOuter, { paddingTop: insets.top, height: insets.top + TOP_BAR_H, opacity }]}>
-        <View style={s.topBar}>
-          <KMenuButton onPress={() => { Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light); openSidePanel(); }} />
-          <View style={s.topCenter}>
-            <Text style={s.topTitle}>Hub</Text>
-          </View>
-          <RolePill role={role} onPress={() => { Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light); toggleRole(); }} />
-        </View>
-      </Animated.View>
+    <View style={{ flex: 1, backgroundColor: C.bg }}>
 
       <ScrollView
         showsVerticalScrollIndicator={false}
-        contentContainerStyle={{ paddingBottom: 120 }}
+        contentContainerStyle={{ paddingTop: 0, paddingBottom: 120 }}
         onScroll={onScroll}
         scrollEventThrottle={scrollEventThrottle}
       >
-        {/* ── Cover photo + overlapping avatar ─────────────────────────── */}
+
+        {/* ── 1. Cover + Avatar ── */}
         <View style={{ position: 'relative', marginBottom: AVATAR_OVR + 12 }}>
-          <View style={{ height: COVER_H, overflow: 'hidden' }}>
-            <Image
-              source={{ uri: 'https://picsum.photos/seed/church-gathering/900/500' }}
-              style={{ width: '100%', height: '100%' }}
-              resizeMode="cover"
-            />
-            <View style={{ position: 'absolute', top: 0, left: 0, right: 0, height: insets.top + 70, backgroundColor: 'rgba(0,0,0,0.40)' }} />
-            <View style={{ position: 'absolute', bottom: 0, left: 0, right: 0, height: 60, backgroundColor: 'rgba(0,0,0,0.20)' }} />
-          </View>
-          <View style={{ position: 'absolute', bottom: -AVATAR_OVR, left: 20 }}>
-            <View style={[s.avatar, { backgroundColor: C.surface, borderColor: C.bg }]}>
-              <Text style={s.avatarEmoji}>✝️</Text>
+          <Pressable disabled={!isPastor}>
+            <View style={{ height: COVER_H, backgroundColor: C.surface, overflow: 'hidden' }}>
+              <Image
+                source={{ uri: 'https://picsum.photos/seed/church-interior/900/500' }}
+                style={{ width: '100%', height: '100%' }}
+                resizeMode="cover"
+              />
+              {isPastor && (
+                <View style={{ position: 'absolute', bottom: 10, right: 12, backgroundColor: 'rgba(0,0,0,0.50)', borderRadius: 8, paddingHorizontal: 10, paddingVertical: 5, flexDirection: 'row', alignItems: 'center', gap: 5 }}>
+                  <IconSymbol name="camera.fill" size={12} color="#fff" />
+                  <Text style={{ fontSize: 11, fontWeight: '600', color: '#fff' }}>Edit Cover</Text>
+                </View>
+              )}
             </View>
+          </Pressable>
+
+          {/* Church logo — bottom-left, overlapping cover */}
+          <View style={{ position: 'absolute', bottom: -AVATAR_OVR, left: 20 }}>
+            <Pressable disabled={!isPastor}>
+              <View style={{ width: AVATAR_SIZE, height: AVATAR_SIZE, borderRadius: AVATAR_SIZE / 2, backgroundColor: C.surface, borderWidth: 3, borderColor: C.bg, alignItems: 'center', justifyContent: 'center' }}>
+                <Text style={{ fontSize: 36 }}>✝️</Text>
+              </View>
+              {isPastor && (
+                <View style={{ position: 'absolute', bottom: 0, right: 0, width: 24, height: 24, borderRadius: 12, backgroundColor: C.label, alignItems: 'center', justifyContent: 'center', borderWidth: 2, borderColor: C.bg }}>
+                  <IconSymbol name="camera.fill" size={10} color={C.bg} />
+                </View>
+              )}
+            </Pressable>
           </View>
         </View>
 
-        {/* ── Identity ─────────────────────────────────────────────────── */}
-        <View style={[s.identity, { paddingHorizontal: 20 }]}>
-          <Text style={[s.name, { color: C.label }]}>{CHURCH.name}</Text>
-          <Text style={[s.handle, { color: C.secondary }]}>{CHURCH.location}</Text>
-          <Text style={[s.bio, { color: C.label }]}>{CHURCH.type}</Text>
-        </View>
-
-        {/* ── Key metrics + action row ──────────────────────────────────── */}
-        <View style={[s.metricActionRow, { paddingHorizontal: 20, borderColor: C.separator }]}>
-          <Text style={{ fontSize: 14, color: C.secondary }}>
-            <Text style={{ fontWeight: '700', color: C.label }}>{CHURCH.members}</Text>{' Members  ·  '}
-            <Text style={{ fontWeight: '700', color: C.label }}>{CHURCH.ministries}</Text>{' Min.  ·  '}
-            <Text style={{ fontWeight: '700', color: GAIN }}>{GIVING.pct}%</Text>{' Goal'}
-          </Text>
-          <Pressable
-            style={[s.editBtn, { borderColor: C.separator }]}
-            onPress={() => go('/(tabs)/(main)/give')}
-          >
-            <Text style={[s.editBtnText, { color: C.label }]}>{isLeader ? 'Dashboard' : 'Give Now'}</Text>
+        {/* ── 2. Identity ── */}
+        <View style={{ paddingHorizontal: 20, marginBottom: 14 }}>
+          <Text style={{ fontSize: 20, fontWeight: '700', color: C.label, marginBottom: 2 }}>{CHURCH.name}</Text>
+          <Text style={{ fontSize: 14, color: C.secondary, marginBottom: 8 }}>{CHURCH.handle}</Text>
+          <Pressable disabled={!isPastor}>
+            <Text style={{ fontSize: 14, color: C.label, lineHeight: 20, opacity: 0.85 }}>{CHURCH.bio}</Text>
           </Pressable>
         </View>
 
-        {/* ── Upcoming event badge ──────────────────────────────────────── */}
-        <View style={[s.badgeRow, { borderTopColor: C.separator, borderBottomColor: C.separator }]}>
-          <View style={[s.badge, { backgroundColor: GAIN + '18', borderColor: GAIN + '44' }]}>
-            <Text style={[s.badgeText, { color: GAIN }]}>🌅 Easter Sunday Service · Apr 20</Text>
-          </View>
+        {/* ── 3. Followers + action button ── */}
+        <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', paddingHorizontal: 20, marginBottom: 18 }}>
+          <Text style={{ fontSize: 14, color: C.secondary }}>
+            <Text style={{ fontWeight: '700', color: C.label }}>{CHURCH.followers.toLocaleString()}</Text>{' followers'}
+          </Text>
+          {isPastor ? (
+            <Pressable style={{ paddingHorizontal: 20, paddingVertical: 8, borderRadius: 20, borderWidth: 1.5, borderColor: C.separator }}>
+              <Text style={{ fontSize: 13, fontWeight: '600', color: C.label }}>Edit Profile</Text>
+            </Pressable>
+          ) : (
+            <Pressable style={{ paddingHorizontal: 20, paddingVertical: 8, borderRadius: 20, borderWidth: 1.5, borderColor: C.separator }}>
+              <Text style={{ fontSize: 13, fontWeight: '600', color: C.label }}>Following</Text>
+            </Pressable>
+          )}
         </View>
 
-        {isLeader ? (
-          <>
-            {/* SERVICES */}
-            <View style={s.section}>
-              <SH title="Services" C={C} />
-              {SERVICES.map((sv, i) => (
-                <View key={i} style={[s.card, { backgroundColor: C.surface, flexDirection: 'row', alignItems: 'center', gap: 12, marginBottom: 8 }]}>
-                  <View style={[s.iconBox, { backgroundColor: C.separator }]}>
-                    <IconSymbol name={sv.icon as any} size={16} color={C.label} />
-                  </View>
-                  <View style={{ flex: 1 }}>
-                    <Text style={[s.cardTitle, { color: C.label }]}>{sv.name}</Text>
-                    <Text style={[s.cardMeta, { color: C.secondary, marginTop: 1 }]}>{sv.time} · {sv.location}</Text>
-                  </View>
-                </View>
-              ))}
-            </View>
-
-            {/* MINISTRIES */}
-            <View style={s.section}>
-              <SH title="Ministries" C={C} />
-              {MINISTRIES.map((m, i) => (
-                <Pressable
-                  key={i}
-                  style={({ pressed }) => [s.card, { backgroundColor: C.surface, flexDirection: 'row', alignItems: 'center', gap: 12, marginBottom: 8 }, pressed && { opacity: 0.8 }]}
-                  onPress={() => go('/(tabs)/(main)/members')}
-                >
-                  <View style={[s.personAvatar, { backgroundColor: C.separator }]}>
-                    <Text style={[s.personInitials, { color: C.label }]}>
-                      {m.name.split(' ').slice(0, 2).map(w => w[0]).join('')}
-                    </Text>
-                  </View>
-                  <View style={{ flex: 1 }}>
-                    <Text style={[s.cardTitle, { color: C.label }]}>{m.name}</Text>
-                    <Text style={[s.cardMeta, { color: C.secondary, marginTop: 1 }]}>{m.leader} · {m.members} members</Text>
-                  </View>
-                  <IconSymbol name="chevron.right" size={14} color={C.muted as string} />
-                </Pressable>
-              ))}
-            </View>
-
-            {/* ANNOUNCEMENTS */}
-            <View style={s.section}>
-              <SH title="Announcements" C={C} />
-              {ANNOUNCEMENTS.map((a, i) => (
-                <View key={i} style={[s.card, { backgroundColor: C.surface, marginBottom: 8 }]}>
-                  <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', marginBottom: 6 }}>
-                    <Text style={[s.cardTitle, { color: C.label, flex: 1 }]}>{a.title}</Text>
-                    <Text style={[s.cardMeta, { color: C.secondary }]}>{a.date}</Text>
-                  </View>
-                  <Text style={[s.cardMeta, { color: C.secondary, lineHeight: 18 }]}>{a.body}</Text>
-                </View>
-              ))}
-            </View>
-
-            {/* LEADERSHIP */}
-            <View style={s.section}>
-              <SH title="Leadership" C={C} />
-              {LEADERSHIP.map((l, i) => (
-                <View key={i} style={[s.card, { backgroundColor: C.surface, flexDirection: 'row', alignItems: 'center', gap: 12, marginBottom: 8 }]}>
-                  <View style={[s.personAvatar, { backgroundColor: C.separator }]}>
-                    <Text style={[s.personInitials, { color: C.label }]}>
-                      {l.name.split(' ').filter(w => !['Pastor','Elder','Deacon'].includes(w)).slice(0, 2).map(w => w[0]).join('')}
-                    </Text>
-                  </View>
-                  <View style={{ flex: 1 }}>
-                    <Text style={[s.cardTitle, { color: C.label }]}>{l.name}</Text>
-                    <Text style={[s.cardMeta, { color: C.secondary, marginTop: 1 }]}>{l.role}</Text>
-                  </View>
-                </View>
-              ))}
-            </View>
-
-            {/* GIVING */}
-            <View style={s.section}>
-              <SH title="Giving" C={C} />
-              <View style={[s.card, { backgroundColor: C.surface }]}>
-                <View style={{ flexDirection: 'row', alignItems: 'baseline', gap: 6, marginBottom: 10 }}>
-                  <Text style={{ fontSize: 22, fontWeight: '800', color: C.label }}>{GIVING.monthly}</Text>
-                  <Text style={[s.cardMeta, { color: C.secondary }]}>/ {GIVING.goal} goal</Text>
-                </View>
-                <View style={[s.progressTrack, { backgroundColor: C.separator }]}>
-                  <View style={[s.progressFill, { backgroundColor: GAIN, width: `${GIVING.pct}%` }]} />
-                </View>
-                <Text style={[s.cardMeta, { color: C.secondary, marginTop: 8 }]}>{GIVING.campaign}</Text>
+        {/* ── 4. Social links row ── */}
+        <View style={{ flexDirection: 'row', justifyContent: 'flex-start', gap: 12, paddingHorizontal: 20, paddingVertical: 14, borderTopWidth: StyleSheet.hairlineWidth, borderBottomWidth: StyleSheet.hairlineWidth, borderColor: C.separator, marginBottom: 28 }}>
+          {SOCIALS.map(s => (
+            <Pressable key={s.label} onPress={() => Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light)}>
+              <View style={{ width: 40, height: 40, borderRadius: 20, backgroundColor: C.surface, alignItems: 'center', justifyContent: 'center' }}>
+                <FontAwesome6 name={s.fa} size={18} color={C.label} iconStyle="brands" />
               </View>
-            </View>
-          </>
-        ) : (
-          <>
-            {/* NEXT SERVICE */}
-            <View style={s.section}>
-              <SH title="Next Service" C={C} />
-              <View style={[s.card, { backgroundColor: C.surface }]}>
-                <Text style={[s.cardTitle, { color: C.label }]}>Sunday Service</Text>
-                <Text style={[s.cardMeta, { color: C.secondary, marginTop: 3 }]}>Sun Apr 13 · 10:00 AM · Main Sanctuary</Text>
-                <View style={[{ marginTop: 10, paddingHorizontal: 10, paddingVertical: 4, borderRadius: 8, backgroundColor: GAIN + '22', alignSelf: 'flex-start' }]}>
-                  <Text style={{ fontSize: 12, fontWeight: '700', color: GAIN }}>Easter Sunday Apr 20 — Special Service</Text>
-                </View>
+            </Pressable>
+          ))}
+          {isPastor && (
+            <Pressable style={{ marginLeft: 8, justifyContent: 'center' }}>
+              <Text style={{ fontSize: 13, fontWeight: '600', color: C.secondary }}>Edit Socials</Text>
+            </Pressable>
+          )}
+        </View>
+
+        {/* ── Content sections ── */}
+        <View style={{ paddingHorizontal: 16 }}>
+
+          {/* SERVICES */}
+          <View style={{ marginBottom: 28 }}>
+            <SH title="Services" C={C} />
+            {SERVICES.map((svc, i) => (
+              <View
+                key={i}
+                style={{ flexDirection: 'row', alignItems: 'center', backgroundColor: C.surface, borderRadius: 14, paddingHorizontal: 14, paddingVertical: 13, marginBottom: 8 }}
+              >
+                <Text style={{ flex: 1, fontSize: 14, fontWeight: '600', color: C.label }}>{svc.day}</Text>
+                <Text style={{ fontSize: 13, color: C.secondary }}>{svc.time}</Text>
               </View>
-            </View>
+            ))}
+          </View>
 
-            {/* MY GROUPS */}
-            <View style={s.section}>
-              <SH title="My Groups" C={C} />
-              {MY_GROUPS.map((g, i) => (
-                <View key={i} style={[s.card, { backgroundColor: C.surface, flexDirection: 'row', alignItems: 'center', gap: 12, marginBottom: 8 }]}>
-                  <View style={[s.personAvatar, { backgroundColor: C.separator }]}>
-                    <Text style={[s.personInitials, { color: C.label }]}>
-                      {g.name.split(' ').slice(0, 2).map(w => w[0]).join('')}
-                    </Text>
-                  </View>
-                  <View style={{ flex: 1 }}>
-                    <Text style={[s.cardTitle, { color: C.label }]}>{g.name}</Text>
-                    <Text style={[s.cardMeta, { color: C.secondary, marginTop: 1 }]}>Next: {g.nextMeeting}</Text>
-                  </View>
+          {/* FEATURED */}
+          <View style={{ marginBottom: 28 }}>
+            <SH
+              title="Featured"
+              C={C}
+              action={isPastor ? (
+                <Pressable><Text style={{ fontSize: 13, fontWeight: '600', color: C.secondary }}>Manage</Text></Pressable>
+              ) : undefined}
+            />
+            {FEATURED.map((item, i) => (
+              <Pressable
+                key={i}
+                style={({ pressed }) => [styles.row(C), pressed && { opacity: 0.8 }]}
+              >
+                <View style={{ width: 36, height: 36, borderRadius: 8, backgroundColor: C.separator, alignItems: 'center', justifyContent: 'center' }}>
+                  <IconSymbol name={item.icon as any} size={16} color={C.label} />
                 </View>
-              ))}
-            </View>
-
-            {/* ANNOUNCEMENTS */}
-            <View style={s.section}>
-              <SH title="Announcements" C={C} />
-              {ANNOUNCEMENTS.slice(0, 2).map((a, i) => (
-                <View key={i} style={[s.card, { backgroundColor: C.surface, marginBottom: 8 }]}>
-                  <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', marginBottom: 6 }}>
-                    <Text style={[s.cardTitle, { color: C.label, flex: 1 }]}>{a.title}</Text>
-                    <Text style={[s.cardMeta, { color: C.secondary }]}>{a.date}</Text>
+                <View style={{ flex: 1 }}>
+                  <View style={{ backgroundColor: C.separator, borderRadius: 4, paddingHorizontal: 6, paddingVertical: 2, alignSelf: 'flex-start', marginBottom: 3 }}>
+                    <Text style={{ fontSize: 9, fontWeight: '700', color: C.label, letterSpacing: 0.5 }}>{item.type}</Text>
                   </View>
-                  <Text style={[s.cardMeta, { color: C.secondary, lineHeight: 18 }]}>{a.body}</Text>
+                  <Text style={{ fontSize: 14, fontWeight: '600', color: C.label }}>{item.title}</Text>
+                  <Text style={{ fontSize: 12, color: C.secondary, marginTop: 1 }}>{item.subtitle}</Text>
                 </View>
-              ))}
-            </View>
+                <IconSymbol name="chevron.right" size={14} color={C.muted} />
+              </Pressable>
+            ))}
+          </View>
 
-            {/* QUICK ACCESS */}
-            <View style={s.section}>
-              <SH title="Quick Access" C={C} />
-              {[
-                { icon: 'heart.fill',    label: 'Give Now',       sub: 'Tithes & offerings',           route: '/(tabs)/(main)/give'    },
-                { icon: 'calendar',      label: 'Events',         sub: 'Upcoming church events',        route: '/(tabs)/(main)/agenda'  },
-                { icon: 'person.2.fill', label: 'All Ministries', sub: `${CHURCH.ministries} active`,   route: '/(tabs)/(main)/members' },
-              ].map(item => (
-                <Pressable
-                  key={item.label}
-                  style={({ pressed }) => [s.card, { backgroundColor: C.surface, flexDirection: 'row', alignItems: 'center', gap: 12, marginBottom: 8 }, pressed && { opacity: 0.8 }]}
-                  onPress={() => go(item.route)}
-                >
-                  <View style={[s.iconBox, { backgroundColor: C.separator }]}>
-                    <IconSymbol name={item.icon as any} size={16} color={C.label} />
+          {/* LEADERSHIP */}
+          <View style={{ marginBottom: 28 }}>
+            <SH
+              title="Leadership"
+              C={C}
+              action={isPastor ? (
+                <Pressable><Text style={{ fontSize: 13, fontWeight: '600', color: C.secondary }}>Edit</Text></Pressable>
+              ) : undefined}
+            />
+            {LEADERSHIP.map((person, i) => (
+              <Pressable
+                key={i}
+                style={({ pressed }) => [styles.row(C), pressed && { opacity: 0.8 }]}
+              >
+                <View style={{ width: 36, height: 36, borderRadius: 18, backgroundColor: C.separator, alignItems: 'center', justifyContent: 'center' }}>
+                  <Text style={{ fontSize: 11, fontWeight: '700', color: C.label }}>{person.initials}</Text>
+                </View>
+                <View style={{ flex: 1 }}>
+                  <Text style={{ fontSize: 14, fontWeight: '600', color: C.label }}>{person.name}</Text>
+                  <Text style={{ fontSize: 12, color: C.secondary, marginTop: 1 }}>{person.title}</Text>
+                </View>
+                <IconSymbol name="chevron.right" size={14} color={C.muted} />
+              </Pressable>
+            ))}
+          </View>
+
+          {/* UPCOMING EVENTS */}
+          <View style={{ marginBottom: 28 }}>
+            <SH title="Upcoming Events" C={C} />
+            {UPCOMING_EVENTS.map((ev, i) => (
+              <Pressable
+                key={i}
+                style={({ pressed }) => [styles.row(C), pressed && { opacity: 0.8 }]}
+              >
+                <View style={{ width: 40, alignItems: 'center', backgroundColor: C.separator, borderRadius: 8, paddingVertical: 6, paddingHorizontal: 4 }}>
+                  <Text style={{ fontSize: 9, fontWeight: '700', color: C.secondary, letterSpacing: 0.5 }}>{ev.month}</Text>
+                  <Text style={{ fontSize: 18, fontWeight: '800', color: C.label, lineHeight: 22 }}>{ev.day}</Text>
+                </View>
+                <View style={{ flex: 1 }}>
+                  <Text style={{ fontSize: 14, fontWeight: '600', color: C.label }}>{ev.name}</Text>
+                  <Text style={{ fontSize: 12, color: C.secondary, marginTop: 1 }}>{ev.time} · {ev.location}</Text>
+                </View>
+                {!isPastor && (
+                  <View style={{ backgroundColor: C.separator, borderRadius: 8, paddingHorizontal: 10, paddingVertical: 4, marginRight: 6 }}>
+                    <Text style={{ fontSize: 12, fontWeight: '600', color: C.label }}>RSVP</Text>
                   </View>
-                  <View style={{ flex: 1 }}>
-                    <Text style={[s.cardTitle, { color: C.label }]}>{item.label}</Text>
-                    <Text style={[s.cardMeta, { color: C.secondary, marginTop: 1 }]}>{item.sub}</Text>
-                  </View>
-                  <IconSymbol name="chevron.right" size={14} color={C.muted as string} />
-                </Pressable>
-              ))}
-            </View>
-          </>
-        )}
+                )}
+                <IconSymbol name="chevron.right" size={14} color={C.muted} />
+              </Pressable>
+            ))}
+            <Pressable style={{ paddingVertical: 10, alignItems: 'center' }} onPress={() => go('/(tabs)/(main)/agenda')}>
+              <Text style={{ fontSize: 13, fontWeight: '600', color: C.secondary }}>See All Events</Text>
+            </Pressable>
+          </View>
+
+          {/* LINKS */}
+          <View style={{ marginBottom: 28 }}>
+            <SH
+              title="Links"
+              C={C}
+              action={isPastor ? (
+                <Pressable><Text style={{ fontSize: 13, fontWeight: '600', color: C.secondary }}>Edit</Text></Pressable>
+              ) : undefined}
+            />
+            {LINKS.map((link, i) => (
+              <Pressable
+                key={i}
+                style={({ pressed }) => [styles.row(C), pressed && { opacity: 0.8 }]}
+              >
+                <View style={{ width: 36, height: 36, borderRadius: 8, backgroundColor: C.separator, alignItems: 'center', justifyContent: 'center' }}>
+                  <IconSymbol name={link.icon as any} size={16} color={C.label} />
+                </View>
+                <Text style={{ flex: 1, fontSize: 14, fontWeight: '600', color: C.label }}>{link.label}</Text>
+                <IconSymbol name="chevron.right" size={14} color={C.muted} />
+              </Pressable>
+            ))}
+            {isPastor && (
+              <Pressable style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center', borderRadius: 14, paddingHorizontal: 14, paddingVertical: 12, marginBottom: 8, gap: 8, borderWidth: 1.5, borderColor: C.separator }}>
+                <IconSymbol name="plus" size={14} color={C.secondary} />
+                <Text style={{ fontSize: 14, fontWeight: '600', color: C.secondary }}>Add Link</Text>
+              </Pressable>
+            )}
+          </View>
+
+        </View>
       </ScrollView>
+
+      {/* ── Overlaid top bar — transparent bg, fades out on scroll, snaps back at top ── */}
+      <Animated.View
+        style={{ position: 'absolute', top: 0, left: 0, right: 0, zIndex: 10, opacity }}
+        pointerEvents="box-none"
+      >
+        <View
+          style={{ paddingTop: insets.top, height: insets.top + TOP_BAR_H, flexDirection: 'row', alignItems: 'flex-end', paddingHorizontal: 16, paddingBottom: 8 }}
+          pointerEvents="box-none"
+        >
+          <View style={{ width: 80, justifyContent: 'center' }} pointerEvents="auto">
+            <Pressable
+              onPress={() => { Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light); openSidePanel(); }}
+              hitSlop={12}
+            >
+              <Text style={{ fontSize: 20, fontWeight: '800', letterSpacing: -0.5, color: C.label }}>K</Text>
+            </Pressable>
+          </View>
+          <View style={{ flex: 1 }} pointerEvents="none" />
+          <View style={{ width: 80, alignItems: 'flex-end' }} pointerEvents="auto">
+            <RolePill
+              role={role}
+              onPress={() => { Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light); toggleRole(); }}
+              isPrimary={isPastor}
+            />
+          </View>
+        </View>
+      </Animated.View>
+
     </View>
   );
 }
 
 // ─── Styles ───────────────────────────────────────────────────────────────────
 
-const s = StyleSheet.create({
-  root: { flex: 1 },
-
-  topBarOuter: {
-    position: 'absolute', top: 0, left: 0, right: 0, zIndex: 10,
-  },
-  topBar: {
-    flexDirection: 'row', alignItems: 'flex-end',
-    paddingHorizontal: 16, paddingBottom: 10,
-  },
-  topCenter: { flex: 1, alignItems: 'center' },
-  topTitle:  { fontSize: 17, fontWeight: '600', color: '#FFFFFF' },
-
-  avatar: {
-    width: AVATAR_SIZE, height: AVATAR_SIZE, borderRadius: AVATAR_SIZE / 2,
-    borderWidth: 3, alignItems: 'center', justifyContent: 'center',
-  },
-  avatarEmoji: { fontSize: 36 },
-
-  identity:  { marginBottom: 14 },
-  name:      { fontSize: 20, fontWeight: '700', marginBottom: 2 },
-  handle:    { fontSize: 14, marginBottom: 6 },
-  bio:       { fontSize: 14, lineHeight: 20, opacity: 0.85 },
-
-  metricActionRow: {
-    flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between',
-    paddingVertical: 14, marginBottom: 0,
-    borderTopWidth: StyleSheet.hairlineWidth, borderBottomWidth: StyleSheet.hairlineWidth,
-  },
-  editBtn:     { paddingHorizontal: 18, paddingVertical: 7, borderRadius: 20, borderWidth: 1.5 },
-  editBtnText: { fontSize: 13, fontWeight: '600' },
-
-  badgeRow: {
-    paddingHorizontal: 20, paddingVertical: 12,
-    borderTopWidth: StyleSheet.hairlineWidth, borderBottomWidth: StyleSheet.hairlineWidth,
+const styles = {
+  row: (C: ComponentColors) => ({
+    flexDirection: 'row' as const,
+    alignItems: 'center' as const,
+    backgroundColor: C.surface,
+    borderRadius: 14,
+    paddingHorizontal: 14,
+    paddingVertical: 12,
     marginBottom: 8,
-  },
-  badge:     { borderRadius: 10, borderWidth: 1, paddingHorizontal: 12, paddingVertical: 6, alignSelf: 'flex-start' },
-  badgeText: { fontSize: 12, fontWeight: '700' },
-
-  section: { paddingHorizontal: 20, marginBottom: 28 },
-
-  sh: {
-    fontSize: 11, fontWeight: '700', letterSpacing: 0.8, textTransform: 'uppercase',
-    marginBottom: 12, marginTop: 4,
-  },
-
-  card:      { borderRadius: 12, padding: 14, marginBottom: 0 },
-  cardTitle: { fontSize: 14, fontWeight: '600' },
-  cardMeta:  { fontSize: 12 },
-
-  iconBox: {
-    width: 36, height: 36, borderRadius: 8,
-    alignItems: 'center', justifyContent: 'center',
-  },
-
-  personAvatar: {
-    width: 36, height: 36, borderRadius: 18,
-    alignItems: 'center', justifyContent: 'center',
-  },
-  personInitials: { fontSize: 12, fontWeight: '700' },
-
-  progressTrack: { height: 6, borderRadius: 3, overflow: 'hidden' },
-  progressFill:  { height: 6, borderRadius: 3 },
-});
+    gap: 12,
+  }),
+};

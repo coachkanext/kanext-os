@@ -1,7 +1,7 @@
 /**
  * KayTV Side Panel — Personal Mode.
- * Owner:    Channel · Upload · Analytics · Comments + Dipson/Settings/Help
- * Follower: returns null (no sidebar)
+ * Owner:    Channel · Upload · Analytics · Library + Dipson/Settings/Help
+ * Follower: Channel · Library + Dipson/Settings/Help
  */
 
 import React, { useCallback, useMemo } from 'react';
@@ -24,10 +24,15 @@ type NavItem = {
 };
 
 const OWNER_NAV: NavItem[] = [
-  { icon: 'tv',              label: 'Channel',   route: '/(tabs)/(main)/kaytv' },
-  { icon: 'arrow.up.circle', label: 'Upload',    route: '/(tabs)/(main)/kaytv' },
-  { icon: 'chart.bar.fill',  label: 'Analytics', route: '/(tabs)/(main)/kaytv' },
-  { icon: 'bubble.left.fill', label: 'Comments', route: '/(tabs)/(main)/kaytv' },
+  { icon: 'tv.fill',                label: 'Channel',   route: '/(tabs)/(main)/kaytv/my-channel' },
+  { icon: 'arrow.up.circle.fill',   label: 'Upload',    route: '/(tabs)/(main)/kaytv/upload' },
+  { icon: 'chart.bar.fill',         label: 'Analytics', route: '/(tabs)/(main)/kaytv/analytics' },
+  { icon: 'books.vertical.fill',    label: 'Library',   route: '/(tabs)/(main)/kaytv/library' },
+];
+
+const FOLLOWER_NAV: NavItem[] = [
+  { icon: 'tv.fill',             label: 'Channel', route: '/(tabs)/(main)/kaytv/my-channel' },
+  { icon: 'books.vertical.fill', label: 'Library', route: '/(tabs)/(main)/kaytv/library' },
 ];
 
 const BOTTOM_ITEMS: NavItem[] = [
@@ -45,10 +50,9 @@ export function KayTVPanel() {
   const [role, , roleCycles] = useDemoRole('personal:kaytv');
   const isOwner = role === roleCycles[0];
 
-  // Follower gets no sidebar
-  if (!isOwner) return null;
+  const navItems = isOwner ? OWNER_NAV : FOLLOWER_NAV;
 
-  const go = (item: NavItem) => {
+  const go = useCallback((item: NavItem) => {
     Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
     if (item.isDipson) {
       closeSidePanel();
@@ -59,26 +63,26 @@ export function KayTVPanel() {
     setTimeout(() => {
       if (item.route) router.navigate(item.route as any);
     }, 80);
-  };
+  }, [router]);
 
   return (
     <View style={s.root}>
 
       {/* ── Identity header ── */}
       <View style={s.header}>
-        <View style={[s.avatar, { backgroundColor: C.separator }]}>
-          <IconSymbol name="tv" size={18} color={C.secondary} />
+        <View style={[s.avatar, { backgroundColor: C.label }]}>
+          <Text style={[s.avatarText, { color: C.bg }]}>SK</Text>
         </View>
         <Text style={[s.name, { color: C.label }]}>Sammy Kalejaiye</Text>
-        <Text style={[s.handle, { color: C.secondary }]}>Creator Channel</Text>
+        <Text style={[s.handle, { color: C.secondary }]}>@sammyk</Text>
       </View>
 
-      {/* ── Owner nav ── */}
+      {/* ── Nav items ── */}
       <View style={s.nav}>
-        {OWNER_NAV.map(item => (
+        {navItems.map(item => (
           <Pressable
             key={item.label}
-            style={({ pressed }) => [s.navRow, pressed && { backgroundColor: C.bg }]}
+            style={({ pressed }) => [s.navRow, pressed && { backgroundColor: C.surface }]}
             onPress={() => go(item)}
           >
             <IconSymbol name={item.icon as any} size={22} color={C.label} />
@@ -93,7 +97,7 @@ export function KayTVPanel() {
         {BOTTOM_ITEMS.map(item => (
           <Pressable
             key={item.label}
-            style={({ pressed }) => [s.navRow, pressed && { backgroundColor: C.bg }]}
+            style={({ pressed }) => [s.navRow, pressed && { backgroundColor: C.surface }]}
             onPress={() => go(item)}
           >
             <IconSymbol name={item.icon as any} size={22} color={C.label} />
@@ -113,9 +117,10 @@ const makeStyles = (C: ComponentColors) => StyleSheet.create({
 
   header: { paddingHorizontal: 20, paddingTop: 8, paddingBottom: 20 },
   avatar: {
-    width: 40, height: 40, borderRadius: 20,
+    width: 44, height: 44, borderRadius: 22,
     alignItems: 'center', justifyContent: 'center', marginBottom: 10,
   },
+  avatarText: { fontSize: 15, fontWeight: '700' },
   name:   { fontSize: 17, fontWeight: '700', letterSpacing: -0.3, marginBottom: 2 },
   handle: { fontSize: 14, fontWeight: '400' },
 

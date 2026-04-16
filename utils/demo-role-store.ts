@@ -10,15 +10,15 @@
  *
  * Role cycle pairs (Role A = admin, Role B = lower-tier):
  *   sports          → ['Coach', 'Fan']
- *   sports:roster   → ['Coach', 'Player']
- *   sports:recruits → ['Coach', 'Recruit']
+ *   sports:roster   → ['Head Coach', 'Player']
+ *   sports:recruits → ['Head Coach', 'Player']
  *   sports:kaypay   → ['Coach', 'Player']
  *   sports:kaystudios → ['Coach', 'Player']
  *   education       → ['President', 'Student']
  *   education:admissions → ['President', 'Student']
  *   education:kaystudios → ['President', 'Student']
  *   community       → ['Pastor', 'Member']
- *   community:outreach → ['Pastor', 'Visitor']
+ *   community:outreach → ['Pastor', 'Member']
  *   business        → ['CEO', 'Client']
  *   business:team   → ['CEO', 'Employee']
  *   business:kaypay → ['CEO', 'Employee']
@@ -31,30 +31,37 @@ const DEFAULTS: Record<string, string[]> = {
   sports:               ['Coach',   'Fan'],
   'sports:hub':         ['Head Coach', 'Player'],
   'sports:agenda':      ['Head Coach', 'Player'],
-  'sports:roster':      ['Coach',   'Player'],
-  'sports:recruits':    ['Coach',   'Recruit'],
-  'sports:booster':     ['Coach',   'Fan'],
+  'sports:roster':      ['Head Coach', 'Player'],
+  'sports:recruits':    ['Head Coach', 'Player'],
+  'sports:booster':     ['Head Coach', 'Fan'],
   'sports:kaypay':      ['Coach',   'Player'],
-  'sports:kaystudios':  ['Coach',   'Player'],
+  'sports:kaystudios':  ['Head Coach', 'Player'],
   education:              ['President', 'Student'],
   'education:hub':        ['President', 'Student'],
   'education:admissions': ['President', 'Student'],
   'education:fund':       ['President', 'Student'],
   'education:kaystudios': ['President', 'Student'],
+  'education:campus':     ['President', 'Student'],
   community:              ['Pastor',  'Member'],
   'community:hub':        ['Pastor',  'Member'],
   'community:members':    ['Pastor',  'Member'],
-  'community:outreach':   ['Pastor',  'Visitor'],
+  'community:outreach':   ['Pastor',  'Member'],
   'community:give':       ['Pastor',  'Member'],
   'community:social':     ['Pastor',  'Member'],
+  'community:kaystudios': ['Pastor',  'Member'],
+  'community:kaypay':     ['Pastor',  'Member'],
+  'sports:social':        ['Head Coach', 'Player'],
+  'business:social':      ['CEO',    'Client'],
+  'education:social':     ['President', 'Student'],
   'community:agenda':     ['Pastor',  'Member'],
   'community:kaytv':      ['Pastor',  'Member'],
   business:               ['CEO',     'Client'],
-  'business:hub':         ['CEO',     'Customer'],
-  'business:inquiries':   ['CEO',     'Customer'],
+  'business:hub':         ['CEO',     'Client'],
+  'business:inquiries':   ['CEO',     'Client'],
   'business:store':       ['CEO',     'Client'],
   'business:team':        ['CEO',     'Employee'],
   'business:kaypay':      ['CEO',     'Employee'],
+  'business:kaystudios':  ['CEO',     'Client'],
   personal:               ['Owner',   'Follower'],
   'personal:hub':         ['Owner',   'Follower'],
   'personal:my-page':     ['Owner',   'Follower'],
@@ -84,7 +91,10 @@ function notify(key: string): void {
 }
 
 export function getDemoRole(key: string): string {
-  return _state[key] ?? DEFAULTS[key]?.[0] ?? 'Admin';
+  const cycles = DEFAULTS[key] ?? ['Admin', 'User'];
+  const stored = _state[key];
+  if (stored && cycles.includes(stored)) return stored;
+  return cycles[0];
 }
 
 export function setDemoRole(key: string, role: string): void {
@@ -98,6 +108,8 @@ export function useDemoRole(key: string): [string, () => void, string[]] {
   const [role, setLocalRole] = useState<string>(() => getDemoRole(key));
 
   useEffect(() => {
+    // When key changes (mode switch), immediately sync to the new key's role
+    setLocalRole(getDemoRole(key));
     const unsub = subscribe(key, () => setLocalRole(getDemoRole(key)));
     return unsub;
   }, [key]);

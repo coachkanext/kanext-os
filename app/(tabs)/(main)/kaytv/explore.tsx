@@ -5,7 +5,7 @@
  * Sections: Search · Trending · Categories · Recommended For You · Popular Channels · New on KTV
  */
 
-import React, { useState, useMemo, useCallback } from 'react';
+import React, { useState, useMemo, useCallback, useEffect, useRef } from 'react';
 import {
   View, Text, Pressable, ScrollView, TextInput, StyleSheet, Animated,
 } from 'react-native';
@@ -154,6 +154,12 @@ export default function ExploreScreen() {
 
   const [role, cycleRole, roleCycles] = useDemoRole('personal:kaytv');
   const isOwner = role === roleCycles[0];
+
+  const _ktvMounted = useRef(false);
+  useEffect(() => {
+    if (!_ktvMounted.current) { _ktvMounted.current = true; return; }
+    router.navigate('/(tabs)/(main)/kaytv' as any);
+  }, [isOwner]);
 
   const [searchQuery,      setSearchQuery]      = useState('');
   const [activeCategory,   setActiveCategory]   = useState<VideoCategory>('All');

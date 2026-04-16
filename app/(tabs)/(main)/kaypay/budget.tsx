@@ -16,6 +16,7 @@ import { useColors, type ComponentColors } from '@/hooks/use-colors';
 import { openSidePanel } from '@/utils/global-side-panel';
 import { resetFooter } from '@/utils/global-footer-hide';
 import { useDemoRole } from '@/utils/demo-role-store';
+import { useMode } from '@/context/app-context';
 import { KMenuButton } from '@/components/ui/k-menu-button';
 import { useScrollHeader } from '@/hooks/use-scroll-header';
 
@@ -60,7 +61,9 @@ export default function BudgetScreen() {
   const s      = useMemo(() => makeStyles(C), [C]);
   const insets = useSafeAreaInsets();
 
-  const [role, cycleRole, roleCycles] = useDemoRole('community:kaypay');
+  const mode = useMode();
+  const _rk = mode === 'sports' ? 'sports:agenda' : mode === 'community' ? 'community:kaypay' : mode === 'education' ? 'education' : mode === 'business' ? 'business' : 'personal:kaypay';
+  const [role, cycleRole, roleCycles] = useDemoRole(_rk);
   const isPastor = role === roleCycles[0];
 
   const TOP_BAR_H = insets.top + 54;

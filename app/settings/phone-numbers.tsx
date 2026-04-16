@@ -7,10 +7,10 @@ import { useRouter } from 'expo-router';
 import { IconSymbol } from '@/components/ui/icon-symbol';
 import { useColors, type ComponentColors } from '@/hooks/use-colors';
 
-const MODES = ['Sports', 'Business', 'Faith', 'Education', 'Personal'];
+const MODES = ['Athletics', 'Business', 'Faith', 'Education', 'Personal'];
 
 const ACTIVE_NUMBERS = [
-  { mode: 'Sports', number: '+1 (305) 555-0182', status: 'Active' },
+  { mode: 'Athletics', number: '+1 (305) 555-0182', status: 'Active' },
   { mode: 'Business', number: '+1 (786) 555-0291', status: 'Active' },
 ];
 

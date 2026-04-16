@@ -4,7 +4,7 @@
  * Monochrome design system. No blue. No accent.
  */
 
-import React, { useState, useMemo, useCallback } from 'react';
+import React, { useState, useMemo, useCallback, useEffect } from 'react';
 import {
   View,
   Text,
@@ -17,7 +17,7 @@ import {
 } from 'react-native';
 import * as Haptics from 'expo-haptics';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { useFocusEffect } from 'expo-router';
+import { useFocusEffect, useRouter } from 'expo-router';
 import { IconSymbol } from '@/components/ui/icon-symbol';
 import { KMenuButton } from '@/components/ui/k-menu-button';
 import { RolePill } from '@/components/ui/role-pill';
@@ -118,6 +118,8 @@ export default function StoreHelpScreen() {
   const { opacity, onScroll, scrollEventThrottle } = useScrollHeader();
   const [role, cycleRole, roleCycles] = useDemoRole('personal:store');
   const isOwner = role === roleCycles[0];
+  const router = useRouter();
+  useEffect(() => { if (!isOwner) router.navigate('/(tabs)/(main)/store' as any); }, [isOwner]);
 
   const [query, setQuery] = useState('');
 

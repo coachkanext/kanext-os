@@ -34,13 +34,17 @@ const GAIN      = '#5A8A6E';
 const HEAT      = '#B85C5C';
 const CAUTION   = '#B8943E';
 
-const MY_PLAYER_ID = 'p01'; // Marcus Reed — the "logged in" player
+const MY_PLAYER_ID = 'p01'; // Laolu Kalejaiye — the "logged in" player
 
-type SortKey  = 'KR' | '#' | 'Pos' | 'Name';
-type PosFilter = 'All' | 'PG' | 'SG' | 'SF' | 'PF' | 'C';
+type SortKey    = 'KR' | '#' | 'Pos' | 'Name';
+type GroupFilter = 'All' | 'Guards' | 'Wings' | 'Bigs' | 'Starters' | 'Bench' | 'Redshirt' | 'Injured';
 
-const POS_FILTERS: PosFilter[] = ['All', 'PG', 'SG', 'SF', 'PF', 'C'];
-const SORT_KEYS: SortKey[]     = ['KR', '#', 'Pos', 'Name'];
+const GROUP_FILTERS: GroupFilter[] = ['All', 'Guards', 'Wings', 'Bigs', 'Starters', 'Bench', 'Redshirt', 'Injured'];
+const SORT_KEYS: SortKey[]         = ['KR', '#', 'Pos', 'Name'];
+
+// Benchmark KRs for comparison pills
+const CONF_AVG_KR  = 68.4;
+const NAIA_AVG_KR  = 64.2;
 
 // ── KR color helper ───────────────────────────────────────────────────────────
 
@@ -297,10 +301,9 @@ export default function RosterScreen() {
   const isCoach = role === roleCycles[0]; // 'Coach'
 
   // ── State ──
-  const [search,    setSearch]    = useState('');
-  const [sort,      setSort]      = useState<SortKey>('KR');
-  const [posFilter, setPosFilter] = useState<PosFilter>('All');
-  const [sortDD,    setSortDD]    = useState(false);
+  const [search,      setSearch]      = useState('');
+  const [sort,        setSort]        = useState<SortKey>('KR');
+  const [groupFilter, setGroupFilter] = useState<GroupFilter>('All');
 
   // ── Scroll footer control ──
   const lastScrollY = useRef(0);
@@ -318,16 +321,25 @@ export default function RosterScreen() {
 
   // ── Sorted & filtered players ──
   const sorted = useMemo(() => {
-    let list = PLAYERS.filter(p =>
-      p.name.toLowerCase().includes(search.toLowerCase()) &&
-      (posFilter === 'All' || p.position === posFilter)
-    );
+    let list = PLAYERS.filter(p => {
+      if (!p.name.toLowerCase().includes(search.toLowerCase())) return false;
+      switch (groupFilter) {
+        case 'Guards':  return p.position === 'PG' || p.position === 'SG';
+        case 'Wings':   return p.position === 'SF';
+        case 'Bigs':    return p.position === 'PF' || p.position === 'C';
+        case 'Starters':return p.role === 'Starter';
+        case 'Bench':   return p.role === 'Bench';
+        case 'Redshirt':return p.isRedshirt;
+        case 'Injured': return p.medical !== 'available';
+        default:        return true;
+      }
+    });
     if (sort === 'KR')   list = [...list].sort((a, b) => b.kr.overall - a.kr.overall);
     if (sort === '#')    list = [...list].sort((a, b) => a.number - b.number);
     if (sort === 'Pos')  list = [...list].sort((a, b) => a.position.localeCompare(b.position));
     if (sort === 'Name') list = [...list].sort((a, b) => a.name.localeCompare(b.name));
     return list;
-  }, [search, sort, posFilter]);
+  }, [search, sort, groupFilter]);
 
   // ── Roster stats ──
   const scholarship  = PLAYERS.filter(p => p.isScholarship).length;
@@ -363,34 +375,40 @@ export default function RosterScreen() {
       contentContainerStyle={{ paddingTop: topBarH, paddingBottom: scrollPB }}
     >
       {/* Team Header Card */}
-      <View style={[th.card, { backgroundColor: DARK_CARD }]}>
+      <View style={[th.card, { backgroundColor: C.surface }]}>
         {/* Row 1: Team name + GAAC badge */}
         <View style={th.row1}>
-          <Text style={th.teamName} numberOfLines={1}>LU Oaklanders Basketball</Text>
-          <View style={th.confBadge}>
-            <Text style={th.confText}>{TEAM_INFO.conference}</Text>
+          <Text style={[th.teamName, { color: C.label }]} numberOfLines={1}>LU Oaklanders Basketball</Text>
+          <View style={[th.confBadge, { backgroundColor: C.bg, borderColor: C.separator }]}>
+            <Text style={[th.confText, { color: C.label }]}>{TEAM_INFO.conference}</Text>
           </View>
         </View>
 
         {/* Row 2: Record + conf record + standing */}
         <View style={th.row2}>
-          <Text style={th.record}>{TEAM_INFO.record}</Text>
-          <View style={th.sep} />
-          <Text style={[th.confRec, { color: '#F0E8DC99' }]}>{TEAM_INFO.conferenceRec} {TEAM_INFO.conference}</Text>
-          <View style={th.sep} />
-          <Text style={[th.standing, { color: GAIN }]}>{TEAM_INFO.confStanding}</Text>
+          <Text style={[th.record, { color: C.label }]}>{TEAM_INFO.record}</Text>
+          <View style={[th.sep, { backgroundColor: C.separator }]} />
+          <Text style={[th.confRec, { color: C.secondary }]}>{TEAM_INFO.conferenceRec} {TEAM_INFO.conference}</Text>
+          <View style={[th.sep, { backgroundColor: C.separator }]} />
+          <Text style={[th.standing, { color: CAUTION }]}>{TEAM_INFO.confStanding}</Text>
         </View>
 
-        {/* Row 3: Team KR + System Fit */}
+        {/* Row 3: Team KR + Comparison Pills */}
         <View style={th.row3}>
           <View style={th.statBlock}>
             <Text style={[th.statBig, { color: CAUTION }]}>{Math.round(TEAM_KR.overall)}</Text>
-            <Text style={th.statLbl}>TEAM KR</Text>
+            <Text style={[th.statLbl, { color: C.secondary }]}>TEAM KR</Text>
           </View>
-          <View style={th.statDivider} />
-          <View style={th.statBlock}>
-            <Text style={[th.statBig, { color: GAIN }]}>94%</Text>
-            <Text style={th.statLbl}>SYS FIT</Text>
+          <View style={[th.statDivider, { backgroundColor: C.separator }]} />
+          <View style={th.compCol}>
+            <View style={[th.compPill, { backgroundColor: C.bg }]}>
+              <Text style={[th.compLabel, { color: C.secondary }]}>vs Conf Avg</Text>
+              <Text style={[th.compDelta, { color: GAIN }]}>+{(TEAM_KR.overall - CONF_AVG_KR).toFixed(1)}</Text>
+            </View>
+            <View style={[th.compPill, { backgroundColor: C.bg }]}>
+              <Text style={[th.compLabel, { color: C.secondary }]}>vs NAIA Avg</Text>
+              <Text style={[th.compDelta, { color: GAIN }]}>+{(TEAM_KR.overall - NAIA_AVG_KR).toFixed(1)}</Text>
+            </View>
           </View>
         </View>
       </View>
@@ -463,28 +481,28 @@ export default function RosterScreen() {
         </Pressable>
       </View>
 
-      {/* Position filter pills */}
+      {/* Group filter pills */}
       <ScrollView
         horizontal
         showsHorizontalScrollIndicator={false}
         contentContainerStyle={pf.content}
         style={pf.scroll}
       >
-        {POS_FILTERS.map(pos => {
-          const active = pos === posFilter;
+        {GROUP_FILTERS.map(g => {
+          const active = g === groupFilter;
           return (
             <Pressable
-              key={pos}
+              key={g}
               style={[
                 pf.pill,
                 active
                   ? { backgroundColor: C.activePill }
                   : { backgroundColor: C.surface },
               ]}
-              onPress={() => { Haptics.selectionAsync(); setPosFilter(pos); }}
+              onPress={() => { Haptics.selectionAsync(); setGroupFilter(g); }}
             >
               <Text style={[pf.txt, { color: active ? C.activePillText : C.secondary }]}>
-                {pos}
+                {g}
               </Text>
             </Pressable>
           );
@@ -567,7 +585,7 @@ export default function RosterScreen() {
       <Animated.View style={[s.topBarWrap, { paddingTop: insets.top, backgroundColor: C.bg, opacity }]}>
         <View style={s.topBar}>
           {/* Left: KMenuButton */}
-          <View style={s.topBarSide}>
+          <View style={{ flex: 1, justifyContent: 'center' }}>
             <Pressable
               onPress={() => { Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light); openSidePanel(); }}
               hitSlop={12}
@@ -586,7 +604,7 @@ export default function RosterScreen() {
           </View>
 
           {/* Right: RolePill */}
-          <View style={[s.topBarSide, s.topBarRight]}>
+          <View style={{ flex: 1, alignItems: 'flex-end' }}>
             <RolePill
               role={role}
               onPress={cycleRole}
@@ -633,23 +651,27 @@ const s = StyleSheet.create({
   centerPillTxt: { fontSize: 12, fontWeight: '600', letterSpacing: 0.3 },
 });
 
-// Team header card
+// Team header card (colors passed inline from C)
 const th = StyleSheet.create({
-  card:       { backgroundColor: DARK_CARD, borderRadius: 16, marginHorizontal: 14, marginTop: 12, padding: 16, gap: 10 },
+  card:       { borderRadius: 16, marginHorizontal: 14, marginTop: 12, padding: 16, gap: 10 },
   row1:       { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' },
-  teamName:   { fontSize: 16, fontWeight: '800', color: '#F0E8DC', flex: 1, marginRight: 8 },
-  confBadge:  { backgroundColor: 'rgba(255,255,255,0.12)', paddingHorizontal: 8, paddingVertical: 3, borderRadius: 7 },
-  confText:   { fontSize: 11, fontWeight: '700', color: '#F0E8DC' },
+  teamName:   { fontSize: 16, fontWeight: '800', flex: 1, marginRight: 8 },
+  confBadge:  { paddingHorizontal: 8, paddingVertical: 3, borderRadius: 7, borderWidth: 1 },
+  confText:   { fontSize: 11, fontWeight: '700' },
   row2:       { flexDirection: 'row', alignItems: 'center', gap: 8 },
-  record:     { fontSize: 22, fontWeight: '900', color: '#F0E8DC' },
-  sep:        { width: 1, height: 16, backgroundColor: 'rgba(240,232,220,0.25)' },
+  record:     { fontSize: 22, fontWeight: '900' },
+  sep:        { width: 1, height: 16 },
   confRec:    { fontSize: 13, fontWeight: '600' },
   standing:   { fontSize: 13, fontWeight: '700' },
   row3:       { flexDirection: 'row', alignItems: 'center', marginTop: 4 },
   statBlock:  { flex: 1, alignItems: 'center', gap: 2 },
   statBig:    { fontSize: 26, fontWeight: '900' },
-  statLbl:    { fontSize: 10, fontWeight: '700', color: 'rgba(240,232,220,0.55)', letterSpacing: 0.5 },
-  statDivider:{ width: 1, height: 36, backgroundColor: 'rgba(240,232,220,0.18)', marginHorizontal: 12 },
+  statLbl:    { fontSize: 10, fontWeight: '700', letterSpacing: 0.5 },
+  statDivider:{ width: 1, height: 36, marginHorizontal: 12 },
+  compCol:    { flex: 1, gap: 6 },
+  compPill:   { flexDirection: 'row', justifyContent: 'space-between', paddingHorizontal: 10, paddingVertical: 6, borderRadius: 8 },
+  compLabel:  { fontSize: 11, fontWeight: '600' },
+  compDelta:  { fontSize: 11, fontWeight: '800' },
 });
 
 // Roster stats strip

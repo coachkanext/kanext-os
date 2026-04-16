@@ -19,8 +19,10 @@ import { useColors, type ComponentColors } from '@/hooks/use-colors';
 import { openSidePanel } from '@/utils/global-side-panel';
 import { resetFooter } from '@/utils/global-footer-hide';
 import { useDemoRole } from '@/utils/demo-role-store';
+import { useMode } from '@/context/app-context';
 import { useScrollHeader } from '@/hooks/use-scroll-header';
 
+const TOP_BAR_H = 54;
 const GAIN    = '#5A8A6E';
 const HEAT    = '#B85C5C';
 const BALANCE = 2340.50;
@@ -57,11 +59,13 @@ export default function PayScreen() {
   const insets = useSafeAreaInsets();
   const s      = useMemo(() => makeStyles(C), [C]);
 
-  const [role, cycleRole, roleCycles] = useDemoRole('personal:kaypay');
+  const mode = useMode();
+  const _rk = mode === 'sports' ? 'sports:agenda' : mode === 'community' ? 'community:kaypay' : mode === 'education' ? 'education' : mode === 'business' ? 'business' : 'personal:kaypay';
+  const [role, cycleRole, roleCycles] = useDemoRole(_rk);
   const isOwner = role === roleCycles[0];
 
-  const TOP_BAR_H = insets.top + 54;
-  const { opacity, onScroll, scrollEventThrottle } = useScrollHeader(TOP_BAR_H);
+  const totalTopH = insets.top + TOP_BAR_H;
+  const { opacity, onScroll, scrollEventThrottle } = useScrollHeader(totalTopH);
 
   const [search,     setSearch]     = useState('');
   const [recipient,  setRecipient]  = useState('');
@@ -94,16 +98,20 @@ export default function PayScreen() {
           <Pressable onPress={() => { Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light); openSidePanel(); }} style={s.kBtn}>
             <KMenuButton />
           </Pressable>
-          <View style={s.titleWrap}>
-            <Text style={[s.title, { color: C.label }]}>Pay</Text>
+          <View style={{ flex: 1, alignItems: 'center' }}>
+            <View style={[s.titlePill, { backgroundColor: C.surface, borderColor: C.separator }]}>
+              <Text style={[s.titlePillText, { color: C.label }]}>Pay</Text>
+            </View>
           </View>
-          <RolePill role={role} onPress={cycleRole} accentColor={C.label} isPrimary={isOwner} />
+          <View style={{ alignItems: 'flex-end' }}>
+            <RolePill role={role} onPress={cycleRole} isPrimary={isOwner} />
+          </View>
         </View>
       </Animated.View>
 
       <ScrollView
         showsVerticalScrollIndicator={false}
-        contentContainerStyle={{ paddingTop: TOP_BAR_H + 16, paddingBottom: insets.bottom + 100 }}
+        contentContainerStyle={{ paddingTop: totalTopH + 16, paddingBottom: insets.bottom + 100 }}
         onScroll={onScroll}
         scrollEventThrottle={scrollEventThrottle}
         keyboardShouldPersistTaps="handled"
@@ -261,10 +269,10 @@ export default function PayScreen() {
 const makeStyles = (C: ComponentColors) => StyleSheet.create({
   root:        { flex: 1 },
   topBarOuter: { position: 'absolute', top: 0, left: 0, right: 0, zIndex: 10, borderBottomWidth: StyleSheet.hairlineWidth },
-  topBar:      { height: TOP_BAR_H, flexDirection: 'row', alignItems: 'center', paddingHorizontal: 4 },
-  kBtn:        { width: 40, alignItems: 'center' },
-  titleWrap:   { flex: 1, alignItems: 'center' },
-  title:       { fontSize: 17, fontWeight: '700' },
+  topBar:      { height: TOP_BAR_H, flexDirection: 'row', alignItems: 'center', paddingHorizontal: 12 },
+  kBtn:         { width: 44, height: 44, alignItems: 'flex-start', justifyContent: 'center' },
+  titlePill:    { paddingHorizontal: 12, paddingVertical: 5, borderRadius: 14, borderWidth: 1 },
+  titlePillText:{ fontSize: 12, fontWeight: '600', letterSpacing: 0.3 },
 
   searchBar:   { flexDirection: 'row', alignItems: 'center', gap: 8, borderRadius: 12, paddingHorizontal: 12, height: 44 },
   searchInput: { flex: 1, fontSize: 15 },

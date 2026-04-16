@@ -3,6 +3,7 @@ import React, {
   useRef,
   useMemo,
   useCallback,
+  useEffect,
 } from 'react';
 import {
   View,
@@ -13,7 +14,6 @@ import {
   TextInput,
   Alert,
   Animated,
-  useColorScheme,
 } from 'react-native';
 import {
   BottomSheetModal,
@@ -32,6 +32,7 @@ import { openSidePanel } from '@/utils/global-side-panel';
 import { openDipsonSheet } from '@/utils/global-dipson-sheet';
 import { resetFooter } from '@/utils/global-footer-hide';
 import { useDemoRole } from '@/utils/demo-role-store';
+import { useAppContext } from '@/context/app-context';
 import { useScrollHeader } from '@/hooks/use-scroll-header';
 
 // ── Semantic color constants ──────────────────────────────────────────────────
@@ -39,9 +40,9 @@ const HEAT    = '#B85C5C';
 const CAUTION = '#B8943E';
 const GAIN    = '#5A8A6E';
 
-// Card background tints — light / dark pairs
-const DANGER_BG  = { light: '#FCEBEB', dark: '#3D1717' } as const;
-const WARNING_BG = { light: '#FFF8EB', dark: '#3D2E0F' } as const;
+// Card background tints — semi-transparent, works on any scheme
+const DANGER_BG  = HEAT    + '20';   // ~12% heat red tint
+const WARNING_BG = CAUTION + '20';   // ~12% caution amber tint
 
 // ── Types ─────────────────────────────────────────────────────────────────────
 type Priority       = 'none' | 'medium' | 'high';
@@ -63,27 +64,155 @@ type Reminder = {
   completedAt?: number;
 };
 
-// ── Mock data ─────────────────────────────────────────────────────────────────
-const INITIAL_REMINDERS: Reminder[] = [
-  // OVERDUE
-  { id: 1,  text: 'Follow up with Puma on contract terms',  subtitle: 'Deals \u00b7 Contract negotiation',       dueDate: '2026-04-10', dueTime: '10:00 AM', priority: 'high',   flagged: true,  status: 'pending',   isOverdue: true,  overdueLabel: '3 days overdue' },
-  { id: 2,  text: "Post Tuesday's reel to IG and TikTok",   subtitle: 'Content \u00b7 Spring collection series',  dueDate: '2026-04-11', dueTime: '9:00 AM',  priority: 'medium', flagged: false, status: 'pending',   isOverdue: true,  overdueLabel: 'Yesterday' },
-  // TODAY
-  { id: 3,  text: 'Nike brand call \u2014 prep talking points',   subtitle: 'Meetings \u00b7 Partnership discussion',   dueDate: '2026-04-13', dueTime: '1:00 PM',  priority: 'high',   flagged: true,  status: 'pending',   isOverdue: false },
-  { id: 4,  text: 'Review April content calendar',           subtitle: 'Content \u00b7 Monthly planning',          dueDate: '2026-04-13', dueTime: '3:00 PM',  priority: 'medium', flagged: false, status: 'pending',   isOverdue: false },
-  { id: 5,  text: 'Send invoice to Alex',                    subtitle: 'Earnings \u00b7 Coaching session payment', dueDate: '2026-04-13', dueTime: '6:00 PM',  priority: 'none',   flagged: false, status: 'pending',   isOverdue: false },
-  // SCHEDULED
-  { id: 6,  text: 'Adidas proposal deadline',                subtitle: 'Deals \u00b7 Spring campaign pitch',       dueDate: '2026-04-14', dueTime: '5:00 PM',  priority: 'high',   flagged: true,  status: 'pending',   isOverdue: false },
-  { id: 7,  text: 'Record podcast intro segments',           subtitle: 'Content \u00b7 Episode 43',                dueDate: '2026-04-15', dueTime: '10:00 AM', priority: 'none',   flagged: false, status: 'pending',   isOverdue: false },
-  { id: 8,  text: 'Inner Circle Q&A prep',                   subtitle: 'Bookings \u00b7 12 members attending',    dueDate: '2026-04-16', dueTime: '11:00 AM', priority: 'medium', flagged: false, status: 'pending',   isOverdue: false },
-  { id: 9,  text: 'Monthly analytics review',                subtitle: 'Analytics \u00b7 Growth trends check',     dueDate: '2026-04-17', dueTime: '2:00 PM',  priority: 'none',   flagged: false, status: 'pending',   isOverdue: false },
-  { id: 10, text: 'Lululemon pitch deck draft',              subtitle: 'Deals \u00b7 Initial brand meeting prep',  dueDate: '2026-04-20', dueTime: '9:00 AM',  priority: 'medium', flagged: true,  status: 'pending',   isOverdue: false },
-  { id: 11, text: 'Subscriber newsletter \u2014 May edition',     subtitle: 'Content \u00b7 Monthly newsletter',        dueDate: '2026-04-22', dueTime: '12:00 PM', priority: 'none',   flagged: false, status: 'pending',   isOverdue: false },
-  // COMPLETED
-  { id: 12, text: 'Upload BTS photoshoot clips',             subtitle: 'Content',  dueDate: '2026-04-11', dueTime: '4:00 PM',  priority: 'none', flagged: false, status: 'completed', isOverdue: false, completedAt: Date.now() - 86400000 },
-  { id: 13, text: 'Schedule week 3 content batch',           subtitle: 'Content',  dueDate: '2026-04-10', dueTime: '2:00 PM',  priority: 'none', flagged: false, status: 'completed', isOverdue: false, completedAt: Date.now() - 172800000 },
-  { id: 14, text: 'Reply to brand DMs',                      subtitle: 'Meetings', dueDate: '2026-04-12', dueTime: '11:00 AM', priority: 'none', flagged: false, status: 'completed', isOverdue: false, completedAt: Date.now() - 7200000 },
-];
+// ── Mock data (per mode + role) ───────────────────────────────────────────────
+// Keys: `${mode}:admin` for primary role, `${mode}:member` for secondary role
+const REMINDERS_BY_MODE: Record<string, Reminder[]> = {
+
+  // ── PERSONAL ──────────────────────────────────────────────────────────────
+  'personal:admin': [
+    { id: 1,  text: 'Follow up with Puma on contract terms',  subtitle: 'Deals \u00b7 Contract negotiation',       dueDate: '2026-04-10', dueTime: '10:00 AM', priority: 'high',   flagged: true,  status: 'pending',   isOverdue: true,  overdueLabel: '3 days overdue' },
+    { id: 2,  text: "Post Tuesday's reel to IG and TikTok",   subtitle: 'Content \u00b7 Spring collection series',  dueDate: '2026-04-11', dueTime: '9:00 AM',  priority: 'medium', flagged: false, status: 'pending',   isOverdue: true,  overdueLabel: 'Yesterday' },
+    { id: 3,  text: 'Nike brand call \u2014 prep talking points',   subtitle: 'Meetings \u00b7 Partnership discussion',   dueDate: '2026-04-13', dueTime: '1:00 PM',  priority: 'high',   flagged: true,  status: 'pending',   isOverdue: false },
+    { id: 4,  text: 'Review April content calendar',           subtitle: 'Content \u00b7 Monthly planning',          dueDate: '2026-04-13', dueTime: '3:00 PM',  priority: 'medium', flagged: false, status: 'pending',   isOverdue: false },
+    { id: 5,  text: 'Send invoice to Alex',                    subtitle: 'Earnings \u00b7 Coaching session payment', dueDate: '2026-04-13', dueTime: '6:00 PM',  priority: 'none',   flagged: false, status: 'pending',   isOverdue: false },
+    { id: 6,  text: 'Adidas proposal deadline',                subtitle: 'Deals \u00b7 Spring campaign pitch',       dueDate: '2026-04-14', dueTime: '5:00 PM',  priority: 'high',   flagged: true,  status: 'pending',   isOverdue: false },
+    { id: 7,  text: 'Record podcast intro segments',           subtitle: 'Content \u00b7 Episode 43',                dueDate: '2026-04-15', dueTime: '10:00 AM', priority: 'none',   flagged: false, status: 'pending',   isOverdue: false },
+    { id: 8,  text: 'Inner Circle Q&A prep',                   subtitle: 'Bookings \u00b7 12 members attending',     dueDate: '2026-04-16', dueTime: '11:00 AM', priority: 'medium', flagged: false, status: 'pending',   isOverdue: false },
+    { id: 9,  text: 'Monthly analytics review',                subtitle: 'Analytics \u00b7 Growth trends check',     dueDate: '2026-04-17', dueTime: '2:00 PM',  priority: 'none',   flagged: false, status: 'pending',   isOverdue: false },
+    { id: 10, text: 'Lululemon pitch deck draft',              subtitle: 'Deals \u00b7 Initial brand meeting prep',  dueDate: '2026-04-20', dueTime: '9:00 AM',  priority: 'medium', flagged: true,  status: 'pending',   isOverdue: false },
+    { id: 11, text: 'Subscriber newsletter \u2014 May edition',    subtitle: 'Content \u00b7 Monthly newsletter',        dueDate: '2026-04-22', dueTime: '12:00 PM', priority: 'none',   flagged: false, status: 'pending',   isOverdue: false },
+    { id: 12, text: 'Upload BTS photoshoot clips',             subtitle: 'Content',  dueDate: '2026-04-11', dueTime: '4:00 PM',  priority: 'none', flagged: false, status: 'completed', isOverdue: false, completedAt: Date.now() - 86400000 },
+    { id: 13, text: 'Schedule week 3 content batch',           subtitle: 'Content',  dueDate: '2026-04-10', dueTime: '2:00 PM',  priority: 'none', flagged: false, status: 'completed', isOverdue: false, completedAt: Date.now() - 172800000 },
+    { id: 14, text: 'Reply to brand DMs',                      subtitle: 'Meetings', dueDate: '2026-04-12', dueTime: '11:00 AM', priority: 'none', flagged: false, status: 'completed', isOverdue: false, completedAt: Date.now() - 7200000 },
+  ],
+  'personal:member': [
+    { id: 1,  text: 'Watch episode 4 of the course',           subtitle: 'Content \u00b7 Added to your playlist',   dueDate: '2026-04-11', dueTime: '9:00 AM',  priority: 'medium', flagged: false, status: 'pending',   isOverdue: true,  overdueLabel: 'Yesterday' },
+    { id: 2,  text: 'Inner Circle Q&A \u2014 today at 1 PM',       subtitle: 'Meetings \u00b7 Live subscriber session',  dueDate: '2026-04-13', dueTime: '1:00 PM',  priority: 'high',   flagged: true,  status: 'pending',   isOverdue: false },
+    { id: 3,  text: 'Download new workout guide from store',    subtitle: 'Content \u00b7 April drop',               dueDate: '2026-04-13', dueTime: '3:00 PM',  priority: 'medium', flagged: false, status: 'pending',   isOverdue: false },
+    { id: 4,  text: 'RSVP for April meetup event',             subtitle: 'Meetings \u00b7 Subscriber only',         dueDate: '2026-04-13', dueTime: '6:00 PM',  priority: 'none',   flagged: false, status: 'pending',   isOverdue: false },
+    { id: 5,  text: 'Monthly subscriber drop \u2014 exclusive access', subtitle: 'Content \u00b7 Inner Circle drop',     dueDate: '2026-04-16', dueTime: '12:00 PM', priority: 'medium', flagged: false, status: 'pending',   isOverdue: false },
+    { id: 6,  text: 'New course module drops \u2014 check your feed',  subtitle: 'Content \u00b7 Speed & Agility series', dueDate: '2026-04-20', dueTime: '10:00 AM', priority: 'none',   flagged: false, status: 'pending',   isOverdue: false },
+    { id: 7,  text: 'Renew subscription before it expires',    subtitle: 'Earnings \u00b7 Inner Circle plan',       dueDate: '2026-04-22', dueTime: '9:00 AM',  priority: 'high',   flagged: true,  status: 'pending',   isOverdue: false },
+    { id: 8,  text: 'Completed Q&A session \u2014 March',           subtitle: 'Meetings', dueDate: '2026-04-10', dueTime: '1:00 PM',  priority: 'none', flagged: false, status: 'completed', isOverdue: false, completedAt: Date.now() - 172800000 },
+  ],
+
+  // ── BUSINESS ──────────────────────────────────────────────────────────────
+  'business:admin': [
+    { id: 1,  text: 'Q1 board deck \u2014 final review',               subtitle: 'Operations \u00b7 Leadership prep',     dueDate: '2026-04-10', dueTime: '10:00 AM', priority: 'high',   flagged: true,  status: 'pending',   isOverdue: true,  overdueLabel: '3 days overdue' },
+    { id: 2,  text: 'Reply to investor due diligence requests',  subtitle: 'Finance \u00b7 Series A close',        dueDate: '2026-04-11', dueTime: '9:00 AM',  priority: 'medium', flagged: false, status: 'pending',   isOverdue: true,  overdueLabel: 'Yesterday' },
+    { id: 3,  text: 'Weekly leadership sync \u2014 agenda prep',       subtitle: 'Meetings \u00b7 Executive team',       dueDate: '2026-04-13', dueTime: '1:00 PM',  priority: 'high',   flagged: true,  status: 'pending',   isOverdue: false },
+    { id: 4,  text: 'Close Series A term sheet',                 subtitle: 'Finance \u00b7 Investor close',        dueDate: '2026-04-13', dueTime: '3:00 PM',  priority: 'medium', flagged: false, status: 'pending',   isOverdue: false },
+    { id: 5,  text: 'Submit quarterly tax filing',               subtitle: 'Finance \u00b7 Q1 taxes',              dueDate: '2026-04-13', dueTime: '6:00 PM',  priority: 'none',   flagged: false, status: 'pending',   isOverdue: false },
+    { id: 6,  text: 'Client proposal \u2014 Meridian Group',           subtitle: 'Operations \u00b7 Enterprise pitch',   dueDate: '2026-04-14', dueTime: '5:00 PM',  priority: 'high',   flagged: true,  status: 'pending',   isOverdue: false },
+    { id: 7,  text: 'Hiring sync \u2014 product lead candidates',       subtitle: 'People \u00b7 VP of Product role',     dueDate: '2026-04-15', dueTime: '10:00 AM', priority: 'none',   flagged: false, status: 'pending',   isOverdue: false },
+    { id: 8,  text: 'Platform roadmap v2 review',                subtitle: 'Operations \u00b7 Engineering',        dueDate: '2026-04-16', dueTime: '11:00 AM', priority: 'medium', flagged: false, status: 'pending',   isOverdue: false },
+    { id: 9,  text: 'Monthly P&L review',                        subtitle: 'Finance \u00b7 April performance',     dueDate: '2026-04-17', dueTime: '2:00 PM',  priority: 'none',   flagged: false, status: 'pending',   isOverdue: false },
+    { id: 10, text: 'Partner agreement \u2014 LegalZoom draft',         subtitle: 'Legal \u00b7 Contract review',         dueDate: '2026-04-20', dueTime: '9:00 AM',  priority: 'medium', flagged: true,  status: 'pending',   isOverdue: false },
+    { id: 11, text: 'All-hands prep \u2014 May company update',         subtitle: 'Meetings \u00b7 Company-wide',         dueDate: '2026-04-22', dueTime: '12:00 PM', priority: 'none',   flagged: false, status: 'pending',   isOverdue: false },
+    { id: 12, text: 'Send NDA to Atlas Capital',                 subtitle: 'Legal',    dueDate: '2026-04-11', dueTime: '4:00 PM',  priority: 'none', flagged: false, status: 'completed', isOverdue: false, completedAt: Date.now() - 86400000 },
+    { id: 13, text: 'Onboard new VP of Sales',                   subtitle: 'People',   dueDate: '2026-04-10', dueTime: '2:00 PM',  priority: 'none', flagged: false, status: 'completed', isOverdue: false, completedAt: Date.now() - 172800000 },
+    { id: 14, text: 'Team offsite venue confirmation',           subtitle: 'Meetings', dueDate: '2026-04-12', dueTime: '11:00 AM', priority: 'none', flagged: false, status: 'completed', isOverdue: false, completedAt: Date.now() - 7200000 },
+  ],
+  'business:member': [
+    { id: 1,  text: 'Review KaNeXT proposal \u2014 sent 3 days ago',    subtitle: 'Meetings \u00b7 Pending response',      dueDate: '2026-04-10', dueTime: '10:00 AM', priority: 'high',   flagged: true,  status: 'pending',   isOverdue: true,  overdueLabel: '3 days overdue' },
+    { id: 2,  text: 'Onboarding call \u2014 KaNeXT platform team',       subtitle: 'Meetings \u00b7 Platform setup',        dueDate: '2026-04-13', dueTime: '10:00 AM', priority: 'high',   flagged: true,  status: 'pending',   isOverdue: false },
+    { id: 3,  text: 'Review service contract terms',             subtitle: 'Legal \u00b7 Annual subscription',       dueDate: '2026-04-13', dueTime: '2:00 PM',  priority: 'medium', flagged: false, status: 'pending',   isOverdue: false },
+    { id: 4,  text: 'Send feedback on platform demo',            subtitle: 'Meetings \u00b7 Product team request',    dueDate: '2026-04-13', dueTime: '5:00 PM',  priority: 'none',   flagged: false, status: 'pending',   isOverdue: false },
+    { id: 5,  text: 'Follow up on support ticket #1492',         subtitle: 'Meetings \u00b7 Open issue',             dueDate: '2026-04-15', dueTime: '10:00 AM', priority: 'medium', flagged: false, status: 'pending',   isOverdue: false },
+    { id: 6,  text: 'Monthly billing review',                    subtitle: 'Finance \u00b7 April statement',         dueDate: '2026-04-17', dueTime: '12:00 PM', priority: 'none',   flagged: false, status: 'pending',   isOverdue: false },
+    { id: 7,  text: 'Platform trial expiration \u2014 upgrade prompt',   subtitle: 'Finance \u00b7 Plan renewal',          dueDate: '2026-04-20', dueTime: '9:00 AM',  priority: 'high',   flagged: true,  status: 'pending',   isOverdue: false },
+    { id: 8,  text: 'Signed initial service agreement',          subtitle: 'Legal',    dueDate: '2026-04-11', dueTime: '4:00 PM',  priority: 'none', flagged: false, status: 'completed', isOverdue: false, completedAt: Date.now() - 86400000 },
+  ],
+
+  // ── EDUCATION ─────────────────────────────────────────────────────────────
+  'education:admin': [
+    { id: 1,  text: 'WASC accreditation response due',               subtitle: 'Compliance \u00b7 Regional accreditation', dueDate: '2026-04-10', dueTime: '10:00 AM', priority: 'high',   flagged: true,  status: 'pending',   isOverdue: true,  overdueLabel: '3 days overdue' },
+    { id: 2,  text: 'Faculty contract renewals \u2014 3 pending',         subtitle: 'Academic \u00b7 HR approvals',             dueDate: '2026-04-11', dueTime: '9:00 AM',  priority: 'medium', flagged: false, status: 'pending',   isOverdue: true,  overdueLabel: 'Yesterday' },
+    { id: 3,  text: 'Academic council meeting \u2014 budget agenda',      subtitle: 'Meetings \u00b7 Department heads',        dueDate: '2026-04-13', dueTime: '1:00 PM',  priority: 'high',   flagged: true,  status: 'pending',   isOverdue: false },
+    { id: 4,  text: 'Enrollment yield report \u2014 spring class',        subtitle: 'Academic \u00b7 Admissions data',         dueDate: '2026-04-13', dueTime: '3:00 PM',  priority: 'medium', flagged: false, status: 'pending',   isOverdue: false },
+    { id: 5,  text: 'Sign facilities capital request',               subtitle: 'Finance \u00b7 Campus infrastructure',    dueDate: '2026-04-13', dueTime: '6:00 PM',  priority: 'none',   flagged: false, status: 'pending',   isOverdue: false },
+    { id: 6,  text: 'Board of trustees meeting prep',                subtitle: 'Meetings \u00b7 Quarterly board session',  dueDate: '2026-04-14', dueTime: '5:00 PM',  priority: 'high',   flagged: true,  status: 'pending',   isOverdue: false },
+    { id: 7,  text: 'Financial aid disbursement review',             subtitle: 'Finance \u00b7 Spring semester',          dueDate: '2026-04-15', dueTime: '10:00 AM', priority: 'none',   flagged: false, status: 'pending',   isOverdue: false },
+    { id: 8,  text: 'New faculty orientation planning',              subtitle: 'Academic \u00b7 Fall onboarding',         dueDate: '2026-04-16', dueTime: '11:00 AM', priority: 'medium', flagged: false, status: 'pending',   isOverdue: false },
+    { id: 9,  text: 'Commencement speaker outreach',                 subtitle: 'Meetings \u00b7 Spring graduation',       dueDate: '2026-04-17', dueTime: '2:00 PM',  priority: 'none',   flagged: false, status: 'pending',   isOverdue: false },
+    { id: 10, text: 'Spring enrollment deadline outreach',           subtitle: 'Academic \u00b7 Retention campaign',     dueDate: '2026-04-20', dueTime: '9:00 AM',  priority: 'medium', flagged: true,  status: 'pending',   isOverdue: false },
+    { id: 11, text: 'Athletics compliance certification',            subtitle: 'Compliance \u00b7 NAIA annual filing',    dueDate: '2026-04-22', dueTime: '12:00 PM', priority: 'none',   flagged: false, status: 'pending',   isOverdue: false },
+    { id: 12, text: 'Approve spring course catalog',                 subtitle: 'Academic',    dueDate: '2026-04-11', dueTime: '4:00 PM',  priority: 'none', flagged: false, status: 'completed', isOverdue: false, completedAt: Date.now() - 86400000 },
+    { id: 13, text: 'Sign Title IX compliance update',               subtitle: 'Compliance',  dueDate: '2026-04-10', dueTime: '2:00 PM',  priority: 'none', flagged: false, status: 'completed', isOverdue: false, completedAt: Date.now() - 172800000 },
+    { id: 14, text: 'Staff recognition award nominations',           subtitle: 'Meetings',    dueDate: '2026-04-12', dueTime: '11:00 AM', priority: 'none', flagged: false, status: 'completed', isOverdue: false, completedAt: Date.now() - 7200000 },
+  ],
+  'education:member': [
+    { id: 1,  text: 'Term paper first draft \u2014 Prof. Williams',       subtitle: 'Academic \u00b7 History of Western Thought', dueDate: '2026-04-10', dueTime: '11:59 PM', priority: 'high',   flagged: true,  status: 'pending',   isOverdue: true,  overdueLabel: '3 days overdue' },
+    { id: 2,  text: 'Study group meeting \u2014 exam prep',               subtitle: 'Academic \u00b7 Library room 204',    dueDate: '2026-04-13', dueTime: '10:00 AM', priority: 'high',   flagged: true,  status: 'pending',   isOverdue: false },
+    { id: 3,  text: 'Financial aid appeal deadline',                 subtitle: 'Finance \u00b7 Office of Student Services', dueDate: '2026-04-13', dueTime: '3:00 PM',  priority: 'high',   flagged: false, status: 'pending',   isOverdue: false },
+    { id: 4,  text: 'Campus tour guide shift',                       subtitle: 'Academic \u00b7 Admissions office',      dueDate: '2026-04-13', dueTime: '5:00 PM',  priority: 'none',   flagged: false, status: 'pending',   isOverdue: false },
+    { id: 5,  text: 'Register for fall semester courses',            subtitle: 'Academic \u00b7 Priority registration',   dueDate: '2026-04-15', dueTime: '12:00 PM', priority: 'high',   flagged: true,  status: 'pending',   isOverdue: false },
+    { id: 6,  text: 'Midterm \u2014 History of Western Thought',          subtitle: 'Academic \u00b7 Room 110',             dueDate: '2026-04-17', dueTime: '9:00 AM',  priority: 'high',   flagged: false, status: 'pending',   isOverdue: false },
+    { id: 7,  text: 'Meet with academic advisor',                    subtitle: 'Academic \u00b7 Degree audit review',    dueDate: '2026-04-20', dueTime: '11:00 AM', priority: 'medium', flagged: false, status: 'pending',   isOverdue: false },
+    { id: 8,  text: 'Scholarship application due',                   subtitle: 'Finance \u00b7 Lincoln Excellence Award', dueDate: '2026-04-22', dueTime: '5:00 PM',  priority: 'medium', flagged: true,  status: 'pending',   isOverdue: false },
+    { id: 9,  text: 'Submitted quiz \u2014 Chapter 7',                    subtitle: 'Academic', dueDate: '2026-04-11', dueTime: '11:59 PM', priority: 'none', flagged: false, status: 'completed', isOverdue: false, completedAt: Date.now() - 86400000 },
+    { id: 10, text: 'Paid spring semester balance',                  subtitle: 'Finance',  dueDate: '2026-04-10', dueTime: '5:00 PM',  priority: 'none', flagged: false, status: 'completed', isOverdue: false, completedAt: Date.now() - 172800000 },
+  ],
+
+  // ── COMMUNITY ─────────────────────────────────────────────────────────────
+  'community:admin': [
+    { id: 1,  text: 'Sermon series \u2014 Easter follow-up outline',      subtitle: 'Ministry \u00b7 Sunday teaching',          dueDate: '2026-04-10', dueTime: '10:00 AM', priority: 'high',   flagged: true,  status: 'pending',   isOverdue: true,  overdueLabel: '3 days overdue' },
+    { id: 2,  text: 'Volunteer onboarding follow-up',                subtitle: 'Outreach \u00b7 Spring intake class',      dueDate: '2026-04-11', dueTime: '9:00 AM',  priority: 'medium', flagged: false, status: 'pending',   isOverdue: true,  overdueLabel: 'Yesterday' },
+    { id: 3,  text: 'Staff devotional \u2014 leadership meeting',          subtitle: 'Meetings \u00b7 Pastoral team',            dueDate: '2026-04-13', dueTime: '10:00 AM', priority: 'high',   flagged: true,  status: 'pending',   isOverdue: false },
+    { id: 4,  text: 'Review benevolence fund requests',              subtitle: 'Finance \u00b7 Assistance applications',   dueDate: '2026-04-13', dueTime: '2:00 PM',  priority: 'medium', flagged: false, status: 'pending',   isOverdue: false },
+    { id: 5,  text: 'Sunday service run-of-show review',             subtitle: 'Ministry \u00b7 Week 16 service prep',     dueDate: '2026-04-13', dueTime: '5:00 PM',  priority: 'none',   flagged: false, status: 'pending',   isOverdue: false },
+    { id: 6,  text: 'Deacon board quarterly meeting',                subtitle: 'Meetings \u00b7 Governance review',        dueDate: '2026-04-14', dueTime: '6:00 PM',  priority: 'high',   flagged: true,  status: 'pending',   isOverdue: false },
+    { id: 7,  text: 'Youth ministry budget review',                  subtitle: 'Finance \u00b7 Q2 allocations',            dueDate: '2026-04-15', dueTime: '10:00 AM', priority: 'none',   flagged: false, status: 'pending',   isOverdue: false },
+    { id: 8,  text: 'Community outreach dinner planning',            subtitle: 'Outreach \u00b7 May neighborhood event',   dueDate: '2026-04-16', dueTime: '11:00 AM', priority: 'medium', flagged: false, status: 'pending',   isOverdue: false },
+    { id: 9,  text: 'Small group leader training',                   subtitle: 'Ministry \u00b7 Spring cohort',            dueDate: '2026-04-17', dueTime: '2:00 PM',  priority: 'none',   flagged: false, status: 'pending',   isOverdue: false },
+    { id: 10, text: 'Annual mission trip deposits due',              subtitle: 'Outreach \u00b7 Summer 2026 trip',         dueDate: '2026-04-20', dueTime: '9:00 AM',  priority: 'medium', flagged: true,  status: 'pending',   isOverdue: false },
+    { id: 11, text: 'Building & grounds committee update',           subtitle: 'Meetings \u00b7 Facilities planning',      dueDate: '2026-04-22', dueTime: '12:00 PM', priority: 'none',   flagged: false, status: 'pending',   isOverdue: false },
+    { id: 12, text: 'Send thank-you notes \u2014 Easter service',         subtitle: 'Ministry',  dueDate: '2026-04-11', dueTime: '4:00 PM',  priority: 'none', flagged: false, status: 'completed', isOverdue: false, completedAt: Date.now() - 86400000 },
+    { id: 13, text: 'Approve April worship set list',                subtitle: 'Ministry',  dueDate: '2026-04-10', dueTime: '2:00 PM',  priority: 'none', flagged: false, status: 'completed', isOverdue: false, completedAt: Date.now() - 172800000 },
+    { id: 14, text: 'Follow up \u2014 counseling referral',               subtitle: 'Pastoral',  dueDate: '2026-04-12', dueTime: '11:00 AM', priority: 'none', flagged: false, status: 'completed', isOverdue: false, completedAt: Date.now() - 7200000 },
+  ],
+  'community:member': [
+    { id: 1,  text: 'Confirm volunteer shift \u2014 kitchen team',         subtitle: 'Outreach \u00b7 Sunday setup crew',       dueDate: '2026-04-11', dueTime: '9:00 AM',  priority: 'medium', flagged: false, status: 'pending',   isOverdue: true,  overdueLabel: 'Yesterday' },
+    { id: 2,  text: 'Small group meeting \u2014 bring discussion notes',   subtitle: 'Ministry \u00b7 Wednesday 7 PM',          dueDate: '2026-04-13', dueTime: '7:00 PM',  priority: 'high',   flagged: true,  status: 'pending',   isOverdue: false },
+    { id: 3,  text: 'Sunday service \u2014 arrive early for worship setup', subtitle: 'Ministry \u00b7 Volunteer role',          dueDate: '2026-04-13', dueTime: '8:30 AM',  priority: 'medium', flagged: false, status: 'pending',   isOverdue: false },
+    { id: 4,  text: 'Connect call with new member Marcus',           subtitle: 'Outreach \u00b7 Welcome team task',       dueDate: '2026-04-13', dueTime: '5:00 PM',  priority: 'none',   flagged: false, status: 'pending',   isOverdue: false },
+    { id: 5,  text: 'Mission trip deposit \u2014 summer 2026',             subtitle: 'Outreach \u00b7 Payment deadline',        dueDate: '2026-04-16', dueTime: '5:00 PM',  priority: 'high',   flagged: true,  status: 'pending',   isOverdue: false },
+    { id: 6,  text: 'New member orientation session',               subtitle: 'Ministry \u00b7 Class registration',      dueDate: '2026-04-19', dueTime: '10:00 AM', priority: 'medium', flagged: false, status: 'pending',   isOverdue: false },
+    { id: 7,  text: 'Deacon meeting \u2014 guest attendance',              subtitle: 'Meetings \u00b7 Observer invite',         dueDate: '2026-04-20', dueTime: '6:00 PM',  priority: 'none',   flagged: false, status: 'pending',   isOverdue: false },
+    { id: 8,  text: 'Attended Easter Sunday service',               subtitle: 'Ministry', dueDate: '2026-04-10', dueTime: '10:00 AM', priority: 'none', flagged: false, status: 'completed', isOverdue: false, completedAt: Date.now() - 172800000 },
+    { id: 9,  text: 'Completed new member form',                    subtitle: 'Ministry', dueDate: '2026-04-12', dueTime: '12:00 PM', priority: 'none', flagged: false, status: 'completed', isOverdue: false, completedAt: Date.now() - 7200000 },
+  ],
+
+  // ── ATHLETICS ─────────────────────────────────────────────────────────────
+  'sports:admin': [
+    { id: 1,  text: 'Recruiting letter \u2014 Marcus Webb (PG)',           subtitle: 'Recruiting \u00b7 Class of 2027 target',  dueDate: '2026-04-10', dueTime: '10:00 AM', priority: 'high',   flagged: true,  status: 'pending',   isOverdue: true,  overdueLabel: '3 days overdue' },
+    { id: 2,  text: 'NAIA eligibility waiver submission',            subtitle: 'Compliance \u00b7 Clearinghouse filing',  dueDate: '2026-04-11', dueTime: '9:00 AM',  priority: 'medium', flagged: false, status: 'pending',   isOverdue: true,  overdueLabel: 'Yesterday' },
+    { id: 3,  text: 'Game film review \u2014 Westmont matchup',            subtitle: 'Film \u00b7 Conference semifinal prep',   dueDate: '2026-04-13', dueTime: '10:00 AM', priority: 'high',   flagged: true,  status: 'pending',   isOverdue: false },
+    { id: 4,  text: 'Practice plan \u2014 defensive sets',                 subtitle: 'Operations \u00b7 Game-week prep',        dueDate: '2026-04-13', dueTime: '2:00 PM',  priority: 'medium', flagged: false, status: 'pending',   isOverdue: false },
+    { id: 5,  text: 'Recruiting call \u2014 Darius Thompson',              subtitle: 'Recruiting \u00b7 Class of 2026',        dueDate: '2026-04-13', dueTime: '5:00 PM',  priority: 'none',   flagged: false, status: 'pending',   isOverdue: false },
+    { id: 6,  text: 'Opponent scouting report \u2014 Golden State',        subtitle: 'Film \u00b7 Tournament quarterfinal',    dueDate: '2026-04-14', dueTime: '5:00 PM',  priority: 'high',   flagged: true,  status: 'pending',   isOverdue: false },
+    { id: 7,  text: 'Academic check-ins \u2014 4 at-risk players',         subtitle: 'Compliance \u00b7 GPA monitoring',       dueDate: '2026-04-15', dueTime: '10:00 AM', priority: 'none',   flagged: false, status: 'pending',   isOverdue: false },
+    { id: 8,  text: 'Conference tournament bracket strategy',         subtitle: 'Operations \u00b7 Coaching staff',       dueDate: '2026-04-16', dueTime: '11:00 AM', priority: 'medium', flagged: false, status: 'pending',   isOverdue: false },
+    { id: 9,  text: 'Full squad film session',                        subtitle: 'Film \u00b7 Full roster review',          dueDate: '2026-04-17', dueTime: '2:00 PM',  priority: 'none',   flagged: false, status: 'pending',   isOverdue: false },
+    { id: 10, text: 'NAIA national tournament travel logistics',      subtitle: 'Operations \u00b7 Travel coordinator',   dueDate: '2026-04-20', dueTime: '9:00 AM',  priority: 'medium', flagged: true,  status: 'pending',   isOverdue: false },
+    { id: 11, text: 'Year-end roster decisions',                      subtitle: 'Recruiting \u00b7 Scholarships & offers', dueDate: '2026-04-22', dueTime: '12:00 PM', priority: 'none',   flagged: false, status: 'pending',   isOverdue: false },
+    { id: 12, text: 'Submit game stats \u2014 Saturday match',             subtitle: 'Compliance', dueDate: '2026-04-11', dueTime: '4:00 PM',  priority: 'none', flagged: false, status: 'completed', isOverdue: false, completedAt: Date.now() - 86400000 },
+    { id: 13, text: 'Travel arrangements confirmed \u2014 away game',      subtitle: 'Operations', dueDate: '2026-04-10', dueTime: '2:00 PM',  priority: 'none', flagged: false, status: 'completed', isOverdue: false, completedAt: Date.now() - 172800000 },
+    { id: 14, text: 'Coaching staff eval forms submitted',            subtitle: 'Compliance', dueDate: '2026-04-12', dueTime: '11:00 AM', priority: 'none', flagged: false, status: 'completed', isOverdue: false, completedAt: Date.now() - 7200000 },
+  ],
+  'sports:member': [
+    { id: 1,  text: 'Film study notes \u2014 upload to team portal',       subtitle: 'Film \u00b7 Coach requested by yesterday', dueDate: '2026-04-11', dueTime: '11:59 PM', priority: 'high',   flagged: true,  status: 'pending',   isOverdue: true,  overdueLabel: 'Yesterday' },
+    { id: 2,  text: 'Morning weight room session',                   subtitle: 'Operations \u00b7 Mandatory attendance',  dueDate: '2026-04-13', dueTime: '7:00 AM',  priority: 'high',   flagged: false, status: 'pending',   isOverdue: false },
+    { id: 3,  text: 'Team walk-through \u2014 defensive scheme review',    subtitle: 'Film \u00b7 Game-week prep',              dueDate: '2026-04-13', dueTime: '11:00 AM', priority: 'medium', flagged: false, status: 'pending',   isOverdue: false },
+    { id: 4,  text: 'Academic advisor check-in',                     subtitle: 'Compliance \u00b7 GPA eligibility review',  dueDate: '2026-04-13', dueTime: '3:00 PM',  priority: 'high',   flagged: true,  status: 'pending',   isOverdue: false },
+    { id: 5,  text: 'Individual skills session with Coach',          subtitle: 'Operations \u00b7 Ball-handling focus',    dueDate: '2026-04-15', dueTime: '2:00 PM',  priority: 'medium', flagged: false, status: 'pending',   isOverdue: false },
+    { id: 6,  text: 'Exam prep \u2014 two finals next week',               subtitle: 'Academic \u00b7 Eligibility priority',   dueDate: '2026-04-16', dueTime: '10:00 AM', priority: 'high',   flagged: true,  status: 'pending',   isOverdue: false },
+    { id: 7,  text: 'NAIA eligibility paperwork \u2014 sign & return',     subtitle: 'Compliance \u00b7 Tournament clearance', dueDate: '2026-04-17', dueTime: '5:00 PM',  priority: 'high',   flagged: false, status: 'pending',   isOverdue: false },
+    { id: 8,  text: 'Conference tournament tip-off \u2014 travel pack',    subtitle: 'Operations \u00b7 Bus departs 6 AM',     dueDate: '2026-04-20', dueTime: '6:00 AM',  priority: 'medium', flagged: false, status: 'pending',   isOverdue: false },
+    { id: 9,  text: 'Attended film session \u2014 Thursday',               subtitle: 'Film',       dueDate: '2026-04-10', dueTime: '5:00 PM',  priority: 'none', flagged: false, status: 'completed', isOverdue: false, completedAt: Date.now() - 172800000 },
+    { id: 10, text: 'Signed team code of conduct',                   subtitle: 'Compliance', dueDate: '2026-04-12', dueTime: '12:00 PM', priority: 'none', flagged: false, status: 'completed', isOverdue: false, completedAt: Date.now() - 7200000 },
+  ],
+};
 
 // ── Helpers ───────────────────────────────────────────────────────────────────
 const MONTHS = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
@@ -111,10 +240,10 @@ function formatDateHeader(dateStr: string): string {
 function getCategoryColor(subtitle: string | undefined, C: ComponentColors): string {
   if (!subtitle) return C.secondary;
   const cat = subtitle.split(/[\u00b7·]/)[0].trim().toLowerCase();
-  if (cat === 'content')   return C.label;
-  if (cat === 'deals')     return CAUTION;
-  if (cat === 'meetings')  return C.secondary;
-  if (cat === 'earnings')  return GAIN;
+  if (cat === 'content' || cat === 'academic' || cat === 'ministry')  return C.label;
+  if (cat === 'deals' || cat === 'recruiting' || cat === 'legal')     return CAUTION;
+  if (cat === 'earnings' || cat === 'finance')                         return GAIN;
+  if (cat === 'compliance')                                            return HEAT;
   return C.secondary;
 }
 
@@ -252,15 +381,21 @@ function ReminderRow({ reminder, onToggle, onFlag, onDelete, C, dangerBg, warnin
 export default function RemindersScreen() {
   const C         = useColors();
   const insets    = useSafeAreaInsets();
-  const scheme    = useColorScheme();
-  const isDark    = scheme === 'dark';
-  const dangerBg  = isDark ? DANGER_BG.dark  : DANGER_BG.light;
-  const warningBg = isDark ? WARNING_BG.dark : WARNING_BG.light;
+  const dangerBg  = DANGER_BG;
+  const warningBg = WARNING_BG;
 
-  const [role, cycleRole, roleCycles] = useDemoRole('personal:agenda');
+  const { state } = useAppContext();
+  const mode = state.activeContext?.mode ?? 'personal';
+  const roleKeyMap: Record<string, string> = {
+    personal: 'personal:agenda', business: 'business',
+    education: 'education', community: 'community:agenda', sports: 'sports:agenda',
+  };
+  const roleKey = roleKeyMap[mode] ?? 'personal:agenda';
+  const [role, cycleRole, roleCycles] = useDemoRole(roleKey);
   const isOwner = role === roleCycles[0];
 
-  const [reminders,     setReminders]     = useState<Reminder[]>(INITIAL_REMINDERS);
+  const dataKey = `${mode}:${isOwner ? 'admin' : 'member'}`;
+  const [reminders,     setReminders]     = useState<Reminder[]>(() => REMINDERS_BY_MODE[dataKey] ?? REMINDERS_BY_MODE['personal:admin']);
   const [activeFilter,  setActiveFilter]  = useState<FilterTab>('Today');
   const [showCompleted, setShowCompleted] = useState(false);
 
@@ -282,6 +417,13 @@ export default function RemindersScreen() {
     }
     return fadeValues.current.get(id)!;
   }, []);
+
+  // Reset data when mode or role changes
+  useEffect(() => {
+    const key = `${mode}:${isOwner ? 'admin' : 'member'}`;
+    setReminders(REMINDERS_BY_MODE[key] ?? REMINDERS_BY_MODE['personal:admin']);
+    setActiveFilter('Today');
+  }, [mode, isOwner]);
 
   useFocusEffect(useCallback(() => { resetFooter(); }, []));
   const { opacity, onScroll, scrollEventThrottle } = useScrollHeader();
@@ -419,13 +561,17 @@ export default function RemindersScreen() {
       {/* ── Top bar ─────────────────────────────────────────────────────────── */}
       <Animated.View style={[styles.topBarOuter, { paddingTop: insets.top, backgroundColor: C.bg, borderBottomColor: C.separator, borderBottomWidth: StyleSheet.hairlineWidth, opacity }]}>
         <View style={styles.topBar}>
-          <KMenuButton onPress={() => openSidePanel()} />
+          <Pressable onPress={() => openSidePanel()} hitSlop={8} style={styles.topBarSide}>
+            <KMenuButton />
+          </Pressable>
           <View style={styles.topBarCenter}>
             <View style={[styles.screenPill, { backgroundColor: C.surface, borderColor: C.separator }]}>
               <Text style={[styles.screenPillText, { color: C.label }]}>Reminders</Text>
             </View>
           </View>
-          <RolePill role={role} onPress={cycleRole} />
+          <View style={{ minWidth: 44, alignItems: 'flex-end', justifyContent: 'center' }}>
+            <RolePill role={role} onPress={cycleRole} />
+          </View>
         </View>
       </Animated.View>
 
@@ -647,9 +793,10 @@ const styles = StyleSheet.create({
   // Top bar
   topBarOuter: { position: 'absolute', top: 0, left: 0, right: 0, zIndex: 10 },
   topBar: {
-    height: 52, flexDirection: 'row', alignItems: 'center', paddingHorizontal: 16,
+    height: 52, flexDirection: 'row', alignItems: 'center', paddingHorizontal: 12,
   },
-  topBarCenter: { flex: 1, alignItems: 'center', justifyContent: 'flex-end' },
+  topBarSide: { width: 44, alignItems: 'flex-start', justifyContent: 'center' },
+  topBarCenter: { flex: 1, alignItems: 'center' },
   screenPill: { paddingHorizontal: 12, paddingVertical: 5, borderRadius: 14, borderWidth: 1 },
   screenPillText: { fontSize: 12, fontWeight: '600', letterSpacing: 0.3 },
 

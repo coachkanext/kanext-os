@@ -1,151 +1,102 @@
 /**
- * Sports Recruits Side Panel — coach/recruit recruiting board quick nav.
+ * Sports Recruits Side Panel — Lincoln Men's Basketball.
+ * Head Coach: Board · Search · Portal · Analytics + divider + Dipson · Settings · Help
+ * Player: Program · Questionnaire · Visit + divider + Dipson · Settings · Help
  */
 
-import React from 'react';
+import React, { useCallback, useMemo } from 'react';
 import { View, Text, Pressable, StyleSheet } from 'react-native';
-import { useRouter } from 'expo-router';
 import * as Haptics from 'expo-haptics';
-
+import { useRouter } from 'expo-router';
 import { IconSymbol } from '@/components/ui/icon-symbol';
-import { useColors } from '@/hooks/use-colors';
 import { closeSidePanel } from '@/utils/global-side-panel';
-import {
-  RECRUITS_BOARD, PORTAL_PLAYERS, getStageCounts, stageColor,
-} from '@/data/mock-sports-hub';
+import { openDipsonSheet } from '@/utils/global-dipson-sheet';
+import { useColors, type ComponentColors } from '@/hooks/use-colors';
+import { useDemoRole } from '@/utils/demo-role-store';
+
+type NavItem = { icon: string; label: string; route?: string; isDipson?: boolean };
+
+const COACH_NAV: NavItem[] = [
+  { icon: 'rectangle.3.group.fill', label: 'Board',     route: '/(tabs)/(main)/recruits' },
+  { icon: 'magnifyingglass',         label: 'Search',    route: '/(tabs)/(main)/recruits/search' },
+  { icon: 'arrow.left.arrow.right',  label: 'Portal',    route: '/(tabs)/(main)/recruits/portal' },
+  { icon: 'chart.bar.fill',          label: 'Analytics', route: '/(tabs)/(main)/recruits/analytics' },
+];
+
+const PLAYER_NAV: NavItem[] = [
+  { icon: 'building.2.fill',        label: 'Program',       route: '/(tabs)/(main)/recruits/program' },
+  { icon: 'doc.text.fill',          label: 'Questionnaire', route: '/(tabs)/(main)/recruits/questionnaire' },
+  { icon: 'calendar.badge.plus',    label: 'Visit',         route: '/(tabs)/(main)/recruits/visit' },
+];
+
+const BOTTOM_ITEMS: NavItem[] = [
+  { icon: 'sparkles',            label: 'Dipson',   isDipson: true },
+  { icon: 'gearshape',           label: 'Settings', route: '/(tabs)/(main)/recruits/settings' },
+  { icon: 'questionmark.circle', label: 'Help',     route: '/(tabs)/(main)/recruits/help' },
+];
 
 export function SportsRecruitsPanel() {
-  const router = useRouter();
   const C = useColors();
-  const stageCounts = getStageCounts();
+  const s = useMemo(() => makeStyles(C), [C]);
+  const router = useRouter();
+  const [role, , roleCycles] = useDemoRole('sports:recruits');
+  const isCoach = role === roleCycles[0];
 
-  const committed  = (stageCounts['Committed'] ?? 0) + (stageCounts['Signed'] ?? 0) + (stageCounts['Verbal'] ?? 0);
-  const offered    = stageCounts['Offered'] ?? 0;
-  const evaluating = stageCounts['Evaluating'] ?? 0;
-  const targets    = RECRUITS_BOARD.filter(r => r.priority === 'Target' && r.stage !== 'Declined');
-  const topTargets = targets.slice(0, 4);
-  const portalTargets = PORTAL_PLAYERS.filter(p => p.systemFit >= 80).slice(0, 3);
+  const go = useCallback((item: NavItem) => {
+    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+    if (item.isDipson) {
+      closeSidePanel();
+      setTimeout(() => openDipsonSheet('Recruits'), 300);
+      return;
+    }
+    closeSidePanel();
+    setTimeout(() => { if (item.route) router.navigate(item.route as any); }, 80);
+  }, [router]);
 
-  const navRow = (icon: string, label: string, detail?: string) => (
-    <Pressable
-      key={label}
-      style={({ pressed }) => [s.navRow, pressed && { backgroundColor: C.surfacePressed }]}
-      onPress={() => { Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light); closeSidePanel(); }}
-    >
-      <IconSymbol name={icon as any} size={18} color={C.secondary} />
-      <Text style={[s.navLabel, { color: C.label }]}>{label}</Text>
-      {detail && <Text style={[s.navDetail, { color: C.muted }]}>{detail}</Text>}
-      <IconSymbol name="chevron.right" size={12} color={C.muted} />
-    </Pressable>
-  );
+  const navItems = isCoach ? COACH_NAV : PLAYER_NAV;
 
   return (
-    <View style={{ gap: 8 }}>
-
-      {/* ── Home ── */}
-      <Pressable
-        style={({ pressed }) => [s.navRow, pressed && { backgroundColor: C.surfacePressed }]}
-        onPress={() => {
-          Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
-          closeSidePanel();
-          router.setParams({ manage: undefined });
-        }}
-      >
-        <IconSymbol name="house.fill" size={18} color={C.secondary} />
-        <Text style={[s.navLabel, { color: C.label }]}>Home</Text>
-      </Pressable>
-
-      <View style={{ height: StyleSheet.hairlineWidth, backgroundColor: C.separator }} />
-
-      {/* Board summary */}
-      <View style={{ backgroundColor: '#1A1714', borderRadius: 12, padding: 14 }}>
-        <Text style={{ fontSize: 10, fontWeight: '600', color: 'rgba(255,255,255,0.6)', textTransform: 'uppercase', letterSpacing: 0.5, marginBottom: 8 }}>Recruiting Board</Text>
-        <View style={{ flexDirection: 'row', gap: 8 }}>
-          {[
-            { label: 'Committed', value: committed, color: '#5A8A6E' },
-            { label: 'Offered',   value: offered,   color: '#1A1714' },
-            { label: 'Eval',      value: evaluating, color: '#1A1714' },
-          ].map(item => (
-            <View key={item.label} style={{ flex: 1, alignItems: 'center', backgroundColor: 'rgba(255,255,255,0.12)', borderRadius: 8, paddingVertical: 8 }}>
-              <Text style={{ fontSize: 18, fontWeight: '800', color: item.color }}>{item.value}</Text>
-              <Text style={{ fontSize: 9, color: 'rgba(255,255,255,0.6)', marginTop: 2 }}>{item.label}</Text>
-            </View>
-          ))}
+    <View style={s.root}>
+      <View style={s.header}>
+        <View style={[s.avatar, { backgroundColor: '#1A2E4A' }]}>
+          <Text style={[s.avatarText, { color: '#F0E8DC' }]}>LM</Text>
         </View>
+        <Text style={[s.name, { color: C.label }]}>Lincoln Men's Basketball</Text>
+        <Text style={[s.handle, { color: C.secondary }]}>@lincolnmbb</Text>
       </View>
 
-      {/* Priority targets */}
-      <Text style={[s.sectionHeader, { color: C.secondary }]}>Priority Targets</Text>
-      <View style={{ backgroundColor: C.surface, borderRadius: 12, overflow: 'hidden' }}>
-        {topTargets.map((r, i) => (
-          <Pressable
-            key={r.id}
-            style={({ pressed }) => [
-              s.navRow,
-              i < topTargets.length - 1 && { borderBottomWidth: StyleSheet.hairlineWidth, borderBottomColor: C.separator },
-              pressed && { backgroundColor: C.surfacePressed },
-            ]}
-            onPress={() => { Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light); closeSidePanel(); }}
-          >
-            <View style={{ width: 28, height: 28, borderRadius: 8, backgroundColor: `hsl(${r.hue},45%,28%)`, alignItems: 'center', justifyContent: 'center' }}>
-              <Text style={{ fontSize: 9, fontWeight: '700', color: '#fff' }}>{r.initials}</Text>
-            </View>
-            <View style={{ flex: 1 }}>
-              <Text style={{ fontSize: 13, fontWeight: '600', color: C.label }} numberOfLines={1}>{r.name}</Text>
-              <Text style={{ fontSize: 11, color: C.secondary }}>{r.position} · {r.classYear} · {r.school}</Text>
-            </View>
-            <View style={{ paddingHorizontal: 8, paddingVertical: 3, borderRadius: 8, backgroundColor: stageColor(r.stage) + '20' }}>
-              <Text style={{ fontSize: 10, fontWeight: '700', color: stageColor(r.stage) }}>{r.stage}</Text>
-            </View>
+      <View style={s.nav}>
+        {navItems.map(item => (
+          <Pressable key={item.label} style={({ pressed }) => [s.navRow, pressed && { backgroundColor: C.surface }]} onPress={() => go(item)}>
+            <IconSymbol name={item.icon as any} size={22} color={C.label} />
+            <Text style={[s.navLabel, { color: C.label }]}>{item.label}</Text>
           </Pressable>
         ))}
       </View>
 
-      {/* Transfer portal */}
-      <Text style={[s.sectionHeader, { color: C.secondary }]}>Portal Targets</Text>
-      <View style={{ backgroundColor: C.surface, borderRadius: 12, overflow: 'hidden' }}>
-        {portalTargets.map((p, i) => (
-          <Pressable
-            key={p.id}
-            style={({ pressed }) => [
-              s.navRow,
-              i < portalTargets.length - 1 && { borderBottomWidth: StyleSheet.hairlineWidth, borderBottomColor: C.separator },
-              pressed && { backgroundColor: C.surfacePressed },
-            ]}
-            onPress={() => { Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light); closeSidePanel(); }}
-          >
-            <View style={{ width: 28, height: 28, borderRadius: 8, backgroundColor: `hsl(${p.hue},45%,28%)`, alignItems: 'center', justifyContent: 'center' }}>
-              <Text style={{ fontSize: 9, fontWeight: '700', color: '#fff' }}>{p.initials}</Text>
-            </View>
-            <View style={{ flex: 1 }}>
-              <Text style={{ fontSize: 13, fontWeight: '600', color: C.label }} numberOfLines={1}>{p.name}</Text>
-              <Text style={{ fontSize: 11, color: C.secondary }}>{p.position} · {p.prevSchool} · Fit {p.systemFit}</Text>
-            </View>
-            <View style={{ paddingHorizontal: 6, paddingVertical: 3, borderRadius: 6, backgroundColor: p.eligible === 'immediately' ? '#5A8A6E18' : '#1A171418' }}>
-              <Text style={{ fontSize: 9, fontWeight: '700', color: p.eligible === 'immediately' ? '#5A8A6E' : '#1A1714' }}>
-                {p.eligible === 'immediately' ? 'IMMED' : 'SIT'}
-              </Text>
-            </View>
+      <View style={[s.divider, { backgroundColor: C.separator }]} />
+
+      <View style={s.nav}>
+        {BOTTOM_ITEMS.map(item => (
+          <Pressable key={item.label} style={({ pressed }) => [s.navRow, pressed && { backgroundColor: C.surface }]} onPress={() => go(item)}>
+            <IconSymbol name={item.icon as any} size={22} color={C.label} />
+            <Text style={[s.navLabel, { color: C.label }]}>{item.label}</Text>
           </Pressable>
         ))}
       </View>
-
-      {/* Quick actions */}
-      <Text style={[s.sectionHeader, { color: C.secondary }]}>Actions</Text>
-      <View style={{ backgroundColor: C.surface, borderRadius: 12, overflow: 'hidden' }}>
-        {navRow('plus.circle.fill',         'Add Prospect')}
-        {navRow('envelope.fill',            'Send Offer Letter')}
-        {navRow('calendar.badge.plus',      'Schedule Visit')}
-        {navRow('film.fill',                'Upload Film')}
-      </View>
-
     </View>
   );
 }
 
-const s = StyleSheet.create({
-  sectionHeader: { fontSize: 11, fontWeight: '600', letterSpacing: 0.5, textTransform: 'uppercase', paddingVertical: 6 },
-  navRow:        { flexDirection: 'row', alignItems: 'center', paddingHorizontal: 14, paddingVertical: 13, gap: 10 },
-  navLabel:      { flex: 1, fontSize: 14, fontWeight: '500' },
-  navDetail:     { fontSize: 12 },
+const makeStyles = (C: ComponentColors) => StyleSheet.create({
+  root:       { flex: 1 },
+  header:     { paddingHorizontal: 20, paddingTop: 8, paddingBottom: 20 },
+  avatar:     { width: 44, height: 44, borderRadius: 22, alignItems: 'center', justifyContent: 'center', marginBottom: 10 },
+  avatarText: { fontSize: 15, fontWeight: '700' },
+  name:       { fontSize: 17, fontWeight: '700', letterSpacing: -0.3, marginBottom: 2 },
+  handle:     { fontSize: 14, fontWeight: '400' },
+  nav:        { paddingHorizontal: 8 },
+  navRow:     { flexDirection: 'row', alignItems: 'center', height: 44, gap: 16, paddingHorizontal: 12, borderRadius: 8 },
+  navLabel:   { fontSize: 16, fontWeight: '500' },
+  divider:    { height: StyleSheet.hairlineWidth, marginVertical: 8, marginHorizontal: 20 },
 });

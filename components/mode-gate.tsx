@@ -31,7 +31,7 @@ interface ModeOption {
 const MODE_OPTIONS: ModeOption[] = [
   {
     mode: 'sports',
-    label: 'Sports',
+    label: 'Athletics',
     icon: 'sportscourt.fill', // basketball court icon
     defaultRole: 'head_coach',
   },

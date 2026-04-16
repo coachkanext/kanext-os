@@ -7,7 +7,7 @@ import { useColors, type ComponentColors } from '@/hooks/use-colors';
 import { useMode } from '@/context/app-context';
 
 const MODES = [
-  { id: 'sports',    label: 'Sports' },
+  { id: 'sports',    label: 'Athletics' },
   { id: 'business',  label: 'Business' },
   { id: 'community', label: 'Community' },
   { id: 'education', label: 'Education' },

@@ -4,7 +4,7 @@
  * Monochrome design system. No blue. No accent.
  */
 
-import React, { useMemo, useState, useCallback } from 'react';
+import React, { useMemo, useState, useCallback, useEffect } from 'react';
 import {
   View,
   Text,
@@ -24,6 +24,7 @@ import { openDipsonSheet } from '@/utils/global-dipson-sheet';
 import { resetFooter } from '@/utils/global-footer-hide';
 import { useColors, type ComponentColors } from '@/hooks/use-colors';
 import { useDemoRole } from '@/utils/demo-role-store';
+import { useMode } from '@/context/app-context';
 import { useScrollHeader } from '@/hooks/use-scroll-header';
 
 // ── Semantic colors ───────────────────────────────────────────────────────────
@@ -37,13 +38,12 @@ const TOP_BAR_H = 52;
 
 // ── Types ─────────────────────────────────────────────────────────────────────
 
-type ServiceCategory = 'coaching' | 'strategy' | 'review';
-type FilterTab = 'All' | 'Popular' | 'Coaching' | 'Strategy' | 'Reviews';
+type AppMode = 'personal' | 'business' | 'education' | 'community' | 'sports';
 
 type Service = {
   id: string;
   name: string;
-  category: ServiceCategory;
+  category: string;
   duration: string;
   price: number;
   description: string;
@@ -54,73 +54,59 @@ type Service = {
 
 // ── Data ──────────────────────────────────────────────────────────────────────
 
-const FILTER_TABS: FilterTab[] = ['All', 'Popular', 'Coaching', 'Strategy', 'Reviews'];
+const BOOKING_TITLE_BY_MODE: Record<AppMode, string> = {
+  personal:  'Book a Session',
+  business:  'Book a Meeting',
+  education: 'Schedule Office Hours',
+  community: 'Book a Pastoral Meeting',
+  sports:    'Schedule Training Time',
+};
 
-const SERVICES: Service[] = [
-  {
-    id: '1',
-    name: '1:1 Coaching Session',
-    category: 'coaching',
-    duration: '60 min',
-    price: 150,
-    description: 'Personalized strategy session for your creative business. Deep dive into your goals and build a clear plan.',
-    bookedCount: 47,
-    rating: 4.9,
-    popular: true,
-  },
-  {
-    id: '2',
-    name: 'Brand Strategy Call',
-    category: 'strategy',
-    duration: '45 min',
-    price: 120,
-    description: 'Deep dive into your brand positioning and growth plan. Walk away with clarity and a concrete next step.',
-    bookedCount: 31,
-    rating: 4.8,
-    popular: false,
-  },
-  {
-    id: '3',
-    name: 'Content Audit Review',
-    category: 'review',
-    duration: '30 min',
-    price: 75,
-    description: 'Review of your content strategy with actionable feedback you can apply right away.',
-    bookedCount: 24,
-    rating: 4.7,
-    popular: false,
-  },
-  {
-    id: '4',
-    name: 'Resume / Portfolio Review',
-    category: 'review',
-    duration: '30 min',
-    price: 60,
-    description: 'Professional review of your creative portfolio with written feedback and recommendations.',
-    bookedCount: 18,
-    rating: 4.6,
-    popular: false,
-  },
-];
+const SERVICES_BY_MODE: Record<AppMode, Service[]> = {
+  personal: [
+    { id: 'p1', name: '1:1 Coaching Session',     category: 'coaching',   duration: '60 min', price: 150, description: 'Personalized strategy session for your creative business. Deep dive into your goals and build a clear plan.',        bookedCount: 47, rating: 4.9, popular: true  },
+    { id: 'p2', name: 'Brand Strategy Call',       category: 'strategy',   duration: '45 min', price: 120, description: 'Deep dive into your brand positioning and growth plan. Walk away with clarity and a concrete next step.',          bookedCount: 31, rating: 4.8, popular: false },
+    { id: 'p3', name: 'Content Audit Review',      category: 'review',     duration: '30 min', price: 75,  description: 'Review of your content strategy with actionable feedback you can apply right away.',                              bookedCount: 24, rating: 4.7, popular: false },
+    { id: 'p4', name: 'Resume / Portfolio Review', category: 'review',     duration: '30 min', price: 60,  description: 'Professional review of your creative portfolio with written feedback and recommendations.',                       bookedCount: 18, rating: 4.6, popular: false },
+  ],
+  business: [
+    { id: 'b1', name: 'Consultation Call',         category: 'consulting', duration: '60 min', price: 200, description: 'One-on-one strategy session with our team to understand your needs and explore solutions.',                       bookedCount: 38, rating: 4.9, popular: true  },
+    { id: 'b2', name: 'Product Demo',              category: 'demo',       duration: '45 min', price: 0,   description: 'A live walkthrough of our product tailored to your use case. See how we can solve your specific challenges.',     bookedCount: 55, rating: 4.8, popular: false },
+    { id: 'b3', name: 'Partnership Discussion',    category: 'consulting', duration: '60 min', price: 0,   description: 'Explore collaboration and partnership opportunities with our business development team.',                         bookedCount: 22, rating: 4.7, popular: false },
+    { id: 'b4', name: 'Onboarding Session',        category: 'onboarding', duration: '30 min', price: 150, description: 'Guided onboarding to get your team up and running quickly with personalized setup support.',                     bookedCount: 19, rating: 4.8, popular: false },
+  ],
+  education: [
+    { id: 'e1', name: 'Office Hours',              category: 'advising',   duration: '30 min', price: 0,   description: 'Drop-in time with faculty to get questions answered and receive course guidance.',                               bookedCount: 62, rating: 4.9, popular: true  },
+    { id: 'e2', name: 'Academic Advising',         category: 'advising',   duration: '45 min', price: 0,   description: 'One-on-one session to plan your course schedule and academic path with your advisor.',                           bookedCount: 44, rating: 4.8, popular: false },
+    { id: 'e3', name: 'Tutoring Session',          category: 'tutoring',   duration: '60 min', price: 40,  description: 'Focused tutoring on specific topics or assignments. Come prepared with questions or materials.',                 bookedCount: 31, rating: 4.7, popular: false },
+    { id: 'e4', name: 'Career Counseling',         category: 'advising',   duration: '45 min', price: 0,   description: 'Career planning session covering internships, job searches, and professional development.',                      bookedCount: 27, rating: 4.8, popular: false },
+  ],
+  community: [
+    { id: 'c1', name: 'Pastoral Counseling',       category: 'pastoral',   duration: '60 min', price: 0,   description: 'A private, supportive conversation with a pastoral team member for guidance and encouragement.',                 bookedCount: 34, rating: 5.0, popular: true  },
+    { id: 'c2', name: 'Leadership Meeting',        category: 'leadership', duration: '45 min', price: 0,   description: 'Meet with our leadership team to discuss community initiatives, vision, and your involvement.',                  bookedCount: 21, rating: 4.9, popular: false },
+    { id: 'c3', name: 'Prayer Session',            category: 'pastoral',   duration: '30 min', price: 0,   description: 'Scheduled time for personal prayer and reflection with a team member.',                                          bookedCount: 48, rating: 5.0, popular: false },
+    { id: 'c4', name: 'Volunteer Orientation',     category: 'onboarding', duration: '60 min', price: 0,   description: 'Introduction to our volunteer programs, expectations, and next steps to get involved.',                         bookedCount: 17, rating: 4.8, popular: false },
+  ],
+  sports: [
+    { id: 's1', name: 'Individual Training',       category: 'training',   duration: '60 min', price: 0,   description: 'One-on-one training session focused on your specific skill development goals.',                                  bookedCount: 41, rating: 4.9, popular: true  },
+    { id: 's2', name: 'Film Review Session',       category: 'review',     duration: '45 min', price: 0,   description: 'Review game or practice film with coaching staff to identify areas for improvement.',                            bookedCount: 28, rating: 4.8, popular: false },
+    { id: 's3', name: 'Recruiting Call',           category: 'recruiting', duration: '30 min', price: 0,   description: 'Connect with coaching staff about your recruiting profile, highlights, and next steps.',                         bookedCount: 19, rating: 4.9, popular: false },
+    { id: 's4', name: 'Skills Assessment',         category: 'training',   duration: '60 min', price: 0,   description: 'Formal evaluation of your current skill set with detailed feedback and a development plan.',                    bookedCount: 15, rating: 4.8, popular: false },
+  ],
+};
 
 // ── Helpers ───────────────────────────────────────────────────────────────────
 
-function categoryBorderColor(category: ServiceCategory, labelColor: string): string {
-  switch (category) {
-    case 'coaching': return labelColor;
-    case 'strategy': return GAIN;
-    case 'review':   return CAUTION;
-  }
+function categoryBorderColor(category: string, labelColor: string): string {
+  if (['coaching', 'training', 'leadership', 'pastoral'].includes(category)) return labelColor;
+  if (['strategy', 'advising', 'tutoring', 'consulting', 'recruiting'].includes(category)) return GAIN;
+  return CAUTION;
 }
 
-function applyFilter(services: Service[], tab: FilterTab): Service[] {
-  switch (tab) {
-    case 'Popular':  return services.filter(s => s.popular);
-    case 'Coaching': return services.filter(s => s.category === 'coaching');
-    case 'Strategy': return services.filter(s => s.category === 'strategy');
-    case 'Reviews':  return services.filter(s => s.category === 'review');
-    default:         return services;
-  }
+function applyFilter(services: Service[], tab: string): Service[] {
+  if (tab === 'Popular') return services.filter(s => s.popular);
+  if (tab === 'All') return services;
+  return services.filter(s => s.category.toLowerCase() === tab.toLowerCase());
 }
 
 // ── Star row ──────────────────────────────────────────────────────────────────
@@ -182,7 +168,7 @@ function ServiceCard({
         <Text style={[s.serviceName, { color: C.label }]} numberOfLines={1}>
           {service.name}
         </Text>
-        <Text style={[s.servicePrice, { color: C.label }]}>${service.price}</Text>
+        <Text style={[s.servicePrice, { color: C.label }]}>{service.price === 0 ? 'Free' : '$' + service.price}</Text>
       </View>
 
       {/* Duration pill */}
@@ -214,12 +200,22 @@ export default function BookingSelectServiceScreen() {
   const insets = useSafeAreaInsets();
   const router = useRouter();
   const { opacity, onScroll, scrollEventThrottle } = useScrollHeader();
-  const [role, cycleRole] = useDemoRole('personal:agenda');
-  const [activeFilter, setActiveFilter] = useState<FilterTab>('All');
+  const mode = useMode();
+  const _rk = mode === 'sports' ? 'sports:agenda' : mode === 'community' ? 'community:agenda' : mode === 'education' ? 'education' : mode === 'business' ? 'business' : 'personal:agenda';
+  const [role, cycleRole] = useDemoRole(_rk);
+  const [activeFilter, setActiveFilter] = useState<string>('All');
+
+  const activeServices = SERVICES_BY_MODE[mode as AppMode] ?? SERVICES_BY_MODE.personal;
+  const filterTabs = useMemo(() => {
+    const categories = [...new Set(activeServices.map(s => s.category))];
+    return ['All', 'Popular', ...categories.map(c => c.charAt(0).toUpperCase() + c.slice(1))];
+  }, [activeServices]);
+
+  useEffect(() => { setActiveFilter('All'); }, [mode]);
 
   useFocusEffect(useCallback(() => { resetFooter(); }, []));
 
-  const filtered = useMemo(() => applyFilter(SERVICES, activeFilter), [activeFilter]);
+  const filtered = useMemo(() => applyFilter(activeServices, activeFilter), [activeServices, activeFilter]);
 
   function handleServicePress(item: Service) {
     Haptics.selectionAsync();
@@ -289,7 +285,7 @@ export default function BookingSelectServiceScreen() {
             </View>
           </View>
           <Text style={[s.identityTagline, { color: C.secondary }]}>
-            Book a session with Sammy
+            {BOOKING_TITLE_BY_MODE[mode as AppMode] ?? 'Book a Session'} with Sammy
           </Text>
         </View>
 
@@ -300,7 +296,7 @@ export default function BookingSelectServiceScreen() {
           contentContainerStyle={s.filterRow}
           style={s.filterBar}
         >
-          {FILTER_TABS.map(tab => {
+          {filterTabs.map(tab => {
             const active = activeFilter === tab;
             return (
               <Pressable

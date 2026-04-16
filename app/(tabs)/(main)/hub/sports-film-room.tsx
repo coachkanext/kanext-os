@@ -138,7 +138,9 @@ export default function SportsFilmRoom() {
     <View style={styles.root}>
       <Animated.View style={[styles.topBarOuter, { paddingTop: insets.top, backgroundColor: C.bg, borderBottomColor: C.separator, borderBottomWidth: StyleSheet.hairlineWidth, opacity }]}>
         <View style={styles.topBar}>
-          <KMenuButton onPress={() => openSidePanel()} />
+          <Pressable style={styles.kBtn} onPress={() => { Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light); openSidePanel(); }} hitSlop={8}>
+            <KMenuButton />
+          </Pressable>
           <View style={[styles.titlePill, { backgroundColor: C.surface, borderColor: C.separator }]}>
             <Text style={[styles.titlePillText, { color: C.label }]}>Film Room</Text>
           </View>
@@ -387,7 +389,14 @@ function makeStyles(C: ComponentColors, insets: ReturnType<typeof useSafeAreaIns
       flexDirection: 'row',
       alignItems: 'center',
       justifyContent: 'space-between',
-      paddingHorizontal: 16,
+      paddingHorizontal: 4,
+    },
+    kBtn: {
+      width: 44,
+      height: 44,
+      alignItems: 'flex-start',
+      justifyContent: 'center',
+      paddingLeft: 8,
     },
     titlePill: {
       borderRadius: 18,

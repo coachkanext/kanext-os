@@ -22,9 +22,12 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useRouter } from 'expo-router';
 import { IconSymbol } from '@/components/ui/icon-symbol';
 import { KMenuButton } from '@/components/ui/k-menu-button';
+import { RolePill } from '@/components/ui/role-pill';
 import { openSidePanel } from '@/utils/global-side-panel';
 import { useColors, type ComponentColors } from '@/hooks/use-colors';
+import { useDemoRole } from '@/utils/demo-role-store';
 import { useScrollHeader } from '@/hooks/use-scroll-header';
+import { useMode } from '@/context/app-context';
 
 // ---------------------------------------------------------------------------
 // Mock data
@@ -544,6 +547,16 @@ export default function SocialExplorePage() {
   const [query, setQuery] = useState('');
   const inputRef = useRef<TextInput>(null);
   const { opacity, onScroll, scrollEventThrottle } = useScrollHeader();
+  const mode = useMode();
+  const roleKeyMap: Record<string, string> = {
+    personal:  'personal:social',
+    community: 'community:social',
+    sports:    'sports:social',
+    business:  'business:social',
+    education: 'education:social',
+  };
+  const [role, cycleRole, roleCycles] = useDemoRole(roleKeyMap[mode] ?? 'personal:social');
+  const isOwner = role === roleCycles[0];
 
   // 3 columns with 1px gaps between them (2 gaps total)
   const CELL = Math.floor((SCREEN_W - 2) / 3);
@@ -563,22 +576,24 @@ export default function SocialExplorePage() {
           opacity,
         }}
       >
-        <View style={{ height: 52, flexDirection: 'row', alignItems: 'center', paddingHorizontal: 16 }}>
+        <View style={{ height: 52, flexDirection: 'row', alignItems: 'center', paddingHorizontal: 12 }}>
           <Pressable
             onPress={() => {
               Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
               openSidePanel();
             }}
-            style={{ width: 40, height: 36, alignItems: 'center', justifyContent: 'center' }}
+            style={{ width: 44, height: 44, alignItems: 'flex-start', justifyContent: 'center' }}
           >
             <KMenuButton />
           </Pressable>
           <View style={{ flex: 1, alignItems: 'center' }}>
-            <View style={{ backgroundColor: C.label, borderRadius: 18, paddingHorizontal: 14, paddingVertical: 5 }}>
-              <Text style={{ fontSize: 14, fontWeight: '700', color: C.bg }}>Explore</Text>
+            <View style={{ backgroundColor: C.surface, borderRadius: 14, borderWidth: 1, borderColor: C.separator, paddingHorizontal: 12, paddingVertical: 5 }}>
+              <Text style={{ fontSize: 12, fontWeight: '600', letterSpacing: 0.3, color: C.label }}>Explore</Text>
             </View>
           </View>
-          <View style={{ width: 40 }} />
+          <View style={{ width: 80, alignItems: 'flex-end' }}>
+            <RolePill role={role} onPress={cycleRole} isPrimary={isOwner} />
+          </View>
         </View>
       </Animated.View>
 

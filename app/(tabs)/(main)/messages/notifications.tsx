@@ -3,7 +3,7 @@
  * Messages-specific, separate from global notification settings.
  */
 
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useCallback, useEffect, useRef } from 'react';
 import {
   View,
   Text,
@@ -13,12 +13,21 @@ import {
   StyleSheet,
   Animated,
 } from 'react-native';
+import { useFocusEffect, useRouter } from 'expo-router';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import * as Haptics from 'expo-haptics';
 
 import { IconSymbol } from '@/components/ui/icon-symbol';
+import { KMenuButton } from '@/components/ui/k-menu-button';
+import { RolePill } from '@/components/ui/role-pill';
 import { useAccentColor } from '@/hooks/use-accent-color';
 import { useColors, type ComponentColors } from '@/hooks/use-colors';
 import { useScrollHeader } from '@/hooks/use-scroll-header';
+import { openSidePanel } from '@/utils/global-side-panel';
+import { resetFooter } from '@/utils/global-footer-hide';
+import { useDemoRole } from '@/utils/demo-role-store';
+
+const TOP_BAR_H = 52;
 
 export default function NotificationSettingsScreen() {
   const insets = useSafeAreaInsets();
@@ -26,7 +35,6 @@ export default function NotificationSettingsScreen() {
   const C = useColors();
   const styles = useMemo(() => makeStyles(C), [C]);
 
-  const TOP_BAR_H = insets.top + 54;
   const { opacity, onScroll, scrollEventThrottle } = useScrollHeader(TOP_BAR_H);
 
   const [muteAll, setMuteAll] = useState(false);
@@ -35,15 +43,36 @@ export default function NotificationSettingsScreen() {
   const [vibrationEnabled, setVibrationEnabled] = useState(true);
   const [previewEnabled, setPreviewEnabled] = useState(true);
 
+  const [role, cycleRole, roleCycles] = useDemoRole('personal:kaytv');
+  const isOwner = role === roleCycles[0];
+  const router = useRouter();
+  const isOwnerRef = useRef(isOwner);
+  useEffect(() => {
+    if (isOwnerRef.current === isOwner) return;
+    isOwnerRef.current = isOwner;
+    router.navigate('/(tabs)/(main)/messages' as any);
+  }, [isOwner]);
+  useFocusEffect(useCallback(() => { resetFooter(); }, []));
+
   return (
     <View style={styles.container}>
       <Animated.View style={[styles.topBar, { paddingTop: insets.top, opacity }]}>
-        <View style={styles.header}>
-          <Text style={styles.title}>Notifications</Text>
+        <View style={{ height: TOP_BAR_H, flexDirection: 'row', alignItems: 'center', paddingHorizontal: 16 }}>
+          <Pressable onPress={() => { Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light); openSidePanel(); }} hitSlop={8}>
+            <KMenuButton />
+          </Pressable>
+          <View style={{ flex: 1, alignItems: 'center' }}>
+            <View style={{ backgroundColor: C.surface, borderWidth: 1, borderColor: C.separator, borderRadius: 14, paddingHorizontal: 14, paddingVertical: 5 }}>
+              <Text style={{ fontSize: 13, fontWeight: '700', color: C.label }}>Notifications</Text>
+            </View>
+          </View>
+          <View style={{ width: 80, alignItems: 'flex-end' }}>
+            <RolePill role={role} onPress={cycleRole} isPrimary={isOwner} />
+          </View>
         </View>
       </Animated.View>
 
-      <ScrollView style={styles.list} contentContainerStyle={{ paddingTop: TOP_BAR_H, paddingBottom: 100 }}
+      <ScrollView style={styles.list} contentContainerStyle={{ paddingTop: insets.top + TOP_BAR_H, paddingBottom: 100 }}
         showsVerticalScrollIndicator={false}
         onScroll={onScroll}
         scrollEventThrottle={scrollEventThrottle}>
@@ -101,8 +130,6 @@ export default function NotificationSettingsScreen() {
 const makeStyles = (C: ComponentColors) => StyleSheet.create({
   container: { flex: 1, backgroundColor: C.bg },
   topBar: { position: 'absolute', top: 0, left: 0, right: 0, zIndex: 10, backgroundColor: C.bg },
-  header: { paddingHorizontal: 20, paddingTop: 8, paddingBottom: 12 },
-  title: { fontSize: 28, fontWeight: '700', color: C.label },
   list: { flex: 1 },
   sectionLabel: {
     fontSize: 12, fontWeight: '600', color: C.secondary, textTransform: 'uppercase',

@@ -23,8 +23,8 @@ import type {
 export const V2_ORGANIZATIONS: V2Organization[] = [
   { org_id: 'pb_kx',     org_name: 'Sammy Kalejaiye',    mode: 'personal',  org_type: 'personal',          initials: 'SK'                                                              },
   { org_id: 'biz_kx',    org_name: 'KaNeXT',              mode: 'business',  org_type: 'platform',          initials: 'K',  description: 'KaNeXT Operations LLC'                       },
-  { org_id: 'edu_kx',    org_name: 'Lincoln University Oakland', mode: 'education', org_type: 'university',        initials: 'LU', location: 'Oakland, CA'                                          },
-  { org_id: 'sports_kx', org_name: "LU Men's Basketball",       mode: 'sports',    org_type: 'college_athletics', initials: 'LU', location: 'Oakland, CA', description: "Lincoln University Oakland Men's Basketball" },
+  { org_id: 'edu_kx',    org_name: 'Lincoln University (CA)', mode: 'education', org_type: 'university',        initials: 'LU', location: 'Oakland, CA'                                           },
+  { org_id: 'sports_kx', org_name: "Lincoln Men's Basketball", mode: 'sports',    org_type: 'college_athletics', initials: 'LM', location: 'Oakland, CA', description: "Lincoln University (CA) Men's Basketball" },
   { org_id: 'church_kx', org_name: 'ICCLA',               mode: 'community', org_type: 'faith',             initials: 'IC', location: 'Los Angeles, CA', description: 'International Christian Center Los Angeles' },
 ];
 

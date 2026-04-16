@@ -95,7 +95,9 @@ export default function NewMessageScreen() {
           <Text style={[s.cancelText, { color: accent }]}>Cancel</Text>
         </Pressable>
         <View style={s.navCenter}>
-          <Text style={[s.navTitle, { color: C.label }]}>New Message</Text>
+          <View style={{ backgroundColor: C.surface, borderWidth: 1, borderColor: C.separator, borderRadius: 14, paddingHorizontal: 14, paddingVertical: 5 }}>
+            <Text style={{ fontSize: 13, fontWeight: '700', color: C.label }}>New Message</Text>
+          </View>
           {scheduledFor && (
             <Text style={[s.scheduledLabel, { color: accent }]}>{scheduledFor}</Text>
           )}

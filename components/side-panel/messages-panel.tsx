@@ -1,225 +1,120 @@
 /**
- * Messages Side Panel — FINAL spec.
- * No scroll. Everything visible at once.
- * Top: number-based filter pills (single row).
- * Bottom: 7 menu rows — 2 nav + 5 inline toggles.
+ * Messages Side Panel — phone-panel format.
+ * Identity header + nav rows + divider + bottom items.
  */
 
-import React, { useState, useMemo } from 'react';
-import {
-  View,
-  Text,
-  Pressable,
-  Switch,
-  StyleSheet,
-} from 'react-native';
-import { useRouter } from 'expo-router';
+import React, { useCallback, useMemo } from 'react';
+import { View, Text, Pressable, StyleSheet } from 'react-native';
 import * as Haptics from 'expo-haptics';
-
+import { useRouter } from 'expo-router';
 import { IconSymbol } from '@/components/ui/icon-symbol';
-import { NumberFilterPills } from '@/components/side-panel/number-filter-pills';
-import { useMode } from '@/context/app-context';
 import { closeSidePanel } from '@/utils/global-side-panel';
-import type { Mode } from '@/types';
+import { openDipsonSheet } from '@/utils/global-dipson-sheet';
 import { useColors, type ComponentColors } from '@/hooks/use-colors';
 
-const DND_OPTIONS = ['1 hour', '4 hours', '8 hours', 'Until tomorrow', 'Custom'] as const;
+// ── Data ──────────────────────────────────────────────────────────────────────
+
+type NavItem = {
+  icon: string;
+  label: string;
+  route?: string;
+  isDipson?: boolean;
+};
+
+const MAIN_NAV: NavItem[] = [
+  { icon: 'envelope.fill',       label: 'Inbox',         route: '/(tabs)/(main)/messages' },
+  { icon: 'archivebox.fill',     label: 'Archived',      route: '/(tabs)/(main)/messages/archived' },
+  { icon: 'hand.raised.fill',    label: 'Blocked',       route: '/(tabs)/(main)/messages/blocked' },
+  { icon: 'bell.fill',           label: 'Notifications', route: '/(tabs)/(main)/messages/notifications' },
+];
+
+const BOTTOM_ITEMS: NavItem[] = [
+  { icon: 'sparkles',  label: 'Dipson',   isDipson: true },
+  { icon: 'gearshape', label: 'Settings', route: '/(tabs)/(main)/settings/notifications' },
+];
+
+// ── Component ─────────────────────────────────────────────────────────────────
 
 export function MessagesPanel() {
-  const router = useRouter();
-  const currentMode = useMode();
   const C = useColors();
-  const styles = useMemo(() => makeStyles(C), [C]);
-  const [activeMode, setActiveMode] = useState<Mode | null>(currentMode);
+  const s = useMemo(() => makeStyles(C), [C]);
+  const router = useRouter();
 
-  // Toggle states
-  const [notifications, setNotifications] = useState(true);
-  const [readReceipts, setReadReceipts] = useState(true);
-  const [muteAll, setMuteAll] = useState(false);
-  const [dnd, setDnd] = useState(false);
-  const [dndDuration, setDndDuration] = useState<string>('1 hour');
-
-  const navigateTo = (route: string) => {
-    closeSidePanel();
-    setTimeout(() => router.push(route as any), 80);
-  };
-
-  const toggleWithHaptic = (setter: (v: boolean) => void, value: boolean) => {
+  const go = useCallback((item: NavItem) => {
     Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
-    setter(!value);
-  };
+    if (item.isDipson) {
+      closeSidePanel();
+      setTimeout(() => openDipsonSheet('Messages'), 300);
+      return;
+    }
+    closeSidePanel();
+    setTimeout(() => {
+      if (item.route) router.navigate(item.route as any);
+    }, 80);
+  }, [router]);
 
   return (
-    <View style={styles.container}>
-      {/* ── NUMBER FILTER PILLS ── */}
-      <NumberFilterPills activeMode={activeMode} onFilterChange={setActiveMode} />
+    <View style={s.root}>
 
-      {/* ── 20px SPACER ── */}
-      <View style={{ height: 20 }} />
-
-      {/* ── NAV ROWS ── */}
-      <Pressable
-        style={({ pressed }) => [styles.menuRow, pressed && styles.menuRowPressed]}
-        onPress={() => {
-          Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
-          navigateTo('/(tabs)/(main)/messages/archived');
-        }}
-      >
-        <IconSymbol name={'archivebox.fill' as any} size={20} color={C.label} />
-        <Text style={styles.menuLabel}>Archived</Text>
-      </Pressable>
-
-      <Pressable
-        style={({ pressed }) => [styles.menuRow, pressed && styles.menuRowPressed]}
-        onPress={() => {
-          Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
-          navigateTo('/(tabs)/(main)/messages/blocked');
-        }}
-      >
-        <IconSymbol name={'hand.raised.fill' as any} size={20} color={C.label} />
-        <Text style={styles.menuLabel}>Blocked</Text>
-      </Pressable>
-
-      {/* ── TOGGLE ROWS ── */}
-      <View style={styles.menuRow}>
-        <IconSymbol name={'bell.fill' as any} size={20} color={C.label} />
-        <Text style={styles.menuLabel}>Notifications</Text>
-        <View style={styles.toggleSpacer} />
-        <Switch
-          value={notifications}
-          onValueChange={() => toggleWithHaptic(setNotifications, notifications)}
-          trackColor={{ false: '#39393D', true: '#FFFFFF' }}
-          thumbColor={notifications ? '#000000' : '#808080'}
-          ios_backgroundColor="#39393D"
-        />
-      </View>
-
-      <View style={styles.menuRow}>
-        <IconSymbol name={'checkmark.circle.fill' as any} size={20} color={C.label} />
-        <Text style={styles.menuLabel}>Read Receipts</Text>
-        <View style={styles.toggleSpacer} />
-        <Switch
-          value={readReceipts}
-          onValueChange={() => toggleWithHaptic(setReadReceipts, readReceipts)}
-          trackColor={{ false: '#39393D', true: '#FFFFFF' }}
-          thumbColor={readReceipts ? '#000000' : '#808080'}
-          ios_backgroundColor="#39393D"
-        />
-      </View>
-
-      <View style={styles.menuRow}>
-        <IconSymbol name={'moon.fill' as any} size={20} color={C.label} />
-        <Text style={styles.menuLabel}>Mute All</Text>
-        <View style={styles.toggleSpacer} />
-        <Switch
-          value={muteAll}
-          onValueChange={() => toggleWithHaptic(setMuteAll, muteAll)}
-          trackColor={{ false: '#39393D', true: '#FFFFFF' }}
-          thumbColor={muteAll ? '#000000' : '#808080'}
-          ios_backgroundColor="#39393D"
-        />
-      </View>
-
-      {/* DND row + timer options */}
-      <View>
-        <View style={styles.menuRow}>
-          <IconSymbol name={'clock.fill' as any} size={20} color={C.label} />
-          <Text style={styles.menuLabel}>Do Not Disturb</Text>
-          <View style={styles.toggleSpacer} />
-          <Switch
-            value={dnd}
-            onValueChange={() => toggleWithHaptic(setDnd, dnd)}
-            trackColor={{ false: '#39393D', true: '#FFFFFF' }}
-            thumbColor={dnd ? '#000000' : '#808080'}
-            ios_backgroundColor="#39393D"
-          />
+      {/* ── Identity header ── */}
+      <View style={s.header}>
+        <View style={[s.avatar, { backgroundColor: C.label }]}>
+          <Text style={[s.avatarText, { color: C.bg }]}>SK</Text>
         </View>
-        {dnd && (
-          <View style={styles.dndOptions}>
-            {DND_OPTIONS.map((opt) => (
-              <Pressable
-                key={opt}
-                style={[
-                  styles.dndPill,
-                  dndDuration === opt && styles.dndPillActive,
-                ]}
-                onPress={() => {
-                  Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
-                  setDndDuration(opt);
-                }}
-              >
-                <Text
-                  style={[
-                    styles.dndPillText,
-                    dndDuration === opt && styles.dndPillTextActive,
-                  ]}
-                >
-                  {opt}
-                </Text>
-              </Pressable>
-            ))}
-          </View>
-        )}
+        <Text style={[s.name, { color: C.label }]}>Sammy Kalejaiye</Text>
+        <Text style={[s.handle, { color: C.secondary }]}>@sammyk</Text>
       </View>
 
-      <Pressable
-        style={({ pressed }) => [styles.menuRow, pressed && styles.menuRowPressed]}
-        onPress={() => {
-          Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
-          navigateTo('/(tabs)/(main)/messages/display');
-        }}
-      >
-        <IconSymbol name={'paintbrush.fill' as any} size={20} color={C.label} />
-        <Text style={styles.menuLabel}>Display</Text>
-      </Pressable>
+      {/* ── Nav items ── */}
+      <View style={s.nav}>
+        {MAIN_NAV.map(item => (
+          <Pressable
+            key={item.label}
+            style={({ pressed }) => [s.navRow, pressed && { backgroundColor: C.surface }]}
+            onPress={() => go(item)}
+          >
+            <IconSymbol name={item.icon as any} size={22} color={C.label} />
+            <Text style={[s.navLabel, { color: C.label }]}>{item.label}</Text>
+          </Pressable>
+        ))}
+      </View>
 
-      {/* ── 32px BOTTOM PADDING ── */}
-      <View style={{ height: 32 }} />
+      {/* ── Bottom utilities ── */}
+      <View style={[s.divider, { backgroundColor: C.separator }]} />
+      <View style={s.nav}>
+        {BOTTOM_ITEMS.map(item => (
+          <Pressable
+            key={item.label}
+            style={({ pressed }) => [s.navRow, pressed && { backgroundColor: C.surface }]}
+            onPress={() => go(item)}
+          >
+            <IconSymbol name={item.icon as any} size={22} color={C.label} />
+            <Text style={[s.navLabel, { color: C.label }]}>{item.label}</Text>
+          </Pressable>
+        ))}
+      </View>
+
     </View>
   );
 }
 
+// ── Styles ────────────────────────────────────────────────────────────────────
+
 const makeStyles = (C: ComponentColors) => StyleSheet.create({
-  container: {},
-  menuRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 14,
-    paddingHorizontal: 20,
-    paddingVertical: 16,
+  root: { flex: 1 },
+
+  header: { paddingHorizontal: 20, paddingTop: 8, paddingBottom: 20 },
+  avatar: {
+    width: 44, height: 44, borderRadius: 22,
+    alignItems: 'center', justifyContent: 'center', marginBottom: 10,
   },
-  menuRowPressed: {
-    backgroundColor: 'rgba(255,255,255,0.05)',
-  },
-  menuLabel: {
-    fontSize: 16,
-    color: C.label,
-  },
-  toggleSpacer: {
-    flex: 1,
-  },
-  dndOptions: {
-    flexDirection: 'row',
-    flexWrap: 'wrap',
-    gap: 6,
-    paddingHorizontal: 54,
-    paddingBottom: 8,
-  },
-  dndPill: {
-    paddingHorizontal: 10,
-    paddingVertical: 5,
-    borderRadius: 12,
-    backgroundColor: C.surface,
-  },
-  dndPillActive: {
-    backgroundColor: '#FFFFFF',
-  },
-  dndPillText: {
-    fontSize: 11,
-    fontWeight: '600',
-    color: C.secondary,
-  },
-  dndPillTextActive: {
-    color: C.bg,
-  },
+  avatarText: { fontSize: 15, fontWeight: '700' },
+  name:   { fontSize: 17, fontWeight: '700', letterSpacing: -0.3, marginBottom: 2 },
+  handle: { fontSize: 14, fontWeight: '400' },
+
+  nav:     { paddingHorizontal: 8 },
+  navRow:  { flexDirection: 'row', alignItems: 'center', height: 44, gap: 16, paddingHorizontal: 12, borderRadius: 8 },
+  navLabel:{ fontSize: 16, fontWeight: '500' },
+
+  divider: { height: StyleSheet.hairlineWidth, marginVertical: 8, marginHorizontal: 20 },
 });

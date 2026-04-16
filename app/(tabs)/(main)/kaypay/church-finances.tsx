@@ -17,6 +17,7 @@ import { useColors, type ComponentColors } from '@/hooks/use-colors';
 import { openSidePanel } from '@/utils/global-side-panel';
 import { resetFooter } from '@/utils/global-footer-hide';
 import { useDemoRole } from '@/utils/demo-role-store';
+import { useMode } from '@/context/app-context';
 import { KMenuButton } from '@/components/ui/k-menu-button';
 import { useScrollHeader } from '@/hooks/use-scroll-header';
 
@@ -85,7 +86,9 @@ export default function ChurchFinancesScreen() {
   const insets = useSafeAreaInsets();
   const router = useRouter();
 
-  const [role, cycleRole, roleCycles] = useDemoRole('community:kaypay');
+  const mode = useMode();
+  const _rk = mode === 'sports' ? 'sports:agenda' : mode === 'community' ? 'community:kaypay' : mode === 'education' ? 'education' : mode === 'business' ? 'business' : 'personal:kaypay';
+  const [role, cycleRole, roleCycles] = useDemoRole(_rk);
   const isPastor = role === roleCycles[0];
 
   const TOP_BAR_H = insets.top + 54;
@@ -106,8 +109,12 @@ export default function ChurchFinancesScreen() {
           <Pressable style={s.kBtn} onPress={() => openSidePanel()} hitSlop={8}>
             <KMenuButton />
           </Pressable>
-          <Text style={[s.topTitle, { color: C.label }]}>Church Finances</Text>
-          <View style={s.rolePillWrap}>
+          <View style={{ flex: 1, alignItems: 'center' }}>
+            <View style={[s.titlePill, { backgroundColor: C.surface, borderColor: C.separator }]}>
+              <Text style={[s.titlePillText, { color: C.label }]}>Church Finances</Text>
+            </View>
+          </View>
+          <View style={{ alignItems: 'flex-end' }}>
             <RolePill role={role} onPress={cycleRole} isPrimary={isPastor} />
           </View>
         </View>
@@ -256,12 +263,12 @@ function makeStyles(C: ComponentColors) {
       borderBottomWidth: StyleSheet.hairlineWidth,
     },
     topBar: {
-      flexDirection: 'row', alignItems: 'flex-end',
-      paddingBottom: 10, paddingHorizontal: 16,
+      flexDirection: 'row', alignItems: 'center',
+      paddingHorizontal: 12,
     },
-    kBtn:         { width: 44, height: 36, justifyContent: 'center' },
-    topTitle:     { flex: 1, textAlign: 'center', fontSize: 16, fontWeight: '700', paddingBottom: 2 },
-    rolePillWrap: { width: 44 + 32, alignItems: 'flex-end', justifyContent: 'center' },
+    kBtn:          { width: 44, height: 44, alignItems: 'flex-start', justifyContent: 'center' },
+    titlePill:     { paddingHorizontal: 12, paddingVertical: 5, borderRadius: 14, borderWidth: 1 },
+    titlePillText: { fontSize: 12, fontWeight: '600', letterSpacing: 0.3 },
 
     balanceCard: {
       borderRadius: 20, padding: 24, gap: 8,

@@ -1,9 +1,9 @@
 /**
  * Personal Social Side Panel — X/Twitter-style.
- * Identity header + bare-icon nav.
- * Owner:      Feed · Channels · Drafts · Scheduled · Channel Settings
+ * Identity header + large-icon nav.
+ * Owner:      Feed · Explore · Drafts · Scheduled · Posting Policy
  *             Bottom: Dipson · Settings · Help
- * Subscriber: Feed · Channels · My Channels
+ * Subscriber: Feed · Explore
  *             Bottom: Dipson · Settings · Help
  */
 
@@ -27,17 +27,18 @@ type NavItem = {
 };
 
 const OWNER_NAV_ITEMS: NavItem[] = [
-  { icon: 'rectangle.stack',      label: 'Feed',             route: '/(tabs)/(main)/social'           },
-  { icon: 'number',               label: 'Channels',         route: '/(tabs)/(main)/social/channels'  },
-  { icon: 'doc.text',             label: 'Drafts',           route: '/(tabs)/(main)/social/drafts'    },
-  { icon: 'calendar.badge.clock', label: 'Scheduled',        route: '/(tabs)/(main)/social/scheduled' },
-  { icon: 'slider.horizontal.3',  label: 'Channel Settings', special: 'channel-settings'              },
+  { icon: 'rectangle.stack',      label: 'Feed',           route: '/(tabs)/(main)/social'                  },
+  { icon: 'number',               label: 'Channels',       route: '/(tabs)/(main)/social/channels'         },
+  { icon: 'doc.text',             label: 'Drafts',         route: '/(tabs)/(main)/social/drafts'           },
+  { icon: 'calendar.badge.clock', label: 'Scheduled',      route: '/(tabs)/(main)/social/scheduled'        },
+  { icon: 'shield.fill',          label: 'Posting Policy', route: '/(tabs)/(main)/social/posting-policy'   },
 ];
 
 const SUBSCRIBER_NAV_ITEMS: NavItem[] = [
-  { icon: 'rectangle.stack', label: 'Feed',        route: '/(tabs)/(main)/social' },
-  { icon: 'number',          label: 'Channels',    route: '/(tabs)/(main)/social/channels' },
-  { icon: 'bookmark.fill',   label: 'My Channels', special: 'my-channels'         },
+  { icon: 'rectangle.stack',      label: 'Feed',      route: '/(tabs)/(main)/social'           },
+  { icon: 'number',               label: 'Channels',  route: '/(tabs)/(main)/social/channels'  },
+  { icon: 'doc.text',             label: 'Drafts',    route: '/(tabs)/(main)/social/drafts'    },
+  { icon: 'calendar.badge.clock', label: 'Scheduled', route: '/(tabs)/(main)/social/scheduled' },
 ];
 
 const BOTTOM_ITEMS: NavItem[] = [
@@ -57,19 +58,10 @@ export function SocialPanel() {
 
   const go = useCallback((item: NavItem) => {
     Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
-    switch (item.special) {
-      case 'dipson':
-        closeSidePanel();
-        setTimeout(() => openDipsonSheet('Social'), 300);
-        return;
-      case 'channel-settings':
-        Alert.alert('Channel management coming soon');
-        return;
-      case 'my-channels':
-        Alert.alert('My Channels filter coming soon');
-        return;
-      default:
-        break;
+    if (item.special === 'dipson') {
+      closeSidePanel();
+      setTimeout(() => openDipsonSheet('Social'), 300);
+      return;
     }
     if (!item.route) return;
     closeSidePanel();

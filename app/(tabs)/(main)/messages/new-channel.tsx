@@ -136,7 +136,11 @@ export default function NewChannelScreen() {
           <Pressable onPress={() => router.back()} style={s.cancel}>
             <Text style={[s.cancelText, { color: accent }]}>Cancel</Text>
           </Pressable>
-          <Text style={[s.navTitle, { color: C.label }]}>New Room</Text>
+          <View style={{ flex: 1, alignItems: 'center' }}>
+            <View style={{ backgroundColor: C.surface, borderWidth: 1, borderColor: C.separator, borderRadius: 14, paddingHorizontal: 14, paddingVertical: 5 }}>
+              <Text style={{ fontSize: 13, fontWeight: '700', color: C.label }}>New Room</Text>
+            </View>
+          </View>
           <View style={s.createBtn} />
         </Animated.View>
         <View style={s.rbacWrap}>
@@ -163,7 +167,11 @@ export default function NewChannelScreen() {
         <Pressable onPress={() => router.back()} style={s.cancel}>
           <Text style={[s.cancelText, { color: accent }]}>Cancel</Text>
         </Pressable>
-        <Text style={[s.navTitle, { color: C.label }]}>New Room</Text>
+        <View style={{ flex: 1, alignItems: 'center' }}>
+          <View style={{ backgroundColor: C.surface, borderWidth: 1, borderColor: C.separator, borderRadius: 14, paddingHorizontal: 14, paddingVertical: 5 }}>
+            <Text style={{ fontSize: 13, fontWeight: '700', color: C.label }}>New Room</Text>
+          </View>
+        </View>
         <Pressable
           style={[s.createBtn, { backgroundColor: canCreate ? accent : C.surfacePressed }]}
           onPress={handleCreate}

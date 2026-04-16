@@ -23,21 +23,21 @@ import type { GridIcon } from './home-types';
 /** Route overrides per mode */
 const MODE_ROUTES: Record<string, Partial<Record<string, string>>> = {
   hub: { personal: '/(tabs)/(main)/hub', community: '/(tabs)/(main)/hub/community', education: '/(tabs)/(main)/hub/education', sports: '/(tabs)/(main)/hub', business: '/(tabs)/(main)/hub/business' },
-  p4:  { personal: '/(tabs)/(main)/portfolio', community: '/(tabs)/(main)/members', education: '/(tabs)/(main)/hub/campus', business: '/(tabs)/(main)/team' },
+  p4:  { personal: '/(tabs)/(main)/portfolio', community: '/(tabs)/(main)/members', education: '/(tabs)/(main)/hub/campus', business: '/(tabs)/(main)/workforce' },
   p5:  { personal: '/(tabs)/(main)/personal-inquiries', community: '/(tabs)/(main)/outreach', education: '/(tabs)/(main)/admissions', business: '/(tabs)/(main)/inquiries' },
   p6:  { personal: '/(tabs)/(main)/store', community: '/(tabs)/(main)/give', education: '/(tabs)/(main)/fund', sports: '/(tabs)/(main)/booster', business: '/(tabs)/(main)/business-store' },
 };
 
 /** Row 2 labels shift per mode */
 const MODE_LABELS: Record<string, Partial<Record<Mode, string>>> = {
-  p4: { personal: 'Portfolio', business: 'Team',     education: 'Campus',     sports: 'Roster',   community: 'Members'  },
+  p4: { personal: 'Portfolio', business: 'Workforce', education: 'Campus',     sports: 'Roster',   community: 'Members'  },
   p5: { personal: 'Inquiries', business: 'Inquiries', education: 'Admissions', sports: 'Recruits', community: 'Outreach' },
   p6: { personal: 'Store',   business: 'Store',    education: 'Fund',       sports: 'Booster',  community: 'Give'     },
 };
 
 /** Row 2 icons shift per mode to match labels */
 const MODE_ICONS: Record<string, Partial<Record<Mode, string>>> = {
-  p4: { personal: 'briefcase.fill', business: 'person.2.fill', education: 'building.fill', sports: 'person.3.fill', community: 'person.2.fill' },
+  p4: { personal: 'briefcase.fill', business: 'person.3.fill', education: 'building.fill', sports: 'person.3.fill', community: 'person.2.fill' },
   p5: { personal: 'tray.and.arrow.down.fill', business: 'envelope.fill', education: 'doc.text.fill', sports: 'person.badge.plus', community: 'megaphone.fill' },
   p6: { personal: 'bag.fill',               business: 'storefront.fill', education: 'dollarsign.circle.fill', sports: 'bag.fill', community: 'heart.fill' },
 };

@@ -35,7 +35,7 @@ export function RolePill({ role, onPress, accentColor: _accentColor, isPrimary =
           : { backgroundColor: C.surface, borderColor: C.separator },
       ]}
     >
-      <Text style={[s.text, { color: isPrimary ? C.activePillText : C.secondary }]}>{role}</Text>
+      <Text style={[s.text, { color: isPrimary ? C.activePillText : C.secondary }]} numberOfLines={1}>{role}</Text>
     </Pressable>
   );
 }

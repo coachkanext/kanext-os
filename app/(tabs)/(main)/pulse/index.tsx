@@ -14,9 +14,14 @@ import { useRouter } from 'expo-router';
 import { useColors } from '@/hooks/use-colors';
 import { useScrollHeader } from '@/hooks/use-scroll-header';
 import { IconSymbol } from '@/components/ui/icon-symbol';
+import { KMenuButton } from '@/components/ui/k-menu-button';
 import { BottomSheet } from '@/components/ui/bottom-sheet';
 import { hideFooter, showFooter } from '@/utils/global-footer-hide';
+import { openSidePanel } from '@/utils/global-side-panel';
 import { updatePulseBadge } from '@/utils/global-pulse-badge';
+
+const GAIN = '#5A8A6E';
+const TOP_BAR_H = 52;
 
 // ── Types ─────────────────────────────────────────────────────────────────────
 
@@ -185,17 +190,31 @@ const SEED_ITEMS: PulseItem[] = [
   },
   // ── Money ──
   {
-    id: 'mon-1', brandId: 'kanext', type: 'payment', isRead: false, timestamp: ago(45),
-    description: 'Payment received · $500',
-    preview: 'From Alex Kim · KaNeXT · Invoice #4821',
-    amount: '$500.00', paymentFrom: 'Alex Kim', invoiceNumber: 'INV-4821',
+    id: 'mon-1', brandId: 'kanext', type: 'payment', isRead: true, timestamp: ago(20),
+    description: 'Store - Content Strategy Playbook',
+    preview: 'Purchase by subscriber',
+    amount: '+$29.00',
     route: '/(tabs)/(main)/store',
   },
   {
-    id: 'mon-2', brandId: 'kanext', type: 'payment', isRead: true, timestamp: ago(310),
-    description: 'Payment sent · $1,200',
-    preview: 'To Lincoln University · Monthly retainer',
-    amount: '$1,200.00', paymentTo: 'Lincoln University',
+    id: 'mon-2', brandId: 'kanext', type: 'payment', isRead: true, timestamp: ago(80),
+    description: 'Subscription - Marcus Johnson',
+    preview: 'Monthly subscriber renewal',
+    amount: '+$10.00',
+    route: '/(tabs)/(main)/store',
+  },
+  {
+    id: 'mon-3', brandId: 'kanext', type: 'payment', isRead: true, timestamp: ago(200),
+    description: 'KPay Cash Out to Chase',
+    preview: 'Transfer to external account',
+    amount: '-$500.00',
+    route: '/(tabs)/(main)/store',
+  },
+  {
+    id: 'mon-4', brandId: 'kanext', type: 'payment', isRead: false, timestamp: ago(310),
+    description: 'Booking - Alex Rivera',
+    preview: '1:1 coaching session',
+    amount: '+$150.00',
     route: '/(tabs)/(main)/store',
   },
 ];
@@ -506,8 +525,8 @@ function PulseItemRow({ item, isExpanded, pinned, onPress, onLongPress,
           </View>
 
           {/* Brand avatar */}
-          <View style={[s.avatar, { backgroundColor: brand.color }]}>
-            <Text style={s.avatarText}>{brand.initials}</Text>
+          <View style={[s.avatar, { backgroundColor: C.surface }]}>
+            <Text style={[s.avatarText, { color: C.label }]}>{brand.initials}</Text>
             {(item.count ?? 0) > 1 && (
               <View style={[s.countBadge, { backgroundColor: C.accent }]}>
                 <Text style={s.countText}>{item.count}</Text>
@@ -530,9 +549,14 @@ function PulseItemRow({ item, isExpanded, pinned, onPress, onLongPress,
             )}
           </View>
 
-          {/* Right column: timestamp + optional quick-action pill */}
+          {/* Right column: timestamp + amount (payments) + optional quick-action pill */}
           <View style={s.rightCol}>
             <Text style={[s.timestamp, { color: C.muted }]}>{fmtTime(item.timestamp)}</Text>
+            {item.type === 'payment' && item.amount && (
+              <Text style={[s.amountPill, { color: item.amount.startsWith('+') ? GAIN : C.red }]}>
+                {item.amount}
+              </Text>
+            )}
             {quickAction && (
               <Pressable
                 style={[s.quickBtn, { backgroundColor: C.accent }]}
@@ -579,7 +603,7 @@ function SectionBlock({ sectionKey, items, expandedId, pinnedIds, onToggle, onLo
   return (
     <View style={s.section}>
       <View style={s.sectionHeader}>
-        <Text style={[s.sectionLabel, { color: C.muted }]}>{SECTION_META[sectionKey]}</Text>
+        <Text style={[s.sectionLabel, { color: C.secondary }]}>{SECTION_META[sectionKey]}</Text>
         {hasMore && (
           <Pressable hitSlop={8} onPress={() => { Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light); onToggleSeeAll(sectionKey); }}>
             <Text style={[s.seeAll, { color: C.accent }]}>{showAll ? 'Show less' : 'See all'}</Text>
@@ -616,8 +640,7 @@ export default function PulseScreen() {
   const C      = useColors();
   const insets = useSafeAreaInsets();
   const router = useRouter();
-  const TOP_BAR_H = insets.top + 52;
-  const { opacity, onScroll: onScrollHeader } = useScrollHeader(TOP_BAR_H);
+  const { opacity, onScroll: onScrollHeader } = useScrollHeader();
 
   const [items,            setItems]           = useState<PulseItem[]>(SEED_ITEMS);
   const [expandedId,       setExpandedId]      = useState<string | null>(null);
@@ -717,11 +740,17 @@ export default function PulseScreen() {
     <View style={[s.root, { backgroundColor: C.bg }]}>
 
       {/* ── Top bar ── */}
-      <Animated.View style={[s.topBarOuter, { paddingTop: insets.top + 8, opacity }]}>
+      <Animated.View style={[s.topBarOuter, { paddingTop: insets.top, opacity }]}>
         <View style={s.topBar}>
-          <View style={[s.titlePill, { backgroundColor: C.surface }]}>
-            <Text style={[s.titleText, { color: C.label }]}>Pulse</Text>
+          <Pressable onPress={() => { Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light); openSidePanel(); }} hitSlop={8}>
+            <KMenuButton />
+          </Pressable>
+          <View style={{ flex: 1, alignItems: 'center' }}>
+            <View style={[s.titlePill, { backgroundColor: C.surface, borderColor: C.separator }]}>
+              <Text style={[s.titleText, { color: C.label }]}>Pulse</Text>
+            </View>
           </View>
+          <View style={{ width: 44 }} />
         </View>
       </Animated.View>
 
@@ -744,7 +773,7 @@ export default function PulseScreen() {
       ) : (
         <ScrollView ref={scrollRef} onScroll={onScroll} scrollEventThrottle={16}
           showsVerticalScrollIndicator={false}
-          contentContainerStyle={{ paddingTop: TOP_BAR_H, paddingBottom: insets.bottom + 49 + 16 }}>
+          contentContainerStyle={{ paddingTop: insets.top + TOP_BAR_H, paddingBottom: insets.bottom + 49 + 16 }}>
           {SECTION_ORDER.map(key => (
             <SectionBlock key={key} sectionKey={key} items={sections[key]}
               expandedId={expandedId} pinnedIds={pinnedIds}
@@ -762,8 +791,8 @@ export default function PulseScreen() {
         {ctxItem && (
           <>
             <View style={[s.ctxPreview, { borderBottomColor: C.separator }]}>
-              <View style={[s.ctxAvatar, { backgroundColor: brandById(ctxItem.brandId).color }]}>
-                <Text style={s.ctxAvatarText}>{brandById(ctxItem.brandId).initials}</Text>
+              <View style={[s.ctxAvatar, { backgroundColor: C.surface }]}>
+                <Text style={[s.ctxAvatarText, { color: C.label }]}>{brandById(ctxItem.brandId).initials}</Text>
               </View>
               <View style={{ flex: 1 }}>
                 <Text style={[s.ctxBrand, { color: C.secondary }]}>{brandById(ctxItem.brandId).name}</Text>
@@ -799,9 +828,9 @@ const s = StyleSheet.create({
   root: { flex: 1 },
 
   topBarOuter: { position: 'absolute', top: 0, left: 0, right: 0, zIndex: 10 },
-  topBar:    { alignItems: 'center', paddingHorizontal: 8, paddingBottom: 10 },
-  titlePill: { paddingHorizontal: 12, paddingVertical: 5, borderRadius: 14, borderWidth: 1 },
-  titleText: { fontSize: 12, fontWeight: '600', letterSpacing: 0.3 },
+  topBar:    { flexDirection: 'row', alignItems: 'center', paddingHorizontal: 16, height: TOP_BAR_H },
+  titlePill: { paddingHorizontal: 14, paddingVertical: 5, borderRadius: 14, borderWidth: 1 },
+  titleText: { fontSize: 13, fontWeight: '700' },
 
   newPill:     { position: 'absolute', top: 100, alignSelf: 'center', flexDirection: 'row', alignItems: 'center', gap: 6, paddingHorizontal: 14, paddingVertical: 8, borderRadius: 20, zIndex: 100, shadowColor: '#000', shadowOffset: { width: 0, height: 2 }, shadowOpacity: 0.15, shadowRadius: 8, elevation: 6 },
   newPillText: { fontSize: 13, fontWeight: '600' },
@@ -816,7 +845,7 @@ const s = StyleSheet.create({
   dotCol:      { width: 14, alignItems: 'center', paddingTop: 18, flexShrink: 0 },
   dot:         { width: 7, height: 7, borderRadius: 4 },
   avatar:      { width: 42, height: 42, borderRadius: 21, alignItems: 'center', justifyContent: 'center', flexShrink: 0, marginRight: 12 },
-  avatarText:  { fontSize: 13, fontWeight: '700', color: '#fff' },
+  avatarText:  { fontSize: 13, fontWeight: '700' },
   countBadge:  { position: 'absolute', top: -3, right: -3, minWidth: 17, height: 17, borderRadius: 9, alignItems: 'center', justifyContent: 'center', paddingHorizontal: 3 },
   countText:   { fontSize: 10, fontWeight: '700', color: '#fff' },
 
@@ -829,6 +858,7 @@ const s = StyleSheet.create({
 
   rightCol:     { alignItems: 'flex-end', paddingLeft: 8, paddingTop: 2, gap: 6, flexShrink: 0 },
   timestamp:    { fontSize: 12 },
+  amountPill:   { fontSize: 13, fontWeight: '700' },
   quickBtn:     { paddingHorizontal: 10, paddingVertical: 4, borderRadius: 12 },
   quickBtnText: { fontSize: 11, fontWeight: '600', color: '#fff' },
 
@@ -866,7 +896,7 @@ const s = StyleSheet.create({
 
   ctxPreview:   { flexDirection: 'row', alignItems: 'center', gap: 12, paddingHorizontal: 20, paddingVertical: 16, borderBottomWidth: StyleSheet.hairlineWidth, marginBottom: 4 },
   ctxAvatar:    { width: 40, height: 40, borderRadius: 20, alignItems: 'center', justifyContent: 'center' },
-  ctxAvatarText:{ fontSize: 13, fontWeight: '700', color: '#fff' },
+  ctxAvatarText:{ fontSize: 13, fontWeight: '700' },
   ctxBrand:     { fontSize: 12, marginBottom: 2 },
   ctxDesc:      { fontSize: 14, fontWeight: '500', lineHeight: 19 },
   ctxRow:       { flexDirection: 'row', alignItems: 'center', paddingHorizontal: 20, paddingVertical: 14 },

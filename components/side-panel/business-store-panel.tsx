@@ -1,159 +1,115 @@
 /**
- * Business Store Side Panel — Revenue / Products / Invoices nav.
+ * Business Store Side Panel
+ * CEO: Store · Orders · Subscriptions · Customers · Analytics + Dipson · Settings · Help
+ * Client: Store · Purchases · Subscriptions + Dipson · Settings · Help
  */
 
-import React, { useState, useMemo } from 'react';
+import React, { useCallback, useMemo } from 'react';
 import { View, Text, Pressable, StyleSheet } from 'react-native';
-import { useRouter } from 'expo-router';
 import * as Haptics from 'expo-haptics';
-
+import { useRouter } from 'expo-router';
 import { IconSymbol } from '@/components/ui/icon-symbol';
-import { useColors } from '@/hooks/use-colors';
 import { closeSidePanel } from '@/utils/global-side-panel';
-import {
-  PRODUCTS, INVOICES, BIZ_DASHBOARD,
-  formatCurrency, daysOverdue, invoiceStatusColor,
-} from '@/data/mock-business-ops';
+import { openDipsonSheet } from '@/utils/global-dipson-sheet';
+import { useColors, type ComponentColors } from '@/hooks/use-colors';
+import { useDemoRole } from '@/utils/demo-role-store';
+
+type NavItem = { icon: string; label: string; route?: string; isDipson?: boolean };
+
+const CEO_NAV: NavItem[] = [
+  { icon: 'storefront',                  label: 'Store',         route: '/(tabs)/(main)/business-store/store'         },
+  { icon: 'shippingbox.fill',            label: 'Orders',        route: '/(tabs)/(main)/business-store/orders'        },
+  { icon: 'arrow.trianglehead.2.counterclockwise.rotate.90', label: 'Subscriptions', route: '/(tabs)/(main)/business-store/subscriptions' },
+  { icon: 'person.2.fill',              label: 'Customers',     route: '/(tabs)/(main)/business-store/customers'     },
+  { icon: 'chart.line.uptrend.xyaxis',  label: 'Analytics',     route: '/(tabs)/(main)/business-store/analytics'     },
+];
+
+const CLIENT_NAV: NavItem[] = [
+  { icon: 'storefront',           label: 'Store',         route: '/(tabs)/(main)/business-store/store'         },
+  { icon: 'bag.fill',             label: 'Purchases',     route: '/(tabs)/(main)/business-store/purchases'     },
+  { icon: 'arrow.trianglehead.2.counterclockwise.rotate.90', label: 'Subscriptions', route: '/(tabs)/(main)/business-store/subscriptions' },
+];
+
+const BOTTOM_ITEMS: NavItem[] = [
+  { icon: 'sparkles',            label: 'Dipson',   isDipson: true },
+  { icon: 'gearshape',           label: 'Settings', route: '/(tabs)/(main)/business-store/settings' },
+  { icon: 'questionmark.circle', label: 'Help',     route: '/(tabs)/(main)/business-store/help'     },
+];
 
 export function BusinessStorePanel() {
-  const router = useRouter();
   const C = useColors();
-  const [role, setRole] = useState<'Admin' | 'Employee'>('Admin');
-  const isAdmin = role === 'Admin';
+  const s = useMemo(() => makeStyles(C), [C]);
+  const router = useRouter();
 
-  const outstanding = useMemo(
-    () => INVOICES.filter(i => i.status === 'sent' || i.status === 'overdue').reduce((s, i) => s + i.total, 0),
-    [],
-  );
-  const overdueInvoices = useMemo(() => INVOICES.filter(i => i.status === 'overdue'), []);
-  const overdueAmt      = overdueInvoices.reduce((s, i) => s + i.total, 0);
+  const [role, , roleCycles] = useDemoRole('business:store');
+  const isCEO = role === roleCycles[0];
+  const nav = isCEO ? CEO_NAV : CLIENT_NAV;
 
-  const navRow = (icon: string, label: string, detail?: string) => (
-    <Pressable
-      key={label}
-      style={({ pressed }) => [s.navRow, pressed && { backgroundColor: C.surfacePressed }]}
-      onPress={() => { Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light); closeSidePanel(); }}
-    >
-      <IconSymbol name={icon as any} size={16} color={C.secondary} />
-      <Text style={[s.navLabel, { color: C.label }]}>{label}</Text>
-      {detail && <Text style={[s.navDetail, { color: C.muted }]}>{detail}</Text>}
-      <IconSymbol name="chevron.right" size={12} color={C.muted} />
-    </Pressable>
-  );
+  const go = useCallback((item: NavItem) => {
+    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+    if (item.isDipson) {
+      closeSidePanel();
+      setTimeout(() => openDipsonSheet('Store'), 300);
+      return;
+    }
+    closeSidePanel();
+    setTimeout(() => { if (item.route) router.navigate(item.route as any); }, 80);
+  }, [router]);
 
   return (
-    <View style={{ gap: 8 }}>
+    <View style={s.root}>
 
-      {/* Role toggle */}
-      <View style={[s.roleRow, { backgroundColor: C.surfacePressed as string }]}>
-        {(['Admin', 'Employee'] as const).map(r => (
-          <Pressable key={r} onPress={() => { Haptics.selectionAsync(); setRole(r); }}
-            style={[s.roleBtn, r === role && { backgroundColor: C.accent }]}>
-            <Text style={[s.roleBtnText, { color: r === role ? '#fff' : C.secondary }]}>{r}</Text>
+      {/* ── Identity header ── */}
+      <View style={s.header}>
+        <View style={[s.avatar, { backgroundColor: C.label }]}>
+          <Text style={[s.avatarText, { color: C.bg }]}>KN</Text>
+        </View>
+        <Text style={[s.name, { color: C.label }]}>KaNeXT Inc.</Text>
+        <Text style={[s.handle, { color: C.secondary }]}>@kanext</Text>
+      </View>
+
+      {/* ── Nav ── */}
+      <View style={s.nav}>
+        {nav.map(item => (
+          <Pressable
+            key={item.label}
+            style={({ pressed }) => [s.navRow, pressed && { backgroundColor: C.surface }]}
+            onPress={() => go(item)}
+          >
+            <IconSymbol name={item.icon as any} size={22} color={C.label} />
+            <Text style={[s.navLabel, { color: C.label }]}>{item.label}</Text>
           </Pressable>
         ))}
       </View>
 
-      {isAdmin ? (
-        <>
-          {/* ── Home ── */}
+      {/* ── Bottom utilities ── */}
+      <View style={[s.divider, { backgroundColor: C.separator }]} />
+      <View style={s.nav}>
+        {BOTTOM_ITEMS.map(item => (
           <Pressable
-            style={({ pressed }) => [s.navRow, pressed && { backgroundColor: C.surfacePressed }]}
-            onPress={() => {
-              Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
-              closeSidePanel();
-              router.setParams({ manage: undefined });
-            }}
+            key={item.label}
+            style={({ pressed }) => [s.navRow, pressed && { backgroundColor: C.surface }]}
+            onPress={() => go(item)}
           >
-            <IconSymbol name="house.fill" size={18} color={C.secondary} />
-            <Text style={[s.navLabel, { color: C.label }]}>Home</Text>
+            <IconSymbol name={item.icon as any} size={22} color={C.label} />
+            <Text style={[s.navLabel, { color: C.label }]}>{item.label}</Text>
           </Pressable>
+        ))}
+      </View>
 
-          {/* Revenue banner */}
-          <View style={{ backgroundColor: '#1A1714', borderRadius: 12, padding: 14, gap: 4 }}>
-            <Text style={{ fontSize: 10, fontWeight: '600', color: 'rgba(255,255,255,0.55)', textTransform: 'uppercase', letterSpacing: 0.5 }}>Revenue This Month</Text>
-            <Text style={{ fontSize: 28, fontWeight: '900', color: '#fff', lineHeight: 32 }}>{formatCurrency(BIZ_DASHBOARD.thisMonth.revenue, true)}</Text>
-            <Text style={{ fontSize: 11, color: 'rgba(255,255,255,0.55)' }}>Profit: {formatCurrency(BIZ_DASHBOARD.thisMonth.profit, true)} · Expenses: {formatCurrency(BIZ_DASHBOARD.thisMonth.expenses, true)}</Text>
-          </View>
-
-          {/* Invoice stats */}
-          <View style={{ backgroundColor: C.surface, borderRadius: 12, padding: 14 }}>
-            <View style={{ flexDirection: 'row', gap: 8 }}>
-              {[
-                { label: 'Outstanding', value: formatCurrency(outstanding, true),  color: '#1A1714' },
-                { label: 'Overdue',     value: formatCurrency(overdueAmt, true),   color: C.red },
-                { label: 'Products',    value: PRODUCTS.length.toString(),         color: C.accent },
-              ].map(m => (
-                <View key={m.label} style={{ flex: 1, alignItems: 'center', backgroundColor: C.surfacePressed as string, borderRadius: 8, paddingVertical: 8 }}>
-                  <Text style={{ fontSize: 13, fontWeight: '800', color: m.color }}>{m.value}</Text>
-                  <Text style={{ fontSize: 9, color: C.secondary, marginTop: 2 }}>{m.label}</Text>
-                </View>
-              ))}
-            </View>
-          </View>
-
-          {/* Overdue invoices */}
-          {overdueInvoices.length > 0 && (
-            <>
-              <Text style={[s.sectionHeader, { color: C.secondary }]}>Overdue</Text>
-              <View style={{ backgroundColor: C.surface, borderRadius: 12, overflow: 'hidden' }}>
-                {overdueInvoices.map((inv, i) => {
-                  const days = daysOverdue(inv.dueDate);
-                  return (
-                    <Pressable key={inv.id} style={({ pressed }) => [
-                      s.navRow,
-                      i > 0 && { borderTopWidth: StyleSheet.hairlineWidth, borderTopColor: C.separator },
-                      pressed && { backgroundColor: C.surfacePressed },
-                    ]} onPress={() => { Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light); closeSidePanel(); }}>
-                      <IconSymbol name="exclamationmark.circle.fill" size={14} color={C.red} />
-                      <View style={{ flex: 1 }}>
-                        <Text style={[s.navLabel, { color: C.label, flex: 0 }]} numberOfLines={1}>{inv.company}</Text>
-                        <Text style={{ fontSize: 10, color: C.red }}>{days}d overdue</Text>
-                      </View>
-                      <Text style={[s.navDetail, { color: C.red, fontWeight: '700' }]}>{formatCurrency(inv.total, true)}</Text>
-                    </Pressable>
-                  );
-                })}
-              </View>
-            </>
-          )}
-
-          {/* Quick actions */}
-          <Text style={[s.sectionHeader, { color: C.secondary }]}>Actions</Text>
-          <View style={{ backgroundColor: C.surface, borderRadius: 12, overflow: 'hidden' }}>
-            {navRow('plus.circle.fill', 'Create Invoice')}
-            {navRow('doc.text.fill',    'Export Report')}
-          </View>
-        </>
-      ) : (
-        <>
-          {/* Product catalog shortcut */}
-          <Text style={[s.sectionHeader, { color: C.secondary }]}>Products</Text>
-          <View style={{ backgroundColor: C.surface, borderRadius: 12, overflow: 'hidden' }}>
-            {PRODUCTS.slice(0, 4).map((p, i) => (
-              <Pressable key={p.id} style={({ pressed }) => [
-                s.navRow,
-                i > 0 && { borderTopWidth: StyleSheet.hairlineWidth, borderTopColor: C.separator },
-                pressed && { backgroundColor: C.surfacePressed },
-              ]} onPress={() => { Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light); closeSidePanel(); }}>
-                <Text style={[s.navLabel, { color: C.label }]} numberOfLines={1}>{p.name}</Text>
-                <Text style={[s.navDetail, { color: C.accent }]}>{formatCurrency(p.price)}</Text>
-              </Pressable>
-            ))}
-          </View>
-
-        </>
-      )}
     </View>
   );
 }
 
-const s = StyleSheet.create({
-  sectionHeader: { fontSize: 11, fontWeight: '600', letterSpacing: 0.5, textTransform: 'uppercase', paddingVertical: 6 },
-  navRow:        { flexDirection: 'row', alignItems: 'center', paddingHorizontal: 14, paddingVertical: 13, gap: 10 },
-  navLabel:      { flex: 1, fontSize: 14, fontWeight: '500' },
-  navDetail:     { fontSize: 12 },
-  roleRow:       { flexDirection: 'row', borderRadius: 10, padding: 3, gap: 2 },
-  roleBtn:       { flex: 1, height: 30, borderRadius: 8, alignItems: 'center', justifyContent: 'center' },
-  roleBtnText:   { fontSize: 13, fontWeight: '700' },
+const makeStyles = (C: ComponentColors) => StyleSheet.create({
+  root:       { flex: 1 },
+  header:     { paddingHorizontal: 20, paddingTop: 8, paddingBottom: 20 },
+  avatar:     { width: 44, height: 44, borderRadius: 22, alignItems: 'center', justifyContent: 'center', marginBottom: 10 },
+  avatarText: { fontSize: 15, fontWeight: '700' },
+  name:       { fontSize: 17, fontWeight: '700', letterSpacing: -0.3, marginBottom: 2 },
+  handle:     { fontSize: 14 },
+  nav:        { paddingHorizontal: 8 },
+  navRow:     { flexDirection: 'row', alignItems: 'center', height: 44, gap: 16, paddingHorizontal: 12, borderRadius: 8 },
+  navLabel:   { fontSize: 16, fontWeight: '500' },
+  divider:    { height: StyleSheet.hairlineWidth, marginVertical: 8, marginHorizontal: 20 },
 });

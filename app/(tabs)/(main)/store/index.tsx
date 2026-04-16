@@ -6,8 +6,8 @@
 
 import React, { useState, useRef, useCallback, useMemo } from 'react';
 import {
-  View, Text, StyleSheet, Pressable, ScrollView,
-  Image, Animated, TextInput, ActionSheetIOS, Platform,
+  View, Text, StyleSheet, Pressable, ScrollView, Alert,
+  Image, Animated, TextInput, ActionSheetIOS, Platform, useWindowDimensions,
 } from 'react-native';
 import * as Haptics from 'expo-haptics';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
@@ -40,8 +40,20 @@ import {
 const STORE_FILTERS = ['All', 'Digital', 'Courses', 'Merch', 'Services', 'Free'] as const;
 type StoreFilter = typeof STORE_FILTERS[number];
 
-const CAUTION_COLOR = '#B8943E';
 const GAIN_COLOR    = '#5A8A6E';
+const CAUTION_COLOR = '#B8943E';
+const HEAT_COLOR    = '#B85C5C';
+
+// Per-type badge config
+const TYPE_BADGE: Record<string, { bg: string; text: string; bordered?: boolean }> = {
+  Digital:    { bg: '#1A1714',    text: '#FFFFFF' },
+  Course:     { bg: GAIN_COLOR,   text: '#FFFFFF' },
+  Merch:      { bg: CAUTION_COLOR, text: '#FFFFFF' },
+  Service:    { bg: '#9C9790',    text: '#FFFFFF' },
+  Free:       { bg: 'transparent', text: GAIN_COLOR, bordered: true },
+  Membership: { bg: '#1A1714',    text: '#FFFFFF' },
+  Ticket:     { bg: HEAT_COLOR,   text: '#FFFFFF' },
+};
 
 function matchesFilter(p: StoreProduct, f: StoreFilter): boolean {
   if (f === 'All')      return true;
@@ -59,10 +71,16 @@ function productPrice(p: StoreProduct): string {
 }
 
 function PersonalProductCard({
-  product, onPress, C, isDark,
-}: { product: StoreProduct; onPress: () => void; C: ComponentColors; isDark: boolean }) {
+  product, onPress, onMenuPress, isOwner, C, isDark,
+}: {
+  product: StoreProduct;
+  onPress: () => void;
+  onMenuPress?: () => void;
+  isOwner: boolean;
+  C: ComponentColors;
+  isDark: boolean;
+}) {
   const bg = `hsl(${product.coverHue}, 22%, ${isDark ? 26 : 76}%)`;
-  const fg = `hsl(${product.coverHue}, 30%, ${isDark ? 82 : 24}%)`;
   return (
     <Pressable
       onPress={onPress}
@@ -72,19 +90,25 @@ function PersonalProductCard({
       })}
     >
       {/* Cover */}
-      <View style={{ aspectRatio: 3 / 2, backgroundColor: bg, padding: 10, justifyContent: 'space-between', alignItems: 'flex-start', overflow: 'hidden' }}>
+      <View style={{ aspectRatio: 3 / 2, backgroundColor: bg, overflow: 'hidden' }}>
         {product.coverUri && (
           <Image source={{ uri: product.coverUri }} style={StyleSheet.absoluteFill} resizeMode="cover" />
         )}
-        <View style={{ backgroundColor: 'rgba(0,0,0,0.45)', borderRadius: 6, paddingHorizontal: 7, paddingVertical: 3, zIndex: 1 }}>
-          <Text style={{ fontSize: 9, fontWeight: '700', color: '#FFFFFF', textTransform: 'uppercase', letterSpacing: 0.5 }}>
+        {/* Type badge top-left */}
+        <View style={{ position: 'absolute', top: 6, left: 6, backgroundColor: 'rgba(0,0,0,0.45)', borderRadius: 5, paddingHorizontal: 6, paddingVertical: 2, zIndex: 1 }}>
+          <Text style={{ fontSize: 9, fontWeight: '700', color: '#FFF', textTransform: 'uppercase', letterSpacing: 0.4 }}>
             {product.type}
           </Text>
         </View>
-        {product.price === 0 && (
-          <View style={{ backgroundColor: GAIN_COLOR + '28', borderRadius: 6, paddingHorizontal: 7, paddingVertical: 3, borderWidth: 1, borderColor: GAIN_COLOR + '55', zIndex: 1 }}>
-            <Text style={{ fontSize: 9, fontWeight: '800', color: GAIN_COLOR }}>FREE</Text>
-          </View>
+        {/* Three-dot menu — Owner only */}
+        {isOwner && onMenuPress && (
+          <Pressable
+            onPress={(e) => { e.stopPropagation?.(); Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light); onMenuPress(); }}
+            style={{ position: 'absolute', top: 4, right: 4, width: 28, height: 28, borderRadius: 14, backgroundColor: 'rgba(0,0,0,0.5)', alignItems: 'center', justifyContent: 'center', zIndex: 2 }}
+            hitSlop={6}
+          >
+            <IconSymbol name="ellipsis" size={14} color="#FFF" />
+          </Pressable>
         )}
       </View>
       {/* Info */}
@@ -110,13 +134,15 @@ function PersonalProductCard({
 function PersonalStoreScreen() {
   const C      = useColors();
   const insets = useSafeAreaInsets();
+  const { width: screenW } = useWindowDimensions();
   const [demoRole, cycleRole, roleCycles] = useDemoRole('personal:store');
   const isOwner = demoRole === roleCycles[0];
   const isDark  = C.bg === '#1C1410';
 
-  const [selectedId, setSelectedId] = useState<string | null>(null);
-  const [filter,     setFilter]     = useState<StoreFilter>('All');
-  const [checkoutId, setCheckoutId] = useState<string | null>(null);
+  const [selectedId,  setSelectedId]  = useState<string | null>(null);
+  const [filter,      setFilter]      = useState<StoreFilter>('All');
+  const [checkoutId,  setCheckoutId]  = useState<string | null>(null);
+  const [featuredIds, setFeaturedIds] = useState<string[]>(['1', '2', '7']);
   const scrollRef = useRef<any>(null);
 
   useFocusEffect(useCallback(() => { resetFooter(); }, []));
@@ -126,20 +152,17 @@ function PersonalStoreScreen() {
     [filter],
   );
 
-  const selected    = useMemo(() => PERSONAL_STORE_PRODUCTS.find(p => p.id === selectedId) ?? null, [selectedId]);
-  const upsellProd  = useMemo(() => selected?.upsellId ? PERSONAL_STORE_PRODUCTS.find(p => p.id === selected.upsellId) : null, [selected]);
-  const reviews     = useMemo(() => STORE_REVIEWS.filter(r => r.productId === selectedId), [selectedId]);
-  const myPurchases = useMemo(
-    () => MY_PURCHASES_IDS.map(id => PERSONAL_STORE_PRODUCTS.find(p => p.id === id)).filter(Boolean) as StoreProduct[],
-    [],
+  const selected      = useMemo(() => PERSONAL_STORE_PRODUCTS.find(p => p.id === selectedId) ?? null, [selectedId]);
+  const upsellProd    = useMemo(() => selected?.upsellId ? PERSONAL_STORE_PRODUCTS.find(p => p.id === selected.upsellId) : null, [selected]);
+  const reviews       = useMemo(() => STORE_REVIEWS.filter(r => r.productId === selectedId), [selectedId]);
+  const featuredProds = useMemo(
+    () => featuredIds.map(id => PERSONAL_STORE_PRODUCTS.find(p => p.id === id)).filter(Boolean) as StoreProduct[],
+    [featuredIds],
   );
 
   const topBarH = insets.top + 52;
   const { opacity, onScroll, scrollEventThrottle } = useScrollHeader(topBarH);
-
-  const totalRevenue = PERSONAL_STORE_PRODUCTS.reduce((s, p) => s + p.revenue, 0);
-  const totalOrders  = PERSONAL_STORE_PRODUCTS.filter(p => p.type !== 'Membership')
-                                               .reduce((s, p) => s + p.sales, 0);
+  const featuredCardW = screenW * 0.85;
 
   function goToDetail(id: string) {
     setSelectedId(id);
@@ -151,47 +174,95 @@ function PersonalStoreScreen() {
     scrollRef.current?.scrollTo({ y: 0, animated: false });
   }
 
+  function showProductMenu(product: StoreProduct) {
+    const isFeatured = featuredIds.includes(product.id);
+    const options = ['Edit', isFeatured ? 'Unfeature' : 'Feature', 'Delete', 'Cancel'];
+    if (Platform.OS === 'ios') {
+      ActionSheetIOS.showActionSheetWithOptions(
+        { options, destructiveButtonIndex: 2, cancelButtonIndex: 3 },
+        (idx) => {
+          if (idx === 1) {
+            Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+            setFeaturedIds(prev =>
+              isFeatured ? prev.filter(id => id !== product.id) : [...prev, product.id],
+            );
+          }
+          if (idx === 2) {
+            Alert.alert('Delete Product', `Delete "${product.title}"?`, [
+              { text: 'Cancel', style: 'cancel' },
+              { text: 'Delete', style: 'destructive', onPress: () => {} },
+            ]);
+          }
+        },
+      );
+    } else {
+      Alert.alert(product.title, 'Manage product', [
+        { text: isFeatured ? 'Unfeature' : 'Feature', onPress: () => setFeaturedIds(prev => isFeatured ? prev.filter(id => id !== product.id) : [...prev, product.id]) },
+        { text: 'Edit' },
+        { text: 'Delete', style: 'destructive' },
+        { text: 'Cancel', style: 'cancel' },
+      ]);
+    }
+  }
+
   // ── Grid View ───────────────────────────────────────────────────────────────
 
   function renderGrid() {
     return (
       <View style={{ paddingBottom: 120 }}>
-        {/* Owner stats */}
-        {isOwner && (
-          <View style={{ flexDirection: 'row', gap: 8, paddingHorizontal: 16, paddingTop: 16 }}>
-            {([
-              { label: 'Products', value: `${PERSONAL_STORE_PRODUCTS.length}` },
-              { label: 'Revenue',  value: `$${(totalRevenue / 1000).toFixed(1)}K` },
-              { label: 'Orders',   value: totalOrders.toLocaleString() },
-              { label: 'Avg ★',    value: '4.8' },
-            ] as const).map(stat => (
-              <View key={stat.label} style={{ flex: 1, backgroundColor: C.surface, borderRadius: 10, padding: 10, alignItems: 'center', gap: 2 }}>
-                <Text style={{ fontSize: 17, fontWeight: '800', color: C.label, letterSpacing: -0.5 }}>{stat.value}</Text>
-                <Text style={{ fontSize: 10, color: C.secondary, textAlign: 'center' }}>{stat.label}</Text>
-              </View>
-            ))}
-          </View>
-        )}
 
-        {/* Follower — My Purchases shelf */}
-        {!isOwner && myPurchases.length > 0 && (
-          <View style={{ marginTop: 20 }}>
-            <Text style={{ fontSize: 11, fontWeight: '700', color: C.label, textTransform: 'uppercase', letterSpacing: 0.8, paddingHorizontal: 16, marginBottom: 10 }}>
-              My Purchases
-            </Text>
-            <ScrollView horizontal showsHorizontalScrollIndicator={false}
-              contentContainerStyle={{ paddingHorizontal: 16, gap: 10 }}>
-              {myPurchases.map(p => (
-                <Pressable key={p.id}
-                  onPress={() => { Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light); goToDetail(p.id); }}
-                  style={{ width: 130, backgroundColor: C.surface, borderRadius: 12, overflow: 'hidden' }}>
-                  <View style={{ height: 70, backgroundColor: `hsl(${p.coverHue}, 22%, ${isDark ? 26 : 76}%)` }} />
-                  <View style={{ padding: 8 }}>
-                    <Text style={{ fontSize: 11, fontWeight: '600', color: C.label }} numberOfLines={2}>{p.title}</Text>
-                    <Text style={{ fontSize: 10, color: GAIN_COLOR, marginTop: 2 }}>✓ Owned</Text>
-                  </View>
-                </Pressable>
-              ))}
+        {/* Featured hero cards — both roles; Owner pins/unpins via three-dot */}
+        {featuredProds.length > 0 && (
+          <View style={{ marginTop: 16, marginBottom: 4 }}>
+            <ScrollView
+              horizontal
+              showsHorizontalScrollIndicator={false}
+              snapToInterval={featuredCardW + 12}
+              decelerationRate="fast"
+              contentContainerStyle={{ paddingHorizontal: 16, gap: 12 }}
+            >
+              {featuredProds.map(p => {
+                const coverBg = `hsl(${p.coverHue}, 22%, ${isDark ? 26 : 76}%)`;
+                return (
+                  <Pressable
+                    key={p.id}
+                    onPress={() => { Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light); goToDetail(p.id); }}
+                    style={({ pressed }) => ({ width: featuredCardW, borderRadius: 16, overflow: 'hidden', opacity: pressed ? 0.9 : 1 })}
+                  >
+                    <View style={{ aspectRatio: 16 / 9, backgroundColor: coverBg }}>
+                      {p.coverUri && (
+                        <Image source={{ uri: p.coverUri }} style={StyleSheet.absoluteFill} resizeMode="cover" />
+                      )}
+                      <View style={[StyleSheet.absoluteFill, { backgroundColor: 'rgba(0,0,0,0.28)' }]} />
+                      {/* Type badge top-left */}
+                      <View style={{ position: 'absolute', top: 10, left: 10, backgroundColor: 'rgba(0,0,0,0.5)', borderRadius: 6, paddingHorizontal: 8, paddingVertical: 3 }}>
+                        <Text style={{ fontSize: 10, fontWeight: '700', color: '#FFF', textTransform: 'uppercase', letterSpacing: 0.5 }}>
+                          {p.type}
+                        </Text>
+                      </View>
+                      {/* Title + price bottom overlay */}
+                      <View style={{ position: 'absolute', bottom: 0, left: 0, right: 0, padding: 12 }}>
+                        <Text style={{ fontSize: 15, fontWeight: '700', color: '#FFF', lineHeight: 20 }} numberOfLines={2}>
+                          {p.title}
+                        </Text>
+                        <Text style={{ fontSize: 14, fontWeight: '800', color: '#FFF', marginTop: 3, opacity: 0.9 }}>
+                          {productPrice(p)}
+                        </Text>
+                      </View>
+                      {/* Owner three-dot top-right */}
+                      {isOwner && (
+                        <Pressable
+                          onPress={(e) => { e.stopPropagation?.(); Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light); showProductMenu(p); }}
+                          style={{ position: 'absolute', top: 8, right: 8, width: 30, height: 30, borderRadius: 15, backgroundColor: 'rgba(0,0,0,0.5)', alignItems: 'center', justifyContent: 'center' }}
+                          hitSlop={6}
+                        >
+                          <IconSymbol name="ellipsis" size={14} color="#FFF" />
+                        </Pressable>
+                      )}
+                    </View>
+                  </Pressable>
+                );
+              })}
             </ScrollView>
           </View>
         )}
@@ -208,7 +279,7 @@ function PersonalStoreScreen() {
           ))}
         </ScrollView>
 
-        {/* 2-column grid */}
+        {/* 2-column product grid */}
         <View style={{ paddingHorizontal: 16 }}>
           {Array.from({ length: Math.ceil(filtered.length / 2) }, (_, i) => (
             <View key={i} style={{ flexDirection: 'row', gap: 10, marginBottom: 10 }}>
@@ -217,6 +288,8 @@ function PersonalStoreScreen() {
                   key={product.id}
                   product={product}
                   onPress={() => { Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light); goToDetail(product.id); }}
+                  onMenuPress={() => showProductMenu(product)}
+                  isOwner={isOwner}
                   C={C}
                   isDark={isDark}
                 />
@@ -231,6 +304,7 @@ function PersonalStoreScreen() {
             </View>
           )}
         </View>
+
       </View>
     );
   }
@@ -241,7 +315,7 @@ function PersonalStoreScreen() {
     const coverBg = `hsl(${product.coverHue}, 22%, ${isDark ? 26 : 76}%)`;
     const coverFg = `hsl(${product.coverHue}, 30%, ${isDark ? 82 : 24}%)`;
     return (
-      <View style={{ paddingBottom: isOwner ? 32 : 120 }}>
+      <View style={{ paddingBottom: insets.bottom + 49 + 24 }}>
         {/* Cover art */}
         <View style={{ aspectRatio: 16 / 9, backgroundColor: coverBg, justifyContent: 'flex-end', padding: 16 }}>
           <View style={{ alignSelf: 'flex-start', backgroundColor: 'rgba(0,0,0,0.22)', borderRadius: 8, paddingHorizontal: 10, paddingVertical: 5 }}>
@@ -333,18 +407,15 @@ function PersonalStoreScreen() {
             </View>
           )}
 
-          {/* Owner: edit button */}
-          {isOwner && (
+          {/* Follower: Buy Now (inside scroll) */}
+          {!isOwner && (
             <Pressable
-              onPress={() => Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light)}
-              style={({ pressed }) => ({
-                backgroundColor: C.surface, opacity: pressed ? 0.7 : 1,
-                borderRadius: 12, paddingVertical: 13, alignItems: 'center',
-                flexDirection: 'row', justifyContent: 'center', gap: 8,
-              })}
+              onPress={() => { Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium); setCheckoutId(product.id); }}
+              style={{ backgroundColor: C.label, borderRadius: 14, paddingVertical: 15, alignItems: 'center' }}
             >
-              <IconSymbol name="pencil" size={15} color={C.label} />
-              <Text style={{ fontSize: 15, fontWeight: '600', color: C.label }}>Edit Product</Text>
+              <Text style={{ fontSize: 15, fontWeight: '700', color: C.bg }}>
+                {product.price === 0 ? 'Download Free' : `Buy — ${productPrice(product)}`}
+              </Text>
             </Pressable>
           )}
         </View>
@@ -371,18 +442,20 @@ function PersonalStoreScreen() {
               style={{ width: 36, height: 36, alignItems: 'center', justifyContent: 'center' }}>
               <IconSymbol name="chevron.left" size={20} color={C.label} />
             </Pressable>
-          ) : isOwner ? (
+          ) : (
             <Pressable onPress={() => { Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light); openSidePanel(); }}
               style={{ width: 36, height: 36, alignItems: 'center', justifyContent: 'center' }}>
               <KMenuButton />
             </Pressable>
-          ) : (
-            <View style={{ width: 36 }} />
           )}
           <View style={{ flex: 1, alignItems: 'center' }}>
-            <Text style={{ fontSize: 15, fontWeight: '700', color: C.label }} numberOfLines={1}>
-              {selected ? selected.title : 'Store'}
-            </Text>
+            {selected ? (
+              <Text style={{ fontSize: 15, fontWeight: '700', color: C.label }} numberOfLines={1}>{selected.title}</Text>
+            ) : (
+              <View style={{ backgroundColor: C.surface, borderRadius: 18, paddingHorizontal: 14, paddingVertical: 6 }}>
+                <Text style={{ fontSize: 13, fontWeight: '700', color: C.label }}>Store</Text>
+              </View>
+            )}
           </View>
           {!selected ? (
             <RolePill
@@ -391,12 +464,15 @@ function PersonalStoreScreen() {
               accentColor={C.label}
               isPrimary={isOwner}
             />
+          ) : isOwner ? (
+            <Pressable
+              onPress={() => Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light)}
+              style={{ paddingHorizontal: 12, paddingVertical: 6 }}
+            >
+              <Text style={{ fontSize: 14, fontWeight: '600', color: C.label }}>Edit</Text>
+            </Pressable>
           ) : (
-            <View style={{ width: 64, alignItems: 'flex-end' }}>
-              <View style={{ backgroundColor: C.surface, borderRadius: 8, paddingHorizontal: 8, paddingVertical: 4 }}>
-                <Text style={{ fontSize: 11, fontWeight: '600', color: C.secondary }}>{selected.type}</Text>
-              </View>
-            </View>
+            <View style={{ width: 64 }} />
           )}
         </View>
       </Animated.View>
@@ -412,20 +488,6 @@ function PersonalStoreScreen() {
       >
         {selected ? renderDetail(selected) : renderGrid()}
       </ScrollView>
-
-      {/* ── Follower sticky Buy bar (detail view only) ── */}
-      {!isOwner && selected && (
-        <View style={{ position: 'absolute', bottom: insets.bottom + 49 + 8, left: 16, right: 16 }}>
-          <Pressable
-            onPress={() => { Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium); setCheckoutId(selected.id); }}
-            style={{ backgroundColor: C.label, borderRadius: 14, paddingVertical: 15, alignItems: 'center' }}
-          >
-            <Text style={{ fontSize: 15, fontWeight: '700', color: C.bg }}>
-              {selected.price === 0 ? 'Download Free' : `Buy — ${productPrice(selected)}`}
-            </Text>
-          </Pressable>
-        </View>
-      )}
 
       {/* ── Owner FAB (grid view only) ── */}
       {isOwner && !selected && (

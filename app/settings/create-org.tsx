@@ -35,7 +35,7 @@ interface ModeOption {
 // ── Config ────────────────────────────────────────────────────────────────────
 
 const MODE_OPTIONS: ModeOption[] = [
-  { key: 'sports',    label: 'Sports',    subtitle: 'Team, program, or league',        icon: 'trophy.fill',        color: '#1A1714' },
+  { key: 'sports',    label: 'Athletics',    subtitle: 'Team, program, or league',        icon: 'trophy.fill',        color: '#1A1714' },
   { key: 'business',  label: 'Business',  subtitle: 'Company, startup, or agency',     icon: 'briefcase.fill',     color: '#1A1714' },
   { key: 'education', label: 'Education', subtitle: 'School, university, or program',  icon: 'graduationcap.fill', color: '#1A1714' },
   { key: 'community', label: 'Community', subtitle: 'Church, nonprofit, or organization', icon: 'person.3.fill',  color: '#1A1714' },

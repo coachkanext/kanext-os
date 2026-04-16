@@ -1,17 +1,39 @@
 /**
- * Community Give Side Panel — role-aware nav panel (Pastor vs Member).
- * Pastor: Giving Dashboard, Campaigns, Donors, History + Manage section.
- * Member: Give, My History, Campaigns.
+ * Community Give Side Panel — ICCLA.
+ * Pastor: Giving Dashboard · Campaigns · Donors · History + divider + Dipson · Settings · Help
+ * Member: Give · History · Campaigns + divider + Dipson · Settings · Help
  */
 
-import React, { useMemo } from 'react';
+import React, { useCallback, useMemo } from 'react';
 import { View, Text, Pressable, StyleSheet } from 'react-native';
 import * as Haptics from 'expo-haptics';
 import { useRouter } from 'expo-router';
 import { IconSymbol } from '@/components/ui/icon-symbol';
 import { closeSidePanel } from '@/utils/global-side-panel';
+import { openDipsonSheet } from '@/utils/global-dipson-sheet';
 import { useColors, type ComponentColors } from '@/hooks/use-colors';
 import { useDemoRole } from '@/utils/demo-role-store';
+
+type NavItem = { icon: string; label: string; route?: string; isDipson?: boolean };
+
+const PASTOR_NAV: NavItem[] = [
+  { icon: 'chart.bar.fill',  label: 'Giving Dashboard', route: '/(tabs)/(main)/give/giving-dashboard' },
+  { icon: 'flag.fill',       label: 'Campaigns',        route: '/(tabs)/(main)/give/campaigns' },
+  { icon: 'person.2.fill',   label: 'Donors',           route: '/(tabs)/(main)/give/donors' },
+  { icon: 'clock.fill',      label: 'History',          route: '/(tabs)/(main)/give/history' },
+];
+
+const MEMBER_NAV: NavItem[] = [
+  { icon: 'heart.fill',      label: 'Give',       route: '/(tabs)/(main)/give' },
+  { icon: 'clock.fill',      label: 'History',    route: '/(tabs)/(main)/give/history' },
+  { icon: 'flag.fill',       label: 'Campaigns',  route: '/(tabs)/(main)/give/campaigns' },
+];
+
+const BOTTOM_ITEMS: NavItem[] = [
+  { icon: 'sparkles',            label: 'Dipson',   isDipson: true },
+  { icon: 'gearshape',           label: 'Settings', route: '/(tabs)/(main)/give/give-settings' },
+  { icon: 'questionmark.circle', label: 'Help',     route: '/(tabs)/(main)/give/help' },
+];
 
 export function CommunityGivePanel() {
   const C = useColors();
@@ -20,81 +42,61 @@ export function CommunityGivePanel() {
   const [role, , roleCycles] = useDemoRole('community:give');
   const isPastor = role === roleCycles[0];
 
-  const go = (route: string) => {
+  const go = useCallback((item: NavItem) => {
     Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+    if (item.isDipson) {
+      closeSidePanel();
+      setTimeout(() => openDipsonSheet('Give'), 300);
+      return;
+    }
     closeSidePanel();
-    setTimeout(() => router.push(route as any), 80);
-  };
+    setTimeout(() => { if (item.route) router.navigate(item.route as any); }, 80);
+  }, [router]);
 
-  const PASTOR_NAV_ITEMS = [
-    { icon: 'chart.bar.fill',  label: 'Giving Dashboard', route: '/(tabs)/(main)/give/giving-dashboard' },
-    { icon: 'flag.fill',       label: 'Campaigns',        route: '/(tabs)/(main)/give/campaigns' },
-    { icon: 'person.2.fill',   label: 'Donors',           route: '/(tabs)/(main)/give/donors' },
-    { icon: 'clock.fill',      label: 'History',          route: '/(tabs)/(main)/give/history' },
-  ];
-
-  const PASTOR_MANAGE_ITEMS = [
-    { icon: 'building.columns.fill', label: 'Fund Management', route: '/(tabs)/(main)/give/fund-management' },
-    { icon: 'doc.text.fill',         label: 'Tax Receipts',    route: '/(tabs)/(main)/give/tax-receipts' },
-    { icon: 'gearshape.fill',        label: 'Settings',        route: '/(tabs)/(main)/give/give-settings' },
-  ];
-
-  const MEMBER_NAV_ITEMS = [
-    { icon: 'heart.fill',  label: 'Give',       route: '/(tabs)/(main)/give' },
-    { icon: 'clock.fill',  label: 'My History', route: '/(tabs)/(main)/give/my-history' },
-    { icon: 'flag.fill',   label: 'Campaigns',  route: '/(tabs)/(main)/give/campaigns' },
-  ];
-
-  const navItems = isPastor ? PASTOR_NAV_ITEMS : MEMBER_NAV_ITEMS;
+  const navItems = isPastor ? PASTOR_NAV : MEMBER_NAV;
 
   return (
-    <View style={[s.root, { backgroundColor: C.surface }]}>
-      {navItems.map((item, idx) => (
-        <Pressable
-          key={item.label}
-          style={({ pressed }) => [
-            s.row,
-            pressed && { backgroundColor: C.bg },
-            idx < navItems.length - 1 && [s.rowBorder, { borderBottomColor: C.separator }],
-          ]}
-          onPress={() => go(item.route)}
-        >
-          <IconSymbol name={item.icon as any} size={18} color={C.secondary} />
-          <Text style={[s.rowLabel, { color: C.label }]}>{item.label}</Text>
-        </Pressable>
-      ))}
+    <View style={s.root}>
+      <View style={s.header}>
+        <View style={[s.avatar, { backgroundColor: '#2A3A28' }]}>
+          <Text style={[s.avatarText, { color: '#F0E8DC' }]}>IC</Text>
+        </View>
+        <Text style={[s.name, { color: C.label }]}>ICCLA</Text>
+        <Text style={[s.handle, { color: C.secondary }]}>@iccla</Text>
+      </View>
 
-      {isPastor && (
-        <>
-          <View style={[s.divider, { backgroundColor: C.separator }]} />
-          <Text style={[s.sectionLabel, { color: C.secondary }]}>Manage</Text>
-          {PASTOR_MANAGE_ITEMS.map((item, idx) => (
-            <Pressable
-              key={item.label}
-              style={({ pressed }) => [
-                s.row,
-                pressed && { backgroundColor: C.bg },
-                idx < PASTOR_MANAGE_ITEMS.length - 1 && [s.rowBorder, { borderBottomColor: C.separator }],
-              ]}
-              onPress={() => go(item.route)}
-            >
-              <IconSymbol name={item.icon as any} size={18} color={C.secondary} />
-              <Text style={[s.rowLabel, { color: C.label }]}>{item.label}</Text>
-            </Pressable>
-          ))}
-        </>
-      )}
+      <View style={s.nav}>
+        {navItems.map(item => (
+          <Pressable key={item.label} style={({ pressed }) => [s.navRow, pressed && { backgroundColor: C.surface }]} onPress={() => go(item)}>
+            <IconSymbol name={item.icon as any} size={22} color={C.label} />
+            <Text style={[s.navLabel, { color: C.label }]}>{item.label}</Text>
+          </Pressable>
+        ))}
+      </View>
+
+      <View style={[s.divider, { backgroundColor: C.separator }]} />
+
+      <View style={s.nav}>
+        {BOTTOM_ITEMS.map(item => (
+          <Pressable key={item.label} style={({ pressed }) => [s.navRow, pressed && { backgroundColor: C.surface }]} onPress={() => go(item)}>
+            <IconSymbol name={item.icon as any} size={22} color={C.label} />
+            <Text style={[s.navLabel, { color: C.label }]}>{item.label}</Text>
+          </Pressable>
+        ))}
+      </View>
     </View>
   );
 }
 
-function makeStyles(C: ComponentColors) {
-  return StyleSheet.create({
-    root:         { flex: 1 },
-    divider:      { height: StyleSheet.hairlineWidth, marginVertical: 12, marginHorizontal: 16 },
-    sectionLabel: { fontSize: 11, fontWeight: '600', letterSpacing: 0.6, textTransform: 'uppercase', paddingHorizontal: 16, marginBottom: 2, marginTop: 4 },
-    row:          { flexDirection: 'row', alignItems: 'center', gap: 12, paddingHorizontal: 16, paddingVertical: 13, borderRadius: 8 },
-    rowBorder:    { borderBottomWidth: StyleSheet.hairlineWidth },
-    rowLabel:     { flex: 1, fontSize: 15 },
-  });
-}
+const makeStyles = (C: ComponentColors) => StyleSheet.create({
+  root:       { flex: 1 },
+  header:     { paddingHorizontal: 20, paddingTop: 8, paddingBottom: 20 },
+  avatar:     { width: 44, height: 44, borderRadius: 22, alignItems: 'center', justifyContent: 'center', marginBottom: 10 },
+  avatarText: { fontSize: 15, fontWeight: '700' },
+  name:       { fontSize: 17, fontWeight: '700', letterSpacing: -0.3, marginBottom: 2 },
+  handle:     { fontSize: 14, fontWeight: '400' },
+  nav:        { paddingHorizontal: 8 },
+  navRow:     { flexDirection: 'row', alignItems: 'center', height: 44, gap: 16, paddingHorizontal: 12, borderRadius: 8 },
+  navLabel:   { fontSize: 16, fontWeight: '500' },
+  divider:    { height: StyleSheet.hairlineWidth, marginVertical: 8, marginHorizontal: 20 },
+});

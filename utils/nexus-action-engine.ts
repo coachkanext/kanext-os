@@ -83,7 +83,7 @@ function executeAction(
 ): MessageV2 {
   const now = new Date();
   const baseId = `receipt-${Date.now()}`;
-  const contextLabel = `${context.mode === 'sports' ? 'Sports' : context.mode} · ${context.org_name}${context.scope_name ? ' · ' + context.scope_name : ''}`;
+  const contextLabel = `${context.mode === 'sports' ? 'Athletics' : context.mode} · ${context.org_name}${context.scope_name ? ' · ' + context.scope_name : ''}`;
 
   switch (intent.type) {
     case 'create_task': {
@@ -448,7 +448,7 @@ function createConfirmationMessage(
   context: NexusContext,
   conversationId: string,
 ): MessageV2 {
-  const contextLabel = `${context.mode === 'sports' ? 'Sports' : context.mode} · ${context.org_name}${context.scope_name ? ' · ' + context.scope_name : ''}${context.season_label ? ' · ' + context.season_label : ''}`;
+  const contextLabel = `${context.mode === 'sports' ? 'Athletics' : context.mode} · ${context.org_name}${context.scope_name ? ' · ' + context.scope_name : ''}${context.season_label ? ' · ' + context.season_label : ''}`;
 
   let actionSummary = '';
   let impactLine = '';

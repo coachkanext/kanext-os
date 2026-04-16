@@ -34,14 +34,14 @@ type OrgMatch = {
 
 const DOMAIN_REGISTRY: Record<string, OrgMatch> = {
   'kanext.io':    { name: 'KaNeXT',              mode: 'business',  orgType: 'platform',          modeLabel: 'Business'  },
-  'lincolnu.edu': { name: 'Lincoln University',  mode: 'education', orgType: 'university',        modeLabel: 'Education' },
+  'lincolnu.edu': { name: 'Lincoln University (CA)',  mode: 'education', orgType: 'university',        modeLabel: 'Education' },
   'iccla.org':    { name: 'ICCLA',               mode: 'community', orgType: 'faith',             modeLabel: 'Community' },
 };
 
 const CODE_REGISTRY: Record<string, OrgMatch> = {
   'KX2026':    { name: 'KaNeXT',              mode: 'business',  orgType: 'platform',          modeLabel: 'Business'  },
-  'LU2026':    { name: 'Lincoln University',  mode: 'education', orgType: 'university',        modeLabel: 'Education' },
-  'LU2026MBB': { name: "LU Men's Basketball", mode: 'sports',    orgType: 'college_athletics', modeLabel: 'Sports'    },
+  'LU2026':    { name: 'Lincoln University (CA)',  mode: 'education', orgType: 'university',        modeLabel: 'Education' },
+  'LU2026MBB': { name: "Lincoln Men's Basketball", mode: 'sports',    orgType: 'college_athletics', modeLabel: 'Athletics'    },
   'ICCLA2026': { name: 'ICCLA',               mode: 'community', orgType: 'faith',             modeLabel: 'Community' },
 };
 
@@ -65,7 +65,7 @@ type AppMode = 'business' | 'education' | 'sports' | 'community';
 const MODE_OPTIONS: { key: AppMode; label: string; icon: string }[] = [
   { key: 'business',  label: 'Business',  icon: 'briefcase.fill' },
   { key: 'education', label: 'Education', icon: 'graduationcap.fill' },
-  { key: 'sports',    label: 'Sports',    icon: 'trophy.fill' },
+  { key: 'sports',    label: 'Athletics',    icon: 'trophy.fill' },
   { key: 'community', label: 'Community', icon: 'person.3.fill' },
 ];
 

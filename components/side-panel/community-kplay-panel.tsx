@@ -1,19 +1,31 @@
 /**
- * Community KPlay Side Panel — role-aware nav panel for community:kaystudios.
- * Pastor: Courses · Explore · Library + MANAGE (Analytics · Settings)
- * Member: Learn · Games · Kids · Explore · Library  (no MANAGE)
+ * Community KPlay Side Panel.
+ * All roles: Browse · Library + divider + Dipson · Settings · Help
+ * Pastor can long-press content in Browse to assign as Required.
  */
 
-import React, { useMemo } from 'react';
+import React, { useCallback, useMemo } from 'react';
 import { View, Text, Pressable, StyleSheet } from 'react-native';
 import * as Haptics from 'expo-haptics';
 import { useRouter } from 'expo-router';
 import { IconSymbol } from '@/components/ui/icon-symbol';
 import { closeSidePanel } from '@/utils/global-side-panel';
+import { openDipsonSheet } from '@/utils/global-dipson-sheet';
 import { useColors, type ComponentColors } from '@/hooks/use-colors';
 import { useDemoRole } from '@/utils/demo-role-store';
 
-type NavItem = { icon: string; label: string; route: string };
+type NavItem = { icon: string; label: string; route?: string; isDipson?: boolean };
+
+const NAV_ITEMS: NavItem[] = [
+  { icon: 'square.grid.2x2.fill', label: 'Browse',  route: '/(tabs)/(main)/kaystudios' },
+  { icon: 'books.vertical.fill',  label: 'Library', route: '/(tabs)/(main)/kaystudios/library' },
+];
+
+const BOTTOM_ITEMS: NavItem[] = [
+  { icon: 'sparkles',            label: 'Dipson',   isDipson: true },
+  { icon: 'gearshape',           label: 'Settings', route: '/(tabs)/(main)/kaystudios/settings' },
+  { icon: 'questionmark.circle', label: 'Help',     route: '/(tabs)/(main)/kaystudios/help' },
+];
 
 export function CommunityKplayPanel() {
   const C = useColors();
@@ -22,81 +34,59 @@ export function CommunityKplayPanel() {
   const [role, , roleCycles] = useDemoRole('community:kaystudios');
   const isPastor = role === roleCycles[0];
 
-  const go = (route: string) => {
+  const go = useCallback((item: NavItem) => {
     Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+    if (item.isDipson) {
+      closeSidePanel();
+      setTimeout(() => openDipsonSheet('KPlay'), 300);
+      return;
+    }
     closeSidePanel();
-    setTimeout(() => router.push(route as any), 80);
-  };
-
-  const PASTOR_NAV_ITEMS: NavItem[] = [
-    { icon: 'book.fill',             label: 'Courses', route: '/(tabs)/(main)/kaystudios/community-courses' },
-    { icon: 'safari.fill',           label: 'Explore',  route: '/(tabs)/(main)/kaystudios/explore' },
-    { icon: 'books.vertical.fill',   label: 'Library',  route: '/(tabs)/(main)/kaystudios/library'  },
-  ];
-
-  const PASTOR_MANAGE_ITEMS: NavItem[] = [
-    { icon: 'chart.bar.fill', label: 'Analytics', route: '/(tabs)/(main)/kaystudios/analytics' },
-    { icon: 'gearshape.fill', label: 'Settings',  route: '/(tabs)/(main)/kaystudios/settings'  },
-  ];
-
-  const MEMBER_NAV_ITEMS: NavItem[] = [
-    { icon: 'graduationcap.fill',              label: 'Learn',   route: '/(tabs)/(main)/kaystudios/community-learn'  },
-    { icon: 'gamecontroller.fill',             label: 'Games',   route: '/(tabs)/(main)/kaystudios/community-games'  },
-    { icon: 'figure.and.child.holdinghands',   label: 'Kids',    route: '/(tabs)/(main)/kaystudios/community-kids'   },
-    { icon: 'safari.fill',                     label: 'Explore', route: '/(tabs)/(main)/kaystudios/explore'          },
-    { icon: 'books.vertical.fill',             label: 'Library', route: '/(tabs)/(main)/kaystudios/library'          },
-  ];
-
-  const navItems = isPastor ? PASTOR_NAV_ITEMS : MEMBER_NAV_ITEMS;
+    setTimeout(() => { if (item.route) router.navigate(item.route as any); }, 80);
+  }, [router]);
 
   return (
-    <View style={[s.root, { backgroundColor: C.surface }]}>
-      {navItems.map((item, idx) => (
-        <Pressable
-          key={item.label}
-          style={({ pressed }) => [
-            s.row,
-            pressed && { backgroundColor: C.bg },
-            idx < navItems.length - 1 && [s.rowBorder, { borderBottomColor: C.separator }],
-          ]}
-          onPress={() => go(item.route)}
-        >
-          <IconSymbol name={item.icon as any} size={18} color={C.secondary} />
-          <Text style={[s.rowLabel, { color: C.label }]}>{item.label}</Text>
-        </Pressable>
-      ))}
+    <View style={s.root}>
+      <View style={s.header}>
+        <View style={[s.avatar, { backgroundColor: '#2A3A28' }]}>
+          <Text style={[s.avatarText, { color: '#F0E8DC' }]}>IC</Text>
+        </View>
+        <Text style={[s.name, { color: C.label }]}>ICCLA</Text>
+        <Text style={[s.handle, { color: C.secondary }]}>@iccla</Text>
+      </View>
 
-      {isPastor && (
-        <>
-          <View style={[s.divider, { backgroundColor: C.separator }]} />
-          <Text style={[s.sectionLabel, { color: C.secondary }]}>Manage</Text>
-          {PASTOR_MANAGE_ITEMS.map((item, idx) => (
-            <Pressable
-              key={item.label}
-              style={({ pressed }) => [
-                s.row,
-                pressed && { backgroundColor: C.bg },
-                idx < PASTOR_MANAGE_ITEMS.length - 1 && [s.rowBorder, { borderBottomColor: C.separator }],
-              ]}
-              onPress={() => go(item.route)}
-            >
-              <IconSymbol name={item.icon as any} size={18} color={C.secondary} />
-              <Text style={[s.rowLabel, { color: C.label }]}>{item.label}</Text>
-            </Pressable>
-          ))}
-        </>
-      )}
+      <View style={s.nav}>
+        {NAV_ITEMS.map(item => (
+          <Pressable key={item.label} style={({ pressed }) => [s.navRow, pressed && { backgroundColor: C.surface }]} onPress={() => go(item)}>
+            <IconSymbol name={item.icon as any} size={22} color={C.label} />
+            <Text style={[s.navLabel, { color: C.label }]}>{item.label}</Text>
+          </Pressable>
+        ))}
+      </View>
+
+      <View style={[s.divider, { backgroundColor: C.separator }]} />
+
+      <View style={s.nav}>
+        {BOTTOM_ITEMS.map(item => (
+          <Pressable key={item.label} style={({ pressed }) => [s.navRow, pressed && { backgroundColor: C.surface }]} onPress={() => go(item)}>
+            <IconSymbol name={item.icon as any} size={22} color={C.label} />
+            <Text style={[s.navLabel, { color: C.label }]}>{item.label}</Text>
+          </Pressable>
+        ))}
+      </View>
     </View>
   );
 }
 
-function makeStyles(C: ComponentColors) {
-  return StyleSheet.create({
-    root:         { flex: 1 },
-    divider:      { height: StyleSheet.hairlineWidth, marginVertical: 12, marginHorizontal: 16 },
-    sectionLabel: { fontSize: 11, fontWeight: '600', letterSpacing: 0.6, textTransform: 'uppercase', paddingHorizontal: 16, marginBottom: 2, marginTop: 4 },
-    row:          { flexDirection: 'row', alignItems: 'center', gap: 12, paddingHorizontal: 16, paddingVertical: 13, borderRadius: 8 },
-    rowBorder:    { borderBottomWidth: StyleSheet.hairlineWidth },
-    rowLabel:     { flex: 1, fontSize: 15 },
-  });
-}
+const makeStyles = (C: ComponentColors) => StyleSheet.create({
+  root:       { flex: 1 },
+  header:     { paddingHorizontal: 20, paddingTop: 8, paddingBottom: 20 },
+  avatar:     { width: 44, height: 44, borderRadius: 22, alignItems: 'center', justifyContent: 'center', marginBottom: 10 },
+  avatarText: { fontSize: 15, fontWeight: '700' },
+  name:       { fontSize: 17, fontWeight: '700', letterSpacing: -0.3, marginBottom: 2 },
+  handle:     { fontSize: 14, fontWeight: '400' },
+  nav:        { paddingHorizontal: 8 },
+  navRow:     { flexDirection: 'row', alignItems: 'center', height: 44, gap: 16, paddingHorizontal: 12, borderRadius: 8 },
+  navLabel:   { fontSize: 16, fontWeight: '500' },
+  divider:    { height: StyleSheet.hairlineWidth, marginVertical: 8, marginHorizontal: 20 },
+});
