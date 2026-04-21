@@ -70,7 +70,7 @@ export const PORTFOLIO_PROJECTS: PortfolioProject[] = [
     client: 'Nike',
     description: '3-part content series featuring summer training gear. Sponsored reel, static post, and KTV long-form behind-the-scenes.',
     coverHue: 210,
-    coverUri: 'https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?w=800&h=450&fit=crop&q=80',
+    coverUri: undefined,
     type: 'Sponsored',
     results: [
       { label: 'Views',      value: '2.1M'  },
@@ -89,7 +89,7 @@ export const PORTFOLIO_PROJECTS: PortfolioProject[] = [
     client: 'Gatorade',
     description: 'Quarterly ambassador deal covering hydration content across Instagram, TikTok, and KTV. 12 posts over 3 months.',
     coverHue: 30,
-    coverUri: 'https://images.unsplash.com/photo-1579952363873-27f3bade9f55?w=800&h=450&fit=crop&q=80',
+    coverUri: undefined,
     type: 'Sponsored',
     results: [
       { label: 'Reach', value: '4.8M'   },
@@ -107,7 +107,7 @@ export const PORTFOLIO_PROJECTS: PortfolioProject[] = [
     client: 'Self-produced',
     description: 'Long-form launch video for the KaNeXT OS platform announcing creator-focused features to my audience.',
     coverHue: 270,
-    coverUri: 'https://images.unsplash.com/photo-1551650975-87deedd944c3?w=800&h=450&fit=crop&q=80',
+    coverUri: undefined,
     type: 'Self-produced',
     results: [
       { label: 'Views',      value: '12.4K' },
@@ -124,7 +124,7 @@ export const PORTFOLIO_PROJECTS: PortfolioProject[] = [
     client: 'Self-produced',
     description: '4-part video course on athlete branding and performance mindset. Sold as a standalone digital product.',
     coverHue: 150,
-    coverUri: 'https://images.unsplash.com/photo-1524178232363-1fb2b075b655?w=800&h=450&fit=crop&q=80',
+    coverUri: undefined,
     type: 'Self-produced',
     results: [
       { label: 'Sold',    value: '847'     },
@@ -142,7 +142,7 @@ export const PORTFOLIO_PROJECTS: PortfolioProject[] = [
     client: 'Self-produced',
     description: 'Long-form article breaking down the exact playbook I used to go from unknown athlete to six-figure creator. Published across Medium and my newsletter with a combined reach of 22K readers.',
     coverHue: 40,
-    coverUri: 'https://images.unsplash.com/photo-1455390582262-044cdead277a?w=800&h=450&fit=crop&q=80',
+    coverUri: undefined,
     type: 'Article',
     results: [
       { label: 'Reads',    value: '22K'    },
@@ -159,7 +159,7 @@ export const PORTFOLIO_PROJECTS: PortfolioProject[] = [
     client: 'TEDxMiami',
     description: 'Keynote talk on the psychology of building in public as an athlete-entrepreneur. Delivered to 600+ live attendees and 40K+ online views. Covered vulnerability, accountability, and the creative process.',
     coverHue: 355,
-    coverUri: 'https://images.unsplash.com/photo-1475721027785-f74eccf877e2?w=800&h=450&fit=crop&q=80',
+    coverUri: undefined,
     type: 'Speaking',
     results: [
       { label: 'Attendees', value: '600+'  },
@@ -181,7 +181,7 @@ export const PORTFOLIO_PRESS: PortfolioPress[] = [
     initials: 'F',
     hue: 0,
     blurb: 'Named to Forbes\u2019 annual 30 Under 30 list recognizing young entrepreneurs reshaping the future of sports and creator technology.',
-    bannerUri: 'https://images.unsplash.com/photo-1521737604893-d14cc237f11d?w=800&h=400&fit=crop&q=80',
+    bannerUri: undefined,
   },
   {
     id: 'press2',
@@ -191,7 +191,7 @@ export const PORTFOLIO_PRESS: PortfolioPress[] = [
     initials: 'BC',
     hue: 45,
     blurb: 'Joined Charlamagne Tha God to talk athlete branding, the creator economy, and what it took to build KaNeXT OS from scratch.',
-    thumbUri: 'https://images.unsplash.com/photo-1478737270239-2f02b77fc618?w=200&h=200&fit=crop&q=80',
+    thumbUri: undefined,
   },
   {
     id: 'press3',
@@ -201,7 +201,7 @@ export const PORTFOLIO_PRESS: PortfolioPress[] = [
     initials: 'Inc',
     hue: 200,
     blurb: 'Inc. spotlighted how Sammy merged professional athletics with creator entrepreneurship — and the platform he built to make it replicable.',
-    thumbUri: 'https://images.unsplash.com/photo-1504711434969-e33886168f5c?w=200&h=200&fit=crop&q=80',
+    thumbUri: undefined,
   },
   {
     id: 'press4',
@@ -211,7 +211,7 @@ export const PORTFOLIO_PRESS: PortfolioPress[] = [
     initials: 'IH',
     hue: 150,
     blurb: 'Pulled back the curtain on building KaNeXT OS in public \u2014 from first concept to first paying customer, with nothing held back.',
-    thumbUri: 'https://images.unsplash.com/photo-1611532736597-de2d4265fba3?w=200&h=200&fit=crop&q=80',
+    thumbUri: undefined,
   },
 ];
 
@@ -300,7 +300,7 @@ export const PORTFOLIO_CREDENTIALS: PortfolioCredential[] = [
     issuer: 'NSCA',
     year: '2023',
     icon: 'rosette',
-    coverUri: 'https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?w=800&h=400&fit=crop&q=80',
+    coverUri: undefined,
   },
   {
     id: 'cred2',
@@ -308,7 +308,7 @@ export const PORTFOLIO_CREDENTIALS: PortfolioCredential[] = [
     issuer: 'NASM',
     year: '2021',
     icon: 'checkmark.seal.fill',
-    coverUri: 'https://images.unsplash.com/photo-1534438327276-14e5300c3a48?w=800&h=400&fit=crop&q=80',
+    coverUri: undefined,
   },
   {
     id: 'cred3',
@@ -316,6 +316,6 @@ export const PORTFOLIO_CREDENTIALS: PortfolioCredential[] = [
     issuer: 'NFL Players Association',
     year: '2024',
     icon: 'mic.fill',
-    coverUri: 'https://images.unsplash.com/photo-1475721027785-f74eccf877e2?w=800&h=400&fit=crop&q=80',
+    coverUri: undefined,
   },
 ];

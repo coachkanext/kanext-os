@@ -53,7 +53,7 @@ type ModeConfig = {
 
 const AUTHOR_META: Record<string, { bg: string }> = {
   // Personal
-  'Sammy Kalejaiye': { bg: '#1A1714' },
+  'Laolu Kalejaiye': { bg: '#1A1714' },
   'Nike':            { bg: '#111111' },
   'Alex Rivera':     { bg: '#2E5B3E' },
   'KaNeXT':          { bg: '#1E3A28' },
@@ -124,7 +124,7 @@ type Post = {
 const POSTS: Post[] = [
   {
     id: '1',
-    author: 'Sammy Kalejaiye', handle: '@sammyk', kind: 'owner',
+    author: 'Laolu Kalejaiye', handle: '@sammyk', kind: 'owner',
     content: 'Just hit a major milestone — sharing the exact framework I used to grow from 0 to 10K in 90 days. Full breakdown dropping in the resources channel.',
     timestamp: '2h ago',
     visibility: 'Public',
@@ -143,7 +143,7 @@ const POSTS: Post[] = [
   },
   {
     id: '3',
-    author: 'Sammy Kalejaiye', handle: '@sammyk', kind: 'owner',
+    author: 'Laolu Kalejaiye', handle: '@sammyk', kind: 'owner',
     content: "The one thing nobody tells you about brand deals: the rate card matters less than the relationship. I turned down a $15K deal last week because of a bad-fit brand. Here's why that was the right call...",
     timestamp: '1d ago',
     visibility: 'Subscribers Only',
@@ -179,7 +179,7 @@ const POSTS: Post[] = [
   },
   {
     id: '7',
-    author: 'Sammy Kalejaiye', handle: '@sammyk', kind: 'owner',
+    author: 'Laolu Kalejaiye', handle: '@sammyk', kind: 'owner',
     content: 'Content audit template I use every quarter. Drop a 🔥 in comments if you want a full breakdown of how to run your own audit.',
     timestamp: '5d ago',
     visibility: 'Subscribers Only',
@@ -196,7 +196,7 @@ const POSTS: Post[] = [
   },
   {
     id: '9',
-    author: 'Sammy Kalejaiye', handle: '@sammyk', kind: 'owner',
+    author: 'Laolu Kalejaiye', handle: '@sammyk', kind: 'owner',
     content: "March P&L breakdown — just for subscribers.\n\nRevenue: $18,400\n• Subscriptions: $9,200\n• Brand deals: $7,500\n• Digital products: $1,700\n\nExpenses: $4,100\n• Tools & software: $890\n• Studio time: $1,200\n• Editor: $2,010\n\nNet: $14,300. Here's what I'm reinvesting and what I'm keeping liquid...",
     timestamp: '7h ago',
     visibility: 'Subscribers Only',
@@ -214,7 +214,7 @@ const POSTS: Post[] = [
   },
   {
     id: '11',
-    author: 'Sammy Kalejaiye', handle: '@sammyk', kind: 'owner',
+    author: 'Laolu Kalejaiye', handle: '@sammyk', kind: 'owner',
     content: "The email I sent that landed a $30K brand deal. Full script below.\n\nSubject line: \"[First name] — 3 reasons [Brand] should be in front of my audience\"\n\nBody:\nHi [Name],\n\nI'll keep this short...\n\n(Members only — full script in the resources channel)",
     timestamp: '1d ago',
     visibility: 'Subscribers Only',
@@ -232,7 +232,7 @@ const POSTS: Post[] = [
   },
   {
     id: '13',
-    author: 'Sammy Kalejaiye', handle: '@sammyk', kind: 'owner',
+    author: 'Laolu Kalejaiye', handle: '@sammyk', kind: 'owner',
     content: "I negotiate every brand deal with one rule: never accept the first offer.\n\nHere's my 3-step counter-offer framework:\n\n1. Always ask for 15% more than they offer\n2. Add a usage rights clause (2x your day rate per year)\n3. Request kill fee language upfront\n\nThis alone added $40K to my brand deal income last year.",
     timestamp: '2d ago',
     visibility: 'Subscribers Only',
@@ -250,7 +250,7 @@ const POSTS: Post[] = [
   },
   {
     id: '15',
-    author: 'Sammy Kalejaiye', handle: '@sammyk', kind: 'owner',
+    author: 'Laolu Kalejaiye', handle: '@sammyk', kind: 'owner',
     content: "Recorded a 90-minute deep-dive on the exact content system I use — from ideation to upload to monetization. Dropping it in the resources channel this Friday.\n\nSubscribers get early access + the full workflow template as a bonus.",
     timestamp: '3d ago',
     visibility: 'Subscribers Only',
@@ -276,7 +276,7 @@ const POSTS: Post[] = [
   },
   {
     id: '18',
-    author: 'Sammy Kalejaiye', handle: '@sammyk', kind: 'owner',
+    author: 'Laolu Kalejaiye', handle: '@sammyk', kind: 'owner',
     content: "Q&A responses — part 1.\n\n@jess_m: How do you handle creative burnout?\nMy honest answer: I don't try to push through it. I have a 'slow week' protocol — light content, heavy thinking. Always leads to better output.\n\n@coachtyler: When should I charge for my content?\nEarlier than you think. The pricing conversation is the most valuable one you'll ever have with yourself.",
     timestamp: '4d ago',
     visibility: 'Subscribers Only',
@@ -284,7 +284,7 @@ const POSTS: Post[] = [
   },
   {
     id: '19',
-    author: 'Sammy Kalejaiye', handle: '@sammyk', kind: 'owner',
+    author: 'Laolu Kalejaiye', handle: '@sammyk', kind: 'owner',
     content: "Behind the scenes: what it actually cost to build this community from zero.\n\nYear 1 losses: $12K\nYear 2 break-even: month 9\nYear 3 first $10K month: June\n\nThe thing nobody tells you — the first 18 months feel like you're building in the dark. Then the flywheel kicks in and everything compounds. Stick with it.",
     timestamp: '6d ago',
     visibility: 'Subscribers Only',
@@ -659,7 +659,7 @@ const MODE_CONFIG: Record<string, ModeConfig> = {
     roleKey:               'personal:social',
     filterOptions:         ['All', 'Public', 'Subscribers Only'],
     visOptions:            ['Public', 'Subscribers Only'],
-    composerName:          'Sammy Kalejaiye',
+    composerName:          'Laolu Kalejaiye',
     composerInitial:       'S',
     composerBg:            '#1A1714',
     memberComposerName:    'Marcus Reid',

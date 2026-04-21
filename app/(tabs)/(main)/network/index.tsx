@@ -70,7 +70,7 @@ interface FeedItem {
 const COMMUNITY_FEED: FeedItem[] = [
   {
     id: 'cf1', type: 'announcement',
-    author: { name: 'Sammy Kalejaiye', initials: 'SK', hue: 220, handle: '@sammyk' },
+    author: { name: 'Laolu Kalejaiye', initials: 'LK', hue: 220, handle: '@sammyk' },
     content: '🎉 Big news — we just crossed 1,200 community members! Thank you all for being part of this. Our Inner Circle coaching call is this Thursday at 7 PM ET.',
     timestamp: '2h ago', likes: 47, replies: 12,
   },
@@ -100,7 +100,7 @@ const COMMUNITY_FEED: FeedItem[] = [
   },
   {
     id: 'cf6', type: 'announcement',
-    author: { name: 'Sammy Kalejaiye', initials: 'SK', hue: 220, handle: '@sammyk' },
+    author: { name: 'Laolu Kalejaiye', initials: 'LK', hue: 220, handle: '@sammyk' },
     content: "The new \"Creator Finance\" space is now live. It's open to all Supporters and above. Drop your biggest money question in there and I'll answer them all in a voice note this weekend.",
     timestamp: '1d ago', likes: 62, replies: 7, tier: 'supporters',
   },
@@ -1116,7 +1116,7 @@ function EducationStudentDirectoryView({
 type BizPeopleTab = 'Directory' | 'Org Chart' | 'HR' | 'Hiring';
 
 const BIZ_TEAM = [
-  { id: 'b1',  initials: 'SK', hue: 30,  name: 'Sammy Kalejaiye', title: 'CEO',               dept: 'Leadership',    status: 'Active' },
+  { id: 'b1',  initials: 'LK', hue: 30,  name: 'Laolu Kalejaiye', title: 'CEO',               dept: 'Leadership',    status: 'Active' },
   { id: 'b2',  initials: 'MW', hue: 200, name: 'Marcus Williams',  title: 'CTO',               dept: 'Engineering',   status: 'Active' },
   { id: 'b3',  initials: 'DC', hue: 300, name: 'Diana Chen',       title: 'Head of Product',   dept: 'Product',       status: 'Active' },
   { id: 'b4',  initials: 'KM', hue: 80,  name: 'Kevin Moore',      title: 'Lead Engineer',     dept: 'Engineering',   status: 'Active' },
@@ -1130,7 +1130,7 @@ const BIZ_TEAM = [
 ];
 
 const BIZ_ORG_CHART = [
-  { id: 'o0', name: 'Sammy Kalejaiye', title: 'CEO',               level: 0, parentTitle: '' },
+  { id: 'o0', name: 'Laolu Kalejaiye', title: 'CEO',               level: 0, parentTitle: '' },
   { id: 'o1', name: 'Marcus Williams', title: 'CTO',               level: 1, parentTitle: 'CEO' },
   { id: 'o2', name: 'Diana Chen',      title: 'Head of Product',   level: 1, parentTitle: 'CEO' },
   { id: 'o3', name: 'Tara Osei',       title: 'Sales Lead',        level: 1, parentTitle: 'CEO' },
@@ -1575,13 +1575,13 @@ function BusinessCustomerTeamView({
   const topBarH = insets.top + TOP_BAR_H;
 
   const BIZ_WORKING_WITH = [
-    { initials: 'SK', name: 'Sammy Kalejaiye', title: 'Founder & CEO',  email: 'sammy@kanext.io' },
+    { initials: 'LK', name: 'Laolu Kalejaiye', title: 'Founder & CEO',  email: 'sammy@kanext.io' },
     { initials: 'TO', name: 'Tara Osei',        title: 'Sales Lead',     email: 'tara@kanext.io' },
     { initials: 'MG', name: 'Mia Grant',        title: 'Client Success', email: 'mia@kanext.io' },
   ];
 
   const BIZ_LEADERSHIP_PUBLIC = [
-    { initials: 'SK', name: 'Sammy Kalejaiye', title: 'Founder & CEO',   bio: 'Building the OS that runs institutions' },
+    { initials: 'LK', name: 'Laolu Kalejaiye', title: 'Founder & CEO',   bio: 'Building the OS that runs institutions' },
     { initials: 'MW', name: 'Marcus Williams',  title: 'CTO',             bio: 'Engineering the platform infrastructure' },
     { initials: 'DC', name: 'Diana Chen',       title: 'Head of Product', bio: 'Designing the user experience' },
   ];
@@ -1632,7 +1632,7 @@ function BusinessCustomerTeamView({
               <Text style={{ fontSize: 17, fontWeight: '700', color: C.bg }}>SK</Text>
             </View>
             <View style={{ flex: 1 }}>
-              <Text style={{ fontSize: 16, fontWeight: '700', color: C.label }}>Sammy Kalejaiye</Text>
+              <Text style={{ fontSize: 16, fontWeight: '700', color: C.label }}>Laolu Kalejaiye</Text>
               <Text style={{ fontSize: 13, color: C.secondary, marginTop: 2 }}>Founder & CEO</Text>
               <Text style={{ fontSize: 12, color: C.muted, marginTop: 2 }}>Your account manager</Text>
             </View>
@@ -1726,7 +1726,7 @@ function LiveNetworkView({ mode, C, insets }: { mode: string; C: any; insets: an
   if (mode === 'business') {
     // Business Team public page
     const team = [
-      { name: 'Sammy Kalejaiye', title: 'Founder & CEO', bio: 'Builder of KaNeXT OS. 10+ years in sports technology and institutional intelligence.' },
+      { name: 'Laolu Kalejaiye', title: 'Founder & CEO', bio: 'Builder of KaNeXT OS. 10+ years in sports technology and institutional intelligence.' },
       { name: 'TBD', title: 'CTO', bio: 'Joining the team Q2 2026.' },
       { name: 'TBD', title: 'Head of Product', bio: 'Joining the team Q2 2026.' },
     ];
@@ -2075,7 +2075,7 @@ export default function NetworkScreen() {
           <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8, marginBottom: 8 }}>
             <Avatar initials="SK" hue={220} size={32} />
             <View style={{ flex: 1, minWidth: 0 }}>
-              <Text style={{ fontSize: 13, fontWeight: '700', color: C.label }}>Sammy Kalejaiye</Text>
+              <Text style={{ fontSize: 13, fontWeight: '700', color: C.label }}>Laolu Kalejaiye</Text>
               <Text style={{ fontSize: 11, color: C.secondary }}>30m ago</Text>
             </View>
           </View>
@@ -2322,7 +2322,7 @@ export default function NetworkScreen() {
                 <Text style={{ fontSize: 18, fontWeight: '700', color: '#fff' }}>SK</Text>
               </View>
               <View>
-                <Text style={{ fontSize: 16, fontWeight: '700', color: C.label }}>Sammy Kalejaiye</Text>
+                <Text style={{ fontSize: 16, fontWeight: '700', color: C.label }}>Laolu Kalejaiye</Text>
                 <Text style={{ fontSize: 13, color: C.secondary }}>@sammyk · Personal Community</Text>
               </View>
             </View>

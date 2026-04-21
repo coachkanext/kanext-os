@@ -98,7 +98,7 @@ export default function EditProfileScreen() {
           <View style={[styles.card, { borderColor: C.inputBorder, backgroundColor: C.surface }]}>
             <View style={[styles.row, { borderBottomColor: C.separator }]}>
               <Text style={[styles.rowLabel, { color: C.secondary }]}>Name</Text>
-              <Text style={[styles.rowValueMuted, { color: C.muted }]}>Sammy Kalejaiye</Text>
+              <Text style={[styles.rowValueMuted, { color: C.muted }]}>Laolu Kalejaiye</Text>
               <IconSymbol name="lock.fill" size={12} color={C.muted} />
             </View>
             <View style={styles.row}>

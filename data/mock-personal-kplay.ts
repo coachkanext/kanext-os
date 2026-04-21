@@ -262,7 +262,7 @@ export type FeedItem = {
   featured?: boolean;
 };
 
-const ME: FeedCreator       = { name: 'Sammy Kalejaiye', handle: '@sammyk', initials: 'SK', isMe: true };
+const ME: FeedCreator       = { name: 'Laolu Kalejaiye', handle: '@sammyk', initials: 'LK', isMe: true };
 const MAYA: FeedCreator     = { name: 'Maya Thompson',   handle: '@mayat',   initials: 'MT', isMe: false };
 const COACH: FeedCreator    = { name: 'Coach D. Williams', handle: '@coachdw', initials: 'DW', isMe: false };
 const PRIYA: FeedCreator    = { name: 'Priya Shah',      handle: '@priyas',  initials: 'PS', isMe: false };

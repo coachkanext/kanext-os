@@ -17,11 +17,11 @@ import type {
 // =============================================================================
 
 // ── TEST ORGS — LOCKED ────────────────────────────────────────────────────────
-// Five hardcoded dev orgs. All owned by Sammy Kalejaiye (@sammyk).
+// Five hardcoded dev orgs. All owned by Laolu Kalejaiye (@sammyk).
 // Default active: KaNeXT (Business). Mode order: Personal · Business · Education · Sports · Community.
 
 export const V2_ORGANIZATIONS: V2Organization[] = [
-  { org_id: 'pb_kx',     org_name: 'Sammy Kalejaiye',    mode: 'personal',  org_type: 'personal',          initials: 'SK'                                                              },
+  { org_id: 'pb_kx',     org_name: 'Laolu Kalejaiye',    mode: 'personal',  org_type: 'personal',          initials: 'LK'                                                              },
   { org_id: 'biz_kx',    org_name: 'KaNeXT',              mode: 'business',  org_type: 'platform',          initials: 'K',  description: 'KaNeXT Operations LLC'                       },
   { org_id: 'edu_kx',    org_name: 'Lincoln University (CA)', mode: 'education', org_type: 'university',        initials: 'LU', location: 'Oakland, CA'                                           },
   { org_id: 'sports_kx', org_name: "Lincoln Men's Basketball", mode: 'sports',    org_type: 'college_athletics', initials: 'LM', location: 'Oakland, CA', description: "Lincoln University (CA) Men's Basketball" },

@@ -52,8 +52,7 @@ export function formatVideoTime(seconds: number): string {
 }
 
 // Unsplash direct image helper (public, hotlinkable, auto-cropped)
-const u = (id: string, w = 640, h = 360) =>
-  `https://images.unsplash.com/${id}?w=${w}&h=${h}&fit=crop&q=80`;
+const u = (_id?: string, _w?: number, _h?: number) => '';
 
 // =============================================================================
 // SPORTS MODE — Browse Categories

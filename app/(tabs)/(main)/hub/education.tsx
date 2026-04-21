@@ -6,7 +6,7 @@
  * President: edit controls. Student: read-only.
  */
 
-import React, { useCallback } from 'react';
+import React, { useCallback, useEffect } from 'react';
 import { View, Text, Pressable, ScrollView, Image, StyleSheet, Animated } from 'react-native';
 import * as Haptics from 'expo-haptics';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
@@ -90,19 +90,20 @@ export default function EducationHub() {
   const insets = useSafeAreaInsets();
   const router = useRouter();
   const { state } = useAppContext();
-  const mode = state.activeContext?.mode ?? state.mode ?? 'personal';
+  const mode = state.mode ?? 'personal';
   const [role, toggleRole, roleCycles] = useDemoRole('education');
   const isPresident = role === roleCycles[0];
   const { opacity, onScroll, scrollEventThrottle } = useScrollHeader();
 
   const COVER_H = 220 + insets.top + TOP_BAR_H;
 
-  useFocusEffect(useCallback(() => {
-    resetFooter();
+  useFocusEffect(useCallback(() => { resetFooter(); }, []));
+
+  useEffect(() => {
     if (mode !== 'education') {
       router.replace('/(tabs)/(main)/hub' as any);
     }
-  }, [mode]));
+  }, [mode]);
 
   const row = (C: ComponentColors) => ({
     flexDirection: 'row' as const,
@@ -129,7 +130,7 @@ export default function EducationHub() {
           <Pressable disabled={!isPresident}>
             <View style={{ height: COVER_H, backgroundColor: C.surface, overflow: 'hidden' }}>
               <Image
-                source={{ uri: 'https://picsum.photos/seed/lincoln-campus/900/500' }}
+                source={require('@/assets/images/lincoln-city-council.png')}
                 style={{ width: '100%', height: '100%' }}
                 resizeMode="cover"
               />
@@ -145,8 +146,8 @@ export default function EducationHub() {
           {/* School logo — bottom-left, overlapping cover */}
           <View style={{ position: 'absolute', bottom: -AVATAR_OVR, left: 20 }}>
             <Pressable disabled={!isPresident}>
-              <View style={{ width: AVATAR_SIZE, height: AVATAR_SIZE, borderRadius: AVATAR_SIZE / 2, backgroundColor: C.surface, borderWidth: 3, borderColor: C.bg, alignItems: 'center', justifyContent: 'center' }}>
-                <Text style={{ fontSize: 36 }}>🏛️</Text>
+              <View style={{ width: AVATAR_SIZE, height: AVATAR_SIZE, borderRadius: AVATAR_SIZE / 2, backgroundColor: C.surface, borderWidth: 3, borderColor: C.bg, overflow: 'hidden' }}>
+                <Image source={require('@/assets/images/lu-seal.png')} style={{ width: '100%', height: '100%', transform: [{ scale: 1.5 }, { translateY: 4 }] }} resizeMode="cover" />
               </View>
               {isPresident && (
                 <View style={{ position: 'absolute', bottom: 0, right: 0, width: 24, height: 24, borderRadius: 12, backgroundColor: C.label, alignItems: 'center', justifyContent: 'center', borderWidth: 2, borderColor: C.bg }}>

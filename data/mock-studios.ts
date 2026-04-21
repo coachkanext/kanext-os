@@ -5,8 +5,7 @@
 
 // ── Helpers ──
 
-const img = (id: string, w = 600, h = 400) =>
-  `https://images.unsplash.com/${id}?w=${w}&h=${h}&fit=crop&q=80`;
+const img = (_id?: string, _w?: number, _h?: number) => '';
 
 // =============================================================================
 // 1. TYPES

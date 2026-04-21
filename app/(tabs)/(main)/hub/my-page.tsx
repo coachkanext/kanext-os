@@ -23,6 +23,9 @@ import { resetFooter } from '@/utils/global-footer-hide';
 import { useDemoRole } from '@/utils/demo-role-store';
 import { KMenuButton } from '@/components/ui/k-menu-button';
 import { useScrollHeader } from '@/hooks/use-scroll-header';
+import { PersonalSeasonCard } from '@/components/home/personal-season-card';
+
+const LAOLU_HEADSHOT = require('@/assets/images/headshots/11-kalejaiye.png');
 import {
   HUB_PROFILE, HUB_LINKS, HUB_PORTFOLIO, HUB_FEATURED, CONTENT_ITEMS,
   type HubLink, type PortfolioItem, type ContentType,
@@ -116,6 +119,7 @@ export default function MyPageScreen() {
   const isOwner = role === 'Owner';
 
   const [previewMode,    setPreviewMode]    = useState(false);
+  const [seasonCardKey,  setSeasonCardKey]  = useState(0);
   const [contentFilter,  setContentFilter]  = useState<ContentFilter>('All');
   const [links,          setLinks]          = useState<HubLink[]>(HUB_LINKS);
   const [portfolio,      setPortfolio]      = useState<PortfolioItem[]>(HUB_PORTFOLIO);
@@ -154,10 +158,7 @@ export default function MyPageScreen() {
         onPress={() => { if (!showEdit) return; haptic(); }}
         disabled={!showEdit}
       >
-        {HUB_PROFILE.coverUri
-          ? <Image source={{ uri: HUB_PROFILE.coverUri }} style={StyleSheet.absoluteFill} resizeMode="cover" />
-          : <View style={[StyleSheet.absoluteFill, s.coverGradient, { backgroundColor: C.separator }]} />
-        }
+        <PersonalSeasonCard key={seasonCardKey} onDone={() => setSeasonCardKey(k => k + 1)} />
         {showEdit && (
           <View style={s.coverEditHint}>
             <IconSymbol name="camera.fill" size={14} color="#fff" />
@@ -171,12 +172,7 @@ export default function MyPageScreen() {
           onPress={() => { if (!showEdit) return; haptic(); }}
           disabled={!showEdit}
         >
-          {HUB_PROFILE.avatarUri
-            ? <Image source={{ uri: HUB_PROFILE.avatarUri }} style={s.avatar} resizeMode="cover" />
-            : <View style={[s.avatar, { backgroundColor: '#6B4A2A' }]}>
-                <Text style={s.avatarInitials}>{HUB_PROFILE.avatarInitials}</Text>
-              </View>
-          }
+          <Image source={LAOLU_HEADSHOT} style={s.avatar} resizeMode="cover" />
           {showEdit && (
             <View style={[s.cameraBadge, { backgroundColor: C.bg, borderColor: C.separator }]}>
               <IconSymbol name="camera.fill" size={10} color={C.secondary} />

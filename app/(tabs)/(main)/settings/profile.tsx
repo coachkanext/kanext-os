@@ -22,7 +22,7 @@ export default function ProfileSettingsScreen() {
   const haptic = () => Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
   const { opacity, onScroll, scrollEventThrottle } = useScrollHeader();
 
-  const [name,   setName]   = useState('Sammy Kalejaiye');
+  const [name,   setName]   = useState('Laolu Kalejaiye');
   const [handle, setHandle] = useState('sammykalejaiye');
   const [bio,    setBio]    = useState('Sports content creator, coach, and athlete. Atlanta-based. Building in public.');
   const [phone,  setPhone]  = useState('+1 (404) 555-0192');

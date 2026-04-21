@@ -104,10 +104,7 @@ export function NexusPageTopBar({
           {showBack ? (
             <IconSymbol name="chevron.left" size={20} color={C.label} />
           ) : (
-            <View style={styles.menuLines}>
-              <View style={[styles.menuLine, { width: 20, backgroundColor: C.secondary }]} />
-              <View style={[styles.menuLine, { width: 13, backgroundColor: C.secondary }]} />
-            </View>
+            <Text style={[styles.hamburgerK, { color: C.label }]}>K</Text>
           )}
         </Pressable>
 
@@ -238,13 +235,10 @@ const makeStyles = (C: ComponentColors) =>
       alignItems: 'center',
       justifyContent: 'center',
     },
-    menuLines: {
-      gap: 5,
-      alignItems: 'flex-start',
-    },
-    menuLine: {
-      height: 2,
-      borderRadius: 1,
+    hamburgerK: {
+      fontSize: 22,
+      fontWeight: '700',
+      letterSpacing: -0.5,
     },
     listTitle: {
       flex: 1,

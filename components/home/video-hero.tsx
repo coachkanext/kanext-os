@@ -10,10 +10,10 @@
  * Fullscreen btn   → enter/exit fullscreen from button
  */
 
-import React, { useState, useEffect, useRef, useCallback, memo } from 'react';
+import React, { useState, useEffect, useRef, useCallback, memo, forwardRef, useImperativeHandle } from 'react';
 import {
   View, Text, Pressable, StyleSheet, useWindowDimensions,
-  Modal, StatusBar, Animated, ScrollView, PanResponder,
+  Modal, StatusBar, Animated, ScrollView, PanResponder, Image,
 } from 'react-native';
 import { useRouter } from 'expo-router';
 import * as Haptics from 'expo-haptics';
@@ -21,23 +21,102 @@ import * as Haptics from 'expo-haptics';
 import { IconSymbol } from '@/components/ui/icon-symbol';
 import { useMode } from '@/context/app-context';
 import { forceHideFooter, releaseForceHide, resetFooter } from '@/utils/global-footer-hide';
+import { PersonalPreRoll, PreRollSlide } from './personal-pre-roll';
+import { PersonalSeasonCard } from './personal-season-card';
+import { BusinessBrandCard } from './business-brand-card';
 
 // ── Video sources ─────────────────────────────────────────────────────────────
-const KAYTV_VIDEO = require('@/assets/videos/kaytv-preview.mp4');
-const V_LB      = require('@/assets/videos/lb-state.mp4');
-const V_WEBER   = require('@/assets/videos/weber-st.mp4');
-const V_IRVINE  = require('@/assets/videos/irvine.mp4');
-const V_LMU     = require('@/assets/videos/lmu.mp4');
-const V_SIMPSON = require('@/assets/videos/simpson.mp4');
-const V_MAR_W   = require('@/assets/videos/maritime-w.mp4');
-const V_MAR_L   = require('@/assets/videos/maritime-l.mp4');
+const V_PEPPERDINE = require('@/assets/videos/pepperdine.mp4');
+const V_LB_STATE   = require('@/assets/videos/lb-state.mp4');
+const V_SIMPSON    = require('@/assets/videos/simpson.mp4');
+const V_WEBER      = require('@/assets/videos/weber-state.mp4');
+const V_IRVINE     = require('@/assets/videos/uc-irvine.mp4');
+const V_MARITIME   = require('@/assets/videos/cal-maritime.mp4');
+const V_MARITIME2  = require('@/assets/videos/cal-maritime-2.mp4');
+const V_COMMUNITY  = require('@/assets/videos/community.mov');
+const V_EDUCATION  = require('@/assets/videos/education.mov');
+const V_ATHLETICS  = require('@/assets/videos/athletics.mov');
+const V_CHAMPIONS_CARD  = require('@/assets/images/lincoln-champions-card.jpg');
+const V_CHAMPS_PHOTO    = require('@/assets/images/lincoln-2026-champions-photo.jpg');
+const V_BACK_TO_BACK    = require('@/assets/images/lincoln-back-to-back.jpg');
+
+// ── Sports mode: image-only pills ────────────────────────────────────────────
+type SportsPair = { kind: 'image'; source: any };
+
+const SPORTS_PAIRS: SportsPair[] = [
+  { kind: 'image', source: require('@/assets/images/lincoln-sws-champion.png') }, // pill 1 — SWS regular season champion
+];
+
+// ── Personal mode: (pre-roll + video) pairs ───────────────────────────────────
+type PersonalPair =
+  | { kind: 'game';   slide: PreRollSlide; video: number }
+  | { kind: 'season'; video: number };
+
+const PERSONAL_PAIRS: PersonalPair[] = [
+  // pill 1 — season averages card (no video — advances directly to pill 2)
+  { kind: 'season', video: V_PEPPERDINE },
+  // pill 2 — Pepperdine game
+  { kind: 'game', video: V_PEPPERDINE, slide: {
+    badge: 'RECORD BREAKING', badgeColor: '#8B2500',
+    name: 'LAOLU KALEJAIYE', venue: 'LINCOLN vs PEPPERDINE',
+    heroValue: '38', heroLabel: 'POINTS',
+    secondary: [{ value: '12-18', label: 'FROM THREE' }],
+    ftLine: 'NEW OPPONENT SINGLE-GAME 3PT RECORD',
+  }},
+  // pill 3 — LB State game
+  { kind: 'game', video: V_LB_STATE, slide: {
+    badge: 'CAL STATE LONG BEACH', badgeColor: '#2A2A2A',
+    name: 'LAOLU KALEJAIYE', venue: 'LINCOLN vs CAL STATE LONG BEACH',
+    heroValue: '25', heroLabel: 'POINTS',
+    secondary: [{ value: '6', label: 'THREES' }, { value: '4', label: 'REB' }, { value: '5', label: 'AST' }],
+  }},
+  // pill 4 — Simpson game
+  { kind: 'game', video: V_SIMPSON, slide: {
+    badge: 'SIMPSON UNIVERSITY', badgeColor: '#2A2A2A',
+    name: 'LAOLU KALEJAIYE', venue: 'LINCOLN vs SIMPSON',
+    heroValue: '34', heroLabel: 'POINTS',
+    secondary: [{ value: '8', label: 'THREES' }, { value: '3', label: 'REB' }, { value: '3', label: 'AST' }],
+    ftLine: '2 STL',
+  }},
+  // pill 5 — Weber State game
+  { kind: 'game', video: V_WEBER, slide: {
+    badge: 'WEBER STATE', badgeColor: '#2A2A2A',
+    name: 'LAOLU KALEJAIYE', venue: 'LINCOLN vs WEBER STATE',
+    heroValue: '18', heroLabel: 'POINTS',
+    secondary: [{ value: '4', label: 'THREES' }, { value: '3', label: 'REB' }, { value: '4', label: 'AST' }],
+    ftLine: '1 STL',
+  }},
+  // pill 6 — UC Irvine game
+  { kind: 'game', video: V_IRVINE, slide: {
+    badge: 'UC IRVINE', badgeColor: '#2A2A2A',
+    name: 'LAOLU KALEJAIYE', venue: 'LINCOLN vs UC IRVINE',
+    heroValue: '19', heroLabel: 'POINTS',
+    secondary: [{ value: '5-10', label: 'FROM THREE' }],
+    ftLine: '7-14 FG · 50.0%',
+  }},
+  // pill 7 — Cal Maritime (W) game
+  { kind: 'game', video: V_MARITIME, slide: {
+    badge: 'CAL MARITIME', badgeColor: '#2A2A2A',
+    name: 'LAOLU KALEJAIYE', venue: 'LINCOLN vs CAL MARITIME',
+    heroValue: '34', heroLabel: 'POINTS',
+    secondary: [{ value: '6', label: 'THREES' }, { value: '12-12', label: 'FT' }],
+    ftLine: '3 REB · 4 AST · 1 STL',
+  }},
+  // pill 8 — Cal Maritime (L) game
+  { kind: 'game', video: V_MARITIME2, slide: {
+    badge: 'CAL MARITIME', badgeColor: '#2A2A2A',
+    name: 'LAOLU KALEJAIYE', venue: 'LINCOLN vs CAL MARITIME',
+    heroValue: '26', heroLabel: 'POINTS',
+    secondary: [{ value: '6', label: 'THREES' }, { value: '6-6', label: 'FT' }, { value: '4', label: 'REB' }],
+  }},
+];
 
 const MODE_VIDEO_LISTS: Partial<Record<string, (string | number)[]>> = {
-  sports:    [V_LB, V_WEBER, V_IRVINE, V_LMU, V_SIMPSON, V_MAR_W, V_MAR_L],
-  personal:  [V_LMU, V_SIMPSON, V_LB, V_WEBER, V_IRVINE, V_MAR_W, V_MAR_L],
-  community: [V_IRVINE, V_LMU, V_LB, V_WEBER, V_SIMPSON, V_MAR_W, V_MAR_L],
-  education: [V_WEBER, V_LB, V_IRVINE, V_LMU, V_SIMPSON, V_MAR_W, V_MAR_L],
-  business:  [KAYTV_VIDEO, V_LB, V_WEBER, V_IRVINE, V_LMU, V_SIMPSON, V_MAR_W, V_MAR_L],
+  sports:    [V_ATHLETICS],
+  personal:  [V_PEPPERDINE],
+  community: [V_COMMUNITY],
+  education: [V_EDUCATION],
+  business:  [V_PEPPERDINE],
 };
 
 // ── expo-video (lazy require, graceful fallback) ──────────────────────────────
@@ -68,10 +147,10 @@ function KayTVSlate({ opacity }: { opacity: Animated.Value }) {
     <Animated.View style={[styles.slate, { opacity }]} pointerEvents="none">
       <View style={styles.slateInner}>
         <View style={styles.slateIconWrap}>
-          <IconSymbol name="play.tv.fill" size={22} color="#1A1714" />
+          <IconSymbol name="play.tv.fill" size={22} color="rgba(217,119,87,0.90)" />
         </View>
         <Text style={styles.slateTitle}>
-          <Text style={styles.slateTitleWhite}>Kay</Text>
+          <Text style={styles.slateTitleWhite}>K</Text>
           <Text style={styles.slateTitleCoral}>TV</Text>
         </Text>
         <Text style={styles.slateNext}>Up next</Text>
@@ -152,7 +231,7 @@ const VideoControls = memo(function VideoControls(p: ControlsProps) {
       <View style={styles.ctrlTopRow}>
         {!p.fs ? (
           <Pressable style={styles.kaytvPill} onPress={p.onOpenKayTV}>
-            <Text style={styles.kaytvPillText}>Open KayTV ›</Text>
+            <Text style={styles.kaytvPillText}>Open KTV ›</Text>
           </Pressable>
         ) : (
           <Pressable style={styles.ctrlIconBtn} onPress={p.onExitFullscreen}>
@@ -234,9 +313,18 @@ const VideoControls = memo(function VideoControls(p: ControlsProps) {
 });
 
 // ── Main player ───────────────────────────────────────────────────────────────
-function VideoHeroPlayer({
-  uris, totalHeight,
-}: { uris: (string | number)[]; totalHeight: number }) {
+export interface VideoHeroPlayerHandle {
+  switchTo: (idx: number) => void;
+  directSwitchTo: (idx: number) => void; // switch video without triggering onBeforeSwitch
+}
+
+const VideoHeroPlayer = forwardRef<VideoHeroPlayerHandle, {
+  uris: (string | number)[];
+  totalHeight: number;
+  contentFit?: 'cover' | 'contain';
+  onBeforeSwitch?: (idx: number, doSwitch: () => void) => void;
+  preRollActiveRef?: React.MutableRefObject<boolean>;
+}>(function VideoHeroPlayer({ uris, totalHeight, contentFit = 'cover', onBeforeSwitch, preRollActiveRef }, ref) {
   const router            = useRouter();
   const { width: winW, height: winH } = useWindowDimensions();
   const isLandscape       = winW > winH;
@@ -248,6 +336,8 @@ function VideoHeroPlayer({
   const [paused,     setPaused]     = useState(false);
   const [fullscreen, setFullscreen] = useState(false);
   const [videoIndex, setVideoIndex] = useState(0);
+  const videoIndexRef = useRef(0);
+  videoIndexRef.current = videoIndex;
 
   // Progress
   const [currentTime, setCurrentTime] = useState(0);
@@ -287,26 +377,32 @@ function VideoHeroPlayer({
     return () => clearInterval(id);
   }, [player]);
 
-  // ── Playlist: advance with KayTV slate ────────────────────────────────────
+  // ── Playlist: advance (with optional pre-roll intercept) ─────────────────
   useEffect(() => {
     if (!isPlaylist || !player?.addListener) return;
     const sub = player.addListener('playToEnd', () => {
-      Animated.timing(slateOpacity, { toValue: 1, duration: 350, useNativeDriver: true }).start();
-      setTimeout(() => {
-        if (!mountedRef.current) return;
-        setVideoIndex(prev => {
-          const next = (prev + 1) % uris.length;
-          try {
-            player.replace(uris[next]);
-            setTimeout(() => { if (mountedRef.current) player.play(); }, 400);
-          } catch {}
-          return next;
-        });
+      if (preRollActiveRef?.current) return; // video ended while pre-roll was showing — ignore
+      const next = (videoIndexRef.current + 1) % uris.length;
+      const doSwitch = () => {
+        setVideoIndex(next);
+        try {
+          player.replace(uris[next]);
+          setTimeout(() => { if (mountedRef.current) player.play(); }, 400);
+        } catch {}
         Animated.timing(slateOpacity, { toValue: 0, duration: 500, useNativeDriver: true }).start();
-      }, 1200);
+      };
+      if (onBeforeSwitch) {
+        onBeforeSwitch(next, doSwitch);
+      } else {
+        Animated.timing(slateOpacity, { toValue: 1, duration: 350, useNativeDriver: true }).start();
+        setTimeout(() => {
+          if (!mountedRef.current) return;
+          doSwitch();
+        }, 1200);
+      }
     });
     return () => sub.remove();
-  }, [player, uris, isPlaylist]);
+  }, [player, uris, isPlaylist, onBeforeSwitch]);
 
   // ── Auto fullscreen on landscape rotation + footer management ────────────
   useEffect(() => {
@@ -364,13 +460,20 @@ function VideoHeroPlayer({
   }, [player, isLive, duration, showCtrlsFor3s]);
 
   const switchVideo = useCallback((idx: number) => {
-    setVideoIndex(idx);
-    player.replace(uris[idx]);
-    setTimeout(() => player.play(), 300);
-    setPaused(false);
-    setCurrentTime(0);
-    showCtrlsFor3s();
-  }, [player, uris, showCtrlsFor3s]);
+    const doSwitch = () => {
+      setVideoIndex(idx);
+      player.replace(uris[idx]);
+      setTimeout(() => player.play(), 300);
+      setPaused(false);
+      setCurrentTime(0);
+      showCtrlsFor3s();
+    };
+    if (onBeforeSwitch) {
+      onBeforeSwitch(idx, doSwitch);
+    } else {
+      doSwitch();
+    }
+  }, [player, uris, showCtrlsFor3s, onBeforeSwitch]);
 
   // ── Tap / double-tap detection ────────────────────────────────────────────
   const handleVideoPress = useCallback((e: any) => {
@@ -434,7 +537,18 @@ function VideoHeroPlayer({
     })
   ).current;
 
+  const directSwitchTo = useCallback((idx: number) => {
+    try {
+      setVideoIndex(idx);
+      player.replace(uris[idx]);
+      setTimeout(() => player.play(), 300);
+      setPaused(false);
+      setCurrentTime(0);
+      showCtrlsFor3s();
+    } catch {}
+  }, [player, uris, showCtrlsFor3s]);
 
+  useImperativeHandle(ref, () => ({ switchTo: switchVideo, directSwitchTo }), [switchVideo, directSwitchTo]);
 
   return (
     <>
@@ -444,7 +558,7 @@ function VideoHeroPlayer({
           <VideoView
             player={player}
             style={StyleSheet.absoluteFill}
-            contentFit="cover"
+            contentFit={contentFit}
             nativeControls={false}
           />
         )}
@@ -453,7 +567,7 @@ function VideoHeroPlayer({
           fs={false} ctrlsOpacity={ctrlsOpacity} ctrlsVisible={ctrlsVisible}
           isLive={isLive} muted={muted} paused={paused} progress={progress}
           currentTime={currentTime} duration={duration}
-          urisCount={uris.length} videoIndex={videoIndex}
+          urisCount={onBeforeSwitch ? 1 : uris.length} videoIndex={videoIndex}
           scrubWidthRef={scrubWidthRef}
           onTogglePlay={togglePlay} onToggleMute={toggleMute}
           onRewind={rewind10} onForward={forward10}
@@ -477,7 +591,7 @@ function VideoHeroPlayer({
           <VideoView
             player={player}
             style={StyleSheet.absoluteFill}
-            contentFit="cover"
+            contentFit={contentFit}
             nativeControls={false}
           />
           <Pressable style={StyleSheet.absoluteFill} onPress={handleVideoPress} />
@@ -485,7 +599,7 @@ function VideoHeroPlayer({
             fs={true} ctrlsOpacity={ctrlsOpacity} ctrlsVisible={ctrlsVisible}
             isLive={isLive} muted={muted} paused={paused} progress={progress}
             currentTime={currentTime} duration={duration}
-            urisCount={uris.length} videoIndex={videoIndex}
+            urisCount={onBeforeSwitch ? 1 : uris.length} videoIndex={videoIndex}
             scrubWidthRef={scrubWidthRef}
             onTogglePlay={togglePlay} onToggleMute={toggleMute}
             onRewind={rewind10} onForward={forward10}
@@ -499,17 +613,17 @@ function VideoHeroPlayer({
       </Modal>
     </>
   );
-}
+}); // end forwardRef VideoHeroPlayer
 
 // ── Fallback placeholder ──────────────────────────────────────────────────────
-function VideoHeroPlaceholder({ totalHeight }: { totalHeight: number }) {
+function VideoHeroPlaceholder({ totalHeight, onActivate }: { totalHeight: number; onActivate?: () => void }) {
   const router = useRouter();
   return (
     <Pressable
       style={[styles.container, { height: totalHeight }]}
       onPress={() => {
         Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
-        router.navigate('/(tabs)/(main)/kaytv' as any);
+        if (onActivate) { onActivate(); } else { router.navigate('/(tabs)/(main)/kaytv' as any); }
       }}
     >
       <View style={styles.placeholderBg} />
@@ -517,7 +631,7 @@ function VideoHeroPlaceholder({ totalHeight }: { totalHeight: number }) {
         <View style={styles.ctrlIconBtn}>
           <IconSymbol name="play.fill" size={18} color="rgba(255,255,255,0.85)" />
         </View>
-        <Text style={styles.placeholderLabel}>KayTV</Text>
+        <Text style={styles.placeholderLabel}>KTV</Text>
         <Text style={styles.placeholderSub}>Tap to watch</Text>
       </View>
     </Pressable>
@@ -527,11 +641,111 @@ function VideoHeroPlaceholder({ totalHeight }: { totalHeight: number }) {
 // ── Export ────────────────────────────────────────────────────────────────────
 export function VideoHero() {
   const { height: screenHeight } = useWindowDimensions();
-  const heroHeight = Math.round(screenHeight * 0.38);
-  const mode = useMode();
-  const uris = MODE_VIDEO_LISTS[mode] ?? [KAYTV_VIDEO];
+  const heroHeight  = Math.round(screenHeight * 0.38);
+  const mode        = useMode();
+  const isPersonal  = mode === 'personal';
+  const isSports    = mode === 'sports';
+
+  const [pairIndex, setPairIndex]     = useState(0);
+  const [phase, setPhase]             = useState<'preroll' | 'image' | 'video'>(
+    isPersonal ? 'preroll' : 'video'
+  );
+  const [ktvActivated, setKtvActivated] = useState(false);
+  const doSwitchRef      = useRef<(() => void) | null>(null);
+  const playerRef        = useRef<VideoHeroPlayerHandle>(null);
+  const preRollActiveRef = useRef(true); // true while pre-roll overlay is showing
+
+  // Reset pair state whenever mode changes
+  useEffect(() => {
+    setPairIndex(0);
+    setKtvActivated(false);
+    doSwitchRef.current = null;
+    setPhase(mode === 'personal' ? 'preroll' : 'video');
+  }, [mode]);
+
   if (!useVideoPlayer || !VideoView) return <VideoHeroPlaceholder totalHeight={heroHeight} />;
-  return <VideoHeroPlayer uris={uris} totalHeight={heroHeight} />;
+  const isCommunity  = mode === 'community';
+  const isEducation  = mode === 'education';
+  const isBusiness   = mode === 'business';
+
+  if (isBusiness && !ktvActivated) {
+    return <BusinessBrandCard totalHeight={heroHeight} />;
+  }
+
+  if (!isPersonal && !isSports && !isCommunity && !isEducation && !ktvActivated) {
+    return <VideoHeroPlaceholder totalHeight={heroHeight} onActivate={() => {
+      setKtvActivated(true);
+      setPhase('preroll');
+    }} />;
+  }
+
+
+  const uris = isPersonal
+    ? PERSONAL_PAIRS.map(p => p.video)
+    : ktvActivated
+      ? [V_PEPPERDINE]
+      : (MODE_VIDEO_LISTS[mode] ?? [V_PEPPERDINE]);
+
+  const handleBeforeSwitch = (idx: number, doSwitch: () => void) => {
+    preRollActiveRef.current = true;
+    doSwitchRef.current = doSwitch;
+    setPairIndex(idx);
+    setPhase('preroll');
+  };
+
+  return (
+    <View style={{ width: '100%', height: heroHeight, overflow: 'hidden' }}>
+      <VideoHeroPlayer
+        ref={playerRef}
+        uris={uris}
+        totalHeight={heroHeight}
+        contentFit={isCommunity ? 'contain' : 'cover'}
+        onBeforeSwitch={isPersonal ? handleBeforeSwitch : undefined}
+        preRollActiveRef={isPersonal ? preRollActiveRef : undefined}
+      />
+      {ktvActivated && phase === 'preroll' && (() => {
+        const pepperdinePair = PERSONAL_PAIRS.find(p => p.kind === 'game') as Extract<PersonalPair, { kind: 'game' }>;
+        return (
+          <PersonalPreRoll
+            slide={pepperdinePair.slide}
+            onDone={() => { preRollActiveRef.current = false; setPhase('video'); }}
+          />
+        );
+      })()}
+      {isPersonal && phase === 'preroll' && (() => {
+        const pair = PERSONAL_PAIRS[pairIndex];
+        const onGameDone = () => {
+          preRollActiveRef.current = false;
+          setPhase('video');
+          doSwitchRef.current?.();
+          doSwitchRef.current = null;
+        };
+        const onSeasonDone = () => {
+          doSwitchRef.current = null;
+          playerRef.current?.switchTo((pairIndex + 1) % PERSONAL_PAIRS.length);
+        };
+        return pair.kind === 'season'
+          ? <PersonalSeasonCard key={pairIndex} onDone={onSeasonDone} />
+          : <PersonalPreRoll key={pairIndex} slide={pair.slide} onDone={onGameDone} />;
+      })()}
+      {/* Pills — personal mode */}
+      {isPersonal && (
+        <View style={styles.pairPillsBar}>
+          {PERSONAL_PAIRS.map((_, idx) => (
+            <Pressable
+              key={idx}
+              onPress={() => playerRef.current?.switchTo(idx)}
+              style={[styles.sourcePill, idx === pairIndex ? styles.sourcePillOn : styles.sourcePillOff]}
+            >
+              <Text style={[styles.sourcePillText, idx === pairIndex ? styles.sourcePillTextOn : styles.sourcePillTextOff]}>
+                {idx + 1}
+              </Text>
+            </Pressable>
+          ))}
+        </View>
+      )}
+    </View>
+  );
 }
 
 // ── Styles ────────────────────────────────────────────────────────────────────
@@ -786,8 +1000,18 @@ const styles = StyleSheet.create({
   },
   slateTitle:      { fontSize: 26, fontWeight: '800', letterSpacing: 1 },
   slateTitleWhite: { color: 'rgba(255,255,255,0.95)' },
-  slateTitleCoral: { color: '#1A1714' },
+  slateTitleCoral: { color: 'rgba(255,255,255,0.95)' },
   slateNext:       { fontSize: 11, fontWeight: '500', color: 'rgba(255,255,255,0.40)', letterSpacing: 1.5, textTransform: 'uppercase' },
+
+  // ── Always-visible pair pills (personal mode) ────────────────────────────
+  pairPillsBar: {
+    position: 'absolute',
+    bottom: 8,
+    left: 10,
+    flexDirection: 'row',
+    gap: 6,
+    zIndex: 20,
+  },
 
   // ── Placeholder ───────────────────────────────────────────────────────────
   placeholderBg:     { ...StyleSheet.absoluteFillObject, backgroundColor: '#0D1828' },

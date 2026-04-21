@@ -73,7 +73,7 @@ export function StorePanel() {
         <View style={[s.avatar, { backgroundColor: C.label }]}>
           <Text style={[s.avatarText, { color: C.bg }]}>SK</Text>
         </View>
-        <Text style={[s.name, { color: C.label }]}>Sammy Kalejaiye</Text>
+        <Text style={[s.name, { color: C.label }]}>Laolu Kalejaiye</Text>
         <Text style={[s.handle, { color: C.secondary }]}>@sammyk</Text>
       </View>
 

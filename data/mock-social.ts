@@ -68,15 +68,9 @@ export interface SocialReel {
 // ── Helpers ──
 
 // Unsplash direct image helper (public, hotlinkable)
-const img = (id: string, w = 600, h = 600) =>
-  `https://images.unsplash.com/${id}?w=${w}&h=${h}&fit=crop&q=80`;
-
-// Vertical image for stories / reel posters
-const vimg = (id: string) => img(id, 400, 700);
-
-// Mixkit video helper (720p for mobile)
-const vid = (id: number) =>
-  `https://assets.mixkit.co/videos/${id}/${id}-720.mp4`;
+const img = (_id?: string, _w?: number, _h?: number) => '';
+const vimg = (_id?: string) => '';
+const vid = (_id?: number) => '';
 
 // "You" story (same across modes)
 const YOU: StoryUser = {
@@ -1174,9 +1168,9 @@ export function getReels(mode?: Mode): SocialReel[] {
 
 const SAMMY: PostAuthor = {
   id: 'sammyk',
-  name: 'Sammy Kalejaiye',
+  name: 'Laolu Kalejaiye',
   username: '@sammyk',
-  initials: 'SK',
+  initials: 'LK',
 };
 
 export const SAMMY_POSTS: FeedPost[] = [
@@ -1287,7 +1281,7 @@ export function getSammyPosts(): FeedPost[] {
 export const SAMMY_REELS: SocialReel[] = [
   {
     id: 'skr1',
-    creator: { id: 'sammyk', name: 'Sammy Kalejaiye', username: '@sammyk', initials: 'SK' },
+    creator: { id: 'sammyk', name: 'Laolu Kalejaiye', username: '@sammyk', initials: 'LK' },
     videoUri: vid(39577),
     posterUri: img('photo-1497366216548-37526070297c', 400, 700),
     caption: 'The team is locked in. Something big is shipping this week. 🔨 #KaNeXT #BuildInPublic',
@@ -1297,7 +1291,7 @@ export const SAMMY_REELS: SocialReel[] = [
   },
   {
     id: 'skr2',
-    creator: { id: 'sammyk', name: 'Sammy Kalejaiye', username: '@sammyk', initials: 'SK' },
+    creator: { id: 'sammyk', name: 'Laolu Kalejaiye', username: '@sammyk', initials: 'LK' },
     videoUri: vid(6894),
     posterUri: img('photo-1531482615713-2afd69097998', 400, 700),
     caption: 'On stage talking about why community is the next great platform. This is the vision. 🎤',
@@ -1307,7 +1301,7 @@ export const SAMMY_REELS: SocialReel[] = [
   },
   {
     id: 'skr3',
-    creator: { id: 'sammyk', name: 'Sammy Kalejaiye', username: '@sammyk', initials: 'SK' },
+    creator: { id: 'sammyk', name: 'Laolu Kalejaiye', username: '@sammyk', initials: 'LK' },
     videoUri: vid(3015),
     posterUri: img('photo-1460925895917-afdab827c52f', 400, 700),
     caption: '2am shipping mode. This is what building really looks like. No glamour. Just reps. 🌙',
@@ -1317,7 +1311,7 @@ export const SAMMY_REELS: SocialReel[] = [
   },
   {
     id: 'skr4',
-    creator: { id: 'sammyk', name: 'Sammy Kalejaiye', username: '@sammyk', initials: 'SK' },
+    creator: { id: 'sammyk', name: 'Laolu Kalejaiye', username: '@sammyk', initials: 'LK' },
     videoUri: vid(45874),
     posterUri: img('photo-1522202176988-66273c2fd55f', 400, 700),
     caption: 'This team makes everything possible. Grateful every single day. 🙏 #KaNeXT',

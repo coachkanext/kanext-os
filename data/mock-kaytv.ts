@@ -8,10 +8,8 @@ import type { Mode } from '@/types';
 
 // ── Helpers ──
 
-const img = (id: string, w = 600, h = 340) =>
-  `https://images.unsplash.com/${id}?w=${w}&h=${h}&fit=crop&q=80`;
-
-const thumb = (id: string) => img(id, 320, 180);
+const img = (_id?: string, _w?: number, _h?: number) => '';
+const thumb = (_id?: string) => '';
 
 // ── Types ──
 
@@ -411,14 +409,14 @@ const _N = Date.now();
 const _D = 86_400_000;
 
 // ── Bundled game film assets ───────────────────────────────────────────────
-const A_PEPPER  = require('@/assets/videos/kaytv-preview.mp4') as number;
-const A_LB      = require('@/assets/videos/lb-state.mp4')      as number;
-const A_WEBER   = require('@/assets/videos/weber-st.mp4')      as number;
-const A_IRVINE  = require('@/assets/videos/irvine.mp4')         as number;
-const A_LMU     = require('@/assets/videos/lmu.mp4')            as number;
-const A_SIMPSON = require('@/assets/videos/simpson.mp4')        as number;
-const A_MAR_W   = require('@/assets/videos/maritime-w.mp4')    as number;
-const A_MAR_L   = require('@/assets/videos/maritime-l.mp4')    as number;
+const A_PEPPER  = require('@/assets/videos/pepperdine.mp4') as number;
+const A_LB      = A_PEPPER;
+const A_WEBER   = A_PEPPER;
+const A_IRVINE  = A_PEPPER;
+const A_LMU     = A_PEPPER;
+const A_SIMPSON = A_PEPPER;
+const A_MAR_W   = A_PEPPER;
+const A_MAR_L   = A_PEPPER;
 
 // Shared uploader stub for all Lincoln Basketball videos
 const _LB = {
@@ -551,7 +549,7 @@ const FEED_PERSONAL: KayTVFeedItem[] = [
   { id: 'gp7', mode: 'personal', ..._GAME_MAR_W,   timestamp: _minsAgo(95) },
   { id: 'gp8', mode: 'personal', ..._GAME_MAR_L,   timestamp: _minsAgo(110) },
   // ── Mock feed ──
-  { id: 'fpv1', mode: 'personal', category: 'Uploads',     brandName: 'Personal', title: 'My First KayTV Upload — Testing 1 2 3',               uploaderName: 'Sammy K.',         uploaderHandle: '@sammyk',      uploaderInitials: 'SK', viewCount: 42,   timestamp: new Date(_N - 1*_D),        duration: '0:47',  likeCount: 8,  commentCount: 3,  thumbHue: 200, thumbEmoji: '📹', thumbUri: 'https://images.unsplash.com/photo-1492619375914-88005aa9e8fb?w=640&h=360&fit=crop&q=80', description: 'Just testing the upload feature.' },
+  { id: 'fpv1', mode: 'personal', category: 'Uploads',     brandName: 'Personal', title: 'My First KayTV Upload — Testing 1 2 3',               uploaderName: 'Laolu K.',         uploaderHandle: '@sammyk',      uploaderInitials: 'LK', viewCount: 42,   timestamp: new Date(_N - 1*_D),        duration: '0:47',  likeCount: 8,  commentCount: 3,  thumbHue: 200, thumbEmoji: '📹', thumbUri: 'https://images.unsplash.com/photo-1492619375914-88005aa9e8fb?w=640&h=360&fit=crop&q=80', description: 'Just testing the upload feature.' },
   { id: 'fpv2', mode: 'personal', category: 'Saved',       brandName: 'Personal', title: 'Top 10 Plays — Week 7 Highlights Reel',               uploaderName: 'Coach Rodriguez',  uploaderHandle: '@coach_rod',   uploaderInitials: 'CR', viewCount: 8320, timestamp: new Date(_N - 6*3_600_000), duration: '4:15',  likeCount: 541, commentCount: 67, thumbHue: 12,  thumbEmoji: '🔥', thumbUri: 'https://images.unsplash.com/photo-1546519638-68e109498ffc?w=640&h=360&fit=crop&q=80', description: 'Saved from the sports feed. Great highlights reel.' },
   { id: 'fpv3', mode: 'personal', category: 'Watch Later', brandName: 'Personal', title: 'Q4 Product Roadmap Presentation',                     uploaderName: 'Alex Rivera (CPO)', uploaderHandle: '@alex_cpo',   uploaderInitials: 'AR', viewCount: 5100, timestamp: new Date(_N - 8*3_600_000), duration: '31:48', likeCount: 312, commentCount: 54, thumbHue: 240, thumbEmoji: '🗺️', thumbUri: 'https://images.unsplash.com/photo-1552664730-d307ca884978?w=640&h=360&fit=crop&q=80', description: 'Watch later from the business feed.' },
 ];

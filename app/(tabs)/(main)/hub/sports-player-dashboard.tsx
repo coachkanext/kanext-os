@@ -18,11 +18,11 @@ const HEAT = '#B85C5C';
 const CAUTION = '#B8943E';
 
 const RECENT_GAMES = [
-  { opp: 'MCE', result: 'W', score: '78-65', pts: 34 },
-  { opp: 'DCU', result: 'W', score: '84-71', pts: 28 },
-  { opp: 'STU', result: 'W', score: '91-75', pts: 31 },
-  { opp: 'SIM', result: 'L', score: '68-74', pts: 22 },
-  { opp: 'LMU', result: 'L', score: '58-82', pts: 12 },
+  { opp: 'CAL-I', result: 'W', score: '92-80', pts: 32 },
+  { opp: 'CAL-I', result: 'W', score: '99-76', pts: 28 },
+  { opp: 'DBCU',  result: 'W', score: '83-54', pts: 26 },
+  { opp: 'CAL-I', result: 'W', score: '97-77', pts: 29 },
+  { opp: 'JMCC',  result: 'W', score: '98-90', pts: 25 },
 ];
 
 export default function SportsPlayerDashboard() {
@@ -108,10 +108,10 @@ export default function SportsPlayerDashboard() {
         <View style={[s.card, { backgroundColor: C.surface }]}>
           <View style={s.statGrid}>
             {[
-              { label: 'PPG', value: '29.8', color: C.label },
-              { label: 'RPG', value: '3.1', color: C.label },
-              { label: 'APG', value: '3.6', color: C.label },
-              { label: 'SPG', value: '2.1', color: C.label },
+              { label: 'PPG', value: '27.3', color: C.label },
+              { label: 'RPG', value: '2.9', color: C.label },
+              { label: 'APG', value: '2.9', color: C.label },
+              { label: 'SPG', value: '1.4', color: C.label },
             ].map((stat) => (
               <View key={stat.label} style={s.statCell}>
                 <Text style={[s.statValue, { color: stat.color }]}>{stat.value}</Text>
@@ -122,10 +122,10 @@ export default function SportsPlayerDashboard() {
           <View style={[s.cardInnerSep, { backgroundColor: C.separator }]} />
           <View style={s.statGrid}>
             {[
-              { label: 'FG%', value: '.430', color: C.label },
-              { label: '3P%', value: '.474', color: GAIN },
-              { label: 'FT%', value: '.871', color: C.label },
-              { label: 'TO/G', value: '4.4', color: C.label },
+              { label: 'FG%', value: '.395', color: C.label },
+              { label: '3P%', value: '.355', color: C.label },
+              { label: 'FT%', value: '.884', color: GAIN },
+              { label: 'TO/G', value: '3.5', color: C.label },
             ].map((stat) => (
               <View key={stat.label} style={s.statCell}>
                 <Text style={[s.statValue, { color: stat.color }]}>{stat.value}</Text>
@@ -147,29 +147,25 @@ export default function SportsPlayerDashboard() {
         </View>
 
         {/* Next Game */}
-        <Text style={[s.sectionHeader, { color: C.secondary }]}>NEXT GAME</Text>
+        <Text style={[s.sectionHeader, { color: C.secondary }]}>SEASON COMPLETE</Text>
         <View style={[s.card, { backgroundColor: C.surface }]}>
           <View style={[s.nextGameInner, { backgroundColor: '#1A1714' }]}>
-            <Text style={s.nextGameOpponent}>vs Menlo College</Text>
+            <Text style={s.nextGameOpponent}>2025–26 Final: 15-8</Text>
             <View style={s.nextGameMeta}>
-              <Text style={s.nextGameMetaText}>Apr 5</Text>
-              <Text style={s.nextGameMetaDot}>·</Text>
-              <Text style={s.nextGameMetaText}>6:00 PM</Text>
-              <Text style={s.nextGameMetaDot}>·</Text>
-              <Text style={s.nextGameMetaText}>Home</Text>
+              <Text style={s.nextGameMetaText}>SWS Champions · Back-to-Back</Text>
             </View>
           </View>
           <View style={s.matchupRow}>
-            <Text style={[s.matchupLabel, { color: C.secondary }]}>My Matchup</Text>
-            <Text style={[s.matchupPlayer, { color: C.label }]}>vs Marcus Reed #3 · KR:81</Text>
+            <Text style={[s.matchupLabel, { color: C.secondary }]}>GAAC Tournament</Text>
+            <Text style={[s.matchupPlayer, { color: C.label }]}>Champions (4-0)</Text>
           </View>
           <View style={s.advantageRow}>
-            <Text style={[s.advantageLabel, { color: C.secondary }]}>KR Advantage</Text>
-            <Text style={[s.advantageValue, { color: GAIN }]}>+5 (LK 86 vs MR 81)</Text>
+            <Text style={[s.advantageLabel, { color: C.secondary }]}>Season KR</Text>
+            <Text style={[s.advantageValue, { color: GAIN }]}>86 · D1 HM: Reliable Bench</Text>
           </View>
           <View style={[s.scoutingBadge, { backgroundColor: GAIN + '22' }]}>
-            <IconSymbol name="checkmark.circle.fill" size={12} color={GAIN} />
-            <Text style={[s.scoutingBadgeText, { color: GAIN }]}>Scouting notes loaded</Text>
+            <IconSymbol name="trophy.fill" size={12} color={GAIN} />
+            <Text style={[s.scoutingBadgeText, { color: GAIN }]}>1st Team All-SWS · Captain</Text>
           </View>
         </View>
 

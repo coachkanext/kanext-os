@@ -26,7 +26,7 @@ export default function BrandProfileSettingsScreen() {
   const haptic = () => Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
   const { opacity, onScroll, scrollEventThrottle } = useScrollHeader();
 
-  const [brandName]     = useState('Sammy Kalejaiye');
+  const [brandName]     = useState('Laolu Kalejaiye');
   const [description, setDescription] = useState('Sports content creator, coach, and athlete. Personal brand in Personal mode.');
   const [contactEmail, setContactEmail] = useState('sammy@kanext.io');
   const [contactPhone, setContactPhone] = useState('+1 (404) 555-0192');

@@ -1,5 +1,5 @@
 /**
- * Mock data for Personal Hub — Sammy Kalejaiye's creator backend.
+ * Mock data for Personal Hub — Laolu Kalejaiye's creator backend.
  */
 
 // ── Types ────────────────────────────────────────────────────────────────────
@@ -108,13 +108,13 @@ export interface FeaturedContent {
 // ── Profile ──────────────────────────────────────────────────────────────────
 
 export const HUB_PROFILE = {
-  name: 'Sammy Kalejaiye',
-  handle: '@sammykalejaiye',
+  name: 'Laolu Kalejaiye',
+  handle: '@laolukalejaiye',
   bio: 'Coach, creator, and community builder. Sharing insights on sports, personal growth, and entrepreneurship. Building in public.',
   location: 'Atlanta, GA',
   avatarInitials: 'SK',
-  avatarUri: 'https://picsum.photos/seed/sammy-k/200/200',
-  coverUri: 'https://picsum.photos/seed/sammy-cover/800/300',
+  avatarUri: undefined,
+  coverUri: undefined,
   followerCount: 1247,
   postCount: 84,
   coverHue: 22,
@@ -137,42 +137,42 @@ export const HUB_PORTFOLIO: PortfolioItem[] = [
   {
     id: 'pf1', title: 'Speed & Agility Program', category: 'Training',
     thumbHue: 200, thumbEmoji: '⚡',
-    thumbUri: 'https://picsum.photos/seed/speed-agility/400/300',
+    thumbUri: undefined,
     year: '2024',
     description: '12-week speed and agility curriculum designed for high school athletes. Used by 3 regional programs.',
   },
   {
     id: 'pf2', title: 'Mental Edge Podcast', category: 'Media',
     thumbHue: 280, thumbEmoji: '🎙️',
-    thumbUri: 'https://picsum.photos/seed/mental-podcast/400/300',
+    thumbUri: undefined,
     year: '2023',
     description: '50+ episodes covering sports psychology, mindset, and peak performance with pro athletes.',
   },
   {
     id: 'pf3', title: 'Recruiting Guide 2024', category: 'Education',
     thumbHue: 150, thumbEmoji: '📖',
-    thumbUri: 'https://picsum.photos/seed/recruit-guide/400/300',
+    thumbUri: undefined,
     year: '2024',
     description: 'Step-by-step guide helping student-athletes navigate the college recruiting process.',
   },
   {
     id: 'pf4', title: 'Community Combine', category: 'Event',
     thumbHue: 30, thumbEmoji: '🏟️',
-    thumbUri: 'https://picsum.photos/seed/community-combine/400/300',
+    thumbUri: undefined,
     year: '2024',
     description: 'Annual combine event connecting 200+ athletes with college coaches and scouts.',
   },
   {
     id: 'pf5', title: 'Elite Position Clinics', category: 'Training',
     thumbHue: 10, thumbEmoji: '🏈',
-    thumbUri: 'https://picsum.photos/seed/elite-clinics/400/300',
+    thumbUri: undefined,
     year: '2023',
     description: 'Position-specific skill clinics run quarterly in the Southeast region.',
   },
   {
     id: 'pf6', title: 'Athlete Brand Blueprint', category: 'Education',
     thumbHue: 230, thumbEmoji: '🎯',
-    thumbUri: 'https://picsum.photos/seed/brand-blueprint/400/300',
+    thumbUri: undefined,
     year: '2023',
     description: 'Online course teaching athletes how to build and monetize their personal brand.',
   },
@@ -184,25 +184,25 @@ export const HUB_FEATURED: FeaturedContent[] = [
   {
     id: 'fc1', title: 'How I Built My Brand from Zero',
     type: 'video', thumbHue: 200, thumbEmoji: '🚀',
-    thumbUri: 'https://picsum.photos/seed/brand-zero/400/225',
+    thumbUri: undefined,
     viewCount: '14.2K', timestamp: '3 days ago',
   },
   {
     id: 'fc2', title: 'Top 5 Recruiting Mistakes (Thread)',
     type: 'social', thumbHue: 150, thumbEmoji: '📋',
-    thumbUri: 'https://picsum.photos/seed/recruiting-thread/400/225',
+    thumbUri: undefined,
     viewCount: '8.1K', timestamp: '1 week ago',
   },
   {
     id: 'fc3', title: 'Behind the Combine: Full Recap',
     type: 'video', thumbHue: 30, thumbEmoji: '🎬',
-    thumbUri: 'https://picsum.photos/seed/combine-recap/400/225',
+    thumbUri: undefined,
     viewCount: '22.5K', timestamp: '2 weeks ago',
   },
   {
     id: 'fc4', title: 'Mindset Thread: The 1% Rule',
     type: 'social', thumbHue: 280, thumbEmoji: '🧠',
-    thumbUri: 'https://picsum.photos/seed/mindset-1pct/400/225',
+    thumbUri: undefined,
     viewCount: '6.8K', timestamp: '3 weeks ago',
   },
 ];
@@ -536,7 +536,7 @@ export interface SocialProfile {
 export const HUB_SOCIALS: SocialProfile[] = [
   { id: 's1', platform: 'Instagram', abbrev: 'IG', url: 'https://instagram.com/sammykalejaiye' },
   { id: 's2', platform: 'X',         abbrev: 'X',  url: 'https://x.com/sammykalejaiye' },
-  { id: 's3', platform: 'TikTok',    abbrev: 'TK', url: 'https://tiktok.com/@sammykalejaiye' },
-  { id: 's4', platform: 'YouTube',   abbrev: 'YT', url: 'https://youtube.com/@sammykalejaiye' },
+  { id: 's3', platform: 'TikTok',    abbrev: 'TK', url: 'https://tiktok.com/@laolukalejaiye' },
+  { id: 's4', platform: 'YouTube',   abbrev: 'YT', url: 'https://youtube.com/@laolukalejaiye' },
   { id: 's5', platform: 'LinkedIn',  abbrev: 'LI', url: 'https://linkedin.com/in/sammykalejaiye' },
 ];

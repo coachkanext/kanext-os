@@ -6,8 +6,8 @@ export type VideoState = 'live' | 'upcoming' | 'recap' | 'featured' | 'default';
 export interface HeroVideo {
   id: string;
   state: VideoState;
-  /** Remote or local video URI */
-  source: string;
+  /** Remote URI (string) or bundled asset (require()) */
+  source: string | number;
   /** Tap destination (e.g. KayTV deep link) */
   route?: string;
   /** Fallback image while video loads */

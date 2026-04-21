@@ -108,7 +108,7 @@ export default function MediaKitScreen() {
             <IconSymbol name="person.fill" size={20} color={C.secondary} />
           </View>
           <View style={{ flex: 1 }}>
-            <Text style={{ fontSize: 15, fontWeight: '700', color: C.label }}>Sammy Kalejaiye</Text>
+            <Text style={{ fontSize: 15, fontWeight: '700', color: C.label }}>Laolu Kalejaiye</Text>
             <Text style={{ fontSize: 12, color: C.secondary, marginTop: 1 }}>@sammyk · Atlanta, GA</Text>
           </View>
         </View>

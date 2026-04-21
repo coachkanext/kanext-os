@@ -11,25 +11,11 @@ import { useColors, type ComponentColors } from '@/hooks/use-colors';
 
 // ── Suggestion sets ───────────────────────────────────────────────────────────
 
-const SUGGESTIONS_SPORTS = [
-  'Evaluate a player',
-  'Compare two teams',
-  'Build a recruiting board',
-  'Game prep report',
-];
-
-const SUGGESTIONS_BUSINESS = [
-  'Draft a proposal',
-  'Analyze financials',
-  'Summarize meeting notes',
-  'Create a report',
-];
-
-const SUGGESTIONS_EDUCATION = [
-  'Help with assignment',
-  'Explain this concept',
-  'Build a study plan',
-  'Research a topic',
+const SUGGESTIONS = [
+  'What is KaNeXT?',
+  'How does the platform work?',
+  'Walk me through the capital raise',
+  'What makes this defensible?',
 ];
 
 // ── Helpers ───────────────────────────────────────────────────────────────────
@@ -57,10 +43,7 @@ export function NexusWelcome({ onSend, userName, mode = 'sports' }: NexusWelcome
   const C    = useColors();
   const S    = useMemo(() => makeStyles(C), [C]);
 
-  const suggestions =
-    mode === 'business'  ? SUGGESTIONS_BUSINESS  :
-    mode === 'education' ? SUGGESTIONS_EDUCATION :
-    SUGGESTIONS_SPORTS;
+  const suggestions = SUGGESTIONS;
 
   const greetText = userName
     ? `Good ${greeting()}, ${userName}`

@@ -5,14 +5,14 @@
  * Customer: read-only company profile + Follow.
  */
 
-import React, { useState, useCallback } from 'react';
+import React, { useState, useCallback, useEffect } from 'react';
 import {
   View, Text, Pressable, ScrollView, StyleSheet, Animated,
   TextInput, ActionSheetIOS, Platform, Alert, Image,
 } from 'react-native';
 import * as Haptics from 'expo-haptics';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { useFocusEffect } from 'expo-router';
+import { useFocusEffect, useRouter } from 'expo-router';
 
 import { IconSymbol } from '@/components/ui/icon-symbol';
 import FontAwesome6 from '@expo/vector-icons/FontAwesome6';
@@ -25,6 +25,7 @@ import { useScrollHeader } from '@/hooks/use-scroll-header';
 import { openSidePanel } from '@/utils/global-side-panel';
 import { resetFooter } from '@/utils/global-footer-hide';
 import { useDemoRole } from '@/utils/demo-role-store';
+import { useAppContext } from '@/context/app-context';
 
 const GAIN    = '#5A8A6E';
 const HEAT    = '#B85C5C';
@@ -102,6 +103,9 @@ function SH({ title, C }: { title: string; C: any }) {
 export default function BusinessOverview() {
   const C      = useColors();
   const insets = useSafeAreaInsets();
+  const router = useRouter();
+  const { state } = useAppContext();
+  const mode = state.mode ?? 'personal';
   const topBarH = insets.top + TOP_BAR_H;
   const COVER_H = 220 + topBarH;
 
@@ -111,6 +115,12 @@ export default function BusinessOverview() {
   const { opacity, onScroll, scrollEventThrottle } = useScrollHeader(topBarH);
 
   useFocusEffect(useCallback(() => { resetFooter(); }, []));
+
+  useEffect(() => {
+    if (mode !== 'business') {
+      router.replace('/(tabs)/(main)/hub' as any);
+    }
+  }, [mode]);
 
   // ── Editable state ──────────────────────────────────────────────────────────
   const [bio,          setBio]          = useState(INITIAL_BIO);
@@ -297,7 +307,7 @@ export default function BusinessOverview() {
           {/* Cover image fills from y=0, bleeds behind top bar */}
           <View style={{ height: COVER_H, overflow: 'hidden' }}>
             <Image
-              source={{ uri: 'https://picsum.photos/seed/kanext-office/900/500' }}
+              source={{ uri: 'https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?w=900&h=500&fit=crop' }}
               style={{ width: '100%', height: '100%' }}
               resizeMode="cover"
             />
@@ -325,10 +335,9 @@ export default function BusinessOverview() {
             >
               <View style={{
                 width: AVATAR_SIZE, height: AVATAR_SIZE, borderRadius: AVATAR_SIZE / 2,
-                backgroundColor: C.label, borderWidth: 3, borderColor: C.bg,
-                alignItems: 'center', justifyContent: 'center',
+                backgroundColor: C.bg, borderWidth: 3, borderColor: C.bg, overflow: 'hidden',
               }}>
-                <Text style={{ fontSize: 32, fontWeight: '900', color: C.bg }}>K</Text>
+                <Image source={require('@/assets/images/kanext-logo.png')} style={{ width: '100%', height: '100%' }} resizeMode="cover" />
               </View>
               {isCEO && (
                 <View style={{

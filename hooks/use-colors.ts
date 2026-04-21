@@ -1,167 +1,166 @@
 /**
  * useColors — KaNeXT Design System palette hook.
  *
- * Visual language: Blue-Grey system — clean whites, cool surfaces, blue accent.
- * Light: white bg, cool grey surfaces, dark text, blue accent.
- * Dark:  near-black bg, dark cool surfaces, light text, light-blue accent.
+ * Visual language: Warm Linen — paper whites, warm linen surfaces, carbon text. No blue.
+ * Light: white bg, warm linen surfaces, carbon text, no accent color.
+ * Dark:  deep brown-black bg, warm dark surfaces, warm white text.
  *
- * Core tokens: background / surface-1 / surface-2 / surface-3 / text-primary /
- *              text-secondary / accent-primary / accent-branded
- * Semantic: success / danger / warning (with bg variants)
- * Border:   border-light (rgba) / border-medium (rgba)
+ * Core tokens: bg / surface / surface2 / surface3 / label / secondary / muted
+ * Semantic (data values only): gain / heat / caution
+ * Chrome: ember (notification badges + live dots ONLY)
  */
 
 import { useColorScheme } from '@/hooks/use-color-scheme';
 
 export const LIGHT_PALETTE = {
   // ── Core surfaces ──────────────────────────────────────────────────────────
-  bg:              '#FFFFFF',          // page / screen background
-  surface:         '#F3F4F8',          // surface-1: tiles, cards, sidebar bg
-  surface2:        '#E8EAF0',          // surface-2: icon containers, inputs, secondary cards
-  surface3:        '#DDE0E8',          // surface-3: overlays, modals, dropdowns
+  bg:              '#FFFFFF',          // paper: page / screen background
+  surface:         '#F5F0EA',          // linen: tiles, cards, sidebar bg
+  surface2:        '#EAE5DD',          // between linen and mist: inputs, pills, switchers
+  surface3:        '#E0DBD4',          // mist: overlays, modals, dropdowns
 
   // ── Text ──────────────────────────────────────────────────────────────────
-  label:           '#1A1D26',          // text-primary: headings, tile labels, nav labels
-  secondary:       '#6B7085',          // text-secondary: subtitles, section headers, inactive icons
-  muted:           '#6B7085',          // alias: secondary
+  label:           '#1A1714',          // carbon: headings, tile labels, nav labels
+  secondary:       '#9C9790',          // drift: subtitles, section headers, inactive icons
+  muted:           '#9C9790',          // alias: secondary / drift
 
-  // ── Accent ────────────────────────────────────────────────────────────────
-  accent:          '#2563EB',          // accent-primary: active icons, KR ring, links, CTAs
-  accentBranded:   '#1D4ED8',          // accent-branded: branded buttons, K logo mark
-  accentLight:     '#2563EB',
+  // ── Accent (carbon — no blue ever) ────────────────────────────────────────
+  accent:          '#1A1714',          // carbon: active icons, links, CTAs
+  accentBranded:   '#1A1714',          // carbon: branded buttons, K logo mark
+  accentLight:     '#1A1714',
 
   // ── Borders / separators ──────────────────────────────────────────────────
-  borderLight:     'rgba(0,0,0,0.06)', // card borders, dividers, nav bar top border
-  borderMedium:    'rgba(0,0,0,0.12)', // pill borders, section dividers
-  separator:       'rgba(0,0,0,0.06)', // alias: borderLight
-  mist:            'rgba(0,0,0,0.06)', // alias: borderLight
-  divider:         'rgba(0,0,0,0.06)', // alias: borderLight
-  cardBorder:      'rgba(0,0,0,0.06)', // alias: borderLight
-  inputBorder:     'rgba(0,0,0,0.08)', // slightly more visible for inputs
+  borderLight:     'rgba(26,23,20,0.06)',
+  borderMedium:    'rgba(26,23,20,0.12)',
+  separator:       '#E0DBD4',          // mist as solid separator
+  mist:            '#E0DBD4',          // mist color token
+  divider:         '#E0DBD4',
+  cardBorder:      '#E0DBD4',
+  inputBorder:     'rgba(26,23,20,0.10)',
 
   // ── Press state ───────────────────────────────────────────────────────────
-  surfacePressed:  'rgba(0,0,0,0.05)',
+  surfacePressed:  'rgba(26,23,20,0.05)',
 
-  // ── Status — semantic data values & indicators ────────────────────────────
-  gain:            '#0F6E56',          // status-success: green pills, dots, roster circles
-  gainBg:          '#E6F4EE',          // status-success-bg: green pill backgrounds
-  heat:            '#A32D2D',          // status-danger: red pills, film room badge
-  heatBg:          '#FCEBEB',          // status-danger-bg: red pill backgrounds
-  caution:         '#854F0B',          // status-warning: amber dots (roster, compliance)
-  cautionBg:       '#FFF8EB',          // status-warning-bg
+  // ── Status — semantic data values & indicators ONLY ───────────────────────
+  gain:            '#5A8A6E',          // green: positive data values
+  gainBg:          '#E8F2EC',
+  heat:            '#B85C5C',          // red: negative data values
+  heatBg:          '#F5E8E8',
+  caution:         '#B8943E',          // amber: caution data values
+  cautionBg:       '#F5EDD9',
 
   // Convenience aliases for pill patterns
-  successBg:       '#E6F4EE',
-  dangerBg:        '#FCEBEB',
-  warningBg:       '#FFF8EB',
+  successBg:       '#E8F2EC',
+  dangerBg:        '#F5E8E8',
+  warningBg:       '#F5EDD9',
 
   // ── Active chrome (pills, tabs, filters) ──────────────────────────────────
-  activePill:      '#1A1D26',          // dark fill on active pill
-  activePillText:  '#FFFFFF',          // white text on active pill
+  activePill:      '#1A1714',          // carbon fill on active pill
+  activePillText:  '#FFFFFF',          // paper text on active pill
 
-  // ── Ember (notification badges) ───────────────────────────────────────────
-  ember:           '#A32D2D',          // maps to danger for notification badges
+  // ── Ember (notification badges + live dots ONLY) ──────────────────────────
+  ember:           '#8B2500',
 
   // ── UI chrome ─────────────────────────────────────────────────────────────
-  dotActive:       '#2563EB',          // active nav indicator: accent
-  dotInactive:     'rgba(26,29,38,0.20)',
+  dotActive:       '#1A1714',          // carbon: active nav indicator
+  dotInactive:     'rgba(26,23,20,0.20)',
   footer:          '#FFFFFF',
-  footerDivider:   'rgba(0,0,0,0.06)',
+  footerDivider:   '#E0DBD4',
 
   // ── Chat bubbles (Nexus) ──────────────────────────────────────────────────
-  bubbleSent:      '#1A1D26',          // user message bg
-  bubbleReceived:  '#F3F4F8',          // AI message bg
+  bubbleSent:      '#1A1714',          // carbon bg: user message
+  bubbleReceived:  '#F5F0EA',          // linen bg: AI message
 
-  // ── Legacy aliases (backward compatibility) ───────────────────────────────
+  // ── Legacy aliases ────────────────────────────────────────────────────────
   paper:           '#FFFFFF',
-  linen:           '#F3F4F8',
-  drift:           '#6B7085',
-  carbon:          '#1A1D26',
-  green:           '#0F6E56',
-  red:             '#A32D2D',
-  gold:            '#854F0B',
-  amber:           '#854F0B',
-  blue:            '#2563EB',
-  purple:          '#2563EB',
-  cyan:            '#2563EB',
-  orange:          '#854F0B',
-  pink:            '#A32D2D',
-  teal:            '#0F6E56',
+  linen:           '#F5F0EA',
+  drift:           '#9C9790',
+  carbon:          '#1A1714',
+  green:           '#5A8A6E',
+  red:             '#B85C5C',
+  gold:            '#B8943E',
+  amber:           '#B8943E',
+  blue:            '#1A1714',          // no blue — maps to carbon
+  purple:          '#1A1714',
+  cyan:            '#1A1714',
+  orange:          '#B8943E',
+  pink:            '#B85C5C',
+  teal:            '#5A8A6E',
 } as const;
 
 export const DARK_PALETTE = {
   // ── Core surfaces ──────────────────────────────────────────────────────────
-  bg:              '#0F1117',
-  surface:         '#181B24',          // surface-1
-  surface2:        '#1F2330',          // surface-2
-  surface3:        '#282D3C',          // surface-3
+  bg:              '#1C1410',          // paper dark: deep warm brown-black
+  surface:         '#261D17',          // linen dark: surface-1
+  surface2:        '#2F2820',          // between linen and mist dark
+  surface3:        '#3D352E',          // mist dark: overlays, modals
 
   // ── Text ──────────────────────────────────────────────────────────────────
-  label:           '#E2E4EA',          // text-primary
-  secondary:       '#8B8FA0',          // text-secondary
-  muted:           '#8B8FA0',
+  label:           '#F0E8DC',          // carbon dark: warm white
+  secondary:       '#8A837C',          // drift dark
+  muted:           '#8A837C',
 
-  // ── Accent ────────────────────────────────────────────────────────────────
-  accent:          '#4DA3FF',          // accent-primary (lighter blue for dark bg)
-  accentBranded:   '#2563EB',          // accent-branded
-  accentLight:     '#4DA3FF',
+  // ── Accent (carbon dark — no blue ever) ───────────────────────────────────
+  accent:          '#F0E8DC',          // carbon dark
+  accentBranded:   '#F0E8DC',
+  accentLight:     '#F0E8DC',
 
   // ── Borders / separators ──────────────────────────────────────────────────
-  borderLight:     'rgba(255,255,255,0.06)',
-  borderMedium:    'rgba(255,255,255,0.12)',
-  separator:       'rgba(255,255,255,0.06)',
-  mist:            'rgba(255,255,255,0.06)',
-  divider:         'rgba(255,255,255,0.06)',
-  cardBorder:      'rgba(255,255,255,0.06)',
-  inputBorder:     'rgba(255,255,255,0.08)',
+  borderLight:     'rgba(240,232,220,0.06)',
+  borderMedium:    'rgba(240,232,220,0.12)',
+  separator:       '#3D352E',          // mist dark as solid separator
+  mist:            '#3D352E',
+  divider:         '#3D352E',
+  cardBorder:      '#3D352E',
+  inputBorder:     'rgba(240,232,220,0.10)',
 
   // ── Press state ───────────────────────────────────────────────────────────
-  surfacePressed:  'rgba(255,255,255,0.06)',
+  surfacePressed:  'rgba(240,232,220,0.06)',
 
   // ── Status ────────────────────────────────────────────────────────────────
-  gain:            '#5DCAA5',
-  gainBg:          '#0D2E24',
-  heat:            '#F09595',
-  heatBg:          '#3D1717',
-  caution:         '#FAC775',
-  cautionBg:       '#3D2E0F',
+  gain:            '#5A8A6E',
+  gainBg:          '#1A2E22',
+  heat:            '#B85C5C',
+  heatBg:          '#2E1A1A',
+  caution:         '#B8943E',
+  cautionBg:       '#2E2410',
 
-  successBg:       '#0D2E24',
-  dangerBg:        '#3D1717',
-  warningBg:       '#3D2E0F',
+  successBg:       '#1A2E22',
+  dangerBg:        '#2E1A1A',
+  warningBg:       '#2E2410',
 
   // ── Active chrome ─────────────────────────────────────────────────────────
-  activePill:      '#E2E4EA',
-  activePillText:  '#0F1117',
+  activePill:      '#F0E8DC',          // carbon dark fill on active pill
+  activePillText:  '#1C1410',          // paper dark text on active pill
 
   // ── Ember ─────────────────────────────────────────────────────────────────
-  ember:           '#F09595',
+  ember:           '#E08B6A',
 
   // ── UI chrome ─────────────────────────────────────────────────────────────
-  dotActive:       '#4DA3FF',
-  dotInactive:     'rgba(226,228,234,0.20)',
-  footer:          '#0F1117',
-  footerDivider:   'rgba(255,255,255,0.06)',
+  dotActive:       '#F0E8DC',          // carbon dark: active nav indicator
+  dotInactive:     'rgba(240,232,220,0.20)',
+  footer:          '#1C1410',
+  footerDivider:   '#3D352E',
 
   // ── Chat bubbles ──────────────────────────────────────────────────────────
-  bubbleSent:      '#E2E4EA',
-  bubbleReceived:  '#181B24',
+  bubbleSent:      '#F0E8DC',          // carbon dark bg: user message
+  bubbleReceived:  '#261D17',          // linen dark bg: AI message
 
   // ── Legacy aliases ────────────────────────────────────────────────────────
-  paper:           '#0F1117',
-  linen:           '#181B24',
-  drift:           '#8B8FA0',
-  carbon:          '#E2E4EA',
-  green:           '#5DCAA5',
-  red:             '#F09595',
-  gold:            '#FAC775',
-  amber:           '#FAC775',
-  blue:            '#4DA3FF',
-  purple:          '#4DA3FF',
-  cyan:            '#4DA3FF',
-  orange:          '#FAC775',
-  pink:            '#F09595',
-  teal:            '#5DCAA5',
+  paper:           '#1C1410',
+  linen:           '#261D17',
+  drift:           '#8A837C',
+  carbon:          '#F0E8DC',
+  green:           '#5A8A6E',
+  red:             '#B85C5C',
+  gold:            '#B8943E',
+  amber:           '#B8943E',
+  blue:            '#F0E8DC',          // no blue — maps to carbon dark
+  purple:          '#F0E8DC',
+  cyan:            '#F0E8DC',
+  orange:          '#B8943E',
+  pink:            '#B85C5C',
+  teal:            '#5A8A6E',
 } as const;
 
 export type ComponentColors = typeof LIGHT_PALETTE;

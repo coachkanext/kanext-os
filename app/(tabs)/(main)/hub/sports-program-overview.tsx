@@ -5,14 +5,14 @@
  * Player: read-only program profile + Follow.
  */
 
-import React, { useState, useCallback } from 'react';
+import React, { useState, useCallback, useEffect } from 'react';
 import {
   View, Text, Pressable, ScrollView, StyleSheet, Animated,
   TextInput, ActionSheetIOS, Platform, Alert, Image,
 } from 'react-native';
 import * as Haptics from 'expo-haptics';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { useFocusEffect } from 'expo-router';
+import { useFocusEffect, useRouter } from 'expo-router';
 
 import { IconSymbol } from '@/components/ui/icon-symbol';
 import FontAwesome6 from '@expo/vector-icons/FontAwesome6';
@@ -24,6 +24,7 @@ import { useScrollHeader } from '@/hooks/use-scroll-header';
 import { openSidePanel } from '@/utils/global-side-panel';
 import { resetFooter } from '@/utils/global-footer-hide';
 import { useDemoRole } from '@/utils/demo-role-store';
+import { useAppContext } from '@/context/app-context';
 
 const GAIN    = '#5A8A6E';
 const HEAT    = '#B85C5C';
@@ -70,11 +71,11 @@ const INIT_FEATURED: FeaturedItem[] = [
 ];
 
 const RECENT_GAMES: Game[] = [
-  { id: 'g1', opp: 'vs. Bishop State',   result: 'W', score: '94–71',  date: 'Mar 8',  level: 'USCAA'  },
-  { id: 'g2', opp: 'vs. Davis & Elkins', result: 'W', score: '101–83', date: 'Mar 5',  level: 'USCAA'  },
-  { id: 'g3', opp: 'vs. Georgetown KY',  result: 'W', score: '88–79',  date: 'Mar 1',  level: 'USCAA'  },
-  { id: 'g4', opp: 'vs. Pacific',        result: 'L', score: '64–112', date: 'Feb 22', level: 'D1'     },
-  { id: 'g5', opp: 'vs. CSUF',           result: 'L', score: '71–109', date: 'Feb 19', level: 'D1'     },
+  { id: 'g1', opp: 'vs. Cal Intercontinental',        result: 'W', score: '92–80', date: 'Mar 8',  level: 'USCAA' },
+  { id: 'g2', opp: 'vs. Cal Intercontinental',        result: 'W', score: '99–76', date: 'Mar 7',  level: 'USCAA' },
+  { id: 'g3', opp: 'vs. Daytona Beach Christian',     result: 'W', score: '83–54', date: 'Feb 26', level: 'USCAA' },
+  { id: 'g4', opp: 'vs. Cal Intercontinental (GAAC SF)', result: 'W', score: '97–77', date: 'Feb 25', level: 'USCAA' },
+  { id: 'g5', opp: 'vs. John Melvin Christian',       result: 'W', score: '98–90', date: 'Feb 24', level: 'USCAA' },
 ];
 
 const INIT_ROSTER: RosterPlayer[] = [
@@ -85,6 +86,7 @@ const INIT_ROSTER: RosterPlayer[] = [
   { id: 'r5', initials: 'AH', name: 'Hernandez', number: '10', pos: 'SG', kr: 62 },
   { id: 'r6', initials: 'CP', name: 'Plantey',   number: '2',  pos: 'G',  kr: 61 },
   { id: 'r7', initials: 'SW', name: 'Wall',       number: '6',  pos: 'G',  kr: 60 },
+  { id: 'r8', initials: 'PD', name: 'Diomande',  number: '21', pos: 'PF', kr: 55 },
 ];
 
 const INIT_STAFF: StaffMember[] = [
@@ -118,6 +120,9 @@ function SH({ title, C }: { title: string; C: any }) {
 export default function SportsProgramOverview() {
   const C      = useColors();
   const insets = useSafeAreaInsets();
+  const router = useRouter();
+  const { state } = useAppContext();
+  const mode = state.mode ?? 'personal';
   const topBarH = insets.top + TOP_BAR_H;
   const COVER_H = 220 + topBarH;
 
@@ -127,6 +132,12 @@ export default function SportsProgramOverview() {
   const { opacity, onScroll, scrollEventThrottle } = useScrollHeader(topBarH);
 
   useFocusEffect(useCallback(() => { resetFooter(); }, []));
+
+  useEffect(() => {
+    if (mode !== 'sports') {
+      router.replace('/(tabs)/(main)/hub' as any);
+    }
+  }, [mode]);
 
   // ── Editable state ──────────────────────────────────────────────────────────
   const [bio,      setBio]      = useState(INITIAL_BIO);
@@ -277,7 +288,7 @@ export default function SportsProgramOverview() {
         <View style={{ position: 'relative', marginBottom: LOGO_OVR + 12 }}>
           <View style={{ height: COVER_H, overflow: 'hidden' }}>
             <Image
-              source={{ uri: 'https://picsum.photos/seed/lu-basketball/900/500' }}
+              source={require('@/assets/images/lincoln-2026-champions.png')}
               style={{ width: '100%', height: '100%' }}
               resizeMode="cover"
             />
@@ -305,10 +316,9 @@ export default function SportsProgramOverview() {
             >
               <View style={{
                 width: LOGO_SIZE, height: LOGO_SIZE, borderRadius: LOGO_SIZE / 2,
-                backgroundColor: C.label, borderWidth: 3, borderColor: C.bg,
-                alignItems: 'center', justifyContent: 'center',
+                borderWidth: 3, borderColor: C.bg, overflow: 'hidden',
               }}>
-                <Text style={{ fontSize: 30, fontWeight: '900', color: C.bg }}>LM</Text>
+                <Image source={require('@/assets/images/lu-mbb-logo.png')} style={{ width: '100%', height: '100%', transform: [{ scale: 1.5 }] }} resizeMode="cover" />
               </View>
               {isCoach && (
                 <View style={{

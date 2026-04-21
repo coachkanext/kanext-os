@@ -44,6 +44,7 @@ import { registerSplitNexusHandlers, openSplitNexus, setSplitNexusPendingQuery }
 import { registerSettingsPanelHandlers } from '@/utils/global-settings-panel';
 import { SettingsPanel } from '@/components/settings-panel';
 import { registerSidePanelHandlers } from '@/utils/global-side-panel';
+import { registerNexusSidebarHandlers } from '@/utils/global-nexus-sidebar';
 import { SidePanel } from '@/components/side-panel/side-panel';
 import { DipsonHalfSheet } from '@/components/dipson/dipson-half-sheet';
 
@@ -253,6 +254,29 @@ function AppShell() {
     registerSidePanelHandlers(openSidePanelCb, dismissSidePanelCb);
   }, [openSidePanelCb, dismissSidePanelCb]);
 
+  // Nexus sidebar — push footer right when sidebar opens
+  const nexusSidebarAnim = useRef(new Animated.Value(0)).current;
+  const NEXUS_SIDEBAR_W = Math.round(SCREEN_W * 0.78);
+  const [nexusSidebarOpen, setNexusSidebarOpen] = useState(false);
+
+  const openNexusSidebar = useCallback(() => {
+    setNexusSidebarOpen(true);
+    Animated.spring(nexusSidebarAnim, {
+      toValue: 1, tension: 65, friction: 12, useNativeDriver: true,
+    }).start();
+  }, [nexusSidebarAnim]);
+
+  const closeNexusSidebar = useCallback(() => {
+    setNexusSidebarOpen(false);
+    Animated.spring(nexusSidebarAnim, {
+      toValue: 0, tension: 65, friction: 12, useNativeDriver: true,
+    }).start();
+  }, [nexusSidebarAnim]);
+
+  useEffect(() => {
+    registerNexusSidebarHandlers(openNexusSidebar, closeNexusSidebar);
+  }, [openNexusSidebar, closeNexusSidebar]);
+
   const PUSH_X  = Math.min(300, SCREEN_W * 0.82);
   const contentTransform = {
     transform: [
@@ -263,7 +287,7 @@ function AppShell() {
   const router = useRouter();
 
   // Show onboarding when not authenticated OR when authenticated but new user needs onboarding
-  const showAuthModal = !authState.isChecking && (!authState.isAuthenticated || authState.isNewUser);
+  const showAuthModal = false; // bypassed — go straight to app after splash
   // AccessPortal replaces AuthModal — full-screen onboarding flow per spec
 
   // Normal navigation with tabs — edge-to-edge, no header
@@ -302,7 +326,12 @@ function AppShell() {
             />
           </Stack>
         </View>
-          <UniversalFooter />
+          <Animated.View style={[
+            { transform: [{ translateX: nexusSidebarAnim.interpolate({ inputRange: [0, 1], outputRange: [0, NEXUS_SIDEBAR_W] }) }] },
+            nexusSidebarOpen && styles.footerRound,
+          ]}>
+            <UniversalFooter />
+          </Animated.View>
         </Animated.View>
       </View>
 
@@ -462,6 +491,11 @@ const styles = StyleSheet.create({
     backgroundColor: '#FFFFFF',
   },
   contentRound: {
+    borderTopLeftRadius: 20,
+    borderBottomLeftRadius: 20,
+    overflow: 'hidden',
+  },
+  footerRound: {
     borderTopLeftRadius: 20,
     borderBottomLeftRadius: 20,
     overflow: 'hidden',

@@ -280,7 +280,7 @@ export default function BookingSelectServiceScreen() {
               <IconSymbol name="person.fill" size={22} color={C.secondary} />
             </View>
             <View style={s.identityMeta}>
-              <Text style={[s.creatorName, { color: C.label }]}>Sammy Kalejaiye</Text>
+              <Text style={[s.creatorName, { color: C.label }]}>Laolu Kalejaiye</Text>
               <Text style={[s.creatorHandle, { color: C.secondary }]}>@sammyk</Text>
             </View>
           </View>

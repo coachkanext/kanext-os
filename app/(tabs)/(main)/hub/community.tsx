@@ -7,7 +7,7 @@
  * Pastor: edit controls. Member: read-only (Follow + RSVP).
  */
 
-import React, { useCallback } from 'react';
+import React, { useCallback, useEffect } from 'react';
 import { View, Text, Pressable, ScrollView, Image, StyleSheet, Animated } from 'react-native';
 import * as Haptics from 'expo-haptics';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
@@ -15,6 +15,9 @@ import { useFocusEffect, useRouter } from 'expo-router';
 import FontAwesome6 from '@expo/vector-icons/FontAwesome6';
 
 import { IconSymbol } from '@/components/ui/icon-symbol';
+
+const ICCLA_COVER         = require('@/assets/images/iccla-cover.png');
+const ICCLA_COVER_PASTORS = require('@/assets/images/iccla-cover.jpg');
 import { RolePill } from '@/components/ui/role-pill';
 import { useColors, type ComponentColors } from '@/hooks/use-colors';
 import { useScrollHeader } from '@/hooks/use-scroll-header';
@@ -95,17 +98,18 @@ export default function CommunityHub() {
   const insets = useSafeAreaInsets();
   const router = useRouter();
   const { state } = useAppContext();
-  const mode = state.activeContext?.mode ?? state.mode ?? 'personal';
+  const mode = state.mode ?? 'personal';
   const [role, toggleRole, roleCycles] = useDemoRole('community:hub');
   const isPastor = role === roleCycles[0];
   const { opacity, onScroll, scrollEventThrottle } = useScrollHeader();
 
-  useFocusEffect(useCallback(() => {
-    resetFooter();
+  useFocusEffect(useCallback(() => { resetFooter(); }, []));
+
+  useEffect(() => {
     if (mode !== 'community') {
       router.replace('/(tabs)/(main)/hub' as any);
     }
-  }, [mode]));
+  }, [mode]);
 
   // Cover is tall enough to sit behind status bar / dynamic island
   const COVER_H = 220 + insets.top + TOP_BAR_H;
@@ -128,11 +132,11 @@ export default function CommunityHub() {
         {/* ── 1. Cover + Avatar ── */}
         <View style={{ position: 'relative', marginBottom: AVATAR_OVR + 12 }}>
           <Pressable disabled={!isPastor}>
-            <View style={{ height: COVER_H, backgroundColor: C.surface, overflow: 'hidden' }}>
+            <View style={{ height: COVER_H, backgroundColor: '#FFFFFF', overflow: 'hidden' }}>
               <Image
-                source={{ uri: 'https://picsum.photos/seed/church-interior/900/500' }}
-                style={{ width: '100%', height: '100%' }}
-                resizeMode="cover"
+                source={ICCLA_COVER_PASTORS}
+                style={{ width: '100%', height: '100%', transform: [{ translateY: 50 }] }}
+                resizeMode="contain"
               />
               {isPastor && (
                 <View style={{ position: 'absolute', bottom: 10, right: 12, backgroundColor: 'rgba(0,0,0,0.50)', borderRadius: 8, paddingHorizontal: 10, paddingVertical: 5, flexDirection: 'row', alignItems: 'center', gap: 5 }}>
@@ -146,8 +150,8 @@ export default function CommunityHub() {
           {/* Church logo — bottom-left, overlapping cover */}
           <View style={{ position: 'absolute', bottom: -AVATAR_OVR, left: 20 }}>
             <Pressable disabled={!isPastor}>
-              <View style={{ width: AVATAR_SIZE, height: AVATAR_SIZE, borderRadius: AVATAR_SIZE / 2, backgroundColor: C.surface, borderWidth: 3, borderColor: C.bg, alignItems: 'center', justifyContent: 'center' }}>
-                <Text style={{ fontSize: 36 }}>✝️</Text>
+              <View style={{ width: AVATAR_SIZE, height: AVATAR_SIZE, borderRadius: AVATAR_SIZE / 2, backgroundColor: '#1a0a2e', borderWidth: 3, borderColor: C.bg, overflow: 'hidden' }}>
+                <Image source={ICCLA_COVER} style={{ width: '100%', height: '100%' }} resizeMode="cover" />
               </View>
               {isPastor && (
                 <View style={{ position: 'absolute', bottom: 0, right: 0, width: 24, height: 24, borderRadius: 12, backgroundColor: C.label, alignItems: 'center', justifyContent: 'center', borderWidth: 2, borderColor: C.bg }}>

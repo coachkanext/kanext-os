@@ -43,7 +43,7 @@ const CHANNEL_TITLE_BY_MODE: Record<string, string> = {
 
 type ChannelIdentity = { initials: string; name: string; handle: string; stats: string; darkAvatar: boolean };
 const CHANNEL_IDENTITY_BY_MODE: Record<string, ChannelIdentity> = {
-  personal:  { initials: 'SK', name: 'Sammy Kalejaiye',        handle: '@sammyk',   stats: '3.4K subscribers · 12 videos', darkAvatar: true  },
+  personal:  { initials: 'LK', name: 'Laolu Kalejaiye',        handle: '@sammyk',   stats: '3.4K subscribers · 12 videos', darkAvatar: true  },
   business:  { initials: 'KN', name: 'KaNeXT',                 handle: '@kanext',   stats: '1.2K subscribers · 8 videos',  darkAvatar: true  },
   education: { initials: 'LU', name: 'Lincoln University (CA)', handle: '@lincolnu', stats: '842 subscribers · 24 videos',  darkAvatar: false },
   community: { initials: 'IC', name: 'ICCLA',                   handle: '@iccla',    stats: '2.1K subscribers · 38 videos', darkAvatar: false },

@@ -36,17 +36,15 @@ import { ArtifactSheet, type Artifact } from '@/components/nexus/artifact-sheet'
 
 // New UI components
 import { NexusWelcome } from '@/components/nexus/nexus-welcome';
-import { NexusSidebar, type DipsonSection } from '@/components/nexus/nexus-sidebar';
+import { NexusSidebar } from '@/components/nexus/nexus-sidebar';
 import { NexusArtifactBlock } from '@/components/nexus/nexus-artifact-block';
 
 // Intelligence layer
-import { classifyQuery } from '@/services/intelligence/router';
-import { buildIntelligenceSystemPrompt, isDataRoomQuery, buildDataRoomSystemPrompt, type SystemPromptParts } from '@/services/intelligence/nexus-intelligence';
+import { buildSystemPrompt, type SystemPromptParts } from '@/services/intelligence/nexus-intelligence';
 import { MODELS, type ModelTier } from '@/services/intelligence/models';
-import { POOL_TOOLS, handlePoolTool } from '@/services/intelligence/pool-tools';
-import { CORPUS_TOOLS, handleCorpusTool } from '@/services/intelligence/corpus-tools';
 import { APP_DATA_TOOLS, handleAppDataTool } from '@/services/intelligence/app-data-tools';
 import { consumePendingEvalQuery } from '@/utils/global-nexus-state';
+import { notifyNexusSidebarOpen, notifyNexusSidebarClose } from '@/utils/global-nexus-sidebar';
 import { useAppContext } from '@/context/app-context';
 import { CANONICAL_VIEWS } from '@/data/views';
 
@@ -66,54 +64,12 @@ const API_URL     = 'https://api.anthropic.com/v1/messages';
 const MAX_TOKENS  = 8192;
 const MAX_HISTORY = 20;
 
-const GENERIC_PROMPT =
-  `You are Dipson, KaNeXT's intelligent AI assistant. Be concise, direct, and helpful. ` +
-  `You assist coaches, athletes, and administrators with any question.`;
 
-// ── Section label map ─────────────────────────────────────────────────────────
-
-const SECTION_LABELS: Record<string, string> = {
-  'basketball':       "Men's Basketball",
-  'football':         'Football',
-  'mens-basketball':  "Men's Basketball",
-  'womens-basketball':"Women's Basketball",
-  'mens-soccer':      "Men's Soccer",
-  'womens-soccer':    "Women's Soccer",
-  'baseball':         'Baseball',
-  'softball':         'Softball',
-  'mens-volleyball':  "Men's Volleyball",
-  'womens-volleyball':"Women's Volleyball",
-  'flag-football':    "Women's Flag Football",
-  'mens-golf':        "Men's Golf",
-  'womens-golf':      "Women's Golf",
-  'mens-track':       "Men's Track & Field",
-  'womens-track':     "Women's Track & Field",
-  'beach-volleyball': 'Beach Volleyball',
-  'cheer':            'Cheer',
-  'admissions':       'Admissions',
-  'hiring':           'Hiring',
-  'student-success':  'Student Success',
-  'sales-revenue':    'Sales Revenue',
-  'financial':        'Financial',
-  'fundraising':      'Fundraising/Development',
-  'operations':       'Operations',
-  'marketing':        'Marketing',
-  'compliance':       'Compliance',
-  'curriculum':       'Curriculum',
-  'real-estate':      'Real Estate',
-  'acquisition':      'Acquisition',
-};
-
-// ── Tool name sets + dispatcher ───────────────────────────────────────────────
-
-const POOL_TOOL_NAMES   = new Set(POOL_TOOLS.map(t => t.name));
-const CORPUS_TOOL_NAMES = new Set(CORPUS_TOOLS.map(t => t.name));
-const APP_TOOL_NAMES    = new Set(APP_DATA_TOOLS.map(t => t.name));
+// ── Tool dispatcher ───────────────────────────────────────────────────────────
+const APP_TOOL_NAMES = new Set(APP_DATA_TOOLS.map(t => t.name));
 
 function dispatchTool(name: string, input: Record<string, unknown>): string {
-  if (POOL_TOOL_NAMES.has(name))   return handlePoolTool(name, input);
-  if (CORPUS_TOOL_NAMES.has(name)) return handleCorpusTool(name, input);
-  if (APP_TOOL_NAMES.has(name))    return handleAppDataTool(name, input);
+  if (APP_TOOL_NAMES.has(name)) return handleAppDataTool(name, input);
   return JSON.stringify({ error: `Unknown tool: ${name}` });
 }
 
@@ -361,85 +317,12 @@ function MessageActionBar({
   );
 }
 
-// ── Intent detection ──────────────────────────────────────────────────────────
-
-function isBasketball(msg: string): boolean {
-  try {
-    const qt = classifyQuery(msg);
-    if (qt !== 'unknown') return true;
-  } catch { /* intelligence layer unavailable */ }
-  return /\b(evaluat|basketball|player|roster|recruit|transfer|eval|klvn|archetype|shoot|defens|rebound|assist|turnover|season|game|coach|scholarship|draft)/i.test(msg)
-      || /\b(kr|nil|pro|minutes|program)\b/i.test(msg);
-}
-
 // A system content block as Anthropic expects it in the messages API.
 type SystemBlock = { type: 'text'; text: string; cache_control?: { type: 'ephemeral' } };
 
-/**
- * Builds the `system` field for the API request.
- *
- * Section-based routing (explicit user selection) takes priority over content detection.
- *
- * Data room tier — R0/R1 only, investor/business queries:
- *   Block 0: Data Room KB — cache_control: ephemeral
- *
- * Basketball tier — structured array with prompt caching:
- *   Block 0: SKILL_MD + TOOLS_INSTRUCTION (~2K tokens) — cache_control: ephemeral
- *   Block 1: validated profiles (Laolu/Lincoln) — no cache marker, only when matched
- *   FILE_01, legends, and reference data are fetched by Claude via corpus tools.
- *
- * General tier — plain string (Haiku, small prompt, caching not worthwhile).
- */
-function buildSystemField(
-  msg:           string,
-  rbcaTier:      number,
-  activeSection: DipsonSection | null,
-): string | SystemBlock[] {
-  // Section-based routing takes priority over message-content detection
-  if (activeSection === 'data-room') {
-    const parts = buildDataRoomSystemPrompt();
-    return [
-      { type: 'text', text: parts.staticContent, cache_control: { type: 'ephemeral' } },
-    ] as SystemBlock[];
-  }
-
-  if (activeSection === 'basketball' || activeSection === 'mens-basketball') {
-    const parts: SystemPromptParts = buildIntelligenceSystemPrompt(msg);
-    const blocks: SystemBlock[] = [
-      { type: 'text', text: parts.staticContent, cache_control: { type: 'ephemeral' } },
-    ];
-    if (parts.dynamicContent) {
-      blocks.push({ type: 'text', text: parts.dynamicContent });
-    }
-    return blocks;
-  }
-
-  if (activeSection && activeSection !== 'general') {
-    const sectionLabel = SECTION_LABELS[activeSection] ?? activeSection;
-    return `You are Dipson, KaNeXT's intelligent AI assistant. You are operating in the ${sectionLabel} intelligence context. Be concise, direct, and helpful.`;
-  }
-
-  // Fall back to existing content-based detection for general context
-  if (rbcaTier <= 1 && isDataRoomQuery(msg)) {
-    const parts = buildDataRoomSystemPrompt();
-    return [
-      { type: 'text', text: parts.staticContent, cache_control: { type: 'ephemeral' } },
-    ] as SystemBlock[];
-  }
-
-  if (isBasketball(msg)) {
-    const parts: SystemPromptParts = buildIntelligenceSystemPrompt(msg);
-    const blocks: SystemBlock[] = [
-      { type: 'text', text: parts.staticContent, cache_control: { type: 'ephemeral' } },
-    ];
-    if (parts.dynamicContent) {
-      blocks.push({ type: 'text', text: parts.dynamicContent });
-    }
-    return blocks;
-  }
-
-  // General tier — plain string (Haiku)
-  return GENERIC_PROMPT;
+function buildSystemField(query = ''): SystemBlock[] {
+  const { staticContent } = buildSystemPrompt(query);
+  return [{ type: 'text', text: staticContent, cache_control: { type: 'ephemeral' } }];
 }
 
 // ── XHR Streaming ─────────────────────────────────────────────────────────────
@@ -559,8 +442,6 @@ export default function NexusScreen() {
   const [isSidebarOpen,   setIsSidebarOpen]   = useState(false);
   const [currentChatId,   _setCurrentChatId]  = useState<string | null>(null);
   const [chatIndex,       setChatIndex]        = useState<NexusChatMeta[]>([]);
-  // projects/activeProjectId retained for future use
-  const [activeSection,   setActiveSection]    = useState<DipsonSection | null>(null);
 
   // Refs
   const scrollRef         = useRef<ScrollView>(null);
@@ -571,12 +452,16 @@ export default function NexusScreen() {
   const messagesRef       = useRef<Message[]>([]);
   const chatIndexRef      = useRef<NexusChatMeta[]>([]);
   const prevIsStreamingRef = useRef(false);
-  const activeSectionRef  = useRef<DipsonSection | null>(null);
+
+  // Typewriter drain refs
+  const typewriterQueueRef = useRef<string>('');   // buffered chars not yet shown
+  const typewriterShownRef = useRef<string>('');   // chars currently visible
+  const typewriterTimerRef = useRef<ReturnType<typeof setInterval> | null>(null);
+  const typewriterAidRef   = useRef<string>('');   // assistant message ID being animated
 
   // Keep refs in sync with state (no useEffect needed — runs before commit)
   messagesRef.current    = messages;
   chatIndexRef.current   = chatIndex;
-  activeSectionRef.current = activeSection;
 
   // Wrapper that updates both ref and state
   const setCurrentChatId = useCallback((id: string | null) => {
@@ -585,6 +470,8 @@ export default function NexusScreen() {
   }, []);
 
   const hasMessages = messages.length > 0;
+  const [isInputFocused, setIsInputFocused] = useState(false);
+  const showWelcome = !hasMessages && !isInputFocused;
   const canSend     = text.trim().length > 0 && !isStreaming;
 
   // ── Load chats + projects on mount ──────────────────────────────────────────
@@ -620,7 +507,7 @@ export default function NexusScreen() {
           messages:  saveMsgs,
           createdAt: existingMeta?.createdAt ?? new Date().toISOString(),
           updatedAt: new Date().toISOString(),
-          section:   existingMeta?.section ?? (activeSectionRef.current ?? undefined),
+          section:   existingMeta?.section,
         };
 
         saveChat(chat).then(() => {
@@ -660,9 +547,51 @@ export default function NexusScreen() {
   const scrollToEnd = (animated = false) =>
     setTimeout(() => scrollRef.current?.scrollToEnd({ animated }), 60);
 
+  // ── Typewriter ────────────────────────────────────────────────────────────────
+  // Drains buffered API chars at ~65 chars/sec so text flows at reading pace.
+
+  const DRAIN_MS    = 30;
+  const DRAIN_CHARS = 2;
+
+  const stopTypewriter = (flush = false) => {
+    if (typewriterTimerRef.current) {
+      clearInterval(typewriterTimerRef.current);
+      typewriterTimerRef.current = null;
+    }
+    if (flush && typewriterQueueRef.current.length > 0) {
+      typewriterShownRef.current += typewriterQueueRef.current;
+      typewriterQueueRef.current  = '';
+      const aid   = typewriterAidRef.current;
+      const shown = typewriterShownRef.current;
+      setMessages(prev => prev.map(m =>
+        m.id === aid ? { ...m, raw: shown, segments: parseMessage(shown) } : m
+      ));
+    }
+  };
+
+  const startTypewriter = (assistantId: string) => {
+    typewriterAidRef.current   = assistantId;
+    typewriterQueueRef.current  = '';
+    typewriterShownRef.current  = '';
+    if (typewriterTimerRef.current) clearInterval(typewriterTimerRef.current);
+    typewriterTimerRef.current = setInterval(() => {
+      if (typewriterQueueRef.current.length === 0) return;
+      const take = typewriterQueueRef.current.slice(0, DRAIN_CHARS);
+      typewriterQueueRef.current = typewriterQueueRef.current.slice(DRAIN_CHARS);
+      typewriterShownRef.current += take;
+      const aid   = typewriterAidRef.current;
+      const shown = typewriterShownRef.current;
+      setMessages(prev => prev.map(m =>
+        m.id === aid ? { ...m, raw: shown, segments: parseMessage(shown) } : m
+      ));
+      scrollToEnd();
+    }, DRAIN_MS);
+  };
+
   // ── Stop streaming ───────────────────────────────────────────────────────────
 
   const handleStop = () => {
+    stopTypewriter(true);
     abortRef.current = true;
     xhrRef.current?.abort();
     xhrRef.current = null;
@@ -688,8 +617,7 @@ export default function NexusScreen() {
     const assistantId = `a_${Date.now()}`;
     abortRef.current  = false;
 
-    const isDataRoom = rbcaTier <= 1 && isDataRoomQuery(userText);
-    const historyLimit = (isBasketball(userText) || isDataRoom) ? 6 : MAX_HISTORY;
+    const historyLimit = MAX_HISTORY;
     const history: ApiMessage[] = messages
       .filter(m => m.raw.length > 0 && !m.streaming)
       .slice(-historyLimit)
@@ -703,29 +631,19 @@ export default function NexusScreen() {
       { id: `u_${Date.now()}`, raw: userText, segments: [{ type: 'text', text: userText }], isMe: true },
       { id: assistantId,       raw: '',        segments: [],                                  isMe: false, streaming: true },
     ]);
+    startTypewriter(assistantId);
     scrollToEnd(true);
 
-    const systemField = buildSystemField(userText, rbcaTier, activeSection);
-    const tier: ModelTier =
-      activeSection === 'data-room'                                           ? 'DATA_ROOM' :
-      (activeSection === 'basketball' || activeSection === 'mens-basketball') ? 'BASKETBALL' :
-      isDataRoom                                                              ? 'DATA_ROOM' :
-      isBasketball(userText)                                                  ? 'BASKETBALL' :
-      'GENERAL';
-    const model = MODELS[tier];
+    const systemField = buildSystemField(userText);
+    const model = MODELS.GENERAL;
 
-    console.log('[Nexus] tier:', tier, '| model:', model);
+    console.log('[Nexus] model:', model);
 
     let accumulated = '';
 
     // Tool-aware streaming loop — handles multi-step tool chains (max 5 iterations)
     const streamLoop = (apiMessages: ApiMessage[], iters = 5) => {
-      const toolsForTier =
-        tier === 'BASKETBALL'
-          ? [...POOL_TOOLS, ...CORPUS_TOOLS, ...APP_DATA_TOOLS, { type: 'web_search_20250305', name: 'web_search' }]
-          : tier === 'DATA_ROOM'
-          ? [...APP_DATA_TOOLS, { type: 'web_search_20250305', name: 'web_search' }]
-          : APP_DATA_TOOLS;
+      const toolsForTier = [...APP_DATA_TOOLS, { type: 'web_search_20250305', name: 'web_search' }];
 
       const bodyObj = {
         model,
@@ -748,13 +666,9 @@ export default function NexusScreen() {
         (delta) => {
           if (abortRef.current) return;
           accumulated += delta;
-          const clean = sanitizeResponse(accumulated);
-          setMessages(prev => prev.map(m =>
-            m.id === assistantId
-              ? { ...m, raw: clean, segments: parseMessage(clean) }
-              : m
-          ));
-          scrollToEnd();
+          const clean    = sanitizeResponse(accumulated);
+          const newChars = clean.slice(typewriterShownRef.current.length + typewriterQueueRef.current.length);
+          typewriterQueueRef.current += newChars;
         },
         ({ stopReason, blocks }) => {
           xhrRef.current = null;
@@ -785,6 +699,8 @@ export default function NexusScreen() {
           }
 
           // Normal completion (end_turn, or web_search handled server-side)
+          // Drain remaining typewriter queue then stamp as done
+          stopTypewriter(true);
           const clean        = sanitizeResponse(accumulated);
           const finalSegments = parseMessage(clean);
           setMessages(prev => prev.map(m =>
@@ -799,6 +715,7 @@ export default function NexusScreen() {
           // Auto-retry on 429 rate limit — wait 15s then re-enter the loop
           if (err.message.startsWith('429') && iters > 0 && !abortRef.current) {
             console.warn('[Nexus] 429 rate limit — retrying in 60s');
+            stopTypewriter(false);
             const retryMsg = 'Rate limit reached — retrying in 60 seconds…';
             setMessages(prev => prev.map(m =>
               m.id === assistantId
@@ -806,10 +723,14 @@ export default function NexusScreen() {
                 : m
             ));
             setTimeout(() => {
-              if (!abortRef.current) streamLoop(apiMessages, iters - 1);
+              if (!abortRef.current) {
+                startTypewriter(assistantId);
+                streamLoop(apiMessages, iters - 1);
+              }
             }, 60_000);
             return;
           }
+          stopTypewriter(false);
           console.error('[Nexus] stream error:', err.message);
           const msg = `Sorry, something went wrong — ${err.message}. Please try again.`;
           setMessages(prev => prev.map(m =>
@@ -839,7 +760,7 @@ export default function NexusScreen() {
     setMessages([]);
     setText('');
     setIsStreaming(false);
-    setIsSidebarOpen(false);
+    setIsSidebarOpen(false); notifyNexusSidebarClose();
     setTimeout(() => { abortRef.current = false; }, 100);
   }, [setCurrentChatId]);
 
@@ -983,10 +904,9 @@ export default function NexusScreen() {
         <NexusPageTopBar
           view={hasMessages ? 'chat' : 'home'}
           showNewChat={hasMessages}
-          onHamburger={() => setIsSidebarOpen(true)}
+          onHamburger={() => { setIsSidebarOpen(true); notifyNexusSidebarOpen(); }}
           onNewChat={handleNewChat}
           onDoubleTap={() => openDipsonSheet('Nexus')}
-          section={activeSection ? (SECTION_LABELS[activeSection] ?? activeSection) : undefined}
         />
       </View>
 
@@ -995,8 +915,8 @@ export default function NexusScreen() {
         behavior={Platform.OS === 'ios' ? 'padding' : undefined}
         keyboardVerticalOffset={kbOffset}
       >
-        {/* Welcome state — shown when no messages */}
-        {!hasMessages && (
+        {/* Welcome state — hidden when input focused or messages exist */}
+        {showWelcome && (
           <NexusWelcome onSend={handleSend} />
         )}
 
@@ -1030,6 +950,8 @@ export default function NexusScreen() {
               placeholderTextColor={C.muted}
               value={text}
               onChangeText={setText}
+              onFocus={() => setIsInputFocused(true)}
+              onBlur={() => setIsInputFocused(false)}
               multiline
               maxLength={4000}
               editable={!isStreaming}
@@ -1115,11 +1037,9 @@ export default function NexusScreen() {
       {/* Sidebar overlay */}
       <NexusSidebar
         isOpen={isSidebarOpen}
-        onClose={() => setIsSidebarOpen(false)}
+        onClose={() => { setIsSidebarOpen(false); notifyNexusSidebarClose(); }}
         chats={chatIndex}
         currentChatId={currentChatId}
-        activeSection={activeSection}
-        onSectionChange={setActiveSection}
         onSelectChat={handleSelectChat}
         onDeleteChat={handleDeleteChat}
         onRenameChat={handleRenameChat}

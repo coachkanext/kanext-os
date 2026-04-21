@@ -69,7 +69,7 @@ export function AgendaPanel() {
         <View style={s.avatar}>
           <IconSymbol name="person.fill" size={20} color={C.secondary} />
         </View>
-        <Text style={[s.name, { color: C.label }]}>Sammy Kalejaiye</Text>
+        <Text style={[s.name, { color: C.label }]}>Laolu Kalejaiye</Text>
         <Text style={[s.handle, { color: C.secondary }]}>@sammyk</Text>
       </View>
 

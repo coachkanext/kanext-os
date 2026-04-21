@@ -477,7 +477,7 @@ function getLiveHubContent(mode: string) {
       };
     default: // personal
       return {
-        name: 'Sammy Kalejaiye',
+        name: 'Laolu Kalejaiye',
         subtitle: 'Creator · Founder · Builder',
         description: 'Founder of KaNeXT. Building the OS for institutions. Follow for updates on sports technology, AI, and institutional intelligence.',
         stats: [
@@ -634,7 +634,7 @@ export default function HubScreen() {
   const insets = useSafeAreaInsets();
   const router = useRouter();
   const { state } = useAppContext();
-  const mode = state.activeContext?.mode ?? state.mode ?? 'personal';
+  const mode = state.mode ?? 'personal';
   const dataMode = useDataMode();
 
   const [role, cycleRole, roleCycles] = useDemoRole('personal:hub');
@@ -697,24 +697,13 @@ export default function HubScreen() {
 
   const { opacity: topBarAnim, onScroll: handleScroll, scrollEventThrottle } = useScrollHeader(insets.top + TOP_BAR_H);
 
-  useFocusEffect(useCallback(() => {
-    resetFooter();
-    if (mode === 'sports') {
-      router.replace(isSportsAdmin
-        ? '/(tabs)/(main)/hub/sports-program-overview' as any
-        : '/(tabs)/(main)/hub/sports-player-dashboard' as any
-      );
-    }
-    if (mode === 'community') {
-      router.replace('/(tabs)/(main)/hub/community' as any);
-    }
-    if (mode === 'education') {
-      router.replace('/(tabs)/(main)/hub/education' as any);
-    }
-  }, [mode, isSportsAdmin]));
+  useFocusEffect(useCallback(() => { resetFooter(); }, []));
 
-  // ── Sports / Community / Education: render nothing while redirect fires ────────
-  if (mode === 'sports' || mode === 'community' || mode === 'education') return null;
+  // ── Non-personal modes: redirect to dedicated hub screens ──────────────────
+  if (mode === 'sports') return <Redirect href={(isSportsAdmin ? '/(tabs)/(main)/hub/sports-program-overview' : '/(tabs)/(main)/hub/sports-player-dashboard') as any} />;
+  if (mode === 'community') return <Redirect href={'/(tabs)/(main)/hub/community' as any} />;
+  if (mode === 'education') return <Redirect href={'/(tabs)/(main)/hub/education' as any} />;
+  if (mode === 'business') return <Redirect href={'/(tabs)/(main)/hub/business' as any} />;
 
 
 
@@ -845,7 +834,7 @@ export default function HubScreen() {
         <Pressable disabled={!viewerIsOwner}>
           <View style={{ height: COVER_H, backgroundColor: C.bg, overflow: 'hidden' }}>
             <Image
-              source={{ uri: 'https://picsum.photos/seed/kanext-city/900/500' }}
+              source={require('@/assets/images/lu-mbb-cover.png')}
               style={{ width: '100%', height: '100%' }}
               resizeMode="cover"
             />
@@ -861,7 +850,7 @@ export default function HubScreen() {
         <View style={{ position: 'absolute', bottom: -AVATAR_OVERLAP, left: 20 }}>
           <Pressable disabled={!viewerIsOwner}>
             <Image
-              source={{ uri: 'https://picsum.photos/seed/kanext-avatar/200/200' }}
+              source={require('@/assets/images/laolu-profile.jpg')}
               style={{ width: AVATAR_SIZE, height: AVATAR_SIZE, borderRadius: AVATAR_SIZE / 2, borderWidth: 3, borderColor: C.bg }}
               resizeMode="cover"
             />
@@ -876,8 +865,8 @@ export default function HubScreen() {
 
       {/* ── 2. Identity ── */}
       <View style={{ paddingHorizontal: 20, marginBottom: 14 }}>
-        <Text style={{ fontSize: 20, fontWeight: '700', color: C.label, marginBottom: 2 }}>Sammy Kalejaiye</Text>
-        <Text style={{ fontSize: 14, color: C.secondary, marginBottom: 8 }}>@sammyk</Text>
+        <Text style={{ fontSize: 20, fontWeight: '700', color: C.label, marginBottom: 2 }}>Laolu Kalejaiye</Text>
+        <Text style={{ fontSize: 14, color: C.secondary, marginBottom: 8 }}>@laoluk11</Text>
         <Text style={{ fontSize: 14, color: C.label, lineHeight: 20, opacity: 0.85 }}>
           {"Building the operating system for institutions. Founder of KaNeXT. Sports. Education. Business. Community."}
         </Text>
@@ -914,19 +903,7 @@ export default function HubScreen() {
       <View style={{ paddingHorizontal: 16, marginBottom: 28 }}>
         <Text style={{ fontSize: 11, fontWeight: '700', color: C.secondary, letterSpacing: 0.8, textTransform: 'uppercase', marginBottom: 12 }}>Featured</Text>
         {PROFILE_FEATURED.map(item => (
-          <Pressable
-            key={item.title}
-            style={({ pressed }) => [{ flexDirection: 'row', alignItems: 'center', backgroundColor: C.surface, borderRadius: 12, paddingHorizontal: 14, paddingVertical: 13, marginBottom: 8, gap: 12 }, pressed && { opacity: 0.75 }]}
-          >
-            <View style={{ paddingHorizontal: 8, paddingVertical: 5, backgroundColor: C.separator, borderRadius: 6 }}>
-              <Text style={{ fontSize: 9, fontWeight: '800', color: C.secondary, letterSpacing: 0.5 }}>{item.type}</Text>
-            </View>
-            <View style={{ flex: 1 }}>
-              <Text style={{ fontSize: 14, fontWeight: '600', color: C.label }} numberOfLines={1}>{item.title}</Text>
-              <Text style={{ fontSize: 12, color: C.secondary, marginTop: 2 }}>{item.meta}</Text>
-            </View>
-            <IconSymbol name="chevron.right" size={14} color={C.muted} />
-          </Pressable>
+          <FeaturedCard key={item.id} item={item} C={C} />
         ))}
       </View>
 
@@ -1847,18 +1824,18 @@ export default function HubScreen() {
             <View style={{ backgroundColor: C.surface, borderRadius: 12, paddingHorizontal: 14, paddingVertical: 14 }}>
               <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', marginBottom: 10 }}>
                 <Text style={{ fontSize: 12, fontWeight: '700', color: C.secondary, letterSpacing: 0.5, textTransform: 'uppercase' }}>Team KR</Text>
-                <Text style={{ fontSize: 12, color: C.secondary }}>Confidence: High</Text>
+                <Text style={{ fontSize: 12, color: C.secondary }}>Confidence: 55–65%</Text>
               </View>
-              <Text style={{ fontSize: 32, fontWeight: '800', color: C.label, marginBottom: 12 }}>87.4</Text>
+              <Text style={{ fontSize: 32, fontWeight: '800', color: C.label, marginBottom: 12 }}>72</Text>
               <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginBottom: 6 }}>
                 <Text style={{ fontSize: 13, color: C.secondary }}>Offensive KR</Text>
-                <Text style={{ fontSize: 13, fontWeight: '700', color: C.label }}>89.1</Text>
+                <Text style={{ fontSize: 13, fontWeight: '700', color: C.label }}>74.2</Text>
               </View>
               <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginBottom: 12 }}>
                 <Text style={{ fontSize: 13, color: C.secondary }}>Defensive KR</Text>
-                <Text style={{ fontSize: 13, fontWeight: '700', color: C.label }}>85.7</Text>
+                <Text style={{ fontSize: 13, fontWeight: '700', color: C.label }}>70.8</Text>
               </View>
-              <Text style={{ fontSize: 11, color: C.muted }}>Updated Apr 11</Text>
+              <Text style={{ fontSize: 11, color: C.muted }}>National Title Favorite · USCAA Tier</Text>
             </View>
           </View>
 
@@ -1868,15 +1845,15 @@ export default function HubScreen() {
             <View style={{ backgroundColor: C.surface, borderRadius: 12, paddingHorizontal: 14, paddingVertical: 14 }}>
               <View style={{ flexDirection: 'row', gap: 8, marginBottom: 10 }}>
                 <View style={{ paddingHorizontal: 12, paddingVertical: 5, backgroundColor: '#5A8A6E22', borderRadius: 10 }}>
-                  <Text style={{ fontSize: 13, fontWeight: '700', color: '#5A8A6E' }}>22 W</Text>
+                  <Text style={{ fontSize: 13, fontWeight: '700', color: '#5A8A6E' }}>15 W</Text>
                 </View>
                 <View style={{ paddingHorizontal: 12, paddingVertical: 5, backgroundColor: '#B85C5C22', borderRadius: 10 }}>
                   <Text style={{ fontSize: 13, fontWeight: '700', color: '#B85C5C' }}>8 L</Text>
                 </View>
               </View>
-              <Text style={{ fontSize: 13, color: C.secondary, marginBottom: 10 }}>14–2 GAAC · 2nd Place</Text>
+              <Text style={{ fontSize: 13, color: C.secondary, marginBottom: 10 }}>SWS Champions · Back-to-Back</Text>
               <View style={{ alignSelf: 'flex-start', paddingHorizontal: 10, paddingVertical: 4, borderRadius: 10, borderWidth: 1, borderColor: '#B8943E' }}>
-                <Text style={{ fontSize: 11, fontWeight: '600', color: '#B8943E' }}>GAAC Tournament Finalist</Text>
+                <Text style={{ fontSize: 11, fontWeight: '600', color: '#B8943E' }}>GAAC Tournament Champions</Text>
               </View>
             </View>
           </View>
@@ -1887,12 +1864,14 @@ export default function HubScreen() {
             <ScrollView horizontal showsHorizontalScrollIndicator={false} style={{ marginHorizontal: -16, paddingHorizontal: 16 }}>
               <View style={{ flexDirection: 'row', gap: 14, paddingRight: 16 }}>
                 {[
-                  { initials: 'MJ', name: 'Marcus Johnson', kr: '91.2' },
-                  { initials: 'DW', name: 'Deon Williams', kr: '88.7' },
-                  { initials: 'TB', name: 'Tyler Brooks', kr: '85.4' },
-                  { initials: 'AD', name: 'Antoine Davis', kr: '83.1' },
-                  { initials: 'JS', name: 'Jerome Smith', kr: '79.8' },
-                  { initials: 'CP', name: 'Chris Parker', kr: '76.3' },
+                  { initials: 'LK', name: 'Kalejaiye',  kr: '86' },
+                  { initials: 'BW', name: 'Williams',   kr: '76' },
+                  { initials: 'CM', name: 'McKesey',    kr: '71' },
+                  { initials: 'NC', name: 'Chatelain',  kr: '71' },
+                  { initials: 'AH', name: 'Hernandez',  kr: '62' },
+                  { initials: 'CP', name: 'Plantey',    kr: '61' },
+                  { initials: 'SW', name: 'Wall',        kr: '60' },
+                  { initials: 'PD', name: 'Diomande',   kr: '55' },
                 ].map(player => (
                   <View key={player.name} style={{ alignItems: 'center', width: 64 }}>
                     <View style={{ width: 48, height: 48, borderRadius: 24, backgroundColor: C.surface, alignItems: 'center', justifyContent: 'center', marginBottom: 6 }}>
@@ -1910,9 +1889,9 @@ export default function HubScreen() {
           <View style={{ paddingHorizontal: 16, marginBottom: 28 }}>
             <Text style={{ fontSize: 11, fontWeight: '700', color: C.secondary, letterSpacing: 0.8, textTransform: 'uppercase', marginBottom: 12 }}>Schedule</Text>
             <View style={{ backgroundColor: C.surface, borderRadius: 12, paddingHorizontal: 14, paddingVertical: 14 }}>
-              <Text style={{ fontSize: 11, fontWeight: '700', color: C.secondary, letterSpacing: 0.5, textTransform: 'uppercase', marginBottom: 8 }}>Next Game</Text>
-              <Text style={{ fontSize: 16, fontWeight: '700', color: C.label, marginBottom: 6 }}>vs. Holy Names University</Text>
-              <Text style={{ fontSize: 13, color: C.secondary, marginBottom: 14 }}>Sat Apr 19 · 2:00 PM · Home</Text>
+              <Text style={{ fontSize: 11, fontWeight: '700', color: C.secondary, letterSpacing: 0.5, textTransform: 'uppercase', marginBottom: 8 }}>Last Game</Text>
+              <Text style={{ fontSize: 16, fontWeight: '700', color: C.label, marginBottom: 6 }}>vs. Cal Intercontinental G2</Text>
+              <Text style={{ fontSize: 13, color: C.secondary, marginBottom: 14 }}>Mar 8 · W 92–80 · USCAA</Text>
               <Pressable style={{ alignSelf: 'flex-start', paddingHorizontal: 14, paddingVertical: 7, borderRadius: 16, borderWidth: 1.5, borderColor: C.separator }}>
                 <Text style={{ fontSize: 12, fontWeight: '600', color: C.label }}>View Full Schedule</Text>
               </Pressable>

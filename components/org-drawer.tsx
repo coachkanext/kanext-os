@@ -167,27 +167,7 @@ export function OrgDrawer() {
   // ── Render ──────────────────────────────────────────────────────────────────
 
   return (
-    <BottomSheet visible={visible} onClose={handleClose} useModal snapPoints={['50%', '90%']} backgroundColor={C.bg}>
-
-      {/* Demo | Live segmented control */}
-      <View style={styles.segmentedWrap}>
-        <View style={styles.segmented}>
-          {(['demo', 'live'] as const).map(seg => (
-            <Pressable
-              key={seg}
-              style={[styles.segment, dataMode === seg && styles.segmentActive]}
-              onPress={() => {
-                Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
-                setDataMode(seg);
-              }}
-            >
-              <Text style={[styles.segmentText, dataMode === seg && styles.segmentTextActive]}>
-                {seg.charAt(0).toUpperCase() + seg.slice(1)}
-              </Text>
-            </Pressable>
-          ))}
-        </View>
-      </View>
+    <BottomSheet visible={visible} onClose={handleClose} useModal snapPoints={['60%', '90%']} backgroundColor={C.bg}>
 
       {/* Search + Mode filter chip */}
       <View style={styles.searchRow}>

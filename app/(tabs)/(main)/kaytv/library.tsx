@@ -38,7 +38,7 @@ type UtilLink  = { icon: string; label: string; route?: string };
 
 type ChannelIdentity = { initials: string; name: string; handle: string; stats: string; darkAvatar: boolean };
 const CHANNEL_IDENTITY_BY_MODE: Record<string, ChannelIdentity> = {
-  personal:  { initials: 'SK', name: 'Sammy Kalejaiye',        handle: '@sammyk',   stats: '3.4K subscribers', darkAvatar: true  },
+  personal:  { initials: 'LK', name: 'Laolu Kalejaiye',        handle: '@sammyk',   stats: '3.4K subscribers', darkAvatar: true  },
   business:  { initials: 'KN', name: 'KaNeXT',                 handle: '@kanext',   stats: '1.2K subscribers', darkAvatar: true  },
   education: { initials: 'LU', name: 'Lincoln University (CA)', handle: '@lincolnu', stats: '842 subscribers',  darkAvatar: false },
   community: { initials: 'IC', name: 'ICCLA',                   handle: '@iccla',    stats: '2.1K subscribers', darkAvatar: false },
@@ -50,8 +50,8 @@ const CHANNEL_IDENTITY_BY_MODE: Record<string, ChannelIdentity> = {
 const HISTORY_BY_MODE: Record<string, HistoryVideo[]> = {
   personal: [
     { id: 'h1', title: 'Lincoln @ Pepperdine — Full Film',    channel: 'Lincoln Basketball', duration: '4:12',  thumbUri: 'https://images.unsplash.com/photo-1546519638-68e109498ffc?w=320&h=180&fit=crop&q=80', thumbHue: 215, progress: 0.62 },
-    { id: 'h2', title: 'Building KaNeXT OS — Ep. 7',          channel: 'Sammy Kalejaiye',    duration: '18:32', thumbUri: 'https://images.unsplash.com/photo-1517694712202-14dd9538aa97?w=320&h=180&fit=crop&q=80', thumbHue: 200, progress: 0.30 },
-    { id: 'h3', title: 'Brand Deal Negotiation Tips',          channel: 'Sammy Kalejaiye',    duration: '11:42', thumbUri: 'https://images.unsplash.com/photo-1497366216548-37526070297c?w=320&h=180&fit=crop&q=80', thumbHue: 320 },
+    { id: 'h2', title: 'Building KaNeXT OS — Ep. 7',          channel: 'Laolu Kalejaiye',    duration: '18:32', thumbUri: 'https://images.unsplash.com/photo-1517694712202-14dd9538aa97?w=320&h=180&fit=crop&q=80', thumbHue: 200, progress: 0.30 },
+    { id: 'h3', title: 'Brand Deal Negotiation Tips',          channel: 'Laolu Kalejaiye',    duration: '11:42', thumbUri: 'https://images.unsplash.com/photo-1497366216548-37526070297c?w=320&h=180&fit=crop&q=80', thumbHue: 320 },
     { id: 'h4', title: 'NAIA Tournament Bracket 2026 Preview', channel: 'KaNeXT Sports',      duration: '14:30', thumbUri: 'https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?w=320&h=180&fit=crop&q=80', thumbHue: 350 },
     { id: 'h5', title: 'Creator Systems: Content → Revenue',   channel: 'Alicia Chen',        duration: '47:15', thumbUri: 'https://images.unsplash.com/photo-1434030216411-0b793f4b4173?w=320&h=180&fit=crop&q=80', thumbHue: 280 },
   ],

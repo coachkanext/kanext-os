@@ -20,9 +20,9 @@ const MODE_DEFAULTS: Record<Mode, HeroVideo> = {
   sports: {
     id: 'sports-default',
     state: 'default',
-    source: 'file:///Users/sammy/Desktop/Laolu%203/LB%20State%206%20Threes.mp4',
+    source: require('@/assets/videos/pepperdine.mp4'),
     route: '/(tabs)/(main)/kaytv',
-    headline: 'LB State Highlights',
+    headline: 'Pepperdine Game',
     subline: 'Watch on KayTV',
   },
   business: {
@@ -33,8 +33,8 @@ const MODE_DEFAULTS: Record<Mode, HeroVideo> = {
     headline: 'Company Spotlight',
     subline: 'Watch on KayTV',
   },
-  church: {
-    id: 'church-default',
+  community: {
+    id: 'community-default',
     state: 'default',
     source: 'https://assets.mixkit.co/videos/46785/46785-720.mp4',
     route: '/(tabs)/(main)/kaytv',

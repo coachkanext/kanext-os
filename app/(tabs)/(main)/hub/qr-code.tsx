@@ -62,7 +62,7 @@ export default function QRCodeScreen() {
         </View>
 
         {/* ── Identity ── */}
-        <Text style={[s.name, { color: C.label }]}>Sammy Kalejaiye</Text>
+        <Text style={[s.name, { color: C.label }]}>Laolu Kalejaiye</Text>
         <Text style={[s.handle, { color: C.secondary }]}>kanext.io/@sammyk</Text>
 
         {/* ── Actions ── */}

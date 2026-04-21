@@ -56,7 +56,7 @@ interface ExtendedAppState extends AppContextState {
 const DEMO_ORGANIZATIONS: Record<Mode, Organization> = {
   personal: {
     id: 'pb_kx',
-    name: 'Sammy Kalejaiye',
+    name: 'Laolu Kalejaiye',
     mode: 'personal',
     type: 'personal',
     location: '',

@@ -133,7 +133,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
           session = { ...parsed, createdAt: new Date(parsed.createdAt) };
           // Migrate stale demo sessions with wrong name/handle
           if (session && session.email === 'coachk@kanext.io') {
-            session = { ...session, displayName: 'Sammy Kalejaiye', handle: 'coachk' };
+            session = { ...session, displayName: 'Laolu Kalejaiye', handle: 'laoluk' };
             await AsyncStorage.setItem(SESSION_KEY, JSON.stringify(session));
           }
         }
@@ -199,8 +199,8 @@ export function AuthProvider({ children }: AuthProviderProps) {
 
     const session: AuthSession = {
       userId: `user-${Date.now()}`,
-      displayName: 'Sammy Kalejaiye',
-      handle: 'coachk',
+      displayName: 'Laolu Kalejaiye',
+      handle: 'laoluk',
       email,
       provider,
       token: `mock-token-${Date.now()}`,

@@ -53,9 +53,9 @@ export const RATE_SERVICES: RateService[] = [
 ];
 
 export const TRUSTED_BY: { id: string; name: string; initials: string; hue: number; logoUri?: string }[] = [
-  { id: 'tb1', name: 'Nike',         initials: 'N',  hue: 0,   logoUri: 'https://logo.clearbit.com/nike.com'          },
-  { id: 'tb2', name: 'Gatorade',     initials: 'G',  hue: 30,  logoUri: 'https://logo.clearbit.com/gatorade.com'      },
-  { id: 'tb3', name: 'Under Armour', initials: 'UA', hue: 200, logoUri: 'https://logo.clearbit.com/underarmour.com'   },
+  { id: 'tb1', name: 'Nike',         initials: 'N',  hue: 0,   logoUri: undefined          },
+  { id: 'tb2', name: 'Gatorade',     initials: 'G',  hue: 30,  logoUri: undefined      },
+  { id: 'tb3', name: 'Under Armour', initials: 'UA', hue: 200, logoUri: undefined   },
 ];
 
 // ── Inquiries ──────────────────────────────────────────────────────────────────
@@ -73,7 +73,7 @@ export const PERSONAL_INQUIRIES: PersonalInquiry[] = [
     dateReceived: 'Apr 10, 2026',
     initials: 'SC',
     hue: 10,
-    avatarUri: 'https://images.unsplash.com/photo-1494790108755-2616b612b78b?w=80&h=80&fit=crop&q=80',
+    avatarUri: undefined,
     description: "Looking to partner for a 3-part summer training campaign across Instagram and KTV. Similar to last year's program — would love to discuss scope and a longer-term ambassador extension if performance benchmarks are hit.",
     proposedTimeline: 'June – August 2026',
     proposedBudget: '$30,000–$45,000',
@@ -93,7 +93,7 @@ export const PERSONAL_INQUIRIES: PersonalInquiry[] = [
     dateReceived: 'Apr 7, 2026',
     initials: 'AR',
     hue: 160,
-    avatarUri: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=80&h=80&fit=crop&q=80',
+    avatarUri: undefined,
     description: 'Proposing a 4-part YouTube + KTV series on creator finance and personal branding. Each creator brings their own audience. Revenue split on sponsorships. Looking at a May launch.',
     proposedTimeline: 'May – June 2026',
     proposedBudget: 'Revenue share',
@@ -115,7 +115,7 @@ export const PERSONAL_INQUIRIES: PersonalInquiry[] = [
     dateReceived: 'Apr 9, 2026',
     initials: 'JE',
     hue: 260,
-    avatarUri: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=80&h=80&fit=crop&q=80',
+    avatarUri: undefined,
     description: '45-minute keynote at the Creator Economy Summit in Atlanta, GA. Audience of ~800 creators, brand marketers, and investors. Topic: building sustainable creator businesses beyond social media.',
     proposedTimeline: 'July 18, 2026',
     proposedBudget: '$8,000 + travel',
@@ -134,7 +134,7 @@ export const PERSONAL_INQUIRIES: PersonalInquiry[] = [
     dateReceived: 'Apr 5, 2026',
     initials: 'MJ',
     hue: 45,
-    avatarUri: 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=80&h=80&fit=crop&q=80',
+    avatarUri: undefined,
     description: 'Looking for a 3-month intensive coaching program covering content strategy, brand partnerships, and audience monetization. Flexible on format — weekly calls, async feedback, or a mix.',
     proposedTimeline: 'May – July 2026',
     proposedBudget: '$2,500',
@@ -156,7 +156,7 @@ export const PERSONAL_INQUIRIES: PersonalInquiry[] = [
     dateReceived: 'Mar 28, 2026',
     initials: 'ML',
     hue: 30,
-    avatarUri: 'https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?w=80&h=80&fit=crop&q=80',
+    avatarUri: undefined,
     description: 'Extension of the Q1 ambassador agreement into Q3. Same deliverables cadence: 4 posts/month, 2 reels, 1 KTV long-form. Annual rate adjusted for performance metrics from Q1.',
     proposedTimeline: 'July – September 2026',
     proposedBudget: '$94,000/yr (pro-rated Q3)',

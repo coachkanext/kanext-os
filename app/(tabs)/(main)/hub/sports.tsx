@@ -38,20 +38,20 @@ const TEAM = {
   name:      "Lincoln Men's Basketball",
   sub:       'SWS Conference — Laney College',
   bio:       'HC: William Middlebrooks  ·  AC: Sammy Kalejaiye',
-  kr:        78,
-  sysFit:    94,
-  record:    '17-8',
-  streak:    'W13',
+  kr:        72,
+  sysFit:    53,
+  record:    '15-8',
+  streak:    'W5',
   champions: 'SWS Reg. Season + GAAC Tournament Champions · Back to Back',
 };
 
 const NEXT_GAME = {
-  opponent: 'Holy Names University',
-  oppKR:    62,
-  date:     'Sat Apr 12',
-  time:     '7:00 PM',
-  location: 'Laney College',
-  isHome:   false,
+  opponent: 'Season Complete',
+  oppKR:    0,
+  date:     'Final Record: 15-8',
+  time:     '',
+  location: 'GAAC Tournament Champions',
+  isHome:   true,
 };
 
 const ROSTER_HEALTH = [
@@ -66,20 +66,20 @@ const ROSTER_HEALTH = [
 ];
 
 const RECENT_RESULTS = [
-  { opp: 'Menlo College',    result: 'W', score: '88-71', krDelta: +4 },
-  { opp: 'Dominican Univ.', result: 'W', score: '91-76', krDelta: +2 },
-  { opp: 'UC Irvine',       result: 'L', score: '61-84', krDelta: -3 },
-  { opp: 'UNLV',            result: 'L', score: '58-82', krDelta: -2 },
-  { opp: 'William Jessup',  result: 'W', score: '79-64', krDelta: +3 },
+  { opp: 'Cal Intercontinental',   result: 'W', score: '92-80', krDelta: +3 },
+  { opp: 'Cal Intercontinental',   result: 'W', score: '99-76', krDelta: +3 },
+  { opp: 'Daytona Beach Christian',result: 'W', score: '83-54', krDelta: +4 },
+  { opp: 'Cal Intercontinental',   result: 'W', score: '97-77', krDelta: +3 },
+  { opp: 'John Melvin Christian',  result: 'W', score: '98-90', krDelta: +2 },
 ];
 
 const SEASON_STATS = [
-  { label: 'PPG',    value: '82.4' },
-  { label: 'OppPPG', value: '71.2' },
-  { label: 'FG%',    value: '46.1' },
-  { label: '3P%',    value: '37.8' },
-  { label: 'RPG',    value: '38.2' },
-  { label: 'APG',    value: '17.6' },
+  { label: 'PPG',    value: '90.0' },
+  { label: 'OppPPG', value: '93.4' },
+  { label: 'FG%',    value: '43.9' },
+  { label: '3P%',    value: '31.7' },
+  { label: 'RPG',    value: '29.0' },
+  { label: 'APG',    value: '16.0' },
 ];
 
 const STAFF = [
@@ -89,16 +89,16 @@ const STAFF = [
 ];
 
 const MY_STATS = [
-  { label: 'PPG', value: '18.4' },
-  { label: 'RPG', value: '6.2'  },
-  { label: 'APG', value: '3.8'  },
-  { label: 'FG%', value: '51.2' },
+  { label: 'PPG', value: '27.3' },
+  { label: 'RPG', value: '2.9'  },
+  { label: 'APG', value: '2.9'  },
+  { label: 'FG%', value: '39.5' },
 ];
 
 const TEAM_LEADERS = [
-  { name: 'Laolu Kalejaiye',  stat: '18.4 PPG', pos: 'G' },
-  { name: 'Brandon Williams', stat: '14.2 PPG', pos: 'F' },
-  { name: 'Claude McKesey',   stat: '11.8 PPG', pos: 'C' },
+  { name: 'Laolu Kalejaiye',  stat: '27.3 PPG', pos: 'G' },
+  { name: 'Brandon Williams', stat: '19.3 PPG', pos: 'G' },
+  { name: 'Claude McKesey',   stat: '12.4 PPG', pos: 'G' },
 ];
 
 function healthColor(s: 'available' | 'limited' | 'out'): string {
@@ -159,7 +159,7 @@ export default function SportsHub() {
         <View style={{ position: 'relative', marginBottom: AVATAR_OVR + 12 }}>
           <View style={{ height: COVER_H, overflow: 'hidden' }}>
             <Image
-              source={{ uri: 'https://picsum.photos/seed/basketball-court/900/500' }}
+              source={require('@/assets/images/lincoln-back-to-back.jpg')}
               style={{ width: '100%', height: '100%' }}
               resizeMode="cover"
             />
@@ -167,8 +167,8 @@ export default function SportsHub() {
             <View style={{ position: 'absolute', bottom: 0, left: 0, right: 0, height: 60, backgroundColor: 'rgba(0,0,0,0.20)' }} />
           </View>
           <View style={{ position: 'absolute', bottom: -AVATAR_OVR, left: 20 }}>
-            <View style={[s.avatar, { backgroundColor: C.surface, borderColor: C.bg }]}>
-              <Text style={s.avatarEmoji}>🏀</Text>
+            <View style={{ width: AVATAR_SIZE, height: AVATAR_SIZE, borderRadius: AVATAR_SIZE / 2, borderWidth: 3, borderColor: C.bg, overflow: 'hidden' }}>
+              <Image source={require('@/assets/images/lu-mbb-logo.png')} style={{ width: '100%', height: '100%', transform: [{ scale: 1.5 }] }} resizeMode="cover" />
             </View>
           </View>
         </View>

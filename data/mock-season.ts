@@ -66,8 +66,7 @@ export interface FilmItem {
 }
 
 // Unsplash direct image helper (public, hotlinkable, auto-cropped)
-const u = (id: string, w = 240, h = 320) =>
-  `https://images.unsplash.com/${id}?w=${w}&h=${h}&fit=crop&q=80`;
+const u = (_id?: string, _w?: number, _h?: number) => '';
 
 // ── Page 2: Development ──
 

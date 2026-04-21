@@ -127,7 +127,7 @@ export default function BookingConfirmScreen() {
           <View style={s.creatorRow}>
             <View style={[s.creatorAvatar, { backgroundColor: C.separator }]} />
             <View style={s.creatorInfo}>
-              <Text style={[s.creatorName, { color: C.label }]}>Sammy Kalejaiye</Text>
+              <Text style={[s.creatorName, { color: C.label }]}>Laolu Kalejaiye</Text>
               <Text style={[s.creatorHandle, { color: C.secondary }]}>@sammyk</Text>
             </View>
           </View>

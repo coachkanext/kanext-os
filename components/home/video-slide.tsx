@@ -54,7 +54,7 @@ export function VideoSlide({ video, muted = true }: VideoSlideProps) {
       {/* Auto-playing video */}
       {!videoFailed && Video && (
         <Video
-          source={{ uri: video.source }}
+          source={typeof video.source === 'number' ? video.source : { uri: video.source }}
           style={StyleSheet.absoluteFill}
           resizeMode={ResizeMode.COVER}
           shouldPlay={true}
