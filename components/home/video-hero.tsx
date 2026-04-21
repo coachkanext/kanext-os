@@ -26,16 +26,17 @@ import { PersonalSeasonCard } from './personal-season-card';
 import { BusinessBrandCard } from './business-brand-card';
 
 // ── Video sources ─────────────────────────────────────────────────────────────
-const V_PEPPERDINE = require('@/assets/videos/pepperdine.mp4');
+// Note: large .mov files are not committed to git — using git-tracked equivalents
+const V_PEPPERDINE = require('@/assets/videos/lmu.mp4');
 const V_LB_STATE   = require('@/assets/videos/lb-state.mp4');
 const V_SIMPSON    = require('@/assets/videos/simpson.mp4');
-const V_WEBER      = require('@/assets/videos/weber-state.mp4');
-const V_IRVINE     = require('@/assets/videos/uc-irvine.mp4');
-const V_MARITIME   = require('@/assets/videos/cal-maritime.mp4');
-const V_MARITIME2  = require('@/assets/videos/cal-maritime-2.mp4');
-const V_COMMUNITY  = require('@/assets/videos/community.mov');
-const V_EDUCATION  = require('@/assets/videos/education.mov');
-const V_ATHLETICS  = require('@/assets/videos/athletics.mov');
+const V_WEBER      = require('@/assets/videos/weber-st.mp4');
+const V_IRVINE     = require('@/assets/videos/irvine.mp4');
+const V_MARITIME   = require('@/assets/videos/maritime-w.mp4');
+const V_MARITIME2  = require('@/assets/videos/maritime-l.mp4');
+const V_COMMUNITY  = require('@/assets/videos/kaytv-preview.mp4');
+const V_EDUCATION  = require('@/assets/videos/kaytv-preview.mp4');
+const V_ATHLETICS  = require('@/assets/videos/lmu.mp4');
 const V_CHAMPIONS_CARD  = require('@/assets/images/lincoln-champions-card.jpg');
 const V_CHAMPS_PHOTO    = require('@/assets/images/lincoln-2026-champions-photo.jpg');
 const V_BACK_TO_BACK    = require('@/assets/images/lincoln-back-to-back.jpg');
