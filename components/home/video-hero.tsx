@@ -26,20 +26,20 @@ import { PersonalSeasonCard } from './personal-season-card';
 import { BusinessBrandCard } from './business-brand-card';
 
 // ── Video sources ─────────────────────────────────────────────────────────────
-// Note: large .mov files are not committed to git — using git-tracked equivalents
-const V_PEPPERDINE = require('@/assets/videos/lmu.mp4');
+const V_PEPPERDINE = require('@/assets/videos/pepperdine.mp4');
 const V_LB_STATE   = require('@/assets/videos/lb-state.mp4');
 const V_SIMPSON    = require('@/assets/videos/simpson.mp4');
-const V_WEBER      = require('@/assets/videos/weber-st.mp4');
-const V_IRVINE     = require('@/assets/videos/irvine.mp4');
-const V_MARITIME   = require('@/assets/videos/maritime-w.mp4');
-const V_MARITIME2  = require('@/assets/videos/maritime-l.mp4');
-const V_COMMUNITY  = require('@/assets/videos/kaytv-preview.mp4');
-const V_EDUCATION  = require('@/assets/videos/kaytv-preview.mp4');
-const V_ATHLETICS  = require('@/assets/videos/lmu.mp4');
+const V_WEBER      = require('@/assets/videos/weber-state.mp4');
+const V_IRVINE     = require('@/assets/videos/uc-irvine.mp4');
+const V_MARITIME   = require('@/assets/videos/cal-maritime.mp4');
+const V_MARITIME2  = require('@/assets/videos/cal-maritime-2.mp4');
+const V_COMMUNITY  = require('@/assets/videos/community.mov');
+const V_EDUCATION  = require('@/assets/videos/education.mov');
+const V_ATHLETICS  = require('@/assets/videos/athletics.mov');
 const V_CHAMPIONS_CARD  = require('@/assets/images/lincoln-champions-card.jpg');
 const V_CHAMPS_PHOTO    = require('@/assets/images/lincoln-2026-champions-photo.jpg');
 const V_BACK_TO_BACK    = require('@/assets/images/lincoln-back-to-back.jpg');
+const V_MY_MOVIE        = require('@/assets/videos/my-movie.mov');
 
 // ── Sports mode: image-only pills ────────────────────────────────────────────
 type SportsPair = { kind: 'image'; source: any };
@@ -51,65 +51,14 @@ const SPORTS_PAIRS: SportsPair[] = [
 // ── Personal mode: (pre-roll + video) pairs ───────────────────────────────────
 type PersonalPair =
   | { kind: 'game';   slide: PreRollSlide; video: number }
-  | { kind: 'season'; video: number };
+  | { kind: 'season'; video: number }
+  | { kind: 'direct'; video: number };
 
 const PERSONAL_PAIRS: PersonalPair[] = [
-  // pill 1 — season averages card (no video — advances directly to pill 2)
-  { kind: 'season', video: V_PEPPERDINE },
-  // pill 2 — Pepperdine game
-  { kind: 'game', video: V_PEPPERDINE, slide: {
-    badge: 'RECORD BREAKING', badgeColor: '#8B2500',
-    name: 'LAOLU KALEJAIYE', venue: 'LINCOLN vs PEPPERDINE',
-    heroValue: '38', heroLabel: 'POINTS',
-    secondary: [{ value: '12-18', label: 'FROM THREE' }],
-    ftLine: 'NEW OPPONENT SINGLE-GAME 3PT RECORD',
-  }},
-  // pill 3 — LB State game
-  { kind: 'game', video: V_LB_STATE, slide: {
-    badge: 'CAL STATE LONG BEACH', badgeColor: '#2A2A2A',
-    name: 'LAOLU KALEJAIYE', venue: 'LINCOLN vs CAL STATE LONG BEACH',
-    heroValue: '25', heroLabel: 'POINTS',
-    secondary: [{ value: '6', label: 'THREES' }, { value: '4', label: 'REB' }, { value: '5', label: 'AST' }],
-  }},
-  // pill 4 — Simpson game
-  { kind: 'game', video: V_SIMPSON, slide: {
-    badge: 'SIMPSON UNIVERSITY', badgeColor: '#2A2A2A',
-    name: 'LAOLU KALEJAIYE', venue: 'LINCOLN vs SIMPSON',
-    heroValue: '34', heroLabel: 'POINTS',
-    secondary: [{ value: '8', label: 'THREES' }, { value: '3', label: 'REB' }, { value: '3', label: 'AST' }],
-    ftLine: '2 STL',
-  }},
-  // pill 5 — Weber State game
-  { kind: 'game', video: V_WEBER, slide: {
-    badge: 'WEBER STATE', badgeColor: '#2A2A2A',
-    name: 'LAOLU KALEJAIYE', venue: 'LINCOLN vs WEBER STATE',
-    heroValue: '18', heroLabel: 'POINTS',
-    secondary: [{ value: '4', label: 'THREES' }, { value: '3', label: 'REB' }, { value: '4', label: 'AST' }],
-    ftLine: '1 STL',
-  }},
-  // pill 6 — UC Irvine game
-  { kind: 'game', video: V_IRVINE, slide: {
-    badge: 'UC IRVINE', badgeColor: '#2A2A2A',
-    name: 'LAOLU KALEJAIYE', venue: 'LINCOLN vs UC IRVINE',
-    heroValue: '19', heroLabel: 'POINTS',
-    secondary: [{ value: '5-10', label: 'FROM THREE' }],
-    ftLine: '7-14 FG · 50.0%',
-  }},
-  // pill 7 — Cal Maritime (W) game
-  { kind: 'game', video: V_MARITIME, slide: {
-    badge: 'CAL MARITIME', badgeColor: '#2A2A2A',
-    name: 'LAOLU KALEJAIYE', venue: 'LINCOLN vs CAL MARITIME',
-    heroValue: '34', heroLabel: 'POINTS',
-    secondary: [{ value: '6', label: 'THREES' }, { value: '12-12', label: 'FT' }],
-    ftLine: '3 REB · 4 AST · 1 STL',
-  }},
-  // pill 8 — Cal Maritime (L) game
-  { kind: 'game', video: V_MARITIME2, slide: {
-    badge: 'CAL MARITIME', badgeColor: '#2A2A2A',
-    name: 'LAOLU KALEJAIYE', venue: 'LINCOLN vs CAL MARITIME',
-    heroValue: '26', heroLabel: 'POINTS',
-    secondary: [{ value: '6', label: 'THREES' }, { value: '6-6', label: 'FT' }, { value: '4', label: 'REB' }],
-  }},
+  // pill 1 — season averages card
+  { kind: 'season', video: V_MY_MOVIE },
+  // pill 2 — my movie (direct play, no pre-roll)
+  { kind: 'direct', video: V_MY_MOVIE },
 ];
 
 const MODE_VIDEO_LISTS: Partial<Record<string, (string | number)[]>> = {
@@ -319,7 +268,7 @@ export interface VideoHeroPlayerHandle {
   directSwitchTo: (idx: number) => void; // switch video without triggering onBeforeSwitch
 }
 
-const VideoHeroPlayer = forwardRef<VideoHeroPlayerHandle, {
+export const VideoHeroPlayer = forwardRef<VideoHeroPlayerHandle, {
   uris: (string | number)[];
   totalHeight: number;
   contentFit?: 'cover' | 'contain';
@@ -545,9 +494,9 @@ const VideoHeroPlayer = forwardRef<VideoHeroPlayerHandle, {
       setTimeout(() => player.play(), 300);
       setPaused(false);
       setCurrentTime(0);
-      showCtrlsFor3s();
+      // intentionally no showCtrlsFor3s — caller decides whether to show controls
     } catch {}
-  }, [player, uris, showCtrlsFor3s]);
+  }, [player, uris]);
 
   useImperativeHandle(ref, () => ({ switchTo: switchVideo, directSwitchTo }), [switchVideo, directSwitchTo]);
 
@@ -688,6 +637,15 @@ export function VideoHero() {
       : (MODE_VIDEO_LISTS[mode] ?? [V_PEPPERDINE]);
 
   const handleBeforeSwitch = (idx: number, doSwitch: () => void) => {
+    const pair = PERSONAL_PAIRS[idx];
+    if (pair.kind === 'direct') {
+      // No pre-roll — switch directly to video, no controls flash
+      preRollActiveRef.current = false;
+      setPairIndex(idx);
+      setPhase('video');
+      playerRef.current?.directSwitchTo(idx);
+      return;
+    }
     preRollActiveRef.current = true;
     doSwitchRef.current = doSwitch;
     setPairIndex(idx);
@@ -725,9 +683,9 @@ export function VideoHero() {
           doSwitchRef.current = null;
           playerRef.current?.switchTo((pairIndex + 1) % PERSONAL_PAIRS.length);
         };
-        return pair.kind === 'season'
-          ? <PersonalSeasonCard key={pairIndex} onDone={onSeasonDone} />
-          : <PersonalPreRoll key={pairIndex} slide={pair.slide} onDone={onGameDone} />;
+        if (pair.kind === 'season') return <PersonalSeasonCard key={pairIndex} onDone={onSeasonDone} />;
+        if (pair.kind === 'direct') return null; // should not reach here; handled in handleBeforeSwitch
+        return <PersonalPreRoll key={pairIndex} slide={pair.slide} onDone={onGameDone} />;
       })()}
       {/* Pills — personal mode */}
       {isPersonal && (

@@ -9,7 +9,7 @@ import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { View, Text, StyleSheet, Pressable } from 'react-native';
 import { IconSymbol } from '@/components/ui/icon-symbol';
 
-const SLIDE_MS = 3500;
+const SLIDE_MS = 2500;
 
 interface Slide {
   badge:      string;
@@ -28,9 +28,6 @@ const SLIDES: Slide[] = [
     ppg: '27.3', threeP: '.355', rpg: '2.9', apg: '2.9',
     disclaimer: '8 games w/o individual stats  ·  23 GP total  ·  15–8 record',
   },
-  { badge: 'D1',    badgeColor: '#0D2137', gp:  5, ppg: '22.4', threeP: '.372', rpg: '2.2', apg: '2.0' },
-  { badge: 'NAIA',  badgeColor: '#1A1714', gp:  5, ppg: '31.8', threeP: '.296', rpg: '4.0', apg: '2.6' },
-  { badge: 'USCAA', badgeColor: '#1A1714', gp:  5, ppg: '27.8', threeP: '.414', rpg: '2.6', apg: '4.0' },
 ];
 
 export function PersonalSeasonCard({ onDone }: { onDone: () => void }) {

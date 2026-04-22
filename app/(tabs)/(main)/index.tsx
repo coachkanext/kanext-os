@@ -29,7 +29,7 @@ export default function HomeScreen() {
   const mode = useMode();
   const isLoading = state.isLoading;
   const { state: authState } = useAuth();
-  const displayName = authState.session?.displayName ?? 'My Brand';
+  const displayName = authState.session?.displayName ?? 'Laolu Kalejaiye';
 
   const orgLabel = useMemo(() => {
     if (mode === 'personal') return displayName;
@@ -75,7 +75,7 @@ export default function HomeScreen() {
 
   return (
     <View style={[styles.container, { backgroundColor: C.bg }]}>
-      {/* Video hero — flush to top, bleeds under status bar */}
+      {/* Video hero — 2 pills: season stats (1) + video with full controls (2) */}
       <VideoHero />
 
       {/* Org context pill — tap → org drawer */}
@@ -129,4 +129,5 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
   },
+
 });

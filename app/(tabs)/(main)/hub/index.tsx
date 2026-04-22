@@ -7,7 +7,7 @@
 import React, { useState, useCallback, useEffect } from 'react';
 import {
   View, Text, Pressable, ScrollView, TextInput,
-  Image, StyleSheet, Animated,
+  Image, StyleSheet, Animated, useWindowDimensions,
 } from 'react-native';
 import * as Haptics from 'expo-haptics';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
@@ -25,6 +25,11 @@ import { openSidePanel } from '@/utils/global-side-panel';
 import { useDemoRole } from '@/utils/demo-role-store';
 import { useDataMode } from '@/utils/global-demo-mode';
 import { KMenuButton } from '@/components/ui/k-menu-button';
+import { VideoHeroPlayer } from '@/components/home/video-hero';
+
+const V_PEPPERDINE = require('@/assets/videos/pepperdine.mp4');
+const V_LB_STATE   = require('@/assets/videos/lb-state.mp4');
+const V_SIMPSON    = require('@/assets/videos/simpson.mp4');
 import {
   HUB_PROFILE, HUB_ANALYTICS, HUB_CHART_DATA, HUB_ACTIVITY, HUB_GOALS,
   HUB_TIERS, HUB_LINKS, HUB_PORTFOLIO,
@@ -635,6 +640,8 @@ export default function HubScreen() {
   const router = useRouter();
   const { state } = useAppContext();
   const mode = state.mode ?? 'personal';
+  const { width: winW } = useWindowDimensions();
+  const [featuredVideoIdx, setFeaturedVideoIdx] = useState<number | null>(null);
   const dataMode = useDataMode();
 
   const [role, cycleRole, roleCycles] = useDemoRole('personal:hub');
@@ -799,9 +806,9 @@ export default function HubScreen() {
   // ── Owner Profile (public-facing creator profile) ────────────────────────────
 
   const PROFILE_FEATURED = [
-    { type: 'VIDEO',   title: 'KaNeXT OS v2.0 — Full Walkthrough',    meta: '12.4K views'   },
-    { type: 'PRODUCT', title: 'Sports Intelligence Playbook',          meta: '$29 · 847 sold' },
-    { type: 'POST',    title: 'Why every institution needs an OS',     meta: '2.1K likes'    },
+    { type: 'VIDEO',   title: '38 Pts · 12 Threes vs Pepperdine', meta: '12.4K views'   },
+    { type: 'VIDEO',   title: '25 Pts · 4 Reb · 5 Ast vs Cal State Long Beach', meta: '6 Threes' },
+    { type: 'VIDEO',   title: '34 Pts · 8 Threes vs Simpson',           meta: '3 Reb · 3 Ast · 2 Stl' },
   ];
 
   const PROFILE_TIERS = [
@@ -902,8 +909,26 @@ export default function HubScreen() {
       {/* ── 5. FEATURED ── */}
       <View style={{ paddingHorizontal: 16, marginBottom: 28 }}>
         <Text style={{ fontSize: 11, fontWeight: '700', color: C.secondary, letterSpacing: 0.8, textTransform: 'uppercase', marginBottom: 12 }}>Featured</Text>
-        {PROFILE_FEATURED.map(item => (
-          <FeaturedCard key={item.id} item={item} C={C} />
+        {PROFILE_FEATURED.map((item, i) => (
+          <Pressable
+            key={item.title}
+            onPress={() => {
+              if (item.type === 'VIDEO') {
+                Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+                setFeaturedVideoIdx(i);
+              }
+            }}
+            style={({ pressed }) => [{ flexDirection: 'row', alignItems: 'center', backgroundColor: C.surface, borderRadius: 12, paddingHorizontal: 14, paddingVertical: 13, marginBottom: 8, gap: 12 }, pressed && { opacity: 0.75 }]}
+          >
+            <View style={{ paddingHorizontal: 8, paddingVertical: 4, backgroundColor: C.separator, borderRadius: 8 }}>
+              <Text style={{ fontSize: 10, fontWeight: '700', color: C.secondary }}>{item.type}</Text>
+            </View>
+            <View style={{ flex: 1 }}>
+              <Text style={{ fontSize: 14, fontWeight: '600', color: C.label }}>{item.title}</Text>
+              <Text style={{ fontSize: 12, color: C.secondary, marginTop: 2 }}>{item.meta}</Text>
+            </View>
+            <IconSymbol name="ellipsis" size={16} color={C.muted} />
+          </Pressable>
         ))}
       </View>
 
@@ -2297,6 +2322,40 @@ export default function HubScreen() {
           </View>
         </View>
       </BottomSheet>
+
+      {/* Featured video — YouTube-style bottom sheet */}
+      {(() => {
+        const FEATURED_VIDEOS = [
+          { uri: V_PEPPERDINE, title: '38 Pts · 12 Threes vs Pepperdine',          sub: 'Laolu Kalejaiye · New Opponent 3PT Record' },
+          { uri: V_LB_STATE,   title: '25 Pts · 4 Reb · 5 Ast vs Cal State Long Beach', sub: 'Laolu Kalejaiye · 6 Threes' },
+          { uri: V_SIMPSON,    title: '34 Pts · 8 Threes vs Simpson',                   sub: 'Laolu Kalejaiye · 3 Reb · 3 Ast · 2 Stl' },
+        ];
+        const item = featuredVideoIdx !== null ? FEATURED_VIDEOS[featuredVideoIdx] : null;
+        return (
+          <BottomSheet
+            visible={featuredVideoIdx !== null}
+            onClose={() => setFeaturedVideoIdx(null)}
+            snapPoints={['55%', '100%']}
+            backgroundColor="#000"
+            contentContainerStyle={{ paddingBottom: 0, paddingHorizontal: 0 }}
+          >
+            {item && (
+              <>
+                <VideoHeroPlayer
+                  key={featuredVideoIdx}
+                  uris={[item.uri]}
+                  totalHeight={Math.round(winW * (9 / 16))}
+                  contentFit="cover"
+                />
+                <View style={{ paddingHorizontal: 16, paddingTop: 14, paddingBottom: 8 }}>
+                  <Text style={{ fontSize: 16, fontWeight: '700', color: '#F0E8DC', marginBottom: 4 }}>{item.title}</Text>
+                  <Text style={{ fontSize: 13, color: 'rgba(240,232,220,0.55)' }}>{item.sub}</Text>
+                </View>
+              </>
+            )}
+          </BottomSheet>
+        );
+      })()}
     </View>
   );
 }

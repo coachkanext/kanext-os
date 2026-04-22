@@ -25,6 +25,8 @@ import { BottomSheetModalProvider } from '@gorhom/bottom-sheet';
 import 'react-native-reanimated';
 
 import { SplashScreen } from '@/components/splash-screen';
+import { NDAScreen, NDA_STORAGE_KEY } from '@/components/nda-screen';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import { AccessPortal } from '@/components/auth/access-portal';
 import { SearchOverlay } from '@/components/nexus/search-overlay';
 import { OrgDrawer } from '@/components/org-drawer';
@@ -418,6 +420,7 @@ export default function RootLayout() {
   // Boot splash guard: uses module-level flag to ensure it only shows ONCE per app session.
   // Initialize from the module flag so remounts don't reset this.
   const [bootSplashVisible, setBootSplashVisible] = useState(() => !BOOT_SPLASH_COMPLETED);
+  const [ndaVisible, setNdaVisible] = useState(false);
 
   // Extra guard: useRef to prevent any race conditions within a single mount
   const splashCompletedRef = useRef(BOOT_SPLASH_COMPLETED);
@@ -442,7 +445,7 @@ export default function RootLayout() {
     prepare();
   }, []);
 
-  const handleSplashComplete = useCallback(() => {
+  const handleSplashComplete = useCallback(async () => {
     // Guard: only complete once
     if (splashCompletedRef.current) return;
 
@@ -452,6 +455,14 @@ export default function RootLayout() {
 
     // Remove splash from view
     setBootSplashVisible(false);
+
+    // Show NDA if not yet accepted
+    try {
+      const accepted = await AsyncStorage.getItem(NDA_STORAGE_KEY);
+      if (!accepted) setNdaVisible(true);
+    } catch {
+      setNdaVisible(true);
+    }
   }, []);
 
   // App content with optional splash overlay
@@ -473,6 +484,11 @@ export default function RootLayout() {
                   isAppReady={isAppReady}
                 />
               ) : null}
+
+              {/* NDA — shown once after first splash, must accept to proceed */}
+              {ndaVisible && (
+                <NDAScreen onAccept={() => setNdaVisible(false)} />
+              )}
             </BottomSheetModalProvider>
           </GestureHandlerRootView>
           <StatusBar style={colorScheme === 'dark' ? 'light' : 'dark'} />
